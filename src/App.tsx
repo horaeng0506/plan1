@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useAppStore } from './domain/store'
 import { WeeklyCalendar } from './components/WeeklyCalendar'
 import { DailyTimeline } from './components/DailyTimeline'
+import { AnalogClock } from './components/AnalogClock'
+import { ActiveTimer } from './components/ActiveTimer'
 import { NewScheduleModal } from './components/NewScheduleModal'
 import { CategoryManager } from './components/CategoryManager'
 
@@ -49,10 +51,22 @@ function App() {
           </section>
         )}
 
-        <section className="rounded border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-          <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">오늘</h2>
-          <DailyTimeline />
-        </section>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
+          <section className="rounded border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">오늘</h2>
+            <DailyTimeline />
+          </section>
+          <aside className="space-y-4">
+            <section className="rounded border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+              <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">시계</h2>
+              <AnalogClock />
+            </section>
+            <section>
+              <h2 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">타이머</h2>
+              <ActiveTimer />
+            </section>
+          </aside>
+        </div>
       </div>
 
       {newOpen && <NewScheduleModal onClose={() => setNewOpen(false)} />}
