@@ -3,11 +3,11 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Terminal Light (vanilla cream paper) */
+/* 테마 토큰 — semantic */
 :root {
   --t-bg: #f5f2e7;
   --t-panel: #ebe5d4;
-  --t-panel-elev: #e2dcc8;
+  --t-panel-elev: #dfd9c6;
   --t-line: #d4c9b0;
   --t-muted: #857d6d;
   --t-text-soft: #4a4640;
@@ -20,7 +20,6 @@
   --t-scan-color: rgba(60, 48, 20, 0.035);
 }
 
-/* Terminal Dark (One Dark) */
 .dark {
   --t-bg: #0d0f12;
   --t-panel: #14171c;
@@ -37,10 +36,16 @@
   --t-scan-color: rgba(255, 255, 255, 0.015);
 }
 
-/* Tailwind color token 재매핑 → CSS variable 참조 */
-@theme inline {
+/*
+ * Tailwind gray/white 토큰을 light/dark 에서 "의미 반전" 되게 재매핑.
+ * 관용구: `text-gray-900 dark:text-gray-100` → light 에선 어두운 잉크, dark 에선 밝은 잉크.
+ * `bg-white dark:bg-gray-900` → light panel, dark panel.
+ * `bg-gray-100 dark:bg-gray-800` → hover bg (light 약간 진함, dark 약간 밝음).
+ */
+
+:root {
   --color-white: var(--t-panel);
-  --color-gray-50: var(--t-panel);
+  --color-gray-50: var(--t-bg);
   --color-gray-100: var(--t-panel-elev);
   --color-gray-200: var(--t-line);
   --color-gray-300: var(--t-line);
@@ -48,11 +53,43 @@
   --color-gray-500: var(--t-muted);
   --color-gray-600: var(--t-text-soft);
   --color-gray-700: var(--t-text);
-  --color-gray-800: var(--t-panel);
+  --color-gray-800: var(--t-text);
   --color-gray-900: var(--t-ink);
-  --color-gray-950: var(--t-bg);
+  --color-gray-950: var(--t-ink);
   --color-red-400: var(--t-red);
   --color-red-600: var(--t-red);
+}
+
+.dark {
+  --color-white: var(--t-panel);
+  --color-gray-50: var(--t-panel);
+  --color-gray-100: var(--t-ink);
+  --color-gray-200: var(--t-text);
+  --color-gray-300: var(--t-text);
+  --color-gray-400: var(--t-text-soft);
+  --color-gray-500: var(--t-muted);
+  --color-gray-600: var(--t-line);
+  --color-gray-700: var(--t-line);
+  --color-gray-800: var(--t-panel-elev);
+  --color-gray-900: var(--t-panel);
+  --color-gray-950: var(--t-bg);
+}
+
+@theme inline {
+  --color-white: var(--color-white);
+  --color-gray-50: var(--color-gray-50);
+  --color-gray-100: var(--color-gray-100);
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-300: var(--color-gray-300);
+  --color-gray-400: var(--color-gray-400);
+  --color-gray-500: var(--color-gray-500);
+  --color-gray-600: var(--color-gray-600);
+  --color-gray-700: var(--color-gray-700);
+  --color-gray-800: var(--color-gray-800);
+  --color-gray-900: var(--color-gray-900);
+  --color-gray-950: var(--color-gray-950);
+  --color-red-400: var(--color-red-400);
+  --color-red-600: var(--color-red-600);
   --font-sans: 'JetBrains Mono','Fira Code','Pretendard',ui-monospace,monospace;
   --font-mono: 'JetBrains Mono','Fira Code',ui-monospace,monospace;
 }
@@ -64,28 +101,24 @@ html, body {
   min-height: 100vh;
 }
 body {
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent 0 2px,
-    var(--t-scan-color) 2px 3px
-  );
+  background-image: repeating-linear-gradient(0deg, transparent 0 2px, var(--t-scan-color) 2px 3px);
 }
 
-/* Analog clock class-based theming (fill/stroke는 SVG attr에서 var() 미지원이라 CSS 사용) */
-.clock-face { fill: var(--t-bg); stroke: var(--t-line); }
+/* Clock theme classes */
+.clock-face { fill: var(--t-panel); stroke: var(--t-line); }
 .clock-tick-major { stroke: var(--t-muted); }
 .clock-tick-minor { stroke: var(--t-line); }
 .clock-label { fill: var(--t-text); }
 .clock-hand-hour, .clock-hand-minute { stroke: var(--t-green); }
 .clock-center-outer { fill: var(--t-green); }
-.clock-center-inner { fill: var(--t-bg); }
+.clock-center-inner { fill: var(--t-panel); }
 
-/* FullCalendar Terminal override */
+/* FullCalendar */
 .fc {
   --fc-border-color: var(--t-line);
   --fc-page-bg-color: transparent;
   --fc-neutral-bg-color: transparent;
-  --fc-list-event-hover-bg-color: var(--t-panel);
+  --fc-list-event-hover-bg-color: var(--t-panel-elev);
   --fc-today-bg-color: color-mix(in oklab, var(--t-green) 8%, transparent);
   --fc-now-indicator-color: var(--t-green);
   color: var(--t-text);
