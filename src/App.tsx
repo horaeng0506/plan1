@@ -53,7 +53,7 @@ function App() {
     <main className="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
       <div className="mx-auto max-w-6xl px-6 py-6">
         <header className="mb-6 flex items-center justify-between gap-4 flex-wrap">
-          <h1 className="text-2xl font-semibold">plan1</h1>
+          <h1 className="text-sm font-medium tracking-wide"><span style={{ color: "#98c379" }}>plan@m4</span> <span style={{ color: "#5c6370" }}>$</span> plan --today</h1>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex gap-1">
               <button type="button" className={spanButtonClass(1)} onClick={() => updateSettings({ weekViewSpan: 1 })}>1주</button>

@@ -14,7 +14,7 @@ function minToTimeStr(min: number): string {
 function renderEventContent(arg: { event: { title: string } }) {
   return (
     <div className="px-1 py-0.5 text-xs leading-tight whitespace-normal break-words">
-      {arg.event.title}
+      <span style={{ color: "#5c6370" }}>▸ </span>{arg.event.title}
     </div>
   )
 }
