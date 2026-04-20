@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 import { useAppStore } from '../domain/store'
 import { CategoryManager } from './CategoryManager'
 
@@ -10,6 +10,14 @@ function todayKey(): string {
 function defaultHour(): number {
   const h = new Date().getHours() + 1
   return h >= 24 ? 23 : h
+}
+
+function subscribeNow(cb: () => void) {
+  const id = setInterval(cb, 1000)
+  return () => clearInterval(id)
+}
+function getNow() {
+  return Date.now()
 }
 
 export function NewScheduleModal({ onClose }: { onClose: () => void }) {
@@ -24,7 +32,14 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
   const [durationMin, setDurationMin] = useState<number>(60)
   const [catOpen, setCatOpen] = useState(false)
 
-  const canSubmit = title.trim().length > 0 && categoryId !== '' && categoryId !== '__NEW__' && durationMin > 0
+  const startAt = useMemo(() => {
+    const [y, m, d] = date.split('-').map(Number)
+    return new Date(y, m - 1, d, hour, minute, 0, 0).getTime()
+  }, [date, hour, minute])
+  const now = useSyncExternalStore(subscribeNow, getNow)
+  const isFuture = startAt > now
+
+  const canSubmit = title.trim().length > 0 && categoryId !== '' && categoryId !== '__NEW__' && durationMin > 0 && isFuture
 
   const handleCategoryChange = (v: string) => {
     if (v === '__NEW__') {
@@ -40,8 +55,6 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
 
   const submit = () => {
     if (!canSubmit) return
-    const [y, m, d] = date.split('-').map(Number)
-    const startAt = new Date(y, m - 1, d, hour, minute, 0, 0).getTime()
     addSchedule({
       title: title.trim(),
       categoryId,
@@ -99,6 +112,9 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
                 </select>
               </label>
             </div>
+            {!isFuture && (
+              <p className="text-xs text-red-600 dark:text-red-400">시작 시각은 현재보다 미래여야 합니다.</p>
+            )}
             <div>
               <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">소요 시간 (분)</span>
               <input type="number" min={1} value={durationMin} onChange={(e) => setDurationMin(Math.max(1, Number(e.target.value) || 0))} className={fieldCls} />

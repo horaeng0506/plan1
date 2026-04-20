@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
@@ -18,16 +18,11 @@ export function WeeklyCalendar() {
   const categories = useAppStore((s) => s.categories)
   const weekViewSpan = useAppStore((s) => s.settings.weekViewSpan)
   const events = useMemo(() => schedulesToEvents(schedules, categories), [schedules, categories])
-  const calendarRef = useRef<FullCalendar>(null)
-
-  useEffect(() => {
-    calendarRef.current?.getApi().changeView(`weekView${weekViewSpan}`)
-  }, [weekViewSpan])
 
   return (
     <div className="[&_.fc-event-title]:whitespace-normal [&_.fc-event-title]:break-words [&_.fc-daygrid-event]:whitespace-normal [&_.fc-daygrid-event-harness]:w-full">
       <FullCalendar
-        ref={calendarRef}
+        key={`weekView${weekViewSpan}`}
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView={`weekView${weekViewSpan}`}
         headerToolbar={{ left: 'prev,next today', center: 'title', right: '' }}
