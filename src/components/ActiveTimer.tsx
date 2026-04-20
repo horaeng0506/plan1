@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAppStore } from '../domain/store'
-import type { Schedule } from '../domain/types'
+import type { Schedule, TimerType } from '../domain/types'
 
 function findActiveSchedule(schedules: Schedule[], now: number): Schedule | null {
   for (const s of schedules) {
@@ -24,6 +24,7 @@ export function ActiveTimer() {
   const categories = useAppStore((s) => s.categories)
   const extendScheduleBy = useAppStore((s) => s.extendScheduleBy)
   const completeSchedule = useAppStore((s) => s.completeSchedule)
+  const updateSchedule = useAppStore((s) => s.updateSchedule)
   const [now, setNow] = useState<number>(() => Date.now())
 
   useEffect(() => {
@@ -51,9 +52,16 @@ export function ActiveTimer() {
 
   const bump = (mins: number) => extendScheduleBy(active.id, mins)
   const complete = () => completeSchedule(active.id, Date.now())
+  const setType = (t: TimerType) => updateSchedule(active.id, { timerType: t })
 
   const neutralBtn = 'rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
   const primaryBtn = 'rounded border border-gray-900 bg-gray-900 px-2 py-1 text-xs text-white hover:bg-gray-800 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200'
+  const typeBtn = (on: boolean) =>
+    `flex-1 rounded border px-2 py-1 text-xs transition-colors ${
+      on
+        ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100'
+        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'
+    }`
 
   return (
     <div className="rounded border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
@@ -66,6 +74,10 @@ export function ActiveTimer() {
       </div>
       <div className="mb-3 font-mono text-3xl text-gray-900 dark:text-gray-100">
         {formatHMS(displayMs)}
+      </div>
+      <div className="mb-3 flex gap-1">
+        <button type="button" onClick={() => setType('countup')} className={typeBtn(isCountup)}>카운트업</button>
+        <button type="button" onClick={() => setType('timer1')} className={typeBtn(!isCountup)}>timer1</button>
       </div>
       <div className="flex flex-wrap gap-2">
         <button type="button" onClick={() => bump(10)} className={neutralBtn}>+10분</button>

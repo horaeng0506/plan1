@@ -3,67 +3,105 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Terminal palette — Tailwind 기본 색상 토큰 재매핑 */
-@theme {
-  --color-white: #14171c;
-  --color-gray-50: #14171c;
-  --color-gray-100: #1a1e24;
-  --color-gray-200: #2a3036;
-  --color-gray-300: #2a3036;
-  --color-gray-400: #5c6370;
-  --color-gray-500: #5c6370;
-  --color-gray-600: #7a8290;
-  --color-gray-700: #c8ccd4;
-  --color-gray-800: #14171c;
-  --color-gray-900: #e6e9ef;
-  --color-gray-950: #0d0f12;
+/* Terminal Light (vanilla cream paper) */
+:root {
+  --t-bg: #f5f2e7;
+  --t-panel: #ebe5d4;
+  --t-panel-elev: #e2dcc8;
+  --t-line: #d4c9b0;
+  --t-muted: #857d6d;
+  --t-text-soft: #4a4640;
+  --t-text: #2e2a22;
+  --t-ink: #1a1a1a;
+  --t-red: #b23838;
+  --t-green: #4a7a2a;
+  --t-blue: #255c85;
+  --t-amber: #946214;
+  --t-scan-color: rgba(60, 48, 20, 0.035);
+}
 
-  --color-red-400: #e06c75;
-  --color-red-600: #e06c75;
+/* Terminal Dark (One Dark) */
+.dark {
+  --t-bg: #0d0f12;
+  --t-panel: #14171c;
+  --t-panel-elev: #1a1e24;
+  --t-line: #2a3036;
+  --t-muted: #5c6370;
+  --t-text-soft: #7a8290;
+  --t-text: #c8ccd4;
+  --t-ink: #e6e9ef;
+  --t-red: #e06c75;
+  --t-green: #98c379;
+  --t-blue: #61afef;
+  --t-amber: #d19a66;
+  --t-scan-color: rgba(255, 255, 255, 0.015);
+}
 
+/* Tailwind color token 재매핑 → CSS variable 참조 */
+@theme inline {
+  --color-white: var(--t-panel);
+  --color-gray-50: var(--t-panel);
+  --color-gray-100: var(--t-panel-elev);
+  --color-gray-200: var(--t-line);
+  --color-gray-300: var(--t-line);
+  --color-gray-400: var(--t-muted);
+  --color-gray-500: var(--t-muted);
+  --color-gray-600: var(--t-text-soft);
+  --color-gray-700: var(--t-text);
+  --color-gray-800: var(--t-panel);
+  --color-gray-900: var(--t-ink);
+  --color-gray-950: var(--t-bg);
+  --color-red-400: var(--t-red);
+  --color-red-600: var(--t-red);
   --font-sans: 'JetBrains Mono','Fira Code','Pretendard',ui-monospace,monospace;
   --font-mono: 'JetBrains Mono','Fira Code',ui-monospace,monospace;
 }
 
-/* Body scanline + base */
 html, body {
-  background-color: #0d0f12;
-  color: #c8ccd4;
+  background-color: var(--t-bg);
+  color: var(--t-text);
   font-family: 'JetBrains Mono','Fira Code','Pretendard',ui-monospace,monospace;
+  min-height: 100vh;
 }
-
 body {
   background-image: repeating-linear-gradient(
     0deg,
     transparent 0 2px,
-    rgba(255, 255, 255, 0.015) 2px 3px
+    var(--t-scan-color) 2px 3px
   );
-  min-height: 100vh;
 }
+
+/* Analog clock class-based theming (fill/stroke는 SVG attr에서 var() 미지원이라 CSS 사용) */
+.clock-face { fill: var(--t-bg); stroke: var(--t-line); }
+.clock-tick-major { stroke: var(--t-muted); }
+.clock-tick-minor { stroke: var(--t-line); }
+.clock-label { fill: var(--t-text); }
+.clock-hand-hour, .clock-hand-minute { stroke: var(--t-green); }
+.clock-center-outer { fill: var(--t-green); }
+.clock-center-inner { fill: var(--t-bg); }
 
 /* FullCalendar Terminal override */
 .fc {
-  --fc-border-color: #2a3036;
+  --fc-border-color: var(--t-line);
   --fc-page-bg-color: transparent;
   --fc-neutral-bg-color: transparent;
-  --fc-list-event-hover-bg-color: #14171c;
-  --fc-today-bg-color: rgba(152, 195, 121, 0.06);
-  --fc-now-indicator-color: #98c379;
-  color: #c8ccd4;
-  font-family: 'JetBrains Mono', 'Fira Code', 'Pretendard', monospace;
+  --fc-list-event-hover-bg-color: var(--t-panel);
+  --fc-today-bg-color: color-mix(in oklab, var(--t-green) 8%, transparent);
+  --fc-now-indicator-color: var(--t-green);
+  color: var(--t-text);
+  font-family: 'JetBrains Mono','Fira Code','Pretendard',monospace;
   font-size: 12px;
 }
 .fc .fc-col-header-cell-cushion,
 .fc .fc-daygrid-day-number {
-  color: #5c6370;
+  color: var(--t-muted);
   text-decoration: none;
   font-size: 11px;
-  letter-spacing: 0.04em;
 }
 .fc .fc-button {
-  background: #14171c;
-  border: 1px solid #2a3036;
-  color: #c8ccd4;
+  background: var(--t-panel);
+  border: 1px solid var(--t-line);
+  color: var(--t-text);
   font-family: inherit;
   font-size: 11.5px;
   padding: 4px 10px;
@@ -72,25 +110,25 @@ body {
   text-transform: none;
 }
 .fc .fc-button:hover {
-  background: #1a1e24;
-  color: #e6e9ef;
-  border-color: #2a3036;
+  background: var(--t-panel-elev);
+  color: var(--t-ink);
+  border-color: var(--t-line);
 }
 .fc .fc-button-primary:disabled,
 .fc .fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
-  background: #2a3036;
-  color: #98c379;
-  border-color: #2a3036;
+  background: var(--t-line);
+  color: var(--t-green);
+  border-color: var(--t-line);
 }
 .fc .fc-toolbar-title {
   font-size: 13px;
   font-weight: 500;
-  color: #c8ccd4;
+  color: var(--t-text);
 }
 .fc .fc-timegrid-slot-label-cushion,
 .fc .fc-timegrid-axis-cushion {
-  color: #5c6370;
+  color: var(--t-muted);
   font-size: 10px;
 }
 .fc-daygrid-event,
@@ -102,14 +140,11 @@ body {
   margin: 1px 0 !important;
   font-size: 11px;
 }
-.fc .fc-now-indicator-line {
-  border-color: #98c379;
-}
 .fc .fc-daygrid-day.fc-day-today {
-  background: rgba(152, 195, 121, 0.06);
+  background: color-mix(in oklab, var(--t-green) 6%, transparent);
 }
 
-/* Form inputs — Terminal */
+/* Form inputs */
 input[type="text"],
 input[type="number"],
 input[type="date"],
@@ -117,25 +152,23 @@ input[type="time"],
 input[type="datetime-local"],
 select,
 textarea {
-  background: #0d0f12 !important;
-  border: 1px solid #2a3036 !important;
-  color: #c8ccd4 !important;
-  font-family: 'JetBrains Mono', 'Fira Code', 'Pretendard', monospace !important;
+  background: var(--t-bg) !important;
+  border: 1px solid var(--t-line) !important;
+  color: var(--t-text) !important;
+  font-family: 'JetBrains Mono','Fira Code','Pretendard',monospace !important;
   border-radius: 0 !important;
 }
 input[type="color"] {
-  background: #0d0f12 !important;
-  border: 1px solid #2a3036 !important;
+  background: var(--t-bg) !important;
+  border: 1px solid var(--t-line) !important;
   border-radius: 0 !important;
 }
 
-/* Buttons rounding reset */
 button {
   border-radius: 0 !important;
 }
 
-/* 비활성 scroll 박스 */
 ::selection {
-  background: #2a3036;
-  color: #e6e9ef;
+  background: var(--t-line);
+  color: var(--t-ink);
 }

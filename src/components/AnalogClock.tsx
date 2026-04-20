@@ -96,7 +96,7 @@ export function AnalogClock() {
 
   return (
     <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width={SIZE} height={SIZE} className="mx-auto">
-      <circle cx={CENTER} cy={CENTER} r={RADIUS_OUTER} fill="#0d0f12" stroke="#2a3036" strokeWidth={1} />
+      <circle cx={CENTER} cy={CENTER} r={RADIUS_OUTER} className="clock-face" strokeWidth={1} />
       {hourTicks.map((t, i) => (
         <line
           key={i}
@@ -104,7 +104,7 @@ export function AnalogClock() {
           y1={t.y1}
           x2={t.x2}
           y2={t.y2}
-          stroke={t.major ? '#5c6370' : '#2a3036'}
+          className={t.major ? "clock-tick-major" : "clock-tick-minor"}
           strokeWidth={t.major ? 2 : 1}
         />
       ))}
@@ -118,7 +118,7 @@ export function AnalogClock() {
           fontFamily="JetBrains Mono, monospace"
           fontSize={12}
           fontWeight={500}
-          fill="#c8ccd4"
+          className="clock-label"
         >
           {l.text}
         </text>
@@ -128,10 +128,10 @@ export function AnalogClock() {
           <path key={s.id} d={s.d} fill={s.color} opacity={s.opacity} />
         ))}
       </g>
-      <line x1={CENTER} y1={CENTER} x2={hourX} y2={hourY} stroke="#e6e9ef" strokeWidth={3} strokeLinecap="round" />
-      <line x1={CENTER} y1={CENTER} x2={minX} y2={minY} stroke="#98c379" strokeWidth={2} strokeLinecap="round" />
-      <circle cx={CENTER} cy={CENTER} r={4} fill="#98c379" />
-      <circle cx={CENTER} cy={CENTER} r={1.5} fill="#0d0f12" />
+      <line x1={CENTER} y1={CENTER} x2={hourX} y2={hourY} className="clock-hand-hour" strokeWidth={3} strokeLinecap="round" />
+      <line x1={CENTER} y1={CENTER} x2={minX} y2={minY} className="clock-hand-minute" strokeWidth={2} strokeLinecap="round" />
+      <circle cx={CENTER} cy={CENTER} r={4} className="clock-center-outer" />
+      <circle cx={CENTER} cy={CENTER} r={1.5} className="clock-center-inner" />
     </svg>
   )
 }

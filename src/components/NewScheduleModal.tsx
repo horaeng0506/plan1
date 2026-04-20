@@ -1,6 +1,16 @@
 import { useState } from 'react'
 import { useAppStore } from '../domain/store'
-import type { TimerType } from '../domain/types'
+import { CategoryManager } from './CategoryManager'
+
+function todayKey(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function defaultHour(): number {
+  const h = new Date().getHours() + 1
+  return h >= 24 ? 23 : h
+}
 
 export function NewScheduleModal({ onClose }: { onClose: () => void }) {
   const categories = useAppStore((s) => s.categories)
@@ -8,114 +18,116 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
 
   const [title, setTitle] = useState('')
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? '')
-  const [startLocal, setStartLocal] = useState(() => defaultStartLocal())
-  const [durationMin, setDurationMin] = useState(60)
-  const [timerType, setTimerType] = useState<TimerType>('countup')
+  const [date, setDate] = useState(todayKey())
+  const [hour, setHour] = useState<number>(defaultHour())
+  const [minute, setMinute] = useState<number>(0)
+  const [durationMin, setDurationMin] = useState<number>(60)
+  const [catOpen, setCatOpen] = useState(false)
 
-  const canSubmit = title.trim().length > 0 && categoryId && durationMin > 0 && startLocal
+  const canSubmit = title.trim().length > 0 && categoryId !== '' && categoryId !== '__NEW__' && durationMin > 0
+
+  const handleCategoryChange = (v: string) => {
+    if (v === '__NEW__') {
+      setCatOpen(true)
+      return
+    }
+    setCategoryId(v)
+  }
+
+  const bumpDuration = (delta: number) => {
+    setDurationMin((d) => Math.max(1, d + delta))
+  }
 
   const submit = () => {
     if (!canSubmit) return
-    const startAt = new Date(startLocal).getTime()
+    const [y, m, d] = date.split('-').map(Number)
+    const startAt = new Date(y, m - 1, d, hour, minute, 0, 0).getTime()
     addSchedule({
       title: title.trim(),
       categoryId,
       startAt,
       durationMin,
-      timerType,
+      timerType: 'countup',
     })
     onClose()
   }
 
+  const fieldCls = 'w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100'
+  const adjustBtn = 'rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div
-        className="w-full max-w-md rounded border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-gray-900"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">새 스케줄</h2>
-        <div className="space-y-3">
-          <label className="block">
-            <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">이름</span>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
-              autoFocus
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">카테고리</span>
-            <select
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
-            >
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">시작 시간</span>
-            <input
-              type="datetime-local"
-              value={startLocal}
-              onChange={(e) => setStartLocal(e.target.value)}
-              className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">소요 시간 (분)</span>
-            <input
-              type="number"
-              min={1}
-              value={durationMin}
-              onChange={(e) => setDurationMin(Number(e.target.value))}
-              className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
-            />
-          </label>
-          <div>
-            <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">타이머 종류</span>
-            <div className="flex gap-3 text-sm text-gray-700 dark:text-gray-300">
-              <label className="flex items-center gap-1">
-                <input type="radio" name="timerType" checked={timerType === 'countup'} onChange={() => setTimerType('countup')} />
-                카운트업 (type1)
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+        <div
+          className="w-full max-w-md rounded border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-gray-900"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">새 스케줄</h2>
+          <div className="space-y-3">
+            <label className="block">
+              <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">이름</span>
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className={fieldCls} autoFocus />
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">카테고리</span>
+              <select value={categoryId} onChange={(e) => handleCategoryChange(e.target.value)} className={fieldCls}>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+                <option value="__NEW__">+ 카테고리 추가</option>
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">시작 날짜</span>
+              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={fieldCls} />
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <label className="block">
+                <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">시작 시</span>
+                <select value={hour} onChange={(e) => setHour(Number(e.target.value))} className={fieldCls}>
+                  {Array.from({ length: 24 }, (_, i) => (
+                    <option key={i} value={i}>{String(i).padStart(2, '0')}시</option>
+                  ))}
+                </select>
               </label>
-              <label className="flex items-center gap-1">
-                <input type="radio" name="timerType" checked={timerType === 'timer1'} onChange={() => setTimerType('timer1')} />
-                timer1 방식 (type2)
+              <label className="block">
+                <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">시작 분</span>
+                <select value={minute} onChange={(e) => setMinute(Number(e.target.value))} className={fieldCls}>
+                  {[0, 10, 20, 30, 40, 50].map((m) => (
+                    <option key={m} value={m}>{String(m).padStart(2, '0')}분</option>
+                  ))}
+                </select>
               </label>
             </div>
+            <div>
+              <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">소요 시간 (분)</span>
+              <input type="number" min={1} value={durationMin} onChange={(e) => setDurationMin(Math.max(1, Number(e.target.value) || 0))} className={fieldCls} />
+              <div className="mt-2 flex flex-wrap gap-1">
+                <button type="button" onClick={() => bumpDuration(-60)} className={adjustBtn}>-1시간</button>
+                <button type="button" onClick={() => bumpDuration(-30)} className={adjustBtn}>-30분</button>
+                <button type="button" onClick={() => bumpDuration(-10)} className={adjustBtn}>-10분</button>
+                <button type="button" onClick={() => bumpDuration(10)} className={adjustBtn}>+10분</button>
+                <button type="button" onClick={() => bumpDuration(30)} className={adjustBtn}>+30분</button>
+                <button type="button" onClick={() => bumpDuration(60)} className={adjustBtn}>+1시간</button>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+            >취소</button>
+            <button
+              type="button"
+              onClick={submit}
+              disabled={!canSubmit}
+              className="rounded border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+            >추가</button>
           </div>
         </div>
-        <div className="mt-6 flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-          >취소</button>
-          <button
-            type="button"
-            onClick={submit}
-            disabled={!canSubmit}
-            className="rounded border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-          >추가</button>
-        </div>
       </div>
-    </div>
+      {catOpen && <CategoryManager onClose={() => setCatOpen(false)} />}
+    </>
   )
-}
-
-function defaultStartLocal(): string {
-  const now = new Date()
-  now.setMinutes(0, 0, 0)
-  now.setHours(now.getHours() + 1)
-  const y = now.getFullYear()
-  const m = String(now.getMonth() + 1).padStart(2, '0')
-  const d = String(now.getDate()).padStart(2, '0')
-  const hh = String(now.getHours()).padStart(2, '0')
-  const mm = String(now.getMinutes()).padStart(2, '0')
-  return `${y}-${m}-${d}T${hh}:${mm}`
 }
