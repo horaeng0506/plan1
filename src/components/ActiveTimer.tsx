@@ -22,8 +22,8 @@ function formatHMS(ms: number): string {
 export function ActiveTimer() {
   const schedules = useAppStore((s) => s.schedules)
   const categories = useAppStore((s) => s.categories)
-  const updateSchedule = useAppStore((s) => s.updateSchedule)
-  const setScheduleStatus = useAppStore((s) => s.setScheduleStatus)
+  const extendScheduleBy = useAppStore((s) => s.extendScheduleBy)
+  const completeSchedule = useAppStore((s) => s.completeSchedule)
   const [now, setNow] = useState<number>(() => Date.now())
 
   useEffect(() => {
@@ -49,8 +49,8 @@ export function ActiveTimer() {
   const displayMs = isCountup ? elapsed : remaining
   const label = isCountup ? '경과' : '남음'
 
-  const bump = (mins: number) => updateSchedule(active.id, { durationMin: active.durationMin + mins })
-  const complete = () => setScheduleStatus(active.id, 'done')
+  const bump = (mins: number) => extendScheduleBy(active.id, mins)
+  const complete = () => completeSchedule(active.id, Date.now())
 
   const neutralBtn = 'rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
   const primaryBtn = 'rounded border border-gray-900 bg-gray-900 px-2 py-1 text-xs text-white hover:bg-gray-800 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200'
