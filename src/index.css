@@ -1,3 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Terminal palette — Tailwind 기본 색상 토큰 재매핑 */
+@theme {
+  --color-white: #14171c;
+  --color-gray-50: #14171c;
+  --color-gray-100: #1a1e24;
+  --color-gray-200: #2a3036;
+  --color-gray-300: #2a3036;
+  --color-gray-400: #5c6370;
+  --color-gray-500: #5c6370;
+  --color-gray-600: #7a8290;
+  --color-gray-700: #c8ccd4;
+  --color-gray-800: #14171c;
+  --color-gray-900: #e6e9ef;
+  --color-gray-950: #0d0f12;
+
+  --color-red-400: #e06c75;
+  --color-red-600: #e06c75;
+
+  --font-sans: 'JetBrains Mono','Fira Code','Pretendard',ui-monospace,monospace;
+  --font-mono: 'JetBrains Mono','Fira Code',ui-monospace,monospace;
+}
+
+/* Body scanline + base */
+html, body {
+  background-color: #0d0f12;
+  color: #c8ccd4;
+  font-family: 'JetBrains Mono','Fira Code','Pretendard',ui-monospace,monospace;
+}
+
+body {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.015) 2px 3px
+  );
+  min-height: 100vh;
+}
+
+/* FullCalendar Terminal override */
+.fc {
+  --fc-border-color: #2a3036;
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: transparent;
+  --fc-list-event-hover-bg-color: #14171c;
+  --fc-today-bg-color: rgba(152, 195, 121, 0.06);
+  --fc-now-indicator-color: #98c379;
+  color: #c8ccd4;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Pretendard', monospace;
+  font-size: 12px;
+}
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number {
+  color: #5c6370;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.fc .fc-button {
+  background: #14171c;
+  border: 1px solid #2a3036;
+  color: #c8ccd4;
+  font-family: inherit;
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 0;
+  box-shadow: none;
+  text-transform: none;
+}
+.fc .fc-button:hover {
+  background: #1a1e24;
+  color: #e6e9ef;
+  border-color: #2a3036;
+}
+.fc .fc-button-primary:disabled,
+.fc .fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+  background: #2a3036;
+  color: #98c379;
+  border-color: #2a3036;
+}
+.fc .fc-toolbar-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #c8ccd4;
+}
+.fc .fc-timegrid-slot-label-cushion,
+.fc .fc-timegrid-axis-cushion {
+  color: #5c6370;
+  font-size: 10px;
+}
+.fc-daygrid-event,
+.fc-event {
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-left: 2px solid !important;
+  padding: 2px 6px !important;
+  margin: 1px 0 !important;
+  font-size: 11px;
+}
+.fc .fc-now-indicator-line {
+  border-color: #98c379;
+}
+.fc .fc-daygrid-day.fc-day-today {
+  background: rgba(152, 195, 121, 0.06);
+}
+
+/* Form inputs — Terminal */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+select,
+textarea {
+  background: #0d0f12 !important;
+  border: 1px solid #2a3036 !important;
+  color: #c8ccd4 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Pretendard', monospace !important;
+  border-radius: 0 !important;
+}
+input[type="color"] {
+  background: #0d0f12 !important;
+  border: 1px solid #2a3036 !important;
+  border-radius: 0 !important;
+}
+
+/* Buttons rounding reset */
+button {
+  border-radius: 0 !important;
+}
+
+/* 비활성 scroll 박스 */
+::selection {
+  background: #2a3036;
+  color: #e6e9ef;
+}
