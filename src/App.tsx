@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppStore } from './domain/store'
 import { WeeklyCalendar } from './components/WeeklyCalendar'
 import { DailyTimeline } from './components/DailyTimeline'
@@ -7,19 +7,41 @@ import { ActiveTimer } from './components/ActiveTimer'
 import { NewScheduleModal } from './components/NewScheduleModal'
 import { CategoryManager } from './components/CategoryManager'
 import { WorkingHoursEditor } from './components/WorkingHoursEditor'
+import type { Theme } from './domain/types'
 
 function App() {
   const weekViewSpan = useAppStore((s) => s.settings.weekViewSpan)
   const weeklyPanelHidden = useAppStore((s) => s.settings.weeklyPanelHidden)
+  const theme = useAppStore((s) => s.settings.theme)
   const updateSettings = useAppStore((s) => s.updateSettings)
 
   const [newOpen, setNewOpen] = useState(false)
   const [catOpen, setCatOpen] = useState(false)
   const [whOpen, setWhOpen] = useState(false)
 
+  useEffect(() => {
+    const root = document.documentElement
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const apply = () => {
+      const isDark = theme === 'dark' || (theme === 'system' && mq.matches)
+      root.classList.toggle('dark', isDark)
+    }
+    apply()
+    if (theme !== 'system') return
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [theme])
+
   const spanButtonClass = (n: 1 | 2 | 3) =>
     `px-3 py-1 text-sm rounded border transition-colors ${
       weekViewSpan === n
+        ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100'
+        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'
+    }`
+
+  const themeButtonClass = (t: Theme) =>
+    `px-2 py-1 text-xs rounded border transition-colors ${
+      theme === t
         ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100'
         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'
     }`
@@ -37,6 +59,11 @@ function App() {
               <button type="button" className={spanButtonClass(1)} onClick={() => updateSettings({ weekViewSpan: 1 })}>1주</button>
               <button type="button" className={spanButtonClass(2)} onClick={() => updateSettings({ weekViewSpan: 2 })}>2주</button>
               <button type="button" className={spanButtonClass(3)} onClick={() => updateSettings({ weekViewSpan: 3 })}>3주</button>
+            </div>
+            <div className="flex gap-1">
+              <button type="button" className={themeButtonClass('light')} onClick={() => updateSettings({ theme: 'light' })}>라이트</button>
+              <button type="button" className={themeButtonClass('dark')} onClick={() => updateSettings({ theme: 'dark' })}>다크</button>
+              <button type="button" className={themeButtonClass('system')} onClick={() => updateSettings({ theme: 'system' })}>자동</button>
             </div>
             <button type="button" className={neutralBtn} onClick={() => updateSettings({ weeklyPanelHidden: !weeklyPanelHidden })}>
               {weeklyPanelHidden ? '주간 보이기' : '주간 숨기기'}
