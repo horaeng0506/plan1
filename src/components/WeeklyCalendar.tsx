@@ -5,10 +5,11 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { useAppStore } from '../domain/store'
 import { schedulesToEvents } from '../lib/schedule-to-event'
 
-function renderEventContent(arg: { event: { title: string } }) {
+function renderEventContent(arg: { event: { title: string; extendedProps: { splitFrom?: string } } }) {
+  const isCont = !!arg.event.extendedProps?.splitFrom
   return (
     <div className="px-1 py-0.5 text-xs leading-tight whitespace-normal break-words">
-      <span style={{ color: "#5c6370" }}>▸ </span>{arg.event.title}
+      <span style={{ color: "#5c6370" }}>{isCont ? "▸▸ " : "▸ "}</span>{arg.event.title}
     </div>
   )
 }

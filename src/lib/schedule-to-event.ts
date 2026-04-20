@@ -7,23 +7,24 @@ export function schedulesToEvents(schedules: Schedule[], categories: Category[])
     const category = categoryMap.get(schedule.categoryId)
     const start = new Date(schedule.startAt)
     const end = new Date(start.getTime() + schedule.durationMin * 60_000)
-    const backgroundColor = category?.color ?? '#6b7280'
-    const borderColor = category?.color ?? '#6b7280'
-    const classNames = schedule.status === 'done' ? ['opacity-60'] : []
+    const accent = category?.color ?? '#5c6370'
+    const classNames = [
+      schedule.status === 'done' ? 'opacity-60' : '',
+      schedule.splitFrom ? 'is-split-cont' : '',
+    ].filter(Boolean)
     return {
       id: schedule.id,
       title: schedule.title,
       start,
       end,
-      backgroundColor,
-      borderColor,
-      textColor: '#ffffff',
+      borderColor: accent,
       classNames,
       extendedProps: {
         categoryId: schedule.categoryId,
         timerType: schedule.timerType,
-        status: schedule.status
-      }
+        status: schedule.status,
+        splitFrom: schedule.splitFrom,
+      },
     }
   })
 }

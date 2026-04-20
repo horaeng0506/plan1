@@ -169,9 +169,14 @@ body {
   border-radius: 0 !important;
   border: 0 !important;
   border-left: 2px solid !important;
+  background-color: var(--t-panel) !important;
+  color: var(--t-text) !important;
   padding: 2px 6px !important;
   margin: 1px 0 !important;
   font-size: 11px;
+}
+.fc-event.is-split-cont {
+  border-left-style: dashed !important;
 }
 .fc .fc-daygrid-day.fc-day-today {
   background: color-mix(in oklab, var(--t-green) 6%, transparent);

@@ -74,21 +74,21 @@ export function WorkingHoursEditor({ onClose }: { onClose: () => void }) {
   }
 
   const tabBtn = (active: boolean) =>
-    `px-3 py-1 text-sm rounded border ${active ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'}`
+    `px-3 py-1 text-sm rounded-none border font-mono ${active ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'}`
 
-  const fieldWrap = 'w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100'
+  const fieldWrap = 'w-full rounded-none border border-gray-300 bg-white px-3 py-2 text-gray-900 font-mono dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100'
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(7,8,10,0.75)] p-4" onClick={onClose}>
       <div
-        className="w-full max-w-md rounded border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-gray-900"
+        className="w-full max-w-md rounded-none border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">업무 시간</h2>
+        <h2 className="mb-4 text-sm font-semibold text-gray-900 dark:text-gray-100"><span className="text-[#98c379]">$ </span>workhours --set</h2>
 
         <div className="mb-4 flex gap-1">
-          <button type="button" className={tabBtn(mode === 'single')} onClick={() => setMode('single')}>특정 날짜</button>
-          <button type="button" className={tabBtn(mode === 'range')} onClick={() => setMode('range')}>기간 일괄</button>
+          <button type="button" className={tabBtn(mode === 'single')} onClick={() => setMode('single')}>--single</button>
+          <button type="button" className={tabBtn(mode === 'range')} onClick={() => setMode('range')}>--range</button>
         </div>
 
         <div className="space-y-3">
@@ -137,14 +137,14 @@ export function WorkingHoursEditor({ onClose }: { onClose: () => void }) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-          >취소</button>
+            className="rounded-none border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+          >cancel</button>
           <button
             type="button"
             onClick={save}
             disabled={!valid}
-            className="rounded border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-          >저장</button>
+            className="rounded-none border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white font-mono hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+          ><span className="opacity-70">$ </span>save</button>
         </div>
       </div>
     </div>

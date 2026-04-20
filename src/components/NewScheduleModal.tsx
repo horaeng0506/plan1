@@ -12,12 +12,16 @@ function defaultHour(): number {
   return h >= 24 ? 23 : h
 }
 
+let nowCache = Date.now()
 function subscribeNow(cb: () => void) {
-  const id = setInterval(cb, 1000)
+  const id = setInterval(() => {
+    nowCache = Date.now()
+    cb()
+  }, 1000)
   return () => clearInterval(id)
 }
 function getNow() {
-  return Date.now()
+  return nowCache
 }
 
 export function NewScheduleModal({ onClose }: { onClose: () => void }) {
@@ -65,17 +69,17 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
     onClose()
   }
 
-  const fieldCls = 'w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100'
-  const adjustBtn = 'rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
+  const fieldCls = 'w-full rounded-none border border-gray-300 bg-white px-3 py-2 text-gray-900 font-mono dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100'
+  const adjustBtn = 'rounded-none border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(7,8,10,0.75)] p-4" onClick={onClose}>
         <div
-          className="w-full max-w-md rounded border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-gray-900"
+          className="w-full max-w-md rounded-none border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
           onClick={(e) => e.stopPropagation()}
         >
-          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">새 스케줄</h2>
+          <h2 className="mb-4 text-sm font-semibold text-gray-900 dark:text-gray-100"><span className="text-[#98c379]">$ </span>schedule --new</h2>
           <div className="space-y-3">
             <label className="block">
               <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">이름</span>
@@ -132,14 +136,14 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-            >취소</button>
+              className="rounded-none border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+            >cancel</button>
             <button
               type="button"
               onClick={submit}
               disabled={!canSubmit}
-              className="rounded border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-            >추가</button>
+              className="rounded-none border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white font-mono hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+            ><span className="opacity-70">$ </span>add</button>
           </div>
         </div>
       </div>
