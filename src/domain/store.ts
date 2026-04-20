@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 import { idbStorage } from './storage'
 import type { Category, CategoryId, Schedule, ScheduleId, ScheduleStatus, WorkingHours, AppSettings } from './types'
 import { cascade } from './cascade'
+import { splitByWorkingHours } from './split'
 
 export const DEFAULT_SETTINGS: AppSettings = {
   theme: 'system',
@@ -87,8 +88,9 @@ export const useAppStore = create<AppState>()(
         const sch = state.schedules.find((s) => s.id === id)
         if (!sch) return
         const newDuration = Math.max(1, sch.durationMin + addMin)
-        const next = cascade(state.schedules, id, sch.startAt, newDuration, 'extend')
-        set({ schedules: next })
+        const cascaded = cascade(state.schedules, id, sch.startAt, newDuration, 'extend')
+        const split = splitByWorkingHours(cascaded, state.workingHours, state.settings.defaultWorkingHours)
+        set({ schedules: split })
       },
 
       completeSchedule(id, completeAtMs) {
@@ -100,7 +102,8 @@ export const useAppStore = create<AppState>()(
         const final = next.map((s) =>
           s.id === id ? { ...s, status: 'done' as ScheduleStatus, updatedAt: Date.now() } : s
         )
-        set({ schedules: final })
+        const split = splitByWorkingHours(final, state.workingHours, state.settings.defaultWorkingHours)
+        set({ schedules: split })
       },
 
       addCategory(input) {
@@ -118,28 +121,36 @@ export const useAppStore = create<AppState>()(
       },
 
       setWorkingHours(date, hours) {
+        const state = get()
         set({
           workingHours: {
             ...get().workingHours,
             [date]: { ...hours, date }
-          }
+          },
+          schedules: splitByWorkingHours(state.schedules, state.workingHours, state.settings.defaultWorkingHours)
         })
       },
 
       bulkSetWorkingHours(dates, hours) {
+        const state = get()
         const newWorkingHours = { ...get().workingHours }
         for (const date of dates) {
           newWorkingHours[date] = { ...hours, date }
         }
-        set({ workingHours: newWorkingHours })
+        set({
+          workingHours: newWorkingHours,
+          schedules: splitByWorkingHours(state.schedules, state.workingHours, state.settings.defaultWorkingHours)
+        })
       },
 
       setDefaultWorkingHours(hours) {
+        const state = get()
         set({
           settings: {
             ...get().settings,
             defaultWorkingHours: hours
-          }
+          },
+          schedules: splitByWorkingHours(state.schedules, state.workingHours, state.settings.defaultWorkingHours)
         })
       },
 

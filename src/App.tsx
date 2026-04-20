@@ -6,6 +6,7 @@ import { AnalogClock } from './components/AnalogClock'
 import { ActiveTimer } from './components/ActiveTimer'
 import { NewScheduleModal } from './components/NewScheduleModal'
 import { CategoryManager } from './components/CategoryManager'
+import { WorkingHoursEditor } from './components/WorkingHoursEditor'
 
 function App() {
   const weekViewSpan = useAppStore((s) => s.settings.weekViewSpan)
@@ -14,6 +15,7 @@ function App() {
 
   const [newOpen, setNewOpen] = useState(false)
   const [catOpen, setCatOpen] = useState(false)
+  const [whOpen, setWhOpen] = useState(false)
 
   const spanButtonClass = (n: 1 | 2 | 3) =>
     `px-3 py-1 text-sm rounded border transition-colors ${
@@ -39,6 +41,7 @@ function App() {
             <button type="button" className={neutralBtn} onClick={() => updateSettings({ weeklyPanelHidden: !weeklyPanelHidden })}>
               {weeklyPanelHidden ? '주간 보이기' : '주간 숨기기'}
             </button>
+            <button type="button" className={neutralBtn} onClick={() => setWhOpen(true)}>업무시간</button>
             <button type="button" className={neutralBtn} onClick={() => setCatOpen(true)}>카테고리</button>
             <button type="button" className={primaryBtn} onClick={() => setNewOpen(true)}>+ 새 스케줄</button>
           </div>
@@ -71,6 +74,7 @@ function App() {
 
       {newOpen && <NewScheduleModal onClose={() => setNewOpen(false)} />}
       {catOpen && <CategoryManager onClose={() => setCatOpen(false)} />}
+      {whOpen && <WorkingHoursEditor onClose={() => setWhOpen(false)} />}
     </main>
   )
 }
