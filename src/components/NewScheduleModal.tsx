@@ -1,4 +1,4 @@
-import { useMemo, useState, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { useAppStore } from '../domain/store'
 import { CategoryManager } from './CategoryManager'
 
@@ -10,6 +10,11 @@ function todayKey(): string {
 function defaultHour(): number {
   const h = new Date().getHours() + 1
   return h >= 24 ? 23 : h
+}
+
+function dateKeyFromMs(ms: number): string {
+  const d = new Date(ms)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 let nowCache = Date.now()
@@ -24,17 +29,38 @@ function getNow() {
   return nowCache
 }
 
-export function NewScheduleModal({ onClose }: { onClose: () => void }) {
-  const categories = useAppStore((s) => s.categories)
-  const addSchedule = useAppStore((s) => s.addSchedule)
+const MINUTE_OPTIONS = [0, 10, 20, 30, 40, 50]
 
-  const [title, setTitle] = useState('')
-  const [categoryId, setCategoryId] = useState(categories[0]?.id ?? '')
-  const [date, setDate] = useState(todayKey())
-  const [hour, setHour] = useState<number>(defaultHour())
-  const [minute, setMinute] = useState<number>(0)
-  const [durationMin, setDurationMin] = useState<number>(60)
+export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; editingId?: string }) {
+  const categories = useAppStore((s) => s.categories)
+  const schedules = useAppStore((s) => s.schedules)
+  const addSchedule = useAppStore((s) => s.addSchedule)
+  const updateSchedule = useAppStore((s) => s.updateSchedule)
+  const removeSchedule = useAppStore((s) => s.removeSchedule)
+
+  const editing = editingId ? schedules.find((s) => s.id === editingId) ?? null : null
+  const isEdit = !!editing
+
+  const initDate = editing ? dateKeyFromMs(editing.startAt) : todayKey()
+  const initHour = editing ? new Date(editing.startAt).getHours() : defaultHour()
+  const initMinute = editing ? new Date(editing.startAt).getMinutes() : 0
+  const initDuration = editing?.durationMin ?? 60
+  const initTitle = editing?.title ?? ''
+  const initCategoryId = editing?.categoryId ?? (categories[0]?.id ?? '')
+
+  const [title, setTitle] = useState(initTitle)
+  const [categoryId, setCategoryId] = useState(initCategoryId)
+  const [date, setDate] = useState(initDate)
+  const [hour, setHour] = useState<number>(initHour)
+  const [minute, setMinute] = useState<number>(initMinute)
+  const [durationMin, setDurationMin] = useState<number>(initDuration)
   const [catOpen, setCatOpen] = useState(false)
+
+  const [deleteArmed, setDeleteArmed] = useState(false)
+  const deleteTimerRef = useRef<number | null>(null)
+  useEffect(() => () => {
+    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current)
+  }, [])
 
   const startAt = useMemo(() => {
     const [y, m, d] = date.split('-').map(Number)
@@ -43,7 +69,24 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
   const now = useSyncExternalStore(subscribeNow, getNow)
   const isFuture = startAt > now
 
-  const canSubmit = title.trim().length > 0 && categoryId !== '' && categoryId !== '__NEW__' && durationMin > 0 && isFuture
+  const minuteOptions = useMemo(() => {
+    if (MINUTE_OPTIONS.includes(minute)) return MINUTE_OPTIONS
+    return [...MINUTE_OPTIONS, minute].sort((a, b) => a - b)
+  }, [minute])
+
+  const isDirty = editing
+    ? title.trim() !== editing.title ||
+      categoryId !== editing.categoryId ||
+      startAt !== editing.startAt ||
+      durationMin !== editing.durationMin
+    : false
+
+  const baseOk =
+    title.trim().length > 0 &&
+    categoryId !== '' &&
+    categoryId !== '__NEW__' &&
+    durationMin > 0
+  const canSubmit = isEdit ? baseOk && isDirty : baseOk && isFuture
 
   const handleCategoryChange = (v: string) => {
     if (v === '__NEW__') {
@@ -59,18 +102,42 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
 
   const submit = () => {
     if (!canSubmit) return
-    addSchedule({
-      title: title.trim(),
-      categoryId,
-      startAt,
-      durationMin,
-      timerType: 'countup',
-    })
+    if (isEdit && editing) {
+      updateSchedule(editing.id, {
+        title: title.trim(),
+        categoryId,
+        startAt,
+        durationMin,
+      })
+    } else {
+      addSchedule({
+        title: title.trim(),
+        categoryId,
+        startAt,
+        durationMin,
+        timerType: 'countup',
+      })
+    }
+    onClose()
+  }
+
+  const handleDelete = () => {
+    if (!editing) return
+    if (!deleteArmed) {
+      setDeleteArmed(true)
+      deleteTimerRef.current = window.setTimeout(() => setDeleteArmed(false), 2000)
+      return
+    }
+    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current)
+    removeSchedule(editing.id)
     onClose()
   }
 
   const fieldCls = 'w-full rounded-none border border-gray-300 bg-white px-3 py-2 text-gray-900 font-mono dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100'
   const adjustBtn = 'rounded-none border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
+
+  const headerTxt = isEdit ? 'schedule --edit' : 'schedule --new'
+  const submitLabel = isEdit ? 'save' : 'add'
 
   return (
     <>
@@ -79,7 +146,7 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
           className="w-full max-w-md rounded-none border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
           onClick={(e) => e.stopPropagation()}
         >
-          <h2 className="mb-4 text-sm font-semibold text-gray-900 dark:text-gray-100"><span className="text-[#98c379]">$ </span>schedule --new</h2>
+          <h2 className="mb-4 text-sm font-semibold text-gray-900 dark:text-gray-100"><span className="text-[#98c379]">$ </span>{headerTxt}</h2>
           <div className="space-y-3">
             <label className="block">
               <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">이름</span>
@@ -110,13 +177,13 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">시작 분</span>
                 <select value={minute} onChange={(e) => setMinute(Number(e.target.value))} className={fieldCls}>
-                  {[0, 10, 20, 30, 40, 50].map((m) => (
+                  {minuteOptions.map((m) => (
                     <option key={m} value={m}>{String(m).padStart(2, '0')}분</option>
                   ))}
                 </select>
               </label>
             </div>
-            {!isFuture && (
+            {!isEdit && !isFuture && (
               <p className="text-xs text-red-600 dark:text-red-400">시작 시각은 현재보다 미래여야 합니다.</p>
             )}
             <div>
@@ -132,18 +199,35 @@ export function NewScheduleModal({ onClose }: { onClose: () => void }) {
               </div>
             </div>
           </div>
-          <div className="mt-6 flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-none border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-            >cancel</button>
-            <button
-              type="button"
-              onClick={submit}
-              disabled={!canSubmit}
-              className="rounded-none border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white font-mono hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-            ><span className="opacity-70">$ </span>add</button>
+          <div className="mt-6 flex justify-between gap-2">
+            <div>
+              {isEdit && (
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className={`rounded-none border px-4 py-2 text-sm font-mono ${
+                    deleteArmed
+                      ? 'border-red-600 bg-red-600 text-white hover:bg-red-700 dark:border-red-400 dark:bg-red-400 dark:text-gray-900 dark:hover:bg-red-300'
+                      : 'border-red-600 bg-white text-red-600 hover:bg-red-50 dark:border-red-400 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-red-400/10'
+                  }`}
+                >
+                  <span className="opacity-80">! </span>{deleteArmed ? 'confirm delete' : 'delete'}
+                </button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-none border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+              >cancel</button>
+              <button
+                type="button"
+                onClick={submit}
+                disabled={!canSubmit}
+                className="rounded-none border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white font-mono hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+              ><span className="opacity-70">$ </span>{submitLabel}</button>
+            </div>
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ function renderEventContent(arg: { event: { title: string; extendedProps: { spli
   )
 }
 
-export function WeeklyCalendar() {
+export function WeeklyCalendar({ onEventClick }: { onEventClick?: (id: string, splitFrom?: string) => void }) {
   const schedules = useAppStore((s) => s.schedules)
   const categories = useAppStore((s) => s.categories)
   const weekViewSpan = useAppStore((s) => s.settings.weekViewSpan)
@@ -33,6 +33,7 @@ export function WeeklyCalendar() {
         events={events}
         dayMaxEvents={false}
         editable={true}
+        eventClick={(arg) => onEventClick?.(arg.event.id, arg.event.extendedProps?.splitFrom as string | undefined)}
         eventContent={renderEventContent}
         views={{
           weekView1: { type: 'dayGrid', duration: { weeks: 1 }, buttonText: '1주' },

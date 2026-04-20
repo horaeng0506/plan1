@@ -28,7 +28,7 @@ function todayKey(): string {
   return `${y}-${m}-${d}`
 }
 
-export function DailyTimeline() {
+export function DailyTimeline({ onEventClick }: { onEventClick?: (id: string, splitFrom?: string) => void }) {
   const schedules = useAppStore((s) => s.schedules)
   const categories = useAppStore((s) => s.categories)
   const workingHours = useAppStore((s) => s.workingHours)
@@ -55,6 +55,7 @@ export function DailyTimeline() {
         height="auto"
         events={events}
         editable
+        eventClick={(arg) => onEventClick?.(arg.event.id, arg.event.extendedProps?.splitFrom as string | undefined)}
         eventContent={renderEventContent}
       />
     </div>

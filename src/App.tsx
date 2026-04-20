@@ -18,6 +18,12 @@ function App() {
   const [newOpen, setNewOpen] = useState(false)
   const [catOpen, setCatOpen] = useState(false)
   const [whOpen, setWhOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+
+  const handleEventClick = (id: string, splitFrom?: string) => {
+    if (splitFrom) return
+    setEditingId(id)
+  }
 
   useEffect(() => {
     const root = document.documentElement
@@ -77,14 +83,14 @@ function App() {
         {!weeklyPanelHidden && (
           <section className="mb-6 rounded border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
             <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">주간</h2>
-            <WeeklyCalendar />
+            <WeeklyCalendar onEventClick={handleEventClick} />
           </section>
         )}
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
           <section className="rounded border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
             <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">오늘</h2>
-            <DailyTimeline />
+            <DailyTimeline onEventClick={handleEventClick} />
           </section>
           <aside className="space-y-4">
             <section className="rounded border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
@@ -100,6 +106,7 @@ function App() {
       </div>
 
       {newOpen && <NewScheduleModal onClose={() => setNewOpen(false)} />}
+      {editingId && <NewScheduleModal key={editingId} editingId={editingId} onClose={() => setEditingId(null)} />}
       {catOpen && <CategoryManager onClose={() => setCatOpen(false)} />}
       {whOpen && <WorkingHoursEditor onClose={() => setWhOpen(false)} />}
     </main>
