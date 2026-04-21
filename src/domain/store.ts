@@ -181,7 +181,10 @@ export const useAppStore = create<AppState>()(
         categories: state.categories,
         workingHours: state.workingHours,
         settings: state.settings
-      })
+      }),
+      onRehydrateStorage: () => (state) => {
+        state?.cleanOrphans?.()
+      }
     }
   )
 )
