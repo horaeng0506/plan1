@@ -15,10 +15,15 @@ function App() {
   const theme = useAppStore((s) => s.settings.theme)
   const updateSettings = useAppStore((s) => s.updateSettings)
 
+  const cleanOrphans = useAppStore((s) => s.cleanOrphans)
   const [newOpen, setNewOpen] = useState(false)
   const [catOpen, setCatOpen] = useState(false)
   const [whOpen, setWhOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+
+  useEffect(() => {
+    cleanOrphans()
+  }, [cleanOrphans])
 
   const handleEventClick = (id: string, splitFrom?: string) => {
     setEditingId(splitFrom ?? id)

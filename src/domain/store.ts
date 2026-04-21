@@ -29,6 +29,7 @@ interface AppState {
 
   extendScheduleBy(id: ScheduleId, addMin: number): void
   completeSchedule(id: ScheduleId, completeAtMs: number): void
+  cleanOrphans(): void
 
   addCategory(input: Omit<Category, 'id' | 'createdAt'>): CategoryId
   removeCategory(id: CategoryId): void
@@ -75,6 +76,15 @@ export const useAppStore = create<AppState>()(
         set({
           schedules: get().schedules.filter((sch) => sch.id !== id && sch.splitFrom !== id),
         })
+      },
+
+      cleanOrphans() {
+        const current = get().schedules
+        const ids = new Set(current.map((s) => s.id))
+        const cleaned = current.filter((s) => !s.splitFrom || ids.has(s.splitFrom))
+        if (cleaned.length !== current.length) {
+          set({ schedules: cleaned })
+        }
       },
 
       setScheduleStatus(id, status) {
