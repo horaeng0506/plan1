@@ -21,8 +21,7 @@ function App() {
   const [editingId, setEditingId] = useState<string | null>(null)
 
   const handleEventClick = (id: string, splitFrom?: string) => {
-    if (splitFrom) return
-    setEditingId(id)
+    setEditingId(splitFrom ?? id)
   }
 
   useEffect(() => {

@@ -24,4 +24,5 @@ export interface AppSettings {
   weekViewSpan: 1 | 2 | 3;
   weeklyPanelHidden: boolean;
   defaultWorkingHours: { startMin: number; endMin: number };
+  pinnedActiveId?: ScheduleId | null;
 }

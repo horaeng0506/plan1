@@ -2,13 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppStore } from '../domain/store'
 import type { Schedule, TimerType } from '../domain/types'
 
-function findActiveSchedule(schedules: Schedule[], now: number): Schedule | null {
+function findActiveSchedules(schedules: Schedule[], now: number): Schedule[] {
+  const result: Schedule[] = []
   for (const s of schedules) {
     if (s.status === 'done') continue
     const end = s.startAt + s.durationMin * 60_000
-    if (s.startAt <= now && now < end) return s
+    if (s.startAt <= now && now < end) result.push(s)
   }
-  return null
+  return result
 }
 
 function formatHMS(ms: number): string {
@@ -32,6 +33,8 @@ function formatWall12(ms: number): string {
 export function ActiveTimer() {
   const schedules = useAppStore((s) => s.schedules)
   const categories = useAppStore((s) => s.categories)
+  const pinnedActiveId = useAppStore((s) => s.settings.pinnedActiveId)
+  const updateSettings = useAppStore((s) => s.updateSettings)
   const extendScheduleBy = useAppStore((s) => s.extendScheduleBy)
   const completeSchedule = useAppStore((s) => s.completeSchedule)
   const updateSchedule = useAppStore((s) => s.updateSchedule)
@@ -42,7 +45,9 @@ export function ActiveTimer() {
     return () => clearInterval(id)
   }, [])
 
-  const active = useMemo(() => findActiveSchedule(schedules, now), [schedules, now])
+  const actives = useMemo(() => findActiveSchedules(schedules, now), [schedules, now])
+  const pinned = pinnedActiveId ? actives.find((a) => a.id === pinnedActiveId) : null
+  const active = pinned ?? actives[0] ?? null
 
   const [frozen, setFrozen] = useState<boolean>(true)
   const [idleSince, setIdleSince] = useState<number | null>(null)
@@ -110,6 +115,21 @@ export function ActiveTimer() {
 
   return (
     <div className="rounded-none border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+      {actives.length > 1 && (
+        <div className="mb-2 text-[10px] font-mono text-gray-500 dark:text-gray-400">
+          <span className="text-[#d19a66]"># 겹침 {actives.length}개 </span>· pin=
+          <select
+            value={pinnedActiveId ?? ''}
+            onChange={(e) => updateSettings({ pinnedActiveId: e.target.value || null })}
+            className="ml-1 rounded-none border border-gray-300 bg-white px-1 py-0.5 text-[10px] font-mono dark:border-gray-700 dark:bg-gray-950"
+          >
+            <option value="">auto (첫 번째)</option>
+            {actives.map((a) => (
+              <option key={a.id} value={a.id}>{a.title}</option>
+            ))}
+          </select>
+        </div>
+      )}
       <div className="mb-1 flex items-center gap-2">
         <span className="text-[#5c6370]">▸</span>
         {category && <span className="inline-block h-3 w-3 rounded-none" style={{ backgroundColor: category.color }} />}
