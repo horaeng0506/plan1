@@ -11,11 +11,12 @@ function minToTimeStr(min: number): string {
   return `${h}:${m}:00`
 }
 
-function renderEventContent(arg: { event: { title: string; extendedProps: { splitFrom?: string } } }) {
+function renderEventContent(arg: { event: { title: string; extendedProps: { splitFrom?: string; chainedToPrev?: boolean } } }) {
   const isCont = !!arg.event.extendedProps?.splitFrom
+  const isChained = !!arg.event.extendedProps?.chainedToPrev
   return (
     <div className="px-1 py-0.5 text-xs leading-tight whitespace-normal break-words">
-      <span style={{ color: "#5c6370" }}>{isCont ? "▸▸ " : "▸ "}</span>{arg.event.title}
+      <span style={{ color: "#5c6370" }}>{isCont ? "▸▸ " : "▸ "}{isChained ? "⤴ " : ""}</span>{arg.event.title}
     </div>
   )
 }

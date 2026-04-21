@@ -88,7 +88,7 @@ export const useAppStore = create<AppState>()(
         const sch = state.schedules.find((s) => s.id === id)
         if (!sch) return
         const newDuration = Math.max(1, sch.durationMin + addMin)
-        const cascaded = cascade(state.schedules, id, sch.startAt, newDuration, 'extend')
+        const cascaded = cascade(state.schedules, id, sch.startAt, newDuration)
         const split = splitByWorkingHours(cascaded, state.workingHours, state.settings.defaultWorkingHours)
         set({ schedules: split })
       },
@@ -98,7 +98,7 @@ export const useAppStore = create<AppState>()(
         const sch = state.schedules.find((s) => s.id === id)
         if (!sch) return
         const elapsedMin = Math.max(0, Math.floor((completeAtMs - sch.startAt) / 60_000))
-        const next = cascade(state.schedules, id, sch.startAt, elapsedMin, 'complete')
+        const next = cascade(state.schedules, id, sch.startAt, elapsedMin)
         const final = next.map((s) =>
           s.id === id ? { ...s, status: 'done' as ScheduleStatus, updatedAt: Date.now() } : s
         )

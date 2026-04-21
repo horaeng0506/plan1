@@ -13,6 +13,7 @@ export interface Schedule {
   timerType: TimerType;
   status: ScheduleStatus;
   splitFrom?: ScheduleId;
+  chainedToPrev?: boolean;
   createdAt: number;
   updatedAt: number;
 }

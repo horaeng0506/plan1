@@ -32,6 +32,7 @@ export function schedulesToEvents(schedules: Schedule[], categories: Category[])
         timerType: schedule.timerType,
         status: schedule.status,
         splitFrom: schedule.splitFrom,
+        chainedToPrev: schedule.chainedToPrev,
       },
     }
   })

@@ -47,6 +47,7 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
   const initDuration = editing?.durationMin ?? 60
   const initTitle = editing?.title ?? ''
   const initCategoryId = editing?.categoryId ?? (categories[0]?.id ?? '')
+  const initChained = editing?.chainedToPrev ?? false
 
   const [title, setTitle] = useState(initTitle)
   const [categoryId, setCategoryId] = useState(initCategoryId)
@@ -54,6 +55,7 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
   const [hour, setHour] = useState<number>(initHour)
   const [minute, setMinute] = useState<number>(initMinute)
   const [durationMin, setDurationMin] = useState<number>(initDuration)
+  const [chainedToPrev, setChainedToPrev] = useState<boolean>(initChained)
   const [catOpen, setCatOpen] = useState(false)
 
   const [deleteArmed, setDeleteArmed] = useState(false)
@@ -78,7 +80,8 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
     ? title.trim() !== editing.title ||
       categoryId !== editing.categoryId ||
       startAt !== editing.startAt ||
-      durationMin !== editing.durationMin
+      durationMin !== editing.durationMin ||
+      chainedToPrev !== (editing.chainedToPrev ?? false)
     : false
 
   const baseOk =
@@ -108,6 +111,7 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
         categoryId,
         startAt,
         durationMin,
+        chainedToPrev,
       })
     } else {
       addSchedule({
@@ -116,6 +120,7 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
         startAt,
         durationMin,
         timerType: 'countup',
+        chainedToPrev,
       })
     }
     onClose()
@@ -198,6 +203,18 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
                 <button type="button" onClick={() => bumpDuration(60)} className={adjustBtn}>+1시간</button>
               </div>
             </div>
+            <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 font-mono">
+              <input
+                type="checkbox"
+                checked={chainedToPrev}
+                onChange={(e) => setChainedToPrev(e.target.checked)}
+                className="mt-1"
+              />
+              <span>
+                <span className="text-[#5c6370]">⤴</span> 이전 스케줄과 연결 (cascade 받음)
+                <span className="block text-xs text-gray-500 dark:text-gray-400">앞 스케줄이 늘어나거나 줄면 이 스케줄도 함께 이동 (간격 유지)</span>
+              </span>
+            </label>
           </div>
           <div className="mt-6 flex justify-between gap-2">
             <div>
