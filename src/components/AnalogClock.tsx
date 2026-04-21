@@ -44,9 +44,12 @@ export function AnalogClock() {
       .outerRadius(RADIUS_SECTOR)
       .startAngle((d) => d.startAngle)
       .endAngle((d) => d.endAngle)
+    const nowMs = now.getTime()
     return schedules
       .filter((s) => {
         if (s.status === 'done') return false
+        const endAt = s.startAt + s.durationMin * 60_000
+        if (endAt <= nowMs) return false
         const start = new Date(s.startAt)
         return isSameDay(start, now)
       })
