@@ -39,11 +39,11 @@ export function AnalogClock() {
   }, [categories])
 
   const sectors = useMemo(() => {
-    const arcGen = d3Arc<{ startMin: number; endMin: number; color: string; id: string; opacity: number }>()
+    const arcGen = d3Arc<{ startAngle: number; endAngle: number; color: string; id: string; opacity: number }>()
       .innerRadius(0)
       .outerRadius(RADIUS_SECTOR)
-      .startAngle((d) => minutes12ToRadians(d.startMin))
-      .endAngle((d) => minutes12ToRadians(d.endMin))
+      .startAngle((d) => d.startAngle)
+      .endAngle((d) => d.endAngle)
     return schedules
       .filter((s) => {
         if (s.status === 'done') return false
@@ -57,7 +57,10 @@ export function AnalogClock() {
         const isPM = startMin >= 720
         const opacity = isPM ? 0.85 : 0.55
         const color = categoryColor.get(s.categoryId) ?? '#5c6370'
-        const d = arcGen({ startMin, endMin, color, id: s.id, opacity }) ?? ''
+        const startAngle = minutes12ToRadians(startMin)
+        let endAngle = minutes12ToRadians(endMin)
+        if (endAngle <= startAngle) endAngle += Math.PI * 2
+        const d = arcGen({ startAngle, endAngle, color, id: s.id, opacity }) ?? ''
         return { id: s.id, d, color, opacity }
       })
   }, [schedules, now, categoryColor])

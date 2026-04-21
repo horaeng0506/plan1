@@ -1,6 +1,13 @@
 import type { EventInput } from '@fullcalendar/core'
 import type { Schedule, Category } from '../domain/types'
 
+function tint(hex: string, alpha: number): string {
+  const m = /^#?([0-9a-fA-F]{6})$/.exec(hex)
+  if (!m) return hex
+  const n = parseInt(m[1], 16)
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`
+}
+
 export function schedulesToEvents(schedules: Schedule[], categories: Category[]): EventInput[] {
   const categoryMap = new Map(categories.map(category => [category.id, category]))
   return schedules.map(schedule => {
@@ -17,6 +24,7 @@ export function schedulesToEvents(schedules: Schedule[], categories: Category[])
       title: schedule.title,
       start,
       end,
+      backgroundColor: tint(accent, 0.18),
       borderColor: accent,
       classNames,
       extendedProps: {

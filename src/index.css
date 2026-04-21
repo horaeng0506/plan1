@@ -167,9 +167,11 @@ body {
 .fc-daygrid-event,
 .fc-event {
   border-radius: 0 !important;
-  border: 0 !important;
-  border-left: 2px solid !important;
-  background-color: var(--t-panel) !important;
+  border-top-width: 0 !important;
+  border-right-width: 0 !important;
+  border-bottom-width: 0 !important;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
   color: var(--t-text) !important;
   padding: 2px 6px !important;
   margin: 1px 0 !important;
