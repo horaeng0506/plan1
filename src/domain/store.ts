@@ -72,7 +72,9 @@ export const useAppStore = create<AppState>()(
       },
 
       removeSchedule(id) {
-        set({ schedules: get().schedules.filter((sch) => sch.id !== id) })
+        set({
+          schedules: get().schedules.filter((sch) => sch.id !== id && sch.splitFrom !== id),
+        })
       },
 
       setScheduleStatus(id, status) {

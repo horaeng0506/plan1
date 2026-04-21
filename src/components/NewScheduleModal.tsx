@@ -41,6 +41,10 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
   const editing = editingId ? schedules.find((s) => s.id === editingId) ?? null : null
   const isEdit = !!editing
 
+  useEffect(() => {
+    if (editingId && !editing) onClose()
+  }, [editingId, editing, onClose])
+
   const initDate = editing ? dateKeyFromMs(editing.startAt) : todayKey()
   const initHour = editing ? new Date(editing.startAt).getHours() : defaultHour()
   const initMinute = editing ? new Date(editing.startAt).getMinutes() : 0
