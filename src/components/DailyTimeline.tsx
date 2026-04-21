@@ -54,7 +54,7 @@ export function DailyTimeline({ onEventClick }: { onEventClick?: (id: string, sp
         allDaySlot={false}
         height="auto"
         events={events}
-        editable
+        editable={false}
         eventClick={(arg) => onEventClick?.(arg.event.id, arg.event.extendedProps?.splitFrom as string | undefined)}
         eventContent={renderEventContent}
       />

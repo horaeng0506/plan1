@@ -32,7 +32,7 @@ export function WeeklyCalendar({ onEventClick }: { onEventClick?: (id: string, s
         height="auto"
         events={events}
         dayMaxEvents={false}
-        editable={true}
+        editable={false}
         eventClick={(arg) => onEventClick?.(arg.event.id, arg.event.extendedProps?.splitFrom as string | undefined)}
         eventContent={renderEventContent}
         views={{
