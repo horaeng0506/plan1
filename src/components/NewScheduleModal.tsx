@@ -30,25 +30,36 @@ function getNow() {
 }
 
 const MINUTE_OPTIONS = [0, 10, 20, 30, 40, 50]
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
 
-export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; editingId?: string }) {
+function formatEndDisplay(ms: number): string {
+  const d = new Date(ms)
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mn = String(d.getMinutes()).padStart(2, '0')
+  return `${mm}/${dd} ${hh}:${mn} (${WEEKDAYS[d.getDay()]})`
+}
+
+export function NewScheduleModal({ onClose, editingId: propEditingId }: { onClose: () => void; editingId?: string }) {
   const categories = useAppStore((s) => s.categories)
   const schedules = useAppStore((s) => s.schedules)
   const addSchedule = useAppStore((s) => s.addSchedule)
   const updateSchedule = useAppStore((s) => s.updateSchedule)
   const removeSchedule = useAppStore((s) => s.removeSchedule)
 
+  const [editingId, setEditingId] = useState<string | null>(propEditingId ?? null)
   const editing = editingId ? schedules.find((s) => s.id === editingId) ?? null : null
   const isEdit = !!editing
 
   useEffect(() => {
-    if (editingId && !editing) onClose()
-  }, [editingId, editing, onClose])
+    if (propEditingId && !schedules.find((s) => s.id === propEditingId)) onClose()
+  }, [propEditingId, schedules, onClose])
 
   const initDate = editing ? dateKeyFromMs(editing.startAt) : todayKey()
   const initHour = editing ? new Date(editing.startAt).getHours() : defaultHour()
   const initMinute = editing ? new Date(editing.startAt).getMinutes() : 0
-  const initDuration = editing?.durationMin ?? 60
+  const initDuration = editing?.durationMin ?? 0
   const initTitle = editing?.title ?? ''
   const initCategoryId = editing?.categoryId ?? (categories[0]?.id ?? '')
   const initChained = editing?.chainedToPrev ?? false
@@ -74,6 +85,7 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
   }, [date, hour, minute])
   const now = useSyncExternalStore(subscribeNow, getNow)
   const isFuture = startAt > now
+  const endAt = startAt + durationMin * 60_000
 
   const minuteOptions = useMemo(() => {
     if (MINUTE_OPTIONS.includes(minute)) return MINUTE_OPTIONS
@@ -104,7 +116,14 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
   }
 
   const bumpDuration = (delta: number) => {
-    setDurationMin((d) => Math.max(1, d + delta))
+    setDurationMin((d) => Math.max(0, d + delta))
+  }
+
+  const setNowStart = () => {
+    const n = new Date()
+    setDate(dateKeyFromMs(n.getTime()))
+    setHour(n.getHours())
+    setMinute(n.getMinutes())
   }
 
   const submit = () => {
@@ -140,6 +159,32 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
     if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current)
     removeSchedule(editing.id)
     onClose()
+  }
+
+  const handleNextAfter = () => {
+    if (!editing) return
+    if (isDirty && baseOk) {
+      updateSchedule(editing.id, {
+        title: title.trim(),
+        categoryId,
+        startAt,
+        durationMin,
+        chainedToPrev,
+      })
+    }
+    const formEndAt = startAt + durationMin * 60_000
+    const nextStart = formEndAt + 10 * 60_000
+    const d = new Date(nextStart)
+    setEditingId(null)
+    setTitle('')
+    setCategoryId(categories[0]?.id ?? '')
+    setDate(dateKeyFromMs(nextStart))
+    setHour(d.getHours())
+    setMinute(d.getMinutes())
+    setDurationMin(0)
+    setChainedToPrev(false)
+    setDeleteArmed(false)
+    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current)
   }
 
   const fieldCls = 'w-full rounded-none border border-gray-300 bg-white px-3 py-2 text-gray-900 font-mono dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100'
@@ -192,20 +237,27 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
                 </select>
               </label>
             </div>
+            <div>
+              <button type="button" onClick={setNowStart} className={adjustBtn}>
+                <span className="opacity-70">$ </span>now (시작을 지금으로)
+              </button>
+            </div>
             {!isEdit && !isFuture && (
               <p className="text-xs text-red-600 dark:text-red-400">시작 시각은 현재보다 미래여야 합니다.</p>
             )}
             <div>
               <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">소요 시간 (분)</span>
-              <input type="number" min={1} value={durationMin} onChange={(e) => setDurationMin(Math.max(1, Number(e.target.value) || 0))} className={fieldCls} />
+              <input type="number" min={0} value={durationMin} onChange={(e) => setDurationMin(Math.max(0, Number(e.target.value) || 0))} className={fieldCls} />
               <div className="mt-2 flex flex-wrap gap-1">
-                <button type="button" onClick={() => bumpDuration(-60)} className={adjustBtn}>-1시간</button>
                 <button type="button" onClick={() => bumpDuration(-30)} className={adjustBtn}>-30분</button>
                 <button type="button" onClick={() => bumpDuration(-10)} className={adjustBtn}>-10분</button>
                 <button type="button" onClick={() => bumpDuration(10)} className={adjustBtn}>+10분</button>
                 <button type="button" onClick={() => bumpDuration(30)} className={adjustBtn}>+30분</button>
                 <button type="button" onClick={() => bumpDuration(60)} className={adjustBtn}>+1시간</button>
               </div>
+            </div>
+            <div className="text-xs font-mono text-gray-600 dark:text-gray-400">
+              <span className="text-[#5c6370]"># </span>end → {durationMin > 0 ? formatEndDisplay(endAt) : <span className="text-gray-400 dark:text-gray-600">— (소요 0분)</span>}
             </div>
             <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 font-mono">
               <input
@@ -220,13 +272,13 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
               </span>
             </label>
           </div>
-          <div className="mt-6 flex justify-between gap-2">
-            <div>
-              {isEdit && (
+          <div className="mt-6 flex flex-col gap-2">
+            {isEdit && (
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-3 dark:border-gray-800">
                 <button
                   type="button"
                   onClick={handleDelete}
-                  className={`rounded-none border px-4 py-2 text-sm font-mono ${
+                  className={`rounded-none border px-3 py-2 text-sm font-mono ${
                     deleteArmed
                       ? 'border-red-600 bg-red-600 text-white hover:bg-red-700 dark:border-red-400 dark:bg-red-400 dark:text-gray-900 dark:hover:bg-red-300'
                       : 'border-red-600 bg-white text-red-600 hover:bg-red-50 dark:border-red-400 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-red-400/10'
@@ -234,9 +286,17 @@ export function NewScheduleModal({ onClose, editingId }: { onClose: () => void; 
                 >
                   <span className="opacity-80">! </span>{deleteArmed ? 'confirm delete' : 'delete'}
                 </button>
-              )}
-            </div>
-            <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleNextAfter}
+                  className={adjustBtn}
+                  title="현재 편집 저장(dirty 시) + 종료시각 + 10분을 시작으로 가지는 새 스케줄 모달 오픈"
+                >
+                  <span className="opacity-70">$ </span>next +10m (완료 후 새 스케줄)
+                </button>
+              </div>
+            )}
+            <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={onClose}

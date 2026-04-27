@@ -1,7 +1,7 @@
 export type CategoryId = string;
 export type ScheduleId = string;
 export interface Category { id: CategoryId; name: string; color: string; createdAt: number; }
-export type TimerType = 'countup' | 'timer1';
+export type TimerType = 'countup' | 'timer1' | 'countdown';
 export type ScheduleStatus = 'pending' | 'active' | 'done';
 export interface Schedule {
   id: ScheduleId;
