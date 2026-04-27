@@ -293,6 +293,22 @@ export function PlanApp() {
             {t('loading')}
           </div>
         )}
+        {/* Stage 6.5 UX: schedules 빈 상태 onboarding 배너. loaded + 빈 schedules
+            + error 없음 조건. 첫 스케줄 추가 CTA 가 4 영역 모두 채우는 효과 시각화. */}
+        {loaded && !error && schedules.length === 0 && (
+          <div className="mb-6 rounded-none border border-dashed border-line bg-panel px-6 py-8 text-center">
+            <p className="mb-2 text-sm font-semibold text-ink font-mono">
+              {t('onboarding.welcome')}
+            </p>
+            <p className="mb-4 text-xs font-normal text-muted font-mono">
+              {t('onboarding.firstSchedule')}
+            </p>
+            <button type="button" className={primaryBtn} onClick={openNew}>
+              + {t('onboarding.addFirst')}
+            </button>
+          </div>
+        )}
+
         {error && (
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-danger bg-[rgba(224,108,117,0.1)] px-4 py-3 text-xs font-mono text-danger">
             <span>{t('error.loadFailedLabel')} {error}</span>

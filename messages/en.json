@@ -64,6 +64,11 @@
     "setTheme": "set theme",
     "toggleWeeklyPanel": "toggle weekly panel"
   },
+  "onboarding": {
+    "welcome": "No schedules yet",
+    "firstSchedule": "Add your first schedule to see it on the weekly grid, today's timeline, and the analog clock.",
+    "addFirst": "add first schedule"
+  },
   "schedule": {
     "headerNew": "new schedule",
     "headerEdit": "edit schedule",

@@ -64,6 +64,11 @@
     "setTheme": "테마 설정",
     "toggleWeeklyPanel": "주간 패널 토글"
   },
+  "onboarding": {
+    "welcome": "스케줄이 아직 없습니다",
+    "firstSchedule": "첫 스케줄을 추가하면 주간 그리드 · 오늘 타임라인 · 아날로그 시계에 표시됩니다.",
+    "addFirst": "첫 스케줄 추가"
+  },
   "schedule": {
     "headerNew": "새 스케줄",
     "headerEdit": "스케줄 편집",
