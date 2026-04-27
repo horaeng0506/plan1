@@ -2,9 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Terminal/CLI 톤 토큰 (DESIGN.md 기준 · 2026-04-27 prefix 제거 + 4채널 보강) */
+/* Terminal/CLI 톤 토큰 (DESIGN.md 기준 · 2026-04-27 prefix 제거 + 4채널 보강)
+ *
+ * Stage 4a env-critic Critical fix (2026-04-27):
+ *   기존 @media (prefers-color-scheme: light) → SSR 안정성 위해 .light class 기반 swap.
+ *   default = dark (SSR HTML 안전). PlanApp apply() 가 .light/.dark class 토글.
+ *   light 톤 자체는 DESIGN.md "Light variant (후속 구현 예정)" — MVP 임시 베이지.
+ */
 
-:root {
+:root,
+:root.dark {
   --bg: #0d0f12;
   --panel: #14171c;
   --line: #2a3036;
@@ -17,15 +24,14 @@
   --danger: #e06c75;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #f5f2e7;
-    --panel: #ffffff;
-    --line: #d4cfbf;
-    --muted: #8c8773;
-    --txt: #2d3748;
-    --ink: #1a202c;
-  }
+:root.light {
+  --bg: #f5f2e7;
+  --panel: #ffffff;
+  --line: #d4cfbf;
+  --muted: #8c8773;
+  --txt: #2d3748;
+  --ink: #1a202c;
+  /* semantic 색상은 light/dark 모두 가시성 유지 — 동일 값 사용 */
 }
 
 html,

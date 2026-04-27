@@ -17,8 +17,6 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
   // Stage 3f logic-critic Critical fix: confirmId 잠금 누수 차단.
-  // schedules 변경(다른 모달에서 add/remove) → armed 카테고리의 count 가 바뀌면 confirm 무효화.
-  // categories 변경(이미 다른 경로로 삭제됨) 시에도 reset.
   useEffect(() => {
     if (confirmId && !categories.find(c => c.id === confirmId)) setConfirmId(null);
   }, [categories, confirmId]);
@@ -42,18 +40,15 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
 
   const handleRemove = async (id: string) => {
     if (busy) return;
-    // 다른 카테고리 클릭 시 이전 armed reset (한 번에 하나만 armed).
     if (confirmId && confirmId !== id) {
       setConfirmId(null);
     }
     const count = scheduleCountByCat(id);
     if (count === 0) {
-      // 안전한 삭제 — force 불필요. 다른 카테고리가 armed 상태였다면 위에서 이미 reset.
       runMutation(removeCategory(id, false), 'remove category');
       if (confirmId === id) setConfirmId(null);
       return;
     }
-    // schedules 가 연결돼 있음 — 1차 클릭은 confirm armed, 2차 클릭은 force=true 삭제.
     if (confirmId !== id) {
       setConfirmId(id);
       return;
@@ -70,22 +65,32 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
     }
   };
 
+  // Stage 4a 4채널 토큰화.
+  const fieldCls =
+    'w-full rounded-none border border-line bg-bg px-3 py-2 text-ink font-mono';
+  const dangerArmedBtn =
+    'rounded-none border border-danger bg-danger px-2 py-0.5 text-xs text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50';
+  const dangerOutlineBtn =
+    'rounded-none border border-danger bg-panel px-2 py-0.5 text-xs text-danger font-mono hover:bg-[rgba(224,108,117,0.1)] disabled:cursor-not-allowed disabled:opacity-50';
+  const neutralRmBtn =
+    'rounded-none border border-line bg-panel px-2 py-0.5 text-xs text-txt font-mono hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50';
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(7,8,10,0.75)] p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-none border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+        className="w-full max-w-md rounded-none border border-line bg-panel p-6"
         onClick={e => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-sm font-semibold text-gray-900 dark:text-gray-100">
-          <span className="text-[#98c379]">$ </span>category --manage
+        <h2 className="mb-4 text-sm font-semibold text-ink">
+          <span className="text-success">$ </span>category --manage
         </h2>
 
         <ul className="mb-4 space-y-1 max-h-64 overflow-y-auto">
           {categories.length === 0 && (
-            <li className="text-sm text-gray-500 dark:text-gray-400">카테고리가 없습니다.</li>
+            <li className="text-sm text-muted">카테고리가 없습니다.</li>
           )}
           {categories.map(c => {
             const count = scheduleCountByCat(c.id);
@@ -93,32 +98,24 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
             return (
               <li
                 key={c.id}
-                className="flex items-center justify-between rounded-none px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="flex items-center justify-between rounded-none px-2 py-1 hover:bg-bg"
               >
-                <span className="flex items-center gap-2 text-sm text-gray-800 dark:text-gray-200 font-mono">
-                  <span className="text-[#5c6370]">▸</span>
+                <span className="flex items-center gap-2 text-sm text-ink font-mono">
+                  <span className="text-muted">▸</span>
                   <span
                     className="inline-block h-3 w-3 rounded-none"
                     style={{backgroundColor: c.color}}
                   />
                   {c.name}
                   {count > 0 && (
-                    <span className="text-[10px] text-gray-500 dark:text-gray-400">
-                      · {count} 스케줄
-                    </span>
+                    <span className="text-[10px] text-muted">· {count} 스케줄</span>
                   )}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleRemove(c.id)}
                   disabled={busy}
-                  className={
-                    armed
-                      ? 'rounded-none border border-red-600 bg-red-600 px-2 py-0.5 text-xs text-white font-mono hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-400 dark:bg-red-400 dark:text-gray-900 dark:hover:bg-red-300'
-                      : count > 0
-                      ? 'rounded-none border border-red-600 bg-white px-2 py-0.5 text-xs text-red-600 font-mono hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-400 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-red-400/10'
-                      : 'rounded-none border border-gray-300 bg-white px-2 py-0.5 text-xs text-gray-700 font-mono hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
-                  }
+                  className={armed ? dangerArmedBtn : count > 0 ? dangerOutlineBtn : neutralRmBtn}
                 >
                   {armed ? `confirm rm (${count})` : 'rm'}
                 </button>
@@ -127,7 +124,7 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
           })}
         </ul>
         {confirmId && (
-          <div className="mb-4 border border-red-600 bg-red-50 px-3 py-2 text-xs font-mono text-red-700 dark:border-red-400 dark:bg-red-400/10 dark:text-red-300">
+          <div className="mb-4 border border-danger bg-[rgba(224,108,117,0.1)] px-3 py-2 text-xs font-mono text-danger">
             <span className="font-semibold">! </span>
             {scheduleCountByCat(confirmId)}개 스케줄이 함께 삭제됩니다. 다시 클릭하면 즉시 실행.
             <button
@@ -140,30 +137,30 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
           </div>
         )}
 
-        <div className="space-y-3 border-t border-gray-200 pt-4 dark:border-gray-800">
+        <div className="space-y-3 border-t border-line pt-4">
           <label className="block">
-            <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">--name</span>
+            <span className="mb-1 block text-sm text-txt">--name</span>
             <input
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="w-full rounded-none border border-gray-300 bg-white px-3 py-2 text-gray-900 font-mono dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+              className={fieldCls}
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">--color</span>
+            <span className="mb-1 block text-sm text-txt">--color</span>
             <input
               type="color"
               value={color}
               onChange={e => setColor(e.target.value)}
-              className="h-10 w-20 rounded-none border border-gray-300 dark:border-gray-700"
+              className="h-10 w-20 rounded-none border border-line"
             />
           </label>
           <button
             type="button"
             onClick={handleAdd}
             disabled={!canAdd}
-            className="w-full rounded-none border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white font-mono hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+            className="w-full rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span className="opacity-70">$ </span>add
           </button>
@@ -173,7 +170,7 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-none border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
           >
             close
           </button>

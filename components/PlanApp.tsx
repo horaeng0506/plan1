@@ -15,12 +15,12 @@ import type {Theme} from '@/lib/domain/types';
 // FullCalendar v6 는 SSR 시 document/window 직접 접근 위험 — env-critic Stage 3e 진입 게이트.
 // next/dynamic({ssr:false}) 으로 client 진입 후에만 로드.
 const WeeklyCalendarSkeleton = () => (
-  <div className="h-64 border border-dashed border-gray-300 p-4 text-xs font-mono text-gray-500 dark:border-gray-700 dark:text-gray-400">
+  <div className="h-64 border border-dashed border-line p-4 text-xs font-mono text-muted">
     # weekly · loading...
   </div>
 );
 const DailyTimelineSkeleton = () => (
-  <div className="h-64 border border-dashed border-gray-300 p-4 text-xs font-mono text-gray-500 dark:border-gray-700 dark:text-gray-400">
+  <div className="h-64 border border-dashed border-line p-4 text-xs font-mono text-muted">
     # today · loading...
   </div>
 );
@@ -64,12 +64,15 @@ export function PlanApp() {
   }, [loaded, loading, error, init]);
 
   // 테마 effect — system 환경 매체 변경 추적.
+  // Stage 4a env-critic Critical fix: globals.css 4채널 토큰 .light/.dark class 기반 swap 와 짝.
+  // SSR default = dark (.dark 또는 클래스 없음). user "light" = .light 추가 + .dark 제거.
   useEffect(() => {
     const root = document.documentElement;
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const apply = () => {
       const isDark = theme === 'dark' || (theme === 'system' && mq.matches);
       root.classList.toggle('dark', isDark);
+      root.classList.toggle('light', !isDark);
     };
     apply();
     if (theme !== 'system') return;
@@ -81,32 +84,34 @@ export function PlanApp() {
     setEditingId(splitFrom ?? id);
   };
 
+  // Stage 4a 4채널 토큰화: gray-* dark:* → bg/panel/line/muted/txt/ink.
+  // 활성 inverted 패턴(`bg-gray-900...dark:bg-gray-100`)은 `bg-ink text-bg border-ink`.
   const spanButtonClass = (n: 1 | 2 | 3) =>
     `px-3 py-1 text-sm rounded-none border transition-colors font-mono ${
       weekViewSpan === n
-        ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100'
-        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'
+        ? 'bg-ink text-bg border-ink'
+        : 'bg-panel text-txt border-line hover:bg-bg'
     }`;
 
   const themeButtonClass = (tt: Theme) =>
     `px-2 py-1 text-xs rounded-none border transition-colors font-mono ${
       theme === tt
-        ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100'
-        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'
+        ? 'bg-ink text-bg border-ink'
+        : 'bg-panel text-txt border-line hover:bg-bg'
     }`;
 
   const neutralBtn =
-    'px-3 py-1 text-sm rounded-none border border-gray-300 bg-white text-gray-700 font-mono hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800';
+    'px-3 py-1 text-sm rounded-none border border-line bg-panel text-txt font-mono hover:bg-bg';
   const primaryBtn =
-    'px-3 py-1 text-sm rounded-none border border-gray-900 bg-gray-900 text-white font-mono hover:bg-gray-800 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200';
+    'px-3 py-1 text-sm rounded-none border border-ink bg-ink text-bg font-mono hover:opacity-90';
 
   return (
-    <main className="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+    <main className="min-h-screen bg-bg text-txt">
       <div className="mx-auto max-w-6xl px-6 py-6">
         <header className="mb-6 flex items-center justify-between gap-4 flex-wrap">
           <h1 className="text-sm font-medium tracking-wide font-mono">
-            <span style={{color: '#98c379'}}>{t('app.title')}</span>{' '}
-            <span style={{color: '#5c6370'}}>$</span> {t('app.tagline')}
+            <span className="text-success">{t('app.title')}</span>{' '}
+            <span className="text-muted">$</span> {t('app.tagline')}
           </h1>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex gap-1">
@@ -186,21 +191,21 @@ export function PlanApp() {
         </header>
 
         {!loaded && loading && (
-          <div className="mb-4 border border-dashed border-gray-300 px-4 py-3 text-xs font-mono text-gray-500 dark:border-gray-700 dark:text-gray-400">
-            <span className="text-[#5c6370]"># </span>
+          <div className="mb-4 border border-dashed border-line px-4 py-3 text-xs font-mono text-muted">
+            <span className="text-muted"># </span>
             {t('loading')}
           </div>
         )}
         {error && (
-          <div className="mb-4 border border-red-600 bg-red-50 px-4 py-3 text-xs font-mono text-red-700 dark:border-red-400 dark:bg-red-400/10 dark:text-red-300">
+          <div className="mb-4 border border-danger bg-[rgba(224,108,117,0.1)] px-4 py-3 text-xs font-mono text-danger">
             <span className="opacity-80">! </span>load failed: {error}
           </div>
         )}
 
         {!weeklyPanelHidden && (
-          <section className="mb-6 rounded-none border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-            <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-mono">
-              <span className="text-[#5c6370]"># </span>
+          <section className="mb-6 rounded-none border border-line bg-panel p-4">
+            <h2 className="mb-3 text-sm font-semibold text-txt font-mono">
+              <span className="text-muted"># </span>
               {t('header.week')}
             </h2>
             <WeeklyCalendar onEventClick={handleEventClick} />
@@ -208,24 +213,24 @@ export function PlanApp() {
         )}
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
-          <section className="rounded-none border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-            <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-mono">
-              <span className="text-[#5c6370]"># </span>
+          <section className="rounded-none border border-line bg-panel p-4">
+            <h2 className="mb-3 text-sm font-semibold text-txt font-mono">
+              <span className="text-muted"># </span>
               {t('header.today')}
             </h2>
             <DailyTimeline onEventClick={handleEventClick} />
           </section>
           <aside className="space-y-4">
-            <section className="rounded-none border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-              <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300 font-mono">
-                <span className="text-[#5c6370]"># </span>
+            <section className="rounded-none border border-line bg-panel p-4">
+              <h2 className="mb-3 text-sm font-semibold text-txt font-mono">
+                <span className="text-muted"># </span>
                 {t('header.clock')}
               </h2>
               <AnalogClock />
             </section>
             <section>
-              <h2 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300 font-mono">
-                <span className="text-[#5c6370]"># </span>
+              <h2 className="mb-2 text-sm font-semibold text-txt font-mono">
+                <span className="text-muted"># </span>
                 {t('header.timer')}
               </h2>
               <ActiveTimer />

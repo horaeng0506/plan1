@@ -68,9 +68,13 @@ export function ActiveTimer() {
     }
   }, [active?.id]);
 
+  // toggleFreeze busy state — 빠른 토글 race 방지 (Stage 3e logic-critic Medium #4).
+  // Stage 3f logic-critic Critical: 두 분기 모두 togglePending 체크 — focus→idle 도 락 진입.
+  const [togglePending, setTogglePending] = useState(false);
+
   if (!active || now === null) {
     return (
-      <div className="rounded-none border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500 font-mono dark:border-gray-700 dark:text-gray-400">
+      <div className="rounded-none border border-dashed border-line p-6 text-center text-sm text-muted font-mono">
         # idle · no active schedule
       </div>
     );
@@ -97,9 +101,6 @@ export function ActiveTimer() {
     runMutation(updateSchedule(active.id, {timerType: t}), 'change timer type');
   };
 
-  // toggleFreeze busy state — 빠른 토글 race 방지 (Stage 3e logic-critic Medium #4).
-  // Stage 3f logic-critic Critical: 두 분기 모두 togglePending 체크 — focus→idle 도 락 진입.
-  const [togglePending, setTogglePending] = useState(false);
   const toggleFreeze = async () => {
     if (togglePending) return;
     setTogglePending(true);
@@ -123,28 +124,29 @@ export function ActiveTimer() {
     }
   };
 
+  // Stage 4a 4채널 토큰화 (gray-* dark:* → bg/panel/line/muted/txt/ink).
   const neutralBtn =
-    'rounded-none border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800';
+    'rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono hover:bg-bg';
   const primaryBtn =
-    'rounded-none border border-gray-900 bg-gray-900 px-2 py-1 text-xs text-white font-mono hover:bg-gray-800 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200';
+    'rounded-none border border-ink bg-ink px-2 py-1 text-xs text-bg font-mono hover:opacity-90';
   const typeBtn = (on: boolean) =>
     `flex-1 rounded-none border px-2 py-1 text-xs font-mono transition-colors ${
       on
-        ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100'
-        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'
+        ? 'bg-ink text-bg border-ink'
+        : 'bg-panel text-txt border-line hover:bg-bg'
     }`;
   const freezeBtn = (focused: boolean) =>
     `w-full rounded-none border px-3 py-2 text-sm font-mono transition-colors ${
       focused
-        ? 'border-gray-900 bg-gray-900 text-white hover:bg-gray-800 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200'
-        : 'border-red-600 bg-red-600/10 text-red-600 hover:bg-red-600/20 dark:text-red-400 dark:border-red-400 dark:bg-red-400/10 dark:hover:bg-red-400/20'
+        ? 'border-ink bg-ink text-bg hover:opacity-90'
+        : 'border-danger bg-[rgba(224,108,117,0.1)] text-danger hover:bg-[rgba(224,108,117,0.2)]'
     }`;
 
   return (
-    <div className="rounded-none border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-none border border-line bg-panel p-4">
       {actives.length > 1 && (
-        <div className="mb-2 text-[10px] font-mono text-gray-500 dark:text-gray-400">
-          <span className="text-[#d19a66]"># 겹침 {actives.length}개 </span>· pin=
+        <div className="mb-2 text-[10px] font-mono text-muted">
+          <span className="text-warn"># 겹침 {actives.length}개 </span>· pin=
           <select
             value={pinnedActiveId ?? ''}
             onChange={e => {
@@ -153,7 +155,7 @@ export function ActiveTimer() {
                 'pin active timer'
               );
             }}
-            className="ml-1 rounded-none border border-gray-300 bg-white px-1 py-0.5 text-[10px] font-mono dark:border-gray-700 dark:bg-gray-950"
+            className="ml-1 rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] font-mono text-txt"
           >
             <option value="">auto (첫 번째)</option>
             {actives.map(a => (
@@ -165,18 +167,18 @@ export function ActiveTimer() {
         </div>
       )}
       <div className="mb-1 flex items-center gap-2">
-        <span className="text-[#5c6370]">▸</span>
+        <span className="text-muted">▸</span>
         {category && (
           <span
             className="inline-block h-3 w-3 rounded-none"
             style={{backgroundColor: category.color}}
           />
         )}
-        <span className="truncate text-sm font-mono font-medium text-gray-800 dark:text-gray-200">
+        <span className="truncate text-sm font-mono font-medium text-ink">
           {active.title}
         </span>
       </div>
-      <div className="mb-3 text-[10px] font-mono text-gray-500 dark:text-gray-400">
+      <div className="mb-3 text-[10px] font-mono text-muted">
         type={active.timerType} · cat={category?.name ?? '?'}
       </div>
       <div className="mb-2 flex gap-1">
@@ -192,19 +194,19 @@ export function ActiveTimer() {
       </div>
       {isCountup && (
         <>
-          <div className="mb-1 text-xs font-mono text-gray-500 dark:text-gray-400"># elapsed</div>
-          <div className="mb-3 font-mono text-5xl font-medium tracking-tight text-gray-900 dark:text-gray-100">
+          <div className="mb-1 text-xs font-mono text-muted"># elapsed</div>
+          <div className="mb-3 font-mono text-5xl font-medium tracking-tight text-ink">
             {formatHMS(elapsed)}
           </div>
         </>
       )}
       {isTimer1 && (
         <>
-          <div className="mb-1 text-xs font-mono text-gray-500 dark:text-gray-400"># target</div>
-          <div className="mb-1 font-mono text-4xl font-medium tracking-tight text-gray-900 dark:text-gray-100">
+          <div className="mb-1 text-xs font-mono text-muted"># target</div>
+          <div className="mb-1 font-mono text-4xl font-medium tracking-tight text-ink">
             {formatWall12(displayEndAt)}
           </div>
-          <div className="mb-3 text-xs font-mono text-gray-500 dark:text-gray-400">
+          <div className="mb-3 text-xs font-mono text-muted">
             # elapsed {formatHMS(now - active.startAt)}
           </div>
           <button type="button" onClick={toggleFreeze} className={freezeBtn(frozen) + ' mb-3'}>
@@ -214,11 +216,11 @@ export function ActiveTimer() {
       )}
       {isCountdown && (
         <>
-          <div className="mb-1 text-xs font-mono text-gray-500 dark:text-gray-400"># remaining</div>
-          <div className="mb-1 font-mono text-5xl font-medium tracking-tight text-gray-900 dark:text-gray-100">
+          <div className="mb-1 text-xs font-mono text-muted"># remaining</div>
+          <div className="mb-1 font-mono text-5xl font-medium tracking-tight text-ink">
             {formatHMS(remaining)}
           </div>
-          <div className="mb-3 text-xs font-mono text-gray-500 dark:text-gray-400">
+          <div className="mb-3 text-xs font-mono text-muted">
             # end-at {formatWall12(endAt)}
           </div>
         </>

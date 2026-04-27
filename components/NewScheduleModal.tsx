@@ -248,10 +248,11 @@ export function NewScheduleModal({
     }
   };
 
+  // Stage 4a 4채널 토큰화.
   const fieldCls =
-    'w-full rounded-none border border-gray-300 bg-white px-3 py-2 text-gray-900 font-mono dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100';
+    'w-full rounded-none border border-line bg-bg px-3 py-2 text-ink font-mono';
   const adjustBtn =
-    'rounded-none border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800';
+    'rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono hover:bg-bg';
 
   const headerTxt = isEdit ? 'schedule --edit' : 'schedule --new';
   const submitLabel = isEdit ? 'save' : 'add';
@@ -263,16 +264,16 @@ export function NewScheduleModal({
         onClick={onClose}
       >
         <div
-          className="w-full max-w-md rounded-none border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+          className="w-full max-w-md rounded-none border border-line bg-panel p-6"
           onClick={e => e.stopPropagation()}
         >
-          <h2 className="mb-4 text-sm font-semibold text-gray-900 dark:text-gray-100">
-            <span className="text-[#98c379]">$ </span>
+          <h2 className="mb-4 text-sm font-semibold text-ink">
+            <span className="text-success">$ </span>
             {headerTxt}
           </h2>
           <div className="space-y-3">
             <label className="block">
-              <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">이름</span>
+              <span className="mb-1 block text-sm text-txt">이름</span>
               <input
                 type="text"
                 value={title}
@@ -282,7 +283,7 @@ export function NewScheduleModal({
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">카테고리</span>
+              <span className="mb-1 block text-sm text-txt">카테고리</span>
               <select
                 value={categoryId}
                 onChange={e => handleCategoryChange(e.target.value)}
@@ -297,7 +298,7 @@ export function NewScheduleModal({
               </select>
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">시작 날짜</span>
+              <span className="mb-1 block text-sm text-txt">시작 날짜</span>
               <input
                 type="date"
                 value={date}
@@ -307,7 +308,7 @@ export function NewScheduleModal({
             </label>
             <div className="grid grid-cols-2 gap-2">
               <label className="block">
-                <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">시작 시</span>
+                <span className="mb-1 block text-sm text-txt">시작 시</span>
                 <select
                   value={hour}
                   onChange={e => setHour(Number(e.target.value))}
@@ -321,7 +322,7 @@ export function NewScheduleModal({
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">시작 분</span>
+                <span className="mb-1 block text-sm text-txt">시작 분</span>
                 <select
                   value={minute}
                   onChange={e => setMinute(Number(e.target.value))}
@@ -341,12 +342,10 @@ export function NewScheduleModal({
               </button>
             </div>
             {!isEdit && nowReady && !isFuture && (
-              <p className="text-xs text-red-600 dark:text-red-400">
-                시작 시각은 현재보다 미래여야 합니다.
-              </p>
+              <p className="text-xs text-danger">시작 시각은 현재보다 미래여야 합니다.</p>
             )}
             <div>
-              <span className="mb-1 block text-sm text-gray-700 dark:text-gray-300">소요 시간 (분)</span>
+              <span className="mb-1 block text-sm text-txt">소요 시간 (분)</span>
               <input
                 type="number"
                 min={0}
@@ -372,15 +371,15 @@ export function NewScheduleModal({
                 </button>
               </div>
             </div>
-            <div className="text-xs font-mono text-gray-600 dark:text-gray-400">
-              <span className="text-[#5c6370]"># </span>end →{' '}
+            <div className="text-xs font-mono text-muted">
+              <span className="text-muted"># </span>end →{' '}
               {durationMin > 0 ? (
                 formatEndDisplay(endAt)
               ) : (
-                <span className="text-gray-400 dark:text-gray-600">— (소요 0분)</span>
+                <span className="text-muted opacity-60">— (소요 0분)</span>
               )}
             </div>
-            <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 font-mono">
+            <label className="flex items-start gap-2 text-sm text-txt font-mono">
               <input
                 type="checkbox"
                 checked={chainedToPrev}
@@ -388,8 +387,8 @@ export function NewScheduleModal({
                 className="mt-1"
               />
               <span>
-                <span className="text-[#5c6370]">⤴</span> 이전 스케줄과 연결 (cascade 받음)
-                <span className="block text-xs text-gray-500 dark:text-gray-400">
+                <span className="text-muted">⤴</span> 이전 스케줄과 연결 (cascade 받음)
+                <span className="block text-xs text-muted">
                   앞 스케줄이 늘어나거나 줄면 이 스케줄도 함께 이동 (간격 유지)
                 </span>
               </span>
@@ -397,15 +396,15 @@ export function NewScheduleModal({
           </div>
           <div className="mt-6 flex flex-col gap-2">
             {isEdit && (
-              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-3 dark:border-gray-800">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
                 <button
                   type="button"
                   onClick={handleDelete}
                   disabled={busy}
                   className={`rounded-none border px-3 py-2 text-sm font-mono disabled:cursor-not-allowed disabled:opacity-50 ${
                     deleteArmed
-                      ? 'border-red-600 bg-red-600 text-white hover:bg-red-700 dark:border-red-400 dark:bg-red-400 dark:text-gray-900 dark:hover:bg-red-300'
-                      : 'border-red-600 bg-white text-red-600 hover:bg-red-50 dark:border-red-400 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-red-400/10'
+                      ? 'border-danger bg-danger text-bg hover:opacity-90'
+                      : 'border-danger bg-panel text-danger hover:bg-[rgba(224,108,117,0.1)]'
                   }`}
                 >
                   <span className="opacity-80">! </span>
@@ -423,7 +422,7 @@ export function NewScheduleModal({
               </div>
             )}
             {nextAfterWarn && (
-              <p className="text-xs text-red-600 dark:text-red-400 font-mono">
+              <p className="text-xs text-danger font-mono">
                 <span className="opacity-80">! </span>
                 {nextAfterWarn}
               </p>
@@ -432,7 +431,7 @@ export function NewScheduleModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-none border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 font-mono hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
               >
                 cancel
               </button>
@@ -440,7 +439,7 @@ export function NewScheduleModal({
                 type="button"
                 onClick={submit}
                 disabled={!canSubmit}
-                className="rounded-none border border-gray-900 bg-gray-900 px-4 py-2 text-sm text-white font-mono hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                className="rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <span className="opacity-70">$ </span>
                 {submitLabel}
