@@ -73,8 +73,10 @@ export function ActiveTimer() {
   const endAt = active.startAt + active.durationMin * 60_000
   const isCountup = active.timerType === 'countup'
   const isTimer1 = active.timerType === 'timer1'
+  const isCountdown = active.timerType === 'countdown'
 
   const elapsed = now - active.startAt
+  const remaining = Math.max(0, endAt - now)
   const displayEndAt = isTimer1 && !frozen && idleSince !== null
     ? endAt + (now - idleSince)
     : endAt
@@ -141,6 +143,7 @@ export function ActiveTimer() {
       <div className="mb-2 flex gap-1">
         <button type="button" onClick={() => setType('countup')} className={typeBtn(isCountup)}>countup</button>
         <button type="button" onClick={() => setType('timer1')} className={typeBtn(isTimer1)}>timer1</button>
+        <button type="button" onClick={() => setType('countdown')} className={typeBtn(isCountdown)}>countdown</button>
       </div>
       {isCountup && (
         <>
@@ -164,10 +167,22 @@ export function ActiveTimer() {
           </button>
         </>
       )}
+      {isCountdown && (
+        <>
+          <div className="mb-1 text-xs font-mono text-gray-500 dark:text-gray-400"># remaining</div>
+          <div className="mb-1 font-mono text-5xl font-medium tracking-tight text-gray-900 dark:text-gray-100">
+            {formatHMS(remaining)}
+          </div>
+          <div className="mb-3 text-xs font-mono text-gray-500 dark:text-gray-400">
+            # end-at {formatWall12(endAt)}
+          </div>
+        </>
+      )}
       <div className="flex flex-wrap gap-2">
+        <button type="button" onClick={() => bump(-30)} className={neutralBtn}>-30m</button>
+        <button type="button" onClick={() => bump(-10)} className={neutralBtn}>-10m</button>
         <button type="button" onClick={() => bump(10)} className={neutralBtn}>+10m</button>
         <button type="button" onClick={() => bump(30)} className={neutralBtn}>+30m</button>
-        <button type="button" onClick={() => bump(60)} className={neutralBtn}>+1h</button>
         <button type="button" onClick={complete} className={primaryBtn}><span className="opacity-70">! </span>complete</button>
       </div>
     </div>
