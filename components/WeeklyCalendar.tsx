@@ -1,6 +1,7 @@
 'use client';
 
 import {useMemo} from 'react';
+import {useLocale, useTranslations} from 'next-intl';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -8,11 +9,17 @@ import {useAppStore} from '@/lib/store';
 import {schedulesToEvents} from '@/lib/schedule-to-event';
 import {renderEventContent} from './event-renderer';
 
+function fcLocale(locale: string): string {
+  return locale === 'zh-CN' ? 'zh-cn' : locale;
+}
+
 export function WeeklyCalendar({
   onEventClick
 }: {
   onEventClick?: (id: string, splitFrom?: string) => void;
 }) {
+  const locale = useLocale();
+  const t = useTranslations();
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
   const weekViewSpan = useAppStore(s => s.settings.weekViewSpan);
@@ -25,7 +32,7 @@ export function WeeklyCalendar({
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView={`weekView${weekViewSpan}`}
         headerToolbar={{left: 'prev,next today', center: 'title', right: ''}}
-        locale="ko"
+        locale={fcLocale(locale)}
         firstDay={1}
         height="auto"
         events={events}
@@ -36,9 +43,9 @@ export function WeeklyCalendar({
         }
         eventContent={renderEventContent}
         views={{
-          weekView1: {type: 'dayGrid', duration: {weeks: 1}, buttonText: '1주'},
-          weekView2: {type: 'dayGrid', duration: {weeks: 2}, buttonText: '2주'},
-          weekView3: {type: 'dayGrid', duration: {weeks: 3}, buttonText: '3주'}
+          weekView1: {type: 'dayGrid', duration: {weeks: 1}, buttonText: t('nav.weekSpan1')},
+          weekView2: {type: 'dayGrid', duration: {weeks: 2}, buttonText: t('nav.weekSpan2')},
+          weekView3: {type: 'dayGrid', duration: {weeks: 3}, buttonText: t('nav.weekSpan3')}
         }}
       />
     </div>

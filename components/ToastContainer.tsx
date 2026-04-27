@@ -51,12 +51,13 @@ export function ToastContainer() {
         >
           <div className="flex items-start gap-2">
             <span className="flex-1 break-words">{t.message}</span>
-            {/* ui-critic Critical: hit area WCAG 24×24px 미달 → -m-1 p-2 로 negative margin
-                + padding 로 시각 위치 유지하면서 24×24px 이상 hit area 확보. aria-label 추가. */}
+            {/* qa-tester Critical: 이전 -m-1 p-1 실측 12.35×16.25px (WCAG 2.2 AA 24×24
+                미달). negative margin 으로 시각 위치 유지 + p-2 + min-w-6/h-6 + flex 정렬로
+                24×24+ 확보. */}
             <button
               type="button"
               onClick={() => dismissToast(t.id)}
-              className="-m-1 p-1 text-xs leading-none opacity-70 hover:opacity-100"
+              className="-m-1 flex min-h-6 min-w-6 items-center justify-center p-2 text-base leading-none opacity-70 hover:opacity-100"
               aria-label="dismiss"
             >
               ×

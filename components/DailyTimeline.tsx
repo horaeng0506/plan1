@@ -1,6 +1,7 @@
 'use client';
 
 import {useMemo} from 'react';
+import {useLocale} from 'next-intl';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -13,11 +14,17 @@ function minToTimeStr(min: number): string {
   return `${pad2(Math.floor(min / 60))}:${pad2(min % 60)}:00`;
 }
 
+// next-intl `zh-CN` → FullCalendar `zh-cn`.
+function fcLocale(locale: string): string {
+  return locale === 'zh-CN' ? 'zh-cn' : locale;
+}
+
 export function DailyTimeline({
   onEventClick
 }: {
   onEventClick?: (id: string, splitFrom?: string) => void;
 }) {
+  const locale = useLocale();
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
   const workingHours = useAppStore(s => s.workingHours);
@@ -36,7 +43,7 @@ export function DailyTimeline({
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridDay"
         headerToolbar={{left: 'prev,next today', center: 'title', right: ''}}
-        locale="ko"
+        locale={fcLocale(locale)}
         slotMinTime={slotMinTime}
         slotMaxTime={slotMaxTime}
         nowIndicator
