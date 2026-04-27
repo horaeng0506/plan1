@@ -14,12 +14,12 @@
  * action 으로 노출 안 됨 (Next.js 14 동작) → 안전.
  */
 
-import {eq} from 'drizzle-orm';
+import {and, eq} from 'drizzle-orm';
 import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
-import {plan1Settings} from '@/lib/db/schema';
+import {plan1Schedules, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
-import {runAction, type ServerActionResult} from '@/lib/server-action';
+import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
 import type {AppSettings} from '@/lib/domain/types';
 
 const DEFAULT_SETTINGS = {
@@ -71,6 +71,17 @@ export async function updateSettings(
 ): Promise<ServerActionResult<AppSettings>> {
   return runAction(async () => {
     const user = await requireUser();
+    // security HIGH IDOR fix: pinnedActiveId 가 다른 user 의 schedule 이면 차단
+    if (patch.pinnedActiveId !== undefined && patch.pinnedActiveId !== null) {
+      const [s] = await db
+        .select({id: plan1Schedules.id})
+        .from(plan1Schedules)
+        .where(
+          and(eq(plan1Schedules.id, patch.pinnedActiveId), eq(plan1Schedules.userId, user.id))
+        )
+        .limit(1);
+      if (!s) throw new ServerActionError('serverError.scheduleNotFound');
+    }
     // settings 행이 없으면 default 먼저 upsert (internal helper 사용 — wrap 우회)
     await getSettingsImpl();
 

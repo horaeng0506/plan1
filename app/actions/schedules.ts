@@ -16,7 +16,7 @@ import {randomUUID} from 'node:crypto';
 import {and, eq, isNotNull} from 'drizzle-orm';
 import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
-import {plan1Schedules, plan1WorkingHours, plan1Settings} from '@/lib/db/schema';
+import {plan1Categories, plan1Schedules, plan1WorkingHours, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
 import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
 import {cascade} from '@/lib/domain/cascade';
@@ -40,6 +40,20 @@ function rowToDomain(row: ScheduleRow): Schedule {
     createdAt: row.createdAt.getTime(),
     updatedAt: row.updatedAt.getTime()
   };
+}
+
+/**
+ * 보안 가드 — categoryId 가 user 소유인지 검증.
+ * security-auditor HIGH (IDOR): plan1Schedules.categoryId FK 는 plan1Categories.id 만
+ * 참조 → 다른 user 의 category id 를 patch 로 받으면 cross-tenant 데이터 오염.
+ */
+async function assertCategoryOwnership(userId: string, categoryId: string): Promise<void> {
+  const [cat] = await db
+    .select({id: plan1Categories.id})
+    .from(plan1Categories)
+    .where(and(eq(plan1Categories.id, categoryId), eq(plan1Categories.userId, userId)))
+    .limit(1);
+  if (!cat) throw new ServerActionError('serverError.categoryNotFound');
 }
 
 async function loadUserState(userId: string): Promise<{
@@ -148,6 +162,8 @@ export async function createSchedule(input: {
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
     const user = await requireUser();
+    // security HIGH IDOR fix: 다른 user 의 categoryId 차단
+    await assertCategoryOwnership(user.id, input.categoryId);
     const state = await loadUserState(user.id);
     const newSchedule: Schedule = {
       id: `sch-${randomUUID()}`,
@@ -182,6 +198,10 @@ export async function updateSchedule(input: {
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
     const user = await requireUser();
+    // security HIGH IDOR fix: patch 의 categoryId 가 다른 user 카테고리면 차단
+    if (input.categoryId !== undefined) {
+      await assertCategoryOwnership(user.id, input.categoryId);
+    }
     const state = await loadUserState(user.id);
     const target = state.schedules.find(s => s.id === input.id);
     if (!target) throw new ServerActionError('serverError.scheduleNotFound');
