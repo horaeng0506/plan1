@@ -1,7 +1,8 @@
 'use client';
 
-import {useEffect, useMemo, useRef, useState, useSyncExternalStore} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {useAppStore} from '@/lib/store';
+import {useNow} from '@/lib/now';
 import {CategoryManager} from './CategoryManager';
 
 function todayKey(): string {
@@ -23,24 +24,7 @@ function dateKeyFromMs(ms: number): string {
   ).padStart(2, '0')}`;
 }
 
-let nowCache = 0;
-function subscribeNow(cb: () => void) {
-  nowCache = Date.now();
-  cb();
-  const id = setInterval(() => {
-    nowCache = Date.now();
-    cb();
-  }, 1000);
-  return () => clearInterval(id);
-}
-function getNow() {
-  return nowCache;
-}
-function getNowSnapshot() {
-  // SSR snapshot: 0 → 클라이언트 mount 직후 subscribeNow 가 실제값으로 교체.
-  // 0 은 "동기화 전" 표식. canSubmit 에서 now > 0 검증으로 hydration 전 submit 차단.
-  return 0;
-}
+// Stage 4d-B: 모듈 스코프 nowCache 제거 → 공유 lib/now.ts useNow() 사용.
 
 const MINUTE_OPTIONS = [0, 10, 20, 30, 40, 50];
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -106,7 +90,7 @@ export function NewScheduleModal({
     const [y, m, d] = date.split('-').map(Number);
     return new Date(y, m - 1, d, hour, minute, 0, 0).getTime();
   }, [date, hour, minute]);
-  const now = useSyncExternalStore(subscribeNow, getNow, getNowSnapshot);
+  const now = useNow();
   const nowReady = now > 0;
   const isFuture = nowReady && startAt > now;
   const endAt = startAt + durationMin * 60_000;

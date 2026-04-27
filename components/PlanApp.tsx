@@ -7,11 +7,24 @@ import {useAppStore} from '@/lib/store';
 import {runMutation} from '@/lib/run-mutation';
 import {AnalogClock} from './AnalogClock';
 import {ActiveTimer} from './ActiveTimer';
-import {NewScheduleModal} from './NewScheduleModal';
-import {CategoryManager} from './CategoryManager';
-import {WorkingHoursEditor} from './WorkingHoursEditor';
 import {ToastContainer} from './ToastContainer';
+import {useNow} from '@/lib/now';
 import type {Theme} from '@/lib/domain/types';
+
+// Stage 4d-B: 모달 3개 lazy import (사용자 trigger 전 로드 안 됨 → bundle 절약).
+// SSR 안 함 — 모달은 클라 only. 로딩 중엔 null 반환 (모달 자체 비주얼 없음).
+const NewScheduleModal = dynamic(
+  () => import('./NewScheduleModal').then(m => m.NewScheduleModal),
+  {ssr: false}
+);
+const CategoryManager = dynamic(
+  () => import('./CategoryManager').then(m => m.CategoryManager),
+  {ssr: false}
+);
+const WorkingHoursEditor = dynamic(
+  () => import('./WorkingHoursEditor').then(m => m.WorkingHoursEditor),
+  {ssr: false}
+);
 
 const DOW = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
@@ -70,15 +83,11 @@ export function PlanApp() {
   const [whOpen, setWhOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Stage 4c — status meta bar 동적 데이터.
-  // SSR safe: now=null 초기 → client mount 후 1회 + 60초 간격 갱신.
-  // env-critic 가드: hydration mismatch 회피 위해 now null 시 meta 부분 미렌더.
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 60_000);
-    return () => clearInterval(id);
-  }, []);
+  // Stage 4d-B: 공유 useNow (1초 interval) — meta bar 동적 데이터.
+  // 60초 → 1초 변경: schedules 변경 없으면 useMemo deps[now] 만 갱신, recompute
+  // 비용 schedules 100개 기준 1ms 미만. ActiveTimer/AnalogClock 와 동일 클럭 공유.
+  const nowMs = useNow();
+  const now = nowMs > 0 ? new Date(nowMs) : null;
 
   const todayKey = now ? dateKey(now) : null;
   const todayMeta = now ? formatMD(now) : '';

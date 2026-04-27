@@ -2,6 +2,7 @@
 
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {useAppStore} from '@/lib/store';
+import {useNow} from '@/lib/now';
 import {runMutation} from '@/lib/run-mutation';
 import type {Schedule, TimerType} from '@/lib/domain/types';
 
@@ -41,13 +42,10 @@ export function ActiveTimer() {
   const extendScheduleBy = useAppStore(s => s.extendScheduleBy);
   const completeSchedule = useAppStore(s => s.completeSchedule);
   const updateSchedule = useAppStore(s => s.updateSchedule);
-  const [now, setNow] = useState<number | null>(null);
-
-  useEffect(() => {
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  // Stage 4d-B: useState+interval → 공유 useNow (1초 interval 단일화).
+  // hydration 가드: nowMs === 0 → null (SSR snapshot · canSubmit/findActive 차단).
+  const nowMs = useNow();
+  const now: number | null = nowMs > 0 ? nowMs : null;
 
   const actives = useMemo(
     () => (now === null ? [] : findActiveSchedules(schedules, now)),

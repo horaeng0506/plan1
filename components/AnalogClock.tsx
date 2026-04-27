@@ -1,8 +1,9 @@
 'use client';
 
-import {useEffect, useMemo, useState} from 'react';
+import {useMemo} from 'react';
 import {arc as d3Arc} from 'd3-shape';
 import {useAppStore} from '@/lib/store';
+import {useNow} from '@/lib/now';
 
 const SIZE = 260;
 const CENTER = SIZE / 2;
@@ -38,13 +39,9 @@ function isSameDay(a: Date, b: Date): boolean {
 export function AnalogClock() {
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
-  const [now, setNow] = useState<Date | null>(null);
-
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  // Stage 4d-B: useState+interval → 공유 useNow (1초 interval 단일화).
+  const nowMs = useNow();
+  const now = nowMs > 0 ? new Date(nowMs) : null;
 
   const categoryColor = useMemo(() => {
     const map = new Map<string, string>();
