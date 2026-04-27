@@ -15,10 +15,9 @@ const WINDOW_MS = 60_000;
 const store = new Map<string, {count: number; resetAt: number}>();
 
 function getClientKey(request: NextRequest): string {
-  const cf = request.headers.get('cf-connecting-ip');
-  if (cf) return cf.trim();
-  const real = request.headers.get('x-real-ip');
-  if (real) return real.trim();
+  // security-auditor MEDIUM: Vercel platform 이 주입하는 request.ip 우선 (트러스티드 source).
+  // x-forwarded-for·cf-connecting-ip 같은 사용자 위조 가능 헤더는 fallback 만.
+  if (request.ip) return request.ip;
   const xff = request.headers.get('x-forwarded-for');
   if (xff) return xff.split(',')[0].trim();
   return 'anonymous';
@@ -47,10 +46,19 @@ function rateLimited(request: NextRequest): boolean {
 
 export function middleware(request: NextRequest) {
   const {pathname} = request.nextUrl;
-  if (pathname.startsWith('/api/') && request.method === 'POST') {
+  // security-auditor MEDIUM: server action POST 도 rate limit. Next.js 14 는 server
+  // action 호출을 `Next-Action` header 가진 POST 로 보냄 (페이지 경로에 직접 POST).
+  // /api/** 만 보호하면 server action 무한 호출 가능 (JWT 검증 + DB write 부담).
+  const isServerActionPost =
+    request.method === 'POST' && request.headers.get('next-action') !== null;
+  const isApiPost = pathname.startsWith('/api/') && request.method === 'POST';
+  if (isApiPost || isServerActionPost) {
     if (rateLimited(request)) {
       return new NextResponse('rate_limited', {status: 429});
     }
+    if (isApiPost) return NextResponse.next();
+    // server action POST 는 next-intl 라우팅 통과 필요 없음 (이미 locale prefixed
+    // path 로 들어오면 server action handler 가 처리)
     return NextResponse.next();
   }
   return intlMiddleware(request);
