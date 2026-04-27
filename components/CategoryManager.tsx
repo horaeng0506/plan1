@@ -3,12 +3,13 @@
 import {useEffect, useState} from 'react';
 import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
-import {runMutation} from '@/lib/run-mutation';
+import {useRunMutation} from '@/lib/use-run-mutation';
 import {useEscapeKey} from '@/lib/use-escape-key';
 import {useCategoryDisplay} from '@/lib/category-display';
 
 export function CategoryManager({onClose}: {onClose: () => void}) {
   const t = useTranslations();
+  const runMutation = useRunMutation();
   const categoryDisplay = useCategoryDisplay();
   const categories = useAppStore(s => s.categories);
   const schedules = useAppStore(s => s.schedules);
@@ -53,7 +54,7 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
     }
     const count = scheduleCountByCat(id);
     if (count === 0) {
-      runMutation(removeCategory(id, false), 'remove category');
+      runMutation(removeCategory(id, false), 'removeCategory');
       if (confirmId === id) setConfirmId(null);
       return;
     }

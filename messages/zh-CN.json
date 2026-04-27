@@ -51,7 +51,18 @@
     "signIn": "Sign in with Google"
   },
   "error": {
-    "loadFailedLabel": "load failed:"
+    "loadFailedLabel": "load failed:",
+    "mutationFailed": "Failed to {action}: {error}"
+  },
+  "mutation": {
+    "removeCategory": "remove category",
+    "extendTimer": "extend timer",
+    "completeSchedule": "complete schedule",
+    "changeTimerType": "change timer type",
+    "pinActiveTimer": "pin active timer",
+    "setWeekSpan": "set week span",
+    "setTheme": "set theme",
+    "toggleWeeklyPanel": "toggle weekly panel"
   },
   "schedule": {
     "headerNew": "new schedule",

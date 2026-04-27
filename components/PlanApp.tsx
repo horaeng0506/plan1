@@ -4,7 +4,7 @@ import {useEffect, useMemo, useState} from 'react';
 import dynamic from 'next/dynamic';
 import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
-import {runMutation} from '@/lib/run-mutation';
+import {useRunMutation} from '@/lib/use-run-mutation';
 import {AnalogClock} from './AnalogClock';
 import {ActiveTimer} from './ActiveTimer';
 import {ToastContainer} from './ToastContainer';
@@ -70,6 +70,7 @@ const DailyTimeline = dynamic(
 
 export function PlanApp() {
   const t = useTranslations();
+  const runMutation = useRunMutation();
   const loaded = useAppStore(s => s.loaded);
   const loading = useAppStore(s => s.loading);
   const error = useAppStore(s => s.error);
@@ -207,7 +208,7 @@ export function PlanApp() {
                 type="button"
                 className={spanButtonClass(1)}
                 onClick={() =>
-                  runMutation(updateSettings({weekViewSpan: 1}), 'set week span 1')
+                  runMutation(updateSettings({weekViewSpan: 1}), 'setWeekSpan')
                 }
               >
                 {t('nav.weekSpan1')}
@@ -216,7 +217,7 @@ export function PlanApp() {
                 type="button"
                 className={spanButtonClass(2)}
                 onClick={() =>
-                  runMutation(updateSettings({weekViewSpan: 2}), 'set week span 2')
+                  runMutation(updateSettings({weekViewSpan: 2}), 'setWeekSpan')
                 }
               >
                 {t('nav.weekSpan2')}
@@ -225,7 +226,7 @@ export function PlanApp() {
                 type="button"
                 className={spanButtonClass(3)}
                 onClick={() =>
-                  runMutation(updateSettings({weekViewSpan: 3}), 'set week span 3')
+                  runMutation(updateSettings({weekViewSpan: 3}), 'setWeekSpan')
                 }
               >
                 {t('nav.weekSpan3')}
@@ -235,21 +236,21 @@ export function PlanApp() {
               <button
                 type="button"
                 className={themeButtonClass('light')}
-                onClick={() => runMutation(updateSettings({theme: 'light'}), 'set theme light')}
+                onClick={() => runMutation(updateSettings({theme: 'light'}), 'setTheme')}
               >
                 {t('nav.themeLight')}
               </button>
               <button
                 type="button"
                 className={themeButtonClass('dark')}
-                onClick={() => runMutation(updateSettings({theme: 'dark'}), 'set theme dark')}
+                onClick={() => runMutation(updateSettings({theme: 'dark'}), 'setTheme')}
               >
                 {t('nav.themeDark')}
               </button>
               <button
                 type="button"
                 className={themeButtonClass('system')}
-                onClick={() => runMutation(updateSettings({theme: 'system'}), 'set theme system')}
+                onClick={() => runMutation(updateSettings({theme: 'system'}), 'setTheme')}
               >
                 {t('nav.themeSystem')}
               </button>
@@ -260,7 +261,7 @@ export function PlanApp() {
               onClick={() =>
                 runMutation(
                   updateSettings({weeklyPanelHidden: !weeklyPanelHidden}),
-                  'toggle weekly panel'
+                  'toggleWeeklyPanel'
                 )
               }
             >

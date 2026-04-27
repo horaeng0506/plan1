@@ -5,7 +5,7 @@ import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
 import {useCategoryDisplay} from '@/lib/category-display';
-import {runMutation} from '@/lib/run-mutation';
+import {useRunMutation} from '@/lib/use-run-mutation';
 import type {Schedule, TimerType} from '@/lib/domain/types';
 
 function findActiveSchedules(schedules: Schedule[], now: number): Schedule[] {
@@ -38,6 +38,7 @@ function formatWall12(ms: number, amLabel: string, pmLabel: string): string {
 
 export function ActiveTimer() {
   const t = useTranslations();
+  const runMutation = useRunMutation();
   const categoryDisplay = useCategoryDisplay();
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
@@ -99,13 +100,13 @@ export function ActiveTimer() {
     isTimer1 && !frozen && idleSince !== null ? endAt + (now - idleSince) : endAt;
 
   const bump = (mins: number) => {
-    runMutation(extendScheduleBy(active.id, mins), 'extend timer');
+    runMutation(extendScheduleBy(active.id, mins), 'extendTimer');
   };
   const complete = () => {
-    runMutation(completeSchedule(active.id, Date.now()), 'complete schedule');
+    runMutation(completeSchedule(active.id, Date.now()), 'completeSchedule');
   };
   const setType = (t: TimerType) => {
-    runMutation(updateSchedule(active.id, {timerType: t}), 'change timer type');
+    runMutation(updateSchedule(active.id, {timerType: t}), 'changeTimerType');
   };
 
   const toggleFreeze = async () => {
@@ -159,7 +160,7 @@ export function ActiveTimer() {
             onChange={e => {
               runMutation(
                 updateSettings({pinnedActiveId: e.target.value || null}),
-                'pin active timer'
+                'pinActiveTimer'
               );
             }}
             className="ml-1 rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] font-mono text-txt"

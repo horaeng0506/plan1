@@ -51,7 +51,18 @@
     "signIn": "Google 로 로그인"
   },
   "error": {
-    "loadFailedLabel": "불러오기 실패:"
+    "loadFailedLabel": "불러오기 실패:",
+    "mutationFailed": "{action} 실패: {error}"
+  },
+  "mutation": {
+    "removeCategory": "카테고리 삭제",
+    "extendTimer": "타이머 연장",
+    "completeSchedule": "스케줄 완료",
+    "changeTimerType": "타이머 타입 변경",
+    "pinActiveTimer": "타이머 고정",
+    "setWeekSpan": "주간 범위 설정",
+    "setTheme": "테마 설정",
+    "toggleWeeklyPanel": "주간 패널 토글"
   },
   "schedule": {
     "headerNew": "새 스케줄",
