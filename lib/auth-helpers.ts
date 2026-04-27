@@ -15,6 +15,7 @@
  */
 
 import {cookies, headers} from 'next/headers';
+import {ServerActionError} from './server-action';
 import {verifySessionJwt, type SessionUser} from './verify-session';
 
 const COOKIE_NAME = 'cofounder_jwt';
@@ -34,7 +35,7 @@ function getPortalIssuer(): string {
 export async function requireUser(): Promise<SessionUser> {
   const user = await getCurrentSessionUser();
   if (!user) {
-    throw new Error('Unauthorized: no valid session');
+    throw new ServerActionError('serverError.unauthorized');
   }
   return user;
 }

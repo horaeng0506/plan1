@@ -7,6 +7,9 @@
  * createSchedule/updateSchedule 도 split 재계산 필요 → 같은 패턴 재사용.
  *
  * 도메인 함수는 number(ms) 입출력. DB Date 변환은 rowToDomain·domainToRow 책임.
+ *
+ * Stage 5.1 part 2: 사용자 facing error 는 ServerActionError throw → runAction 이
+ * discriminated union return 으로 변환 (Next.js prod redact 회피).
  */
 
 import {randomUUID} from 'node:crypto';
@@ -15,6 +18,7 @@ import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
 import {plan1Schedules, plan1WorkingHours, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
+import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
 import {cascade} from '@/lib/domain/cascade';
 import {splitByWorkingHours} from '@/lib/domain/split';
 import type {Schedule, WorkingHours} from '@/lib/domain/types';
@@ -123,13 +127,15 @@ async function syncSchedules(userId: string, next: Schedule[]): Promise<void> {
   });
 }
 
-export async function listSchedules(): Promise<Schedule[]> {
-  const user = await requireUser();
-  const rows = await db
-    .select()
-    .from(plan1Schedules)
-    .where(eq(plan1Schedules.userId, user.id));
-  return rows.map(rowToDomain);
+export async function listSchedules(): Promise<ServerActionResult<Schedule[]>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    const rows = await db
+      .select()
+      .from(plan1Schedules)
+      .where(eq(plan1Schedules.userId, user.id));
+    return rows.map(rowToDomain);
+  });
 }
 
 export async function createSchedule(input: {
@@ -139,28 +145,30 @@ export async function createSchedule(input: {
   durationMin: number;
   timerType: 'countup' | 'timer1' | 'countdown';
   chainedToPrev?: boolean;
-}): Promise<Schedule[]> {
-  const user = await requireUser();
-  const state = await loadUserState(user.id);
-  const newSchedule: Schedule = {
-    id: `sch-${randomUUID()}`,
-    title: input.title,
-    categoryId: input.categoryId,
-    startAt: input.startAt,
-    durationMin: input.durationMin,
-    timerType: input.timerType,
-    status: 'pending',
-    chainedToPrev: input.chainedToPrev ?? false,
-    createdAt: Date.now(),
-    updatedAt: Date.now()
-  };
-  // logic-critic Critical #1·#2: split input 은 원본만 (기존 part 는 split 이 deterministic ID 로 재생성)
-  const originals = state.schedules.filter(s => !s.splitFrom);
-  const merged = [...originals, newSchedule];
-  const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
-  await syncSchedules(user.id, split);
-  revalidatePath('/');
-  return split;
+}): Promise<ServerActionResult<Schedule[]>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    const state = await loadUserState(user.id);
+    const newSchedule: Schedule = {
+      id: `sch-${randomUUID()}`,
+      title: input.title,
+      categoryId: input.categoryId,
+      startAt: input.startAt,
+      durationMin: input.durationMin,
+      timerType: input.timerType,
+      status: 'pending',
+      chainedToPrev: input.chainedToPrev ?? false,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    // logic-critic Critical #1·#2: split input 은 원본만 (기존 part 는 split 이 deterministic ID 로 재생성)
+    const originals = state.schedules.filter(s => !s.splitFrom);
+    const merged = [...originals, newSchedule];
+    const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
+    await syncSchedules(user.id, split);
+    revalidatePath('/');
+    return split;
+  });
 }
 
 export async function updateSchedule(input: {
@@ -171,83 +179,89 @@ export async function updateSchedule(input: {
   categoryId?: string;
   timerType?: 'countup' | 'timer1' | 'countdown';
   chainedToPrev?: boolean;
-}): Promise<Schedule[]> {
-  const user = await requireUser();
-  const state = await loadUserState(user.id);
-  const target = state.schedules.find(s => s.id === input.id);
-  if (!target) throw new Error('Schedule not found');
+}): Promise<ServerActionResult<Schedule[]>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    const state = await loadUserState(user.id);
+    const target = state.schedules.find(s => s.id === input.id);
+    if (!target) throw new ServerActionError('serverError.scheduleNotFound');
 
-  // logic-critic Critical #2: cascade input 에서 part 제외 (splitFrom != null).
-  // part 들은 split 단계에서 deterministic ID 로 재생성됨.
-  const originals = state.schedules.filter(s => !s.splitFrom);
+    // logic-critic Critical #2: cascade input 에서 part 제외 (splitFrom != null).
+    // part 들은 split 단계에서 deterministic ID 로 재생성됨.
+    const originals = state.schedules.filter(s => !s.splitFrom);
 
-  // logic-critic Major: 메타 patch 를 cascade 전에 적용 (chainedToPrev 변경이 cascade 에 즉시 반영)
-  const metaPatched = originals.map(s =>
-    s.id === input.id
-      ? {
-          ...s,
-          title: input.title ?? s.title,
-          categoryId: input.categoryId ?? s.categoryId,
-          timerType: input.timerType ?? s.timerType,
-          chainedToPrev: input.chainedToPrev ?? s.chainedToPrev
-        }
-      : s
-  );
+    // logic-critic Major: 메타 patch 를 cascade 전에 적용 (chainedToPrev 변경이 cascade 에 즉시 반영)
+    const metaPatched = originals.map(s =>
+      s.id === input.id
+        ? {
+            ...s,
+            title: input.title ?? s.title,
+            categoryId: input.categoryId ?? s.categoryId,
+            timerType: input.timerType ?? s.timerType,
+            chainedToPrev: input.chainedToPrev ?? s.chainedToPrev
+          }
+        : s
+    );
 
-  // cascade 는 startAt/duration 변경 시만 의미. 기타 필드만 patch 인 경우 cascade 가 delta=0 이라 noop.
-  const newStartAt = input.startAt ?? target.startAt;
-  const newDuration = input.durationMin ?? target.durationMin;
-  const cascaded = cascade(metaPatched, input.id, newStartAt, newDuration);
+    // cascade 는 startAt/duration 변경 시만 의미. 기타 필드만 patch 인 경우 cascade 가 delta=0 이라 noop.
+    const newStartAt = input.startAt ?? target.startAt;
+    const newDuration = input.durationMin ?? target.durationMin;
+    const cascaded = cascade(metaPatched, input.id, newStartAt, newDuration);
 
-  // split 가 deterministic ID 로 part 재생성 (idempotent — Critical #1).
-  const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
-  await syncSchedules(user.id, split);
-  revalidatePath('/');
-  return split;
+    // split 가 deterministic ID 로 part 재생성 (idempotent — Critical #1).
+    const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
+    await syncSchedules(user.id, split);
+    revalidatePath('/');
+    return split;
+  });
 }
 
-export async function deleteSchedule(id: string): Promise<void> {
-  const user = await requireUser();
-  // self-FK cascade 가 splitFrom=id 인 part 들 동반 삭제 (Stage 21)
-  // settings.pinned_active_id FK set null 로 stale pin 자동 해제 (Stage 20)
-  await db
-    .delete(plan1Schedules)
-    .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)));
-  revalidatePath('/');
+export async function deleteSchedule(id: string): Promise<ServerActionResult<void>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    // self-FK cascade 가 splitFrom=id 인 part 들 동반 삭제 (Stage 21)
+    // settings.pinned_active_id FK set null 로 stale pin 자동 해제 (Stage 20)
+    await db
+      .delete(plan1Schedules)
+      .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)));
+    revalidatePath('/');
+  });
 }
 
 export async function completeSchedule(input: {
   id: string;
   completeAtMs: number;
-}): Promise<Schedule[]> {
-  const user = await requireUser();
-  const state = await loadUserState(user.id);
-  const target = state.schedules.find(s => s.id === input.id);
-  if (!target) throw new Error('Schedule not found');
+}): Promise<ServerActionResult<Schedule[]>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    const state = await loadUserState(user.id);
+    const target = state.schedules.find(s => s.id === input.id);
+    if (!target) throw new ServerActionError('serverError.scheduleNotFound');
 
-  // logic-critic Critical #1·#2: cascade·split input 에서 part 제외
-  const originals = state.schedules.filter(s => !s.splitFrom);
-  const originalDuration = target.durationMin;
-  const actualMin = Math.max(0, Math.round((input.completeAtMs - target.startAt) / 60_000));
+    // logic-critic Critical #1·#2: cascade·split input 에서 part 제외
+    const originals = state.schedules.filter(s => !s.splitFrom);
+    const originalDuration = target.durationMin;
+    const actualMin = Math.max(0, Math.round((input.completeAtMs - target.startAt) / 60_000));
 
-  // cascade 는 delta 계산 위해 actualMin 을 newDuration 으로 받음 (뒤 chain shift).
-  // 그러나 edited schedule 자체는 durationMin 원래 값 보존 + actualDurationMin 별도 patch
-  // (logic-critic Critical #3 — planned vs actual 비교 데이터 보존).
-  const cascaded = cascade(originals, input.id, target.startAt, actualMin).map(s =>
-    s.id === input.id
-      ? {
-          ...s,
-          durationMin: originalDuration,
-          status: 'done' as const,
-          actualDurationMin: actualMin
-        }
-      : s
-  );
+    // cascade 는 delta 계산 위해 actualMin 을 newDuration 으로 받음 (뒤 chain shift).
+    // 그러나 edited schedule 자체는 durationMin 원래 값 보존 + actualDurationMin 별도 patch
+    // (logic-critic Critical #3 — planned vs actual 비교 데이터 보존).
+    const cascaded = cascade(originals, input.id, target.startAt, actualMin).map(s =>
+      s.id === input.id
+        ? {
+            ...s,
+            durationMin: originalDuration,
+            status: 'done' as const,
+            actualDurationMin: actualMin
+          }
+        : s
+    );
 
-  const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
-  await syncSchedules(user.id, split);
-  revalidatePath('/');
-  return split;
+    const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
+    await syncSchedules(user.id, split);
+    revalidatePath('/');
+    return split;
+  });
 }
 
 /**
@@ -255,33 +269,35 @@ export async function completeSchedule(input: {
  * splitFrom 가 가리키는 원본이 schedules 에 없으면 그 part 삭제.
  * DB self-FK cascade 가 정상 경로에선 처리하지만, 외부 데이터 import·과거 fixture 잔존 시 안전망.
  */
-export async function cleanOrphans(): Promise<void> {
-  const user = await requireUser();
-  const orphanRows = await db
-    .select({id: plan1Schedules.id, splitFrom: plan1Schedules.splitFrom})
-    .from(plan1Schedules)
-    .where(and(eq(plan1Schedules.userId, user.id), isNotNull(plan1Schedules.splitFrom)));
+export async function cleanOrphans(): Promise<ServerActionResult<void>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    const orphanRows = await db
+      .select({id: plan1Schedules.id, splitFrom: plan1Schedules.splitFrom})
+      .from(plan1Schedules)
+      .where(and(eq(plan1Schedules.userId, user.id), isNotNull(plan1Schedules.splitFrom)));
 
-  if (orphanRows.length === 0) return;
+    if (orphanRows.length === 0) return;
 
-  const allIds = new Set(
-    (
-      await db
-        .select({id: plan1Schedules.id})
-        .from(plan1Schedules)
-        .where(eq(plan1Schedules.userId, user.id))
-    ).map(r => r.id)
-  );
+    const allIds = new Set(
+      (
+        await db
+          .select({id: plan1Schedules.id})
+          .from(plan1Schedules)
+          .where(eq(plan1Schedules.userId, user.id))
+      ).map(r => r.id)
+    );
 
-  const toDelete = orphanRows.filter(r => r.splitFrom && !allIds.has(r.splitFrom)).map(r => r.id);
-  if (toDelete.length === 0) return;
+    const toDelete = orphanRows.filter(r => r.splitFrom && !allIds.has(r.splitFrom)).map(r => r.id);
+    if (toDelete.length === 0) return;
 
-  await db.transaction(async tx => {
-    for (const id of toDelete) {
-      await tx
-        .delete(plan1Schedules)
-        .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)));
-    }
+    await db.transaction(async tx => {
+      for (const id of toDelete) {
+        await tx
+          .delete(plan1Schedules)
+          .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)));
+      }
+    });
+    revalidatePath('/');
   });
-  revalidatePath('/');
 }
