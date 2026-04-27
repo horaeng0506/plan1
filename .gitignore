@@ -37,3 +37,4 @@ tsconfig.tsbuildinfo
 # Cloudflare (legacy · Vite 시점 잔재 · 2026-04-27 마이그 후 제거 가능)
 .wrangler/
 .vercel
+.vercel
