@@ -27,7 +27,20 @@ function ensureInterval(): void {
     nowCache = Date.now();
     notify();
   }, 1000);
+  // Stage 4e env-critic Major fix: 백그라운드 탭에서 setInterval throttle (~1분).
+  // visibilitychange 로 탭 복귀 시 즉시 nowCache 갱신 + notify (시계·타이머 시각 점프 방지).
+  if (typeof document !== 'undefined' && !visibilityHandler) {
+    visibilityHandler = () => {
+      if (document.visibilityState === 'visible') {
+        nowCache = Date.now();
+        notify();
+      }
+    };
+    document.addEventListener('visibilitychange', visibilityHandler);
+  }
 }
+
+let visibilityHandler: (() => void) | null = null;
 
 function teardownIfIdle(): void {
   if (intervalId !== null && listeners.size === 0) {
@@ -36,6 +49,10 @@ function teardownIfIdle(): void {
     // nowCache 는 0 으로 reset 하지 않음 — 다음 subscribe 시 ensureInterval 가
     // Date.now() 재할당. 0 reset 시 hydration 가드 (`now > 0`) 가 일시적 false 로
     // 떨어져 사용자 인터랙션 차단 위험.
+    if (typeof document !== 'undefined' && visibilityHandler) {
+      document.removeEventListener('visibilitychange', visibilityHandler);
+      visibilityHandler = null;
+    }
   }
 }
 

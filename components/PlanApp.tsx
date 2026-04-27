@@ -8,22 +8,24 @@ import {useRunMutation} from '@/lib/use-run-mutation';
 import {AnalogClock} from './AnalogClock';
 import {ActiveTimer} from './ActiveTimer';
 import {ToastContainer} from './ToastContainer';
+import {ModalSkeleton} from './ModalSkeleton';
 import {useNow} from '@/lib/now';
 import type {Theme} from '@/lib/domain/types';
 
 // Stage 4d-B: 모달 3개 lazy import (사용자 trigger 전 로드 안 됨 → bundle 절약).
-// SSR 안 함 — 모달은 클라 only. 로딩 중엔 null 반환 (모달 자체 비주얼 없음).
+// Stage 4e: ModalSkeleton 추가로 50-200ms chunk fetch 깜빡임 차단.
+// SSR 안 함 — 모달은 클라 only.
 const NewScheduleModal = dynamic(
   () => import('./NewScheduleModal').then(m => m.NewScheduleModal),
-  {ssr: false}
+  {ssr: false, loading: ModalSkeleton}
 );
 const CategoryManager = dynamic(
   () => import('./CategoryManager').then(m => m.CategoryManager),
-  {ssr: false}
+  {ssr: false, loading: ModalSkeleton}
 );
 const WorkingHoursEditor = dynamic(
   () => import('./WorkingHoursEditor').then(m => m.WorkingHoursEditor),
-  {ssr: false}
+  {ssr: false, loading: ModalSkeleton}
 );
 
 const DOW = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -168,7 +170,14 @@ export function PlanApp() {
     return () => mq.removeEventListener('change', apply);
   }, [theme]);
 
+  // Stage 4e env-critic Major fix: newOpen 과 editingId 동시 mount race 차단.
+  // Esc 키 1회로 둘 다 닫히는 시나리오 회피 + 사용자 mental model 정렬.
+  const openNew = () => {
+    setEditingId(null);
+    setNewOpen(true);
+  };
   const handleEventClick = (id: string, splitFrom?: string) => {
+    setNewOpen(false);
     setEditingId(splitFrom ?? id);
   };
 
@@ -273,7 +282,7 @@ export function PlanApp() {
             <button type="button" className={neutralBtn} onClick={() => setCatOpen(true)}>
               {t('nav.categories')}
             </button>
-            <button type="button" className={primaryBtn} onClick={() => setNewOpen(true)}>
+            <button type="button" className={primaryBtn} onClick={openNew}>
               + {t('nav.newSchedule')}
             </button>
           </div>
