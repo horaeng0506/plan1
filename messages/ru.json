@@ -1,165 +1,165 @@
 {
-  "app": {
-    "title": "plan1",
-    "tagline": "schedule manager"
-  },
-  "header": {
-    "today": "today",
-    "week": "week",
-    "clock": "clock",
-    "timer": "timer"
-  },
-  "meta": {
-    "spanSuffix": "w",
-    "eventsLabel": "events",
-    "activeLabel": "active",
-    "idle": "idle",
-    "amLower": "am",
-    "pmLower": "pm",
-    "twelveHour": "12h",
-    "loadingFormat": "{name} · loading...",
-    "placeholder": "—"
-  },
-  "nav": {
-    "newSchedule": "new",
-    "categories": "categories",
-    "workingHours": "hours",
-    "weekSpan1": "1w",
-    "weekSpan2": "2w",
-    "weekSpan3": "3w",
-    "themeLight": "light",
-    "themeDark": "dark",
-    "themeSystem": "auto",
-    "weeklyShow": "show week",
-    "weeklyHide": "hide week"
-  },
-  "common": {
-    "cancel": "cancel",
-    "save": "save",
-    "add": "add",
-    "delete": "delete",
-    "close": "close",
-    "retry": "retry",
-    "now": "now",
-    "confirmDelete": "confirm delete",
-    "dismiss": "dismiss"
-  },
-  "loading": "loading...",
-  "auth": {
-    "signInRequired": "Sign in to use plan1",
-    "signInDescription": "plan1 is a personal schedule tool with cross-device sync. Sign in with Google to get started.",
-    "signIn": "Sign in with Google"
-  },
-  "error": {
-    "loadFailedLabel": "load failed:",
-    "mutationFailed": "Failed to {action}: {error}",
-    "unknown": "An unexpected error occurred. Please try again."
-  },
-  "mutation": {
-    "removeCategory": "remove category",
-    "extendTimer": "extend timer",
-    "completeSchedule": "complete schedule",
-    "changeTimerType": "change timer type",
-    "pinActiveTimer": "pin active timer",
-    "setWeekSpan": "set week span",
-    "setTheme": "set theme",
-    "toggleWeeklyPanel": "toggle weekly panel"
-  },
-  "onboarding": {
-    "welcome": "No schedules yet",
-    "firstSchedule": "Add your first schedule to see it on the weekly grid, today's timeline, and the analog clock.",
-    "addFirst": "add first schedule"
-  },
-  "schedule": {
-    "headerNew": "new schedule",
-    "headerEdit": "edit schedule",
-    "fieldName": "name",
-    "fieldCategory": "category",
-    "fieldStartDate": "start date",
-    "fieldStartHour": "start hour",
-    "fieldStartMinute": "start minute",
-    "fieldDuration": "duration (min)",
-    "categoryAddOption": "+ add category",
-    "hourSuffix": "h",
-    "minuteSuffix": "m",
-    "buttonNow": "now (start = now)",
-    "warningFutureRequired": "Start time must be in the future.",
-    "buttonMinus30": "-30m",
-    "buttonMinus10": "-10m",
-    "buttonPlus10": "+10m",
-    "buttonPlus30": "+30m",
-    "buttonPlusHour": "+1h",
-    "endLabel": "end",
-    "endEmpty": "— (duration 0m)",
-    "chainedCheckbox": "chain to previous schedule (receive cascade)",
-    "chainedHelp": "When the previous schedule extends or shrinks, this one moves with it (gap preserved).",
-    "buttonNextAfter": "next +10m (new schedule after complete)",
-    "nextAfterTooltip": "Save current edit (if dirty) and open new schedule modal with start = endAt + 10m",
-    "warningEditIncomplete": "Current edit incomplete (check name/category/duration). Not saved — fix and retry."
-  },
-  "category": {
-    "header": "categories",
-    "empty": "No categories.",
-    "fieldName": "name",
-    "fieldColor": "color",
-    "scheduleCountSuffix": "{count} schedules",
-    "removeButton": "rm",
-    "confirmRemoveLabel": "confirm rm ({count})",
-    "confirmRemoveText": "{count} schedule(s) will be deleted with this. Click again to confirm.",
-    "defaultName": "default"
-  },
-  "workingHours": {
-    "header": "working hours",
-    "tabSingle": "single",
-    "tabRange": "range",
-    "fieldDate": "date",
-    "fieldFromDate": "from",
-    "fieldToDate": "to",
-    "checkboxWeekdaysOnly": "weekdays only (mon–fri)",
-    "fieldStartTime": "start time",
-    "fieldEndTime": "end time",
-    "errorEndAfterStart": "End time must be after start time.",
-    "errorToAfterFrom": "End date must be on or after start date.",
-    "checkboxAlsoDefault": "also save as default",
-    "warningNoDates": "No dates to apply in range. (start > end or weekdays-only conflict)",
-    "warningTruncated": "Range exceeds {max} days, only partial processed. Try a narrower range."
-  },
-  "timer": {
-    "idleEmpty": "idle · no active schedule",
-    "overlapLabel": "overlap {count}",
-    "pinLabel": "pin",
-    "pinAuto": "auto (first)",
-    "typeCountup": "countup",
-    "typeTimer1": "timer1",
-    "typeCountdown": "countdown",
-    "labelElapsed": "elapsed",
-    "labelTarget": "target",
-    "labelRemaining": "remaining",
-    "labelEndAt": "end-at",
-    "buttonFocus": "focus",
-    "buttonIdle": "idle",
-    "tooltipClickToIdle": "click to switch to idle",
-    "tooltipClickToFocus": "click to switch to focus",
-    "buttonComplete": "complete",
-    "categoryFallback": "?"
-  },
-  "weekdays": {
-    "0": "sun",
-    "1": "mon",
-    "2": "tue",
-    "3": "wed",
-    "4": "thu",
-    "5": "fri",
-    "6": "sat"
-  },
-  "wallTime": {
-    "am": "am",
-    "pm": "pm"
-  },
-  "serverError": {
-    "unauthorized": "Sign in required.",
-    "scheduleNotFound": "Schedule not found.",
-    "categoryNotFound": "Category not found or not owned.",
-    "categoryHasSchedules": "Category has {scheduleCount, plural, one {1 schedule} other {# schedules}}. Confirm cascade delete to remove."
-  }
+    "app": {
+        "tagline": "менеджер расписаний",
+        "title": "plan1"
+    },
+    "auth": {
+        "signIn": "Войти через Google",
+        "signInDescription": "plan1 — это персональный инструмент планирования с синхронизацией между устройствами. Войдите через Google, чтобы начать.",
+        "signInRequired": "Войдите, чтобы использовать plan1"
+    },
+    "category": {
+        "confirmRemoveLabel": "подтвердить уд ({count})",
+        "confirmRemoveText": "{count} расписание/расписаний будет удалено вместе с этим. Нажмите еще раз для подтверждения.",
+        "defaultName": "по умолчанию",
+        "empty": "Нет категорий.",
+        "fieldColor": "цвет",
+        "fieldName": "название",
+        "header": "категории",
+        "removeButton": "уд",
+        "scheduleCountSuffix": "{count} расписаний"
+    },
+    "common": {
+        "add": "добавить",
+        "cancel": "отмена",
+        "close": "закрыть",
+        "confirmDelete": "подтвердить удаление",
+        "delete": "удалить",
+        "dismiss": "отклонить",
+        "now": "сейчас",
+        "retry": "повтор",
+        "save": "сохранить"
+    },
+    "error": {
+        "loadFailedLabel": "ошибка загрузки:",
+        "mutationFailed": "Не удалось выполнить {action}: {error}",
+        "unknown": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова."
+    },
+    "header": {
+        "clock": "часы",
+        "timer": "таймер",
+        "today": "сегодня",
+        "week": "неделя"
+    },
+    "loading": "загрузка...",
+    "meta": {
+        "activeLabel": "активный",
+        "amLower": "am",
+        "eventsLabel": "события",
+        "idle": "простой",
+        "loadingFormat": "{name} · загрузка...",
+        "placeholder": "—",
+        "pmLower": "pm",
+        "spanSuffix": "н",
+        "twelveHour": "12ч"
+    },
+    "mutation": {
+        "changeTimerType": "изменить тип таймера",
+        "completeSchedule": "завершить расписание",
+        "extendTimer": "продлить таймер",
+        "pinActiveTimer": "закрепить активный таймер",
+        "removeCategory": "удалить категорию",
+        "setTheme": "установить тему",
+        "setWeekSpan": "установить диапазон недель",
+        "toggleWeeklyPanel": "переключить недельную панель"
+    },
+    "nav": {
+        "categories": "категории",
+        "newSchedule": "новое",
+        "themeDark": "темная",
+        "themeLight": "светлая",
+        "themeSystem": "авто",
+        "weekSpan1": "1н",
+        "weekSpan2": "2н",
+        "weekSpan3": "3н",
+        "weeklyHide": "скрыть неделю",
+        "weeklyShow": "показать неделю",
+        "workingHours": "часы"
+    },
+    "onboarding": {
+        "addFirst": "добавить первое расписание",
+        "firstSchedule": "Добавьте свое первое расписание, чтобы увидеть его в недельной сетке, временной шкале сегодня и на аналоговых часах.",
+        "welcome": "Расписаний пока нет"
+    },
+    "schedule": {
+        "buttonMinus10": "-10м",
+        "buttonMinus30": "-30м",
+        "buttonNextAfter": "следующий +10м (новое расписание после завершения)",
+        "buttonNow": "сейчас (начало = сейчас)",
+        "buttonPlus10": "+10м",
+        "buttonPlus30": "+30м",
+        "buttonPlusHour": "+1ч",
+        "categoryAddOption": "+ добавить категорию",
+        "chainedCheckbox": "привязать к предыдущему расписанию (получать каскад)",
+        "chainedHelp": "Когда предыдущее расписание расширяется или сокращается, это перемещается вместе с ним (промежуток сохраняется).",
+        "endEmpty": "— (длительность 0м)",
+        "endLabel": "конец",
+        "fieldCategory": "категория",
+        "fieldDuration": "длительность (мин)",
+        "fieldName": "название",
+        "fieldStartDate": "дата начала",
+        "fieldStartHour": "час начала",
+        "fieldStartMinute": "минута начала",
+        "headerEdit": "редактировать расписание",
+        "headerNew": "новое расписание",
+        "hourSuffix": "ч",
+        "minuteSuffix": "м",
+        "nextAfterTooltip": "Сохранить текущее изменение (если есть) и открыть модальное окно нового расписания с началом = конец + 10м",
+        "warningEditIncomplete": "Текущее редактирование не завершено (проверьте название/категорию/длительность). Не сохранено — исправьте и повторите.",
+        "warningFutureRequired": "Время начала должно быть в будущем."
+    },
+    "serverError": {
+        "categoryHasSchedules": "Категория содержит {scheduleCount} расписаний. Подтвердите каскадное удаление для удаления.",
+        "categoryNotFound": "Категория не найдена или не принадлежит вам.",
+        "scheduleNotFound": "Расписание не найдено.",
+        "unauthorized": "Требуется вход в систему."
+    },
+    "timer": {
+        "buttonComplete": "завершить",
+        "buttonFocus": "фокус",
+        "buttonIdle": "простой",
+        "categoryFallback": "?",
+        "idleEmpty": "простой · нет активного расписания",
+        "labelElapsed": "прошло",
+        "labelEndAt": "конец-в",
+        "labelRemaining": "осталось",
+        "labelTarget": "цель",
+        "overlapLabel": "наложение {count}",
+        "pinAuto": "авто (первый)",
+        "pinLabel": "закрепить",
+        "tooltipClickToFocus": "нажмите для переключения в режим фокуса",
+        "tooltipClickToIdle": "нажмите для переключения в режим простоя",
+        "typeCountdown": "обратный отсчет",
+        "typeCountup": "прямой отсчет",
+        "typeTimer1": "таймер1"
+    },
+    "wallTime": {
+        "am": "am",
+        "pm": "pm"
+    },
+    "weekdays": [
+        "вс",
+        "пн",
+        "вт",
+        "ср",
+        "чт",
+        "пт",
+        "сб"
+    ],
+    "workingHours": {
+        "checkboxAlsoDefault": "также сохранить как по умолчанию",
+        "checkboxWeekdaysOnly": "только будни (пн–пт)",
+        "errorEndAfterStart": "Время окончания должно быть после времени начала.",
+        "errorToAfterFrom": "Дата окончания должна быть не раньше даты начала.",
+        "fieldDate": "дата",
+        "fieldEndTime": "время окончания",
+        "fieldFromDate": "от",
+        "fieldStartTime": "время начала",
+        "fieldToDate": "до",
+        "header": "рабочие часы",
+        "tabRange": "диапазон",
+        "tabSingle": "одиночный",
+        "warningNoDates": "Нет дат для применения в диапазоне. (начало > конца или конфликт только по будням)",
+        "warningTruncated": "Диапазон превышает {max} дней, обработан только частично. Попробуйте более узкий диапазон."
+    }
 }

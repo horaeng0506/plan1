@@ -160,6 +160,6 @@
     "unauthorized": "Sign in required.",
     "scheduleNotFound": "Schedule not found.",
     "categoryNotFound": "Category not found or not owned.",
-    "categoryHasSchedules": "Category has {scheduleCount, plural, one {1 schedule} other {# schedules}}. Confirm cascade delete to remove."
+    "categoryHasSchedules": "Category has {scheduleCount} schedules. Confirm cascade delete to remove."
   }
 }
