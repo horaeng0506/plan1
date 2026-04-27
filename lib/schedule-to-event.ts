@@ -1,5 +1,5 @@
 import type { EventInput } from '@fullcalendar/core'
-import type { Schedule, Category } from '../domain/types'
+import type { Schedule, Category } from './domain/types'
 
 function tint(hex: string, alpha: number): string {
   const m = /^#?([0-9a-fA-F]{6})$/.exec(hex)
