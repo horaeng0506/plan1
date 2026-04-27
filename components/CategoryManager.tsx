@@ -1,11 +1,15 @@
 'use client';
 
 import {useEffect, useState} from 'react';
+import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {runMutation} from '@/lib/run-mutation';
 import {useEscapeKey} from '@/lib/use-escape-key';
+import {useCategoryDisplay} from '@/lib/category-display';
 
 export function CategoryManager({onClose}: {onClose: () => void}) {
+  const t = useTranslations();
+  const categoryDisplay = useCategoryDisplay();
   const categories = useAppStore(s => s.categories);
   const schedules = useAppStore(s => s.schedules);
   const addCategory = useAppStore(s => s.addCategory);
@@ -89,12 +93,12 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
         onClick={e => e.stopPropagation()}
       >
         <h2 className="mb-4 text-sm font-semibold text-success font-mono">
-          categories
+          {t('category.header')}
         </h2>
 
         <ul className="mb-4 space-y-1 max-h-64 overflow-y-auto">
           {categories.length === 0 && (
-            <li className="text-sm text-muted">카테고리가 없습니다.</li>
+            <li className="text-sm text-muted">{t('category.empty')}</li>
           )}
           {categories.map(c => {
             const count = scheduleCountByCat(c.id);
@@ -109,9 +113,11 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
                     className="inline-block h-3 w-3 rounded-none"
                     style={{backgroundColor: c.color}}
                   />
-                  {c.name}
+                  {categoryDisplay(c)}
                   {count > 0 && (
-                    <span className="text-[10px] text-muted">· {count} 스케줄</span>
+                    <span className="text-[10px] text-muted">
+                      · {t('category.scheduleCountSuffix', {count})}
+                    </span>
                   )}
                 </span>
                 <button
@@ -120,7 +126,9 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
                   disabled={busy}
                   className={armed ? dangerArmedBtn : count > 0 ? dangerOutlineBtn : neutralRmBtn}
                 >
-                  {armed ? `confirm rm (${count})` : 'rm'}
+                  {armed
+                    ? t('category.confirmRemoveLabel', {count})
+                    : t('category.removeButton')}
                 </button>
               </li>
             );
@@ -128,20 +136,20 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
         </ul>
         {confirmId && (
           <div className="mb-4 border border-danger bg-[rgba(224,108,117,0.1)] px-3 py-2 text-xs font-mono text-danger">
-            {scheduleCountByCat(confirmId)}개 스케줄이 함께 삭제됩니다. 다시 클릭하면 즉시 실행.
+            {t('category.confirmRemoveText', {count: scheduleCountByCat(confirmId)})}
             <button
               type="button"
               onClick={() => setConfirmId(null)}
               className="ml-2 underline"
             >
-              cancel
+              {t('common.cancel')}
             </button>
           </div>
         )}
 
         <div className="space-y-3 border-t border-line pt-4">
           <label className="block">
-            <span className="mb-1 block text-sm text-txt font-mono">name</span>
+            <span className="mb-1 block text-sm text-txt font-mono">{t('category.fieldName')}</span>
             <input
               type="text"
               value={name}
@@ -150,7 +158,7 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm text-txt font-mono">color</span>
+            <span className="mb-1 block text-sm text-txt font-mono">{t('category.fieldColor')}</span>
             <input
               type="color"
               value={color}
@@ -164,7 +172,7 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
             disabled={!canAdd}
             className="w-full rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            add
+            {t('common.add')}
           </button>
         </div>
 
@@ -174,7 +182,7 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
             onClick={onClose}
             className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
           >
-            close
+            {t('common.close')}
           </button>
         </div>
       </div>

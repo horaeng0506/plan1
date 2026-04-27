@@ -25,11 +25,12 @@ export function runMutation<T>(
 ): void {
   promise.catch((err: unknown) => {
     const msg = err instanceof Error ? err.message : String(err);
-    const userMsg = context ? `${context} · ${msg}` : msg;
     if (severity !== 'silent') {
-      pushToast(userMsg, SEVERITY_TO_TOAST[severity]);
+      // Stage 5 i18n: context 인자는 dev console 전용 (영어 raw). user-facing toast 에는
+      // server error message 만 노출. Stage 5.1 (이월): context 시그니처를 i18n key 로
+      // 변경 + server error 도 i18n key throw 패턴 도입 (영어 raw leak 완전 차단).
+      pushToast(msg, SEVERITY_TO_TOAST[severity]);
     }
-    // dev 환경 콘솔 흔적 유지 — production 노이즈 방지 위해 NODE_ENV 가드.
     if (process.env.NODE_ENV !== 'production' && severity !== 'silent') {
       // eslint-disable-next-line no-console
       console.error(`[mutation${context ? ` · ${context}` : ''}]`, msg);

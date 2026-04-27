@@ -1,6 +1,7 @@
 'use client';
 
 import {useState} from 'react';
+import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useEscapeKey} from '@/lib/use-escape-key';
 
@@ -57,6 +58,7 @@ function enumerateDates(
 type Mode = 'single' | 'range';
 
 export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
+  const t = useTranslations();
   const defaultWH = useAppStore(s => s.settings.defaultWorkingHours);
   const setWorkingHours = useAppStore(s => s.setWorkingHours);
   const bulkSetWorkingHours = useAppStore(s => s.bulkSetWorkingHours);
@@ -93,13 +95,11 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
       } else {
         const {dates, truncated} = enumerateDates(fromDate, toDate, weekdaysOnly);
         if (dates.length === 0) {
-          setWarn('범위에 적용할 날짜가 없습니다. (시작일 > 종료일 또는 평일만 옵션과 충돌)');
+          setWarn(t('workingHours.warningNoDates'));
           return;
         }
         if (truncated) {
-          setWarn(
-            `범위가 ${DATE_GUARD_MAX}일을 초과해 일부만 처리됩니다. 더 좁은 범위로 다시 시도하세요.`
-          );
+          setWarn(t('workingHours.warningTruncated', {max: DATE_GUARD_MAX}));
           return;
         }
         await bulkSetWorkingHours(dates, hours);
@@ -132,22 +132,22 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
         onClick={e => e.stopPropagation()}
       >
         <h2 className="mb-4 text-sm font-semibold text-success font-mono">
-          working hours
+          {t('workingHours.header')}
         </h2>
 
         <div className="mb-4 flex gap-1">
           <button type="button" className={tabBtn(mode === 'single')} onClick={() => setMode('single')}>
-            single
+            {t('workingHours.tabSingle')}
           </button>
           <button type="button" className={tabBtn(mode === 'range')} onClick={() => setMode('range')}>
-            range
+            {t('workingHours.tabRange')}
           </button>
         </div>
 
         <div className="space-y-3">
           {mode === 'single' && (
             <label className="block">
-              <span className="mb-1 block text-sm text-txt">날짜</span>
+              <span className="mb-1 block text-sm text-txt">{t('workingHours.fieldDate')}</span>
               <input
                 type="date"
                 value={date}
@@ -160,7 +160,7 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
             <>
               <div className="grid grid-cols-2 gap-2">
                 <label className="block">
-                  <span className="mb-1 block text-sm text-txt">시작일</span>
+                  <span className="mb-1 block text-sm text-txt">{t('workingHours.fieldFromDate')}</span>
                   <input
                     type="date"
                     value={fromDate}
@@ -169,7 +169,7 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
                   />
                 </label>
                 <label className="block">
-                  <span className="mb-1 block text-sm text-txt">종료일</span>
+                  <span className="mb-1 block text-sm text-txt">{t('workingHours.fieldToDate')}</span>
                   <input
                     type="date"
                     value={toDate}
@@ -184,13 +184,13 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
                   checked={weekdaysOnly}
                   onChange={e => setWeekdaysOnly(e.target.checked)}
                 />
-                평일만 (월~금)
+                {t('workingHours.checkboxWeekdaysOnly')}
               </label>
             </>
           )}
           <div className="grid grid-cols-2 gap-2">
             <label className="block">
-              <span className="mb-1 block text-sm text-txt">시작 시각</span>
+              <span className="mb-1 block text-sm text-txt">{t('workingHours.fieldStartTime')}</span>
               <input
                 type="time"
                 value={startTime}
@@ -199,7 +199,7 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm text-txt">종료 시각</span>
+              <span className="mb-1 block text-sm text-txt">{t('workingHours.fieldEndTime')}</span>
               <input
                 type="time"
                 value={endTime}
@@ -209,10 +209,10 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
             </label>
           </div>
           {!validTime && (
-            <p className="text-xs text-danger">종료 시각은 시작 시각보다 늦어야 합니다.</p>
+            <p className="text-xs text-danger">{t('workingHours.errorEndAfterStart')}</p>
           )}
           {mode === 'range' && !validRange && (
-            <p className="text-xs text-danger">종료일은 시작일과 같거나 이후여야 합니다.</p>
+            <p className="text-xs text-danger">{t('workingHours.errorToAfterFrom')}</p>
           )}
           {warn && (
             <p className="text-xs text-warn font-mono">{warn}</p>
@@ -223,7 +223,7 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
               checked={alsoDefault}
               onChange={e => setAlsoDefault(e.target.checked)}
             />
-            기본값으로도 저장
+            {t('workingHours.checkboxAlsoDefault')}
           </label>
         </div>
 
@@ -233,7 +233,7 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
             onClick={onClose}
             className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
           >
-            cancel
+            {t('common.cancel')}
           </button>
           <button
             type="button"
@@ -241,7 +241,7 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
             disabled={!valid || busy}
             className="rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            save
+            {t('common.save')}
           </button>
         </div>
       </div>

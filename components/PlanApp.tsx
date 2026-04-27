@@ -46,6 +46,8 @@ function formatMDshort(d: Date): string {
 
 // FullCalendar v6 는 SSR 시 document/window 직접 접근 위험 — env-critic Stage 3e 진입 게이트.
 // next/dynamic({ssr:false}) 으로 client 진입 후에만 로드.
+// Stage 5: skeleton 텍스트는 정적 영어. KO/JA 환경에서도 1~2초 짧게 노출되는
+// loading state 라 i18n 미적용 허용 (i18n-extract 0건 정책의 예외 — 단발 노출).
 const WeeklyCalendarSkeleton = () => (
   <div className="h-64 border border-dashed border-line p-4 text-xs font-mono text-muted">
     weekly · loading...
@@ -283,9 +285,7 @@ export function PlanApp() {
         )}
         {error && (
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-danger bg-[rgba(224,108,117,0.1)] px-4 py-3 text-xs font-mono text-danger">
-            <span>load failed: {error}</span>
-            {/* logic-critic Minor: disabled={loading} 로 retry 연타 차단.
-                ui-critic Major: 호버 시 bg-danger text-bg inversion 으로 강한 시각 피드백. */}
+            <span>{t('error.loadFailedLabel')} {error}</span>
             <button
               type="button"
               disabled={loading}
@@ -297,7 +297,7 @@ export function PlanApp() {
               }}
               className="rounded-none border border-danger bg-panel px-3 py-1 text-xs text-danger font-mono hover:bg-danger hover:text-bg disabled:cursor-not-allowed disabled:opacity-50"
             >
-              retry
+              {t('common.retry')}
             </button>
           </div>
         )}
@@ -313,7 +313,7 @@ export function PlanApp() {
           <h2 className="mb-3 text-sm font-semibold text-ink font-mono">
             {t('header.week')}
             <span className="ml-1 font-normal text-muted">
-              · {now ? weekRange : '—'} · span={weekViewSpan}w
+              · {now ? weekRange : t('meta.placeholder')} · span={weekViewSpan}{t('meta.spanSuffix')}
             </span>
           </h2>
           <WeeklyCalendar onEventClick={handleEventClick} />
@@ -329,7 +329,7 @@ export function PlanApp() {
             <h2 className="mb-3 text-sm font-semibold text-ink font-mono">
               {t('header.today')}
               <span className="ml-1 font-normal text-muted">
-                · {now ? todayMeta : '—'} · {todayEventCount} events
+                · {now ? todayMeta : t('meta.placeholder')} · {todayEventCount} {t('meta.eventsLabel')}
               </span>
             </h2>
             <DailyTimeline onEventClick={handleEventClick} />
@@ -339,7 +339,7 @@ export function PlanApp() {
               <h2 className="mb-3 text-sm font-semibold text-ink font-mono">
                 {t('header.clock')}
                 <span className="ml-1 font-normal text-muted">
-                  · 12h · {now ? ampm : '—'}
+                  · {t('meta.twelveHour')} · {now ? ampm : t('meta.placeholder')}
                 </span>
               </h2>
               <AnalogClock />
@@ -350,8 +350,8 @@ export function PlanApp() {
                 <span className="ml-1 font-normal text-muted">
                   ·{' '}
                   {activeMeta && activeMeta.count > 0
-                    ? `${activeMeta.count} active · ${formatElapsedHM(activeMeta.elapsedMin)}`
-                    : 'idle'}
+                    ? `${activeMeta.count} ${t('meta.activeLabel')} · ${formatElapsedHM(activeMeta.elapsedMin)}`
+                    : t('meta.idle')}
                 </span>
               </h2>
               <ActiveTimer />

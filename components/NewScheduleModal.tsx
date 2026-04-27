@@ -1,9 +1,11 @@
 'use client';
 
 import {useEffect, useMemo, useRef, useState} from 'react';
+import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
 import {useEscapeKey} from '@/lib/use-escape-key';
+import {useCategoryDisplay} from '@/lib/category-display';
 import {CategoryManager} from './CategoryManager';
 
 function todayKey(): string {
@@ -28,15 +30,15 @@ function dateKeyFromMs(ms: number): string {
 // Stage 4d-B: 모듈 스코프 nowCache 제거 → 공유 lib/now.ts useNow() 사용.
 
 const MINUTE_OPTIONS = [0, 10, 20, 30, 40, 50];
-const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
-function formatEndDisplay(ms: number): string {
+// Stage 5 i18n: weekday label 은 t('weekdays.0..6') 로 locale 매핑.
+function formatEndDisplay(ms: number, weekdayLabel: (idx: number) => string): string {
   const d = new Date(ms);
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   const dd = String(d.getDate()).padStart(2, '0');
   const hh = String(d.getHours()).padStart(2, '0');
   const mn = String(d.getMinutes()).padStart(2, '0');
-  return `${mm}/${dd} ${hh}:${mn} (${WEEKDAYS[d.getDay()]})`;
+  return `${mm}/${dd} ${hh}:${mn} (${weekdayLabel(d.getDay())})`;
 }
 
 export function NewScheduleModal({
@@ -46,6 +48,22 @@ export function NewScheduleModal({
   onClose: () => void;
   editingId?: string;
 }) {
+  const t = useTranslations();
+  const categoryDisplay = useCategoryDisplay();
+  // Stage 5 critic logic Minor #3: dynamic key cast 제거 위해 7개 키 미리 배열로.
+  const weekdayLabels = useMemo(
+    () => [
+      t('weekdays.0'),
+      t('weekdays.1'),
+      t('weekdays.2'),
+      t('weekdays.3'),
+      t('weekdays.4'),
+      t('weekdays.5'),
+      t('weekdays.6')
+    ],
+    [t]
+  );
+  const weekdayLabel = (idx: number) => weekdayLabels[idx] ?? '';
   const categories = useAppStore(s => s.categories);
   const schedules = useAppStore(s => s.schedules);
   const addSchedule = useAppStore(s => s.addSchedule);
@@ -203,7 +221,7 @@ export function NewScheduleModal({
   const handleNextAfter = async () => {
     if (!editing || busy) return;
     if (isDirty && !baseOk) {
-      setNextAfterWarn('현재 편집 내용이 불완전(이름/카테고리/소요분 확인). 저장 안 됨 — 내용 보완 후 다시 시도');
+      setNextAfterWarn(t('schedule.warningEditIncomplete'));
       return;
     }
     setBusy(true);
@@ -242,8 +260,8 @@ export function NewScheduleModal({
   const adjustBtn =
     'rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono hover:bg-bg';
 
-  const headerTxt = isEdit ? 'edit schedule' : 'new schedule';
-  const submitLabel = isEdit ? 'save' : 'add';
+  const headerTxt = isEdit ? t('schedule.headerEdit') : t('schedule.headerNew');
+  const submitLabel = isEdit ? t('common.save') : t('common.add');
 
   return (
     <>
@@ -260,7 +278,7 @@ export function NewScheduleModal({
           </h2>
           <div className="space-y-3">
             <label className="block">
-              <span className="mb-1 block text-sm text-txt">이름</span>
+              <span className="mb-1 block text-sm text-txt">{t('schedule.fieldName')}</span>
               <input
                 type="text"
                 value={title}
@@ -270,7 +288,7 @@ export function NewScheduleModal({
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm text-txt">카테고리</span>
+              <span className="mb-1 block text-sm text-txt">{t('schedule.fieldCategory')}</span>
               <select
                 value={categoryId}
                 onChange={e => handleCategoryChange(e.target.value)}
@@ -278,14 +296,14 @@ export function NewScheduleModal({
               >
                 {categories.map(c => (
                   <option key={c.id} value={c.id}>
-                    {c.name}
+                    {categoryDisplay(c)}
                   </option>
                 ))}
-                <option value="__NEW__">+ 카테고리 추가</option>
+                <option value="__NEW__">{t('schedule.categoryAddOption')}</option>
               </select>
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm text-txt">시작 날짜</span>
+              <span className="mb-1 block text-sm text-txt">{t('schedule.fieldStartDate')}</span>
               <input
                 type="date"
                 value={date}
@@ -295,7 +313,7 @@ export function NewScheduleModal({
             </label>
             <div className="grid grid-cols-2 gap-2">
               <label className="block">
-                <span className="mb-1 block text-sm text-txt">시작 시</span>
+                <span className="mb-1 block text-sm text-txt">{t('schedule.fieldStartHour')}</span>
                 <select
                   value={hour}
                   onChange={e => setHour(Number(e.target.value))}
@@ -303,13 +321,13 @@ export function NewScheduleModal({
                 >
                   {Array.from({length: 24}, (_, i) => (
                     <option key={i} value={i}>
-                      {String(i).padStart(2, '0')}시
+                      {String(i).padStart(2, '0')}{t('schedule.hourSuffix')}
                     </option>
                   ))}
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-txt">시작 분</span>
+                <span className="mb-1 block text-sm text-txt">{t('schedule.fieldStartMinute')}</span>
                 <select
                   value={minute}
                   onChange={e => setMinute(Number(e.target.value))}
@@ -317,7 +335,7 @@ export function NewScheduleModal({
                 >
                   {minuteOptions.map(m => (
                     <option key={m} value={m}>
-                      {String(m).padStart(2, '0')}분
+                      {String(m).padStart(2, '0')}{t('schedule.minuteSuffix')}
                     </option>
                   ))}
                 </select>
@@ -325,14 +343,14 @@ export function NewScheduleModal({
             </div>
             <div>
               <button type="button" onClick={setNowStart} className={adjustBtn}>
-                now (시작을 지금으로)
+                {t('schedule.buttonNow')}
               </button>
             </div>
             {!isEdit && nowReady && !isFuture && (
-              <p className="text-xs text-danger">시작 시각은 현재보다 미래여야 합니다.</p>
+              <p className="text-xs text-danger">{t('schedule.warningFutureRequired')}</p>
             )}
             <div>
-              <span className="mb-1 block text-sm text-txt">소요 시간 (분)</span>
+              <span className="mb-1 block text-sm text-txt">{t('schedule.fieldDuration')}</span>
               <input
                 type="number"
                 min={0}
@@ -342,28 +360,28 @@ export function NewScheduleModal({
               />
               <div className="mt-2 flex flex-wrap gap-1">
                 <button type="button" onClick={() => bumpDuration(-30)} className={adjustBtn}>
-                  -30분
+                  {t('schedule.buttonMinus30')}
                 </button>
                 <button type="button" onClick={() => bumpDuration(-10)} className={adjustBtn}>
-                  -10분
+                  {t('schedule.buttonMinus10')}
                 </button>
                 <button type="button" onClick={() => bumpDuration(10)} className={adjustBtn}>
-                  +10분
+                  {t('schedule.buttonPlus10')}
                 </button>
                 <button type="button" onClick={() => bumpDuration(30)} className={adjustBtn}>
-                  +30분
+                  {t('schedule.buttonPlus30')}
                 </button>
                 <button type="button" onClick={() => bumpDuration(60)} className={adjustBtn}>
-                  +1시간
+                  {t('schedule.buttonPlusHour')}
                 </button>
               </div>
             </div>
             <div className="text-xs font-mono text-muted">
-              end →{' '}
+              {t('schedule.endLabel')} →{' '}
               {durationMin > 0 ? (
-                formatEndDisplay(endAt)
+                formatEndDisplay(endAt, weekdayLabel)
               ) : (
-                <span className="text-muted opacity-60">— (소요 0분)</span>
+                <span className="text-muted opacity-60">{t('schedule.endEmpty')}</span>
               )}
             </div>
             <label className="flex items-start gap-2 text-sm text-txt font-mono">
@@ -374,9 +392,9 @@ export function NewScheduleModal({
                 className="mt-1"
               />
               <span>
-                이전 스케줄과 연결 (cascade 받음)
+                {t('schedule.chainedCheckbox')}
                 <span className="block text-xs text-muted">
-                  앞 스케줄이 늘어나거나 줄면 이 스케줄도 함께 이동 (간격 유지)
+                  {t('schedule.chainedHelp')}
                 </span>
               </span>
             </label>
@@ -394,16 +412,16 @@ export function NewScheduleModal({
                       : 'border-danger bg-panel text-danger hover:bg-[rgba(224,108,117,0.1)]'
                   }`}
                 >
-                  {deleteArmed ? 'confirm delete' : 'delete'}
+                  {deleteArmed ? t('common.confirmDelete') : t('common.delete')}
                 </button>
                 <button
                   type="button"
                   onClick={handleNextAfter}
                   disabled={busy}
                   className={adjustBtn}
-                  title="현재 편집 저장(dirty 시) + 종료시각 + 10분을 시작으로 가지는 새 스케줄 모달 오픈"
+                  title={t('schedule.nextAfterTooltip')}
                 >
-                  next +10m (완료 후 새 스케줄)
+                  {t('schedule.buttonNextAfter')}
                 </button>
               </div>
             )}
@@ -416,7 +434,7 @@ export function NewScheduleModal({
                 onClick={onClose}
                 className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
               >
-                cancel
+                {t('common.cancel')}
               </button>
               <button
                 type="button"

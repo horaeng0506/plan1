@@ -1,8 +1,10 @@
 'use client';
 
 import {useEffect, useMemo, useRef, useState} from 'react';
+import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
+import {useCategoryDisplay} from '@/lib/category-display';
 import {runMutation} from '@/lib/run-mutation';
 import type {Schedule, TimerType} from '@/lib/domain/types';
 
@@ -24,10 +26,10 @@ function formatHMS(ms: number): string {
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-function formatWall12(ms: number): string {
+function formatWall12(ms: number, amLabel: string, pmLabel: string): string {
   const d = new Date(ms);
   const h24 = d.getHours();
-  const ampm = h24 < 12 ? '오전' : '오후';
+  const ampm = h24 < 12 ? amLabel : pmLabel;
   const h12 = ((h24 + 11) % 12) + 1;
   const mm = String(d.getMinutes()).padStart(2, '0');
   const ss = String(d.getSeconds()).padStart(2, '0');
@@ -35,6 +37,8 @@ function formatWall12(ms: number): string {
 }
 
 export function ActiveTimer() {
+  const t = useTranslations();
+  const categoryDisplay = useCategoryDisplay();
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
   const pinnedActiveId = useAppStore(s => s.settings.pinnedActiveId);
@@ -46,6 +50,11 @@ export function ActiveTimer() {
   // hydration 가드: nowMs === 0 → null (SSR snapshot · canSubmit/findActive 차단).
   const nowMs = useNow();
   const now: number | null = nowMs > 0 ? nowMs : null;
+  // Stage 5 critic logic Minor #2: 1초 tick 매번 t() 호출 회피 — useMemo 1회.
+  const wallLabels = useMemo(
+    () => ({am: t('wallTime.am'), pm: t('wallTime.pm')}),
+    [t]
+  );
 
   const actives = useMemo(
     () => (now === null ? [] : findActiveSchedules(schedules, now)),
@@ -73,7 +82,7 @@ export function ActiveTimer() {
   if (!active || now === null) {
     return (
       <div className="rounded-none border border-dashed border-line p-6 text-center text-sm text-muted font-mono">
-        idle · no active schedule
+        {t('timer.idleEmpty')}
       </div>
     );
   }
@@ -144,7 +153,7 @@ export function ActiveTimer() {
     <div className="rounded-none border border-line bg-panel p-4">
       {actives.length > 1 && (
         <div className="mb-2 text-[10px] font-mono text-muted">
-          <span className="text-warn">겹침 {actives.length}개</span> · pin=
+          <span className="text-warn">{t('timer.overlapLabel', {count: actives.length})}</span> · {t('timer.pinLabel')}=
           <select
             value={pinnedActiveId ?? ''}
             onChange={e => {
@@ -155,7 +164,7 @@ export function ActiveTimer() {
             }}
             className="ml-1 rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] font-mono text-txt"
           >
-            <option value="">auto (첫 번째)</option>
+            <option value="">{t('timer.pinAuto')}</option>
             {actives.map(a => (
               <option key={a.id} value={a.id}>
                 {a.title}
@@ -176,22 +185,22 @@ export function ActiveTimer() {
         </span>
       </div>
       <div className="mb-3 text-[10px] font-mono text-muted">
-        type={active.timerType} · cat={category?.name ?? '?'}
+        type={active.timerType} · cat={category ? categoryDisplay(category) : t('timer.categoryFallback')}
       </div>
       <div className="mb-2 flex gap-1">
         <button type="button" onClick={() => setType('countup')} className={typeBtn(isCountup)}>
-          countup
+          {t('timer.typeCountup')}
         </button>
         <button type="button" onClick={() => setType('timer1')} className={typeBtn(isTimer1)}>
-          timer1
+          {t('timer.typeTimer1')}
         </button>
         <button type="button" onClick={() => setType('countdown')} className={typeBtn(isCountdown)}>
-          countdown
+          {t('timer.typeCountdown')}
         </button>
       </div>
       {isCountup && (
         <>
-          <div className="mb-1 text-xs font-mono text-muted">elapsed</div>
+          <div className="mb-1 text-xs font-mono text-muted">{t('timer.labelElapsed')}</div>
           <div className="mb-3 font-mono text-5xl font-medium tracking-tight text-ink">
             {formatHMS(elapsed)}
           </div>
@@ -199,31 +208,31 @@ export function ActiveTimer() {
       )}
       {isTimer1 && (
         <>
-          <div className="mb-1 text-xs font-mono text-muted">target</div>
+          <div className="mb-1 text-xs font-mono text-muted">{t('timer.labelTarget')}</div>
           <div className="mb-1 font-mono text-4xl font-medium tracking-tight text-ink">
-            {formatWall12(displayEndAt)}
+            {formatWall12(displayEndAt, wallLabels.am, wallLabels.pm)}
           </div>
           <div className="mb-3 text-xs font-mono text-muted">
-            elapsed · {formatHMS(now - active.startAt)}
+            {t('timer.labelElapsed')} · {formatHMS(now - active.startAt)}
           </div>
           <button
             type="button"
             onClick={toggleFreeze}
             className={freezeBtn(frozen) + ' mb-3 whitespace-nowrap'}
-            title={frozen ? '클릭하면 idle 로 전환' : '클릭하면 focus 로 전환'}
+            title={frozen ? t('timer.tooltipClickToIdle') : t('timer.tooltipClickToFocus')}
           >
-            {frozen ? 'focus' : 'idle'}
+            {frozen ? t('timer.buttonFocus') : t('timer.buttonIdle')}
           </button>
         </>
       )}
       {isCountdown && (
         <>
-          <div className="mb-1 text-xs font-mono text-muted">remaining</div>
+          <div className="mb-1 text-xs font-mono text-muted">{t('timer.labelRemaining')}</div>
           <div className="mb-1 font-mono text-5xl font-medium tracking-tight text-ink">
             {formatHMS(remaining)}
           </div>
           <div className="mb-3 text-xs font-mono text-muted">
-            end-at · {formatWall12(endAt)}
+            {t('timer.labelEndAt')} · {formatWall12(endAt, wallLabels.am, wallLabels.pm)}
           </div>
         </>
       )}
@@ -241,7 +250,7 @@ export function ActiveTimer() {
           +30m
         </button>
         <button type="button" onClick={complete} className={primaryBtn}>
-          complete
+          {t('timer.buttonComplete')}
         </button>
       </div>
     </div>
