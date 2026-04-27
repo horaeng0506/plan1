@@ -74,7 +74,6 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
     }
   };
 
-  // Stage 4a 4채널 토큰화.
   const fieldCls =
     'w-full rounded-none border border-line bg-bg px-3 py-2 text-ink font-mono';
   const dangerArmedBtn =

@@ -10,6 +10,7 @@ import {ActiveTimer} from './ActiveTimer';
 import {ToastContainer} from './ToastContainer';
 import {ModalSkeleton} from './ModalSkeleton';
 import {useNow} from '@/lib/now';
+import {pad2, dateKey} from '@/lib/date-format';
 import type {Theme} from '@/lib/domain/types';
 
 // Stage 4d-B: 모달 3개 lazy import (사용자 trigger 전 로드 안 됨 → bundle 절약).
@@ -28,18 +29,8 @@ const WorkingHoursEditor = dynamic(
   {ssr: false, loading: ModalSkeleton}
 );
 
-const DOW = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-
-function pad(n: number): string {
-  return String(n).padStart(2, '0');
-}
-
-function dateKey(d: Date): string {
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-
-function formatMD(d: Date): string {
-  return `${pad(d.getMonth() + 1)}/${pad(d.getDate())} (${DOW[d.getDay()]})`;
+function formatMD(d: Date, weekdayLabel: (idx: number) => string): string {
+  return `${pad2(d.getMonth() + 1)}/${pad2(d.getDate())} (${weekdayLabel(d.getDay())})`;
 }
 
 function formatMDshort(d: Date): string {
@@ -95,9 +86,24 @@ export function PlanApp() {
   const nowMin = nowMs > 0 ? Math.floor(nowMs / 60_000) : 0;
   const now = nowMs > 0 ? new Date(nowMs) : null;
 
+  // Stage 5 i18n: weekday 영문 raw 배열 제거 → t('weekdays.0~6') 매핑.
+  const weekdayLabels = useMemo(
+    () => [
+      t('weekdays.0'),
+      t('weekdays.1'),
+      t('weekdays.2'),
+      t('weekdays.3'),
+      t('weekdays.4'),
+      t('weekdays.5'),
+      t('weekdays.6')
+    ],
+    [t]
+  );
+  const weekdayLabel = (idx: number) => weekdayLabels[idx] ?? '';
+
   const todayKey = now ? dateKey(now) : null;
-  const todayMeta = now ? formatMD(now) : '';
-  const ampm = now ? (now.getHours() < 12 ? 'am' : 'pm') : '';
+  const todayMeta = now ? formatMD(now, weekdayLabel) : '';
+  const ampm = now ? (now.getHours() < 12 ? t('meta.amLower') : t('meta.pmLower')) : '';
 
   const todayEventCount = useMemo(() => {
     if (!todayKey) return 0;
@@ -137,7 +143,7 @@ export function PlanApp() {
   function formatElapsedHM(min: number): string {
     const h = Math.floor(min / 60);
     const m = min % 60;
-    return `${pad(h)}:${pad(m)}`;
+    return `${pad2(h)}:${pad2(m)}`;
   }
 
   // Stage 3e env-critic Critical: store.init() 트리거. layout/page 단일 진입점에서 1회 호출.
@@ -181,8 +187,6 @@ export function PlanApp() {
     setEditingId(splitFrom ?? id);
   };
 
-  // Stage 4a 4채널 토큰화: gray-* dark:* → bg/panel/line/muted/txt/ink.
-  // 활성 inverted 패턴(`bg-gray-900...dark:bg-gray-100`)은 `bg-ink text-bg border-ink`.
   const spanButtonClass = (n: 1 | 2 | 3) =>
     `px-3 py-1 text-sm rounded-none border transition-colors font-mono ${
       weekViewSpan === n

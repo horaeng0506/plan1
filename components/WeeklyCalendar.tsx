@@ -6,19 +6,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {useAppStore} from '@/lib/store';
 import {schedulesToEvents} from '@/lib/schedule-to-event';
-
-function renderEventContent(arg: {
-  event: {title: string; extendedProps: {splitFrom?: string; chainedToPrev?: boolean}};
-}) {
-  // prefix `▸ / ▸▸ / ⤴` 제거 (Stage 4b · 4채널 위계 운반).
-  // splitFrom 은 .is-split-cont 클래스 (globals.css 에서 dashed border-left + opacity)
-  // chainedToPrev 는 .is-chained 클래스 (globals.css 에서 border-top dashed muted)
-  return (
-    <div className="px-1 py-0.5 text-xs leading-tight whitespace-normal break-words">
-      {arg.event.title}
-    </div>
-  );
-}
+import {renderEventContent} from './event-renderer';
 
 export function WeeklyCalendar({
   onEventClick

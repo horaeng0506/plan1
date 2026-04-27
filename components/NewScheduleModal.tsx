@@ -6,39 +6,19 @@ import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
 import {useEscapeKey} from '@/lib/use-escape-key';
 import {useCategoryDisplay} from '@/lib/category-display';
+import {pad2, todayKey, dateKeyFromMs} from '@/lib/date-format';
 import {CategoryManager} from './CategoryManager';
-
-function todayKey(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-    d.getDate()
-  ).padStart(2, '0')}`;
-}
 
 function defaultHour(): number {
   const h = new Date().getHours() + 1;
   return h >= 24 ? 23 : h;
 }
 
-function dateKeyFromMs(ms: number): string {
-  const d = new Date(ms);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-    d.getDate()
-  ).padStart(2, '0')}`;
-}
-
-// Stage 4d-B: 모듈 스코프 nowCache 제거 → 공유 lib/now.ts useNow() 사용.
-
 const MINUTE_OPTIONS = [0, 10, 20, 30, 40, 50];
 
-// Stage 5 i18n: weekday label 은 t('weekdays.0..6') 로 locale 매핑.
 function formatEndDisplay(ms: number, weekdayLabel: (idx: number) => string): string {
   const d = new Date(ms);
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  const hh = String(d.getHours()).padStart(2, '0');
-  const mn = String(d.getMinutes()).padStart(2, '0');
-  return `${mm}/${dd} ${hh}:${mn} (${weekdayLabel(d.getDay())})`;
+  return `${pad2(d.getMonth() + 1)}/${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())} (${weekdayLabel(d.getDay())})`;
 }
 
 export function NewScheduleModal({
@@ -254,7 +234,6 @@ export function NewScheduleModal({
     }
   };
 
-  // Stage 4a 4채널 토큰화.
   const fieldCls =
     'w-full rounded-none border border-line bg-bg px-3 py-2 text-ink font-mono';
   const adjustBtn =

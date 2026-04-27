@@ -4,32 +4,13 @@ import {useState} from 'react';
 import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useEscapeKey} from '@/lib/use-escape-key';
-
-function todayKey(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-    d.getDate()
-  ).padStart(2, '0')}`;
-}
+import {pad2, todayKey, minToTime, timeToMin, dateKey} from '@/lib/date-format';
 
 function addDaysKey(key: string, days: number): string {
   const [y, m, d] = key.split('-').map(Number);
   const dt = new Date(y, m - 1, d);
   dt.setDate(dt.getDate() + days);
-  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(
-    dt.getDate()
-  ).padStart(2, '0')}`;
-}
-
-function minToTime(min: number): string {
-  const h = Math.floor(min / 60).toString().padStart(2, '0');
-  const m = (min % 60).toString().padStart(2, '0');
-  return `${h}:${m}`;
-}
-
-function timeToMin(t: string): number {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
+  return dateKey(dt);
 }
 
 const DATE_GUARD_MAX = 1000;
@@ -111,7 +92,6 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
     }
   };
 
-  // Stage 4a 4채널 토큰화.
   const tabBtn = (active: boolean) =>
     `px-3 py-1 text-sm rounded-none border font-mono ${
       active

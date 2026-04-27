@@ -6,32 +6,11 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {useAppStore} from '@/lib/store';
 import {schedulesToEvents} from '@/lib/schedule-to-event';
+import {pad2, todayKey} from '@/lib/date-format';
+import {renderEventContent} from './event-renderer';
 
 function minToTimeStr(min: number): string {
-  const h = Math.floor(min / 60).toString().padStart(2, '0');
-  const m = (min % 60).toString().padStart(2, '0');
-  return `${h}:${m}:00`;
-}
-
-function renderEventContent(arg: {
-  event: {title: string; extendedProps: {splitFrom?: string; chainedToPrev?: boolean}};
-}) {
-  // prefix `▸ / ▸▸ / ⤴` 제거 (Stage 4b · 4채널 위계 운반).
-  // splitFrom 은 .is-split-cont 클래스 (globals.css 에서 dashed border-left + opacity)
-  // chainedToPrev 는 .is-chained 클래스 (globals.css 에서 border-top dashed muted)
-  return (
-    <div className="px-1 py-0.5 text-xs leading-tight whitespace-normal break-words">
-      {arg.event.title}
-    </div>
-  );
-}
-
-function todayKey(): string {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const d = String(now.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
+  return `${pad2(Math.floor(min / 60))}:${pad2(min % 60)}:00`;
 }
 
 export function DailyTimeline({

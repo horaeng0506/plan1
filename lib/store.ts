@@ -35,9 +35,10 @@ export const DEFAULT_SETTINGS: AppSettings = {
 };
 
 // Stage 5 i18n: name='default' 영어 base. 컴포넌트 표시 시 useCategoryDisplay()
-// 가 'cat-default' id 를 t('category.defaultName') 으로 locale 매핑.
+// 가 DEFAULT_CATEGORY_ID 를 t('category.defaultName') 으로 locale 매핑.
+export const DEFAULT_CATEGORY_ID = 'cat-default';
 export const DEFAULT_CATEGORIES: Category[] = [
-  {id: 'cat-default', name: 'default', color: '#6b7280', createdAt: 0}
+  {id: DEFAULT_CATEGORY_ID, name: 'default', color: '#6b7280', createdAt: 0}
 ];
 
 // Strict Mode 이중 mount race 가드용 inflight promise 캐시 (init 만 사용).

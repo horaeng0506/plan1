@@ -6,6 +6,7 @@ import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
 import {useCategoryDisplay} from '@/lib/category-display';
 import {useRunMutation} from '@/lib/use-run-mutation';
+import {pad2} from '@/lib/date-format';
 import type {Schedule, TimerType} from '@/lib/domain/types';
 
 function findActiveSchedules(schedules: Schedule[], now: number): Schedule[] {
@@ -23,7 +24,7 @@ function formatHMS(ms: number): string {
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
   const s = total % 60;
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
 }
 
 function formatWall12(ms: number, amLabel: string, pmLabel: string): string {
@@ -31,9 +32,7 @@ function formatWall12(ms: number, amLabel: string, pmLabel: string): string {
   const h24 = d.getHours();
   const ampm = h24 < 12 ? amLabel : pmLabel;
   const h12 = ((h24 + 11) % 12) + 1;
-  const mm = String(d.getMinutes()).padStart(2, '0');
-  const ss = String(d.getSeconds()).padStart(2, '0');
-  return `${ampm} ${h12}:${mm}:${ss}`;
+  return `${ampm} ${h12}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
 }
 
 export function ActiveTimer() {
@@ -132,7 +131,6 @@ export function ActiveTimer() {
     }
   };
 
-  // Stage 4a 4채널 토큰화 (gray-* dark:* → bg/panel/line/muted/txt/ink).
   const neutralBtn =
     'rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono hover:bg-bg';
   const primaryBtn =
