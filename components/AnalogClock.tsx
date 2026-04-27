@@ -16,6 +16,13 @@ function minutesOfDay(date: Date): number {
   return date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
 }
 
+// Stage 4c qa-tester Critical: SSR (Node V8) vs CSR (브라우저 V8) 간
+// Math.sin/cos IEEE-754 round-trip 마지막 자릿수 mismatch → React hydration warning.
+// 소수점 3자리 round 로 양 환경 동일 출력 보장.
+function r(n: number): number {
+  return Math.round(n * 1000) / 1000;
+}
+
 function minutes12ToRadians(min: number): number {
   return ((min % 720) / 720) * Math.PI * 2;
 }
@@ -86,19 +93,19 @@ export function AnalogClock() {
   const hourAngle = ((totalMin % 720) / 720) * Math.PI * 2;
   const minuteAngle = ((totalMin % 60) / 60) * Math.PI * 2;
 
-  const hourX = CENTER + RADIUS_HOUR_HAND * Math.sin(hourAngle);
-  const hourY = CENTER - RADIUS_HOUR_HAND * Math.cos(hourAngle);
-  const minX = CENTER + RADIUS_MINUTE_HAND * Math.sin(minuteAngle);
-  const minY = CENTER - RADIUS_MINUTE_HAND * Math.cos(minuteAngle);
+  const hourX = r(CENTER + RADIUS_HOUR_HAND * Math.sin(hourAngle));
+  const hourY = r(CENTER - RADIUS_HOUR_HAND * Math.cos(hourAngle));
+  const minX = r(CENTER + RADIUS_MINUTE_HAND * Math.sin(minuteAngle));
+  const minY = r(CENTER - RADIUS_MINUTE_HAND * Math.cos(minuteAngle));
 
   const hourTicks: Array<{x1: number; y1: number; x2: number; y2: number; major: boolean}> = [];
   for (let h = 0; h < 12; h++) {
     const ang = (h / 12) * Math.PI * 2;
     hourTicks.push({
-      x1: CENTER + RADIUS_TICK_INNER * Math.sin(ang),
-      y1: CENTER - RADIUS_TICK_INNER * Math.cos(ang),
-      x2: CENTER + RADIUS_OUTER * Math.sin(ang),
-      y2: CENTER - RADIUS_OUTER * Math.cos(ang),
+      x1: r(CENTER + RADIUS_TICK_INNER * Math.sin(ang)),
+      y1: r(CENTER - RADIUS_TICK_INNER * Math.cos(ang)),
+      x2: r(CENTER + RADIUS_OUTER * Math.sin(ang)),
+      y2: r(CENTER - RADIUS_OUTER * Math.cos(ang)),
       major: h % 3 === 0
     });
   }
@@ -108,8 +115,8 @@ export function AnalogClock() {
     const num = h === 12 ? 0 : h;
     const ang = (num / 12) * Math.PI * 2;
     hourLabels.push({
-      x: CENTER + (RADIUS_TICK_INNER - 14) * Math.sin(ang),
-      y: CENTER - (RADIUS_TICK_INNER - 14) * Math.cos(ang),
+      x: r(CENTER + (RADIUS_TICK_INNER - 14) * Math.sin(ang)),
+      y: r(CENTER - (RADIUS_TICK_INNER - 14) * Math.cos(ang)),
       text: String(h)
     });
   }

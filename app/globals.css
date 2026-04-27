@@ -34,6 +34,40 @@
   /* semantic 색상은 light/dark 모두 가시성 유지 — 동일 값 사용 */
 }
 
+/* Stage 4c qa-tester Major: FullCalendar 28개 기본 토큰을 4채널 토큰에 바인딩.
+ * Stage 4a 4채널 토큰화 약속 후 미연결로 dark 모드 그리드가 light 색 cream 으로 렌더되는 회귀.
+ * 토큰 매핑으로 dark/light 자동 swap. */
+:root,
+:root.dark,
+:root.light {
+  --fc-page-bg-color: var(--bg);
+  --fc-neutral-bg-color: var(--panel);
+  --fc-neutral-text-color: var(--txt);
+  --fc-border-color: var(--line);
+  --fc-button-text-color: var(--txt);
+  --fc-button-bg-color: var(--panel);
+  --fc-button-border-color: var(--line);
+  --fc-button-hover-bg-color: var(--bg);
+  --fc-button-hover-border-color: var(--line);
+  --fc-button-active-bg-color: var(--ink);
+  --fc-button-active-border-color: var(--ink);
+  --fc-event-bg-color: var(--panel);
+  --fc-event-border-color: var(--line);
+  --fc-event-text-color: var(--txt);
+  --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.10);
+  --fc-more-link-bg-color: var(--panel);
+  --fc-more-link-text-color: var(--txt);
+  --fc-event-resizer-thickness: 8px;
+  --fc-event-resizer-dot-total-width: 8px;
+  --fc-event-resizer-dot-border-width: 1px;
+  --fc-non-business-color: rgba(0, 0, 0, 0.04);
+  --fc-bg-event-color: rgba(143, 223, 130, 0.30);
+  --fc-bg-event-opacity: 0.3;
+  --fc-highlight-color: rgba(188, 220, 240, 0.20);
+  --fc-today-bg-color: rgba(255, 220, 40, 0.10);
+  --fc-now-indicator-color: var(--danger);
+}
+
 html,
 body {
   background: var(--bg);
@@ -78,4 +112,38 @@ body::before {
 }
 .fc-event.is-chained {
   border-top: 2px dashed var(--success) !important;
+}
+
+/* Stage 4c — AnalogClock SVG 토큰 (clock-* class · light/dark 자동 swap).
+ * 기존 컴포넌트가 className 만 부여하고 stroke/fill 미정의 → SVG default 색 노출 회귀.
+ * 토큰 var(--*) 매핑으로 dark/light 토큰 swap 자동 적용. */
+.clock-face {
+  fill: none;
+  stroke: var(--line);
+}
+/* ui-critic Critical: light 모드 face stroke `--line: #d4cfbf` on `#ffffff`
+ * contrast 1.40:1 — WCAG 비텍스트 3:1 미달. light 전용 darker stroke override. */
+:root.light .clock-face {
+  stroke: #a39d8a;
+}
+.clock-tick-major {
+  stroke: var(--ink);
+}
+.clock-tick-minor {
+  stroke: var(--muted);
+}
+.clock-label {
+  fill: var(--muted);
+}
+.clock-hand-hour {
+  stroke: var(--ink);
+}
+.clock-hand-minute {
+  stroke: var(--txt);
+}
+.clock-center-outer {
+  fill: var(--ink);
+}
+.clock-center-inner {
+  fill: var(--bg);
 }
