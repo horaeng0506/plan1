@@ -27,6 +27,8 @@
  *   4. useRunMutation 가 `isServerActionError(err)` brand 검사 후 `t(key, params)` 매핑
  */
 
+import {logServerError} from './log';
+
 // next-intl ICU formatter 호환 (string · number 만 round-trip 후 보존)
 export type ServerActionParams = Record<string, string | number>;
 
@@ -100,8 +102,7 @@ export async function runAction<T>(
     }
     // unexpected error — log server-side, return generic 'error.unknown'.
     // 사용자 UX 일관성 우선 (Next.js redact 영문 generic 노출 회피).
-    // eslint-disable-next-line no-console
-    console.error('[ServerAction] unexpected error:', err);
+    logServerError('[ServerAction] unexpected error:', err);
     return {ok: false, errorKey: 'error.unknown', params: {}};
   }
 }

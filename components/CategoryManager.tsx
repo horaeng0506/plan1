@@ -2,6 +2,7 @@
 
 import {useEffect, useState} from 'react';
 import {useTranslations} from 'next-intl';
+import {logClientError} from '@/lib/log';
 import {useAppStore} from '@/lib/store';
 import {useRunMutation} from '@/lib/use-run-mutation';
 import {useEscapeKey} from '@/lib/use-escape-key';
@@ -67,8 +68,7 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
       await removeCategory(id, true);
       setConfirmId(null);
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('[mutation · remove category cascade]', err);
+      logClientError('[mutation · remove category cascade]', err);
     } finally {
       setBusy(false);
     }
