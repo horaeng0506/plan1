@@ -8,6 +8,7 @@
  */
 
 import {jwtVerify, createRemoteJWKSet} from 'jose';
+import {logServerWarn} from './log';
 
 export type SessionUser = {
   id: string;
@@ -55,7 +56,7 @@ export async function verifySessionJwt(
     return user;
   } catch (e) {
     // env-critic Minor — silent catch 가 디버깅 막음. Vercel function logs 에 노출.
-    console.warn('[verify-session] JWT verify failed:', e instanceof Error ? e.message : e);
+    logServerWarn('[verify-session] JWT verify failed:', e instanceof Error ? e.message : e);
     return null;
   }
 }

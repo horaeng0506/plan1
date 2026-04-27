@@ -3,6 +3,7 @@
 import {useEffect, useMemo, useState} from 'react';
 import dynamic from 'next/dynamic';
 import {useTranslations} from 'next-intl';
+import {logClientError} from '@/lib/log';
 import {useAppStore} from '@/lib/store';
 import {useRunMutation} from '@/lib/use-run-mutation';
 import {AnalogClock} from './AnalogClock';
@@ -153,8 +154,7 @@ export function PlanApp() {
   useEffect(() => {
     if (!loaded && !loading && !error) {
       init().catch(err => {
-        // eslint-disable-next-line no-console
-        console.error('[plan1 · store.init]', err);
+        logClientError('[plan1 · store.init]', err);
       });
     }
   }, [loaded, loading, error, init]);
@@ -321,8 +321,7 @@ export function PlanApp() {
               disabled={loading}
               onClick={() => {
                 init().catch(err => {
-                  // eslint-disable-next-line no-console
-                  console.error('[plan1 · store.init retry]', err);
+                  logClientError('[plan1 · store.init retry]', err);
                 });
               }}
               className="rounded-none border border-danger bg-panel px-3 py-1 text-xs text-danger font-mono hover:bg-danger hover:text-bg disabled:cursor-not-allowed disabled:opacity-50"

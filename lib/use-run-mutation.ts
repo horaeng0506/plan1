@@ -23,6 +23,7 @@
  */
 
 import {useTranslations} from 'next-intl';
+import {logClientError} from './log';
 import {isServerActionError} from './server-action';
 import {pushToast, type ToastSeverity} from './toast';
 
@@ -68,10 +69,9 @@ export function useRunMutation() {
           : displayErrMsg;
         pushToast(userMsg, SEVERITY_TO_TOAST[severity]);
       }
-      if (process.env.NODE_ENV !== 'production' && severity !== 'silent') {
-        const rawMsg = err instanceof Error ? err.message : String(err);
-        // eslint-disable-next-line no-console
-        console.error(`[mutation${contextKey ? ` · ${contextKey}` : ''}]`, rawMsg);
+      if (severity !== 'silent') {
+        // logClientError 가 NODE_ENV 가드 처리 (prod silent · dev console.error)
+        logClientError(`[mutation${contextKey ? ` · ${contextKey}` : ''}]`, err);
       }
     });
   };
