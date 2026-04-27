@@ -18,6 +18,7 @@ export function schedulesToEvents(schedules: Schedule[], categories: Category[])
     const classNames = [
       schedule.status === 'done' ? 'opacity-60' : '',
       schedule.splitFrom ? 'is-split-cont' : '',
+      schedule.chainedToPrev ? 'is-chained' : '',
     ].filter(Boolean)
     return {
       id: schedule.id,

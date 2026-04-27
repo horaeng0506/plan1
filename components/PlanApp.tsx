@@ -16,12 +16,12 @@ import type {Theme} from '@/lib/domain/types';
 // next/dynamic({ssr:false}) 으로 client 진입 후에만 로드.
 const WeeklyCalendarSkeleton = () => (
   <div className="h-64 border border-dashed border-line p-4 text-xs font-mono text-muted">
-    # weekly · loading...
+    weekly · loading...
   </div>
 );
 const DailyTimelineSkeleton = () => (
   <div className="h-64 border border-dashed border-line p-4 text-xs font-mono text-muted">
-    # today · loading...
+    today · loading...
   </div>
 );
 
@@ -110,8 +110,9 @@ export function PlanApp() {
       <div className="mx-auto max-w-6xl px-6 py-6">
         <header className="mb-6 flex items-center justify-between gap-4 flex-wrap">
           <h1 className="text-sm font-medium tracking-wide font-mono">
-            <span className="text-success">{t('app.title')}</span>{' '}
-            <span className="text-muted">$</span> {t('app.tagline')}
+            <span className="text-success">{t('app.title')}</span>
+            <span className="text-muted"> · </span>
+            {t('app.tagline')}
           </h1>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex gap-1">
@@ -192,20 +193,18 @@ export function PlanApp() {
 
         {!loaded && loading && (
           <div className="mb-4 border border-dashed border-line px-4 py-3 text-xs font-mono text-muted">
-            <span className="text-muted"># </span>
             {t('loading')}
           </div>
         )}
         {error && (
           <div className="mb-4 border border-danger bg-[rgba(224,108,117,0.1)] px-4 py-3 text-xs font-mono text-danger">
-            <span className="opacity-80">! </span>load failed: {error}
+            load failed: {error}
           </div>
         )}
 
         {!weeklyPanelHidden && (
           <section className="mb-6 rounded-none border border-line bg-panel p-4">
-            <h2 className="mb-3 text-sm font-semibold text-txt font-mono">
-              <span className="text-muted"># </span>
+            <h2 className="mb-3 text-sm font-semibold text-ink font-mono">
               {t('header.week')}
             </h2>
             <WeeklyCalendar onEventClick={handleEventClick} />
@@ -214,23 +213,20 @@ export function PlanApp() {
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
           <section className="rounded-none border border-line bg-panel p-4">
-            <h2 className="mb-3 text-sm font-semibold text-txt font-mono">
-              <span className="text-muted"># </span>
+            <h2 className="mb-3 text-sm font-semibold text-ink font-mono">
               {t('header.today')}
             </h2>
             <DailyTimeline onEventClick={handleEventClick} />
           </section>
           <aside className="space-y-4">
             <section className="rounded-none border border-line bg-panel p-4">
-              <h2 className="mb-3 text-sm font-semibold text-txt font-mono">
-                <span className="text-muted"># </span>
+              <h2 className="mb-3 text-sm font-semibold text-ink font-mono">
                 {t('header.clock')}
               </h2>
               <AnalogClock />
             </section>
             <section>
-              <h2 className="mb-2 text-sm font-semibold text-txt font-mono">
-                <span className="text-muted"># </span>
+              <h2 className="mb-2 text-sm font-semibold text-ink font-mono">
                 {t('header.timer')}
               </h2>
               <ActiveTimer />

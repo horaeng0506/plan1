@@ -127,16 +127,16 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
         className="w-full max-w-md rounded-none border border-line bg-panel p-6"
         onClick={e => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-sm font-semibold text-ink">
-          <span className="text-success">$ </span>workhours --set
+        <h2 className="mb-4 text-sm font-semibold text-success font-mono">
+          working hours
         </h2>
 
         <div className="mb-4 flex gap-1">
           <button type="button" className={tabBtn(mode === 'single')} onClick={() => setMode('single')}>
-            --single
+            single
           </button>
           <button type="button" className={tabBtn(mode === 'range')} onClick={() => setMode('range')}>
-            --range
+            range
           </button>
         </div>
 
@@ -211,10 +211,7 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
             <p className="text-xs text-danger">종료일은 시작일과 같거나 이후여야 합니다.</p>
           )}
           {warn && (
-            <p className="text-xs text-warn font-mono">
-              <span className="opacity-80">! </span>
-              {warn}
-            </p>
+            <p className="text-xs text-warn font-mono">{warn}</p>
           )}
           <label className="flex items-center gap-2 text-sm text-txt">
             <input
@@ -240,7 +237,7 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
             disabled={!valid || busy}
             className="rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <span className="opacity-70">$ </span>save
+            save
           </button>
         </div>
       </div>

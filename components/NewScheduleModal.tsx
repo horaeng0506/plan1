@@ -254,7 +254,7 @@ export function NewScheduleModal({
   const adjustBtn =
     'rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono hover:bg-bg';
 
-  const headerTxt = isEdit ? 'schedule --edit' : 'schedule --new';
+  const headerTxt = isEdit ? 'edit schedule' : 'new schedule';
   const submitLabel = isEdit ? 'save' : 'add';
 
   return (
@@ -267,8 +267,7 @@ export function NewScheduleModal({
           className="w-full max-w-md rounded-none border border-line bg-panel p-6"
           onClick={e => e.stopPropagation()}
         >
-          <h2 className="mb-4 text-sm font-semibold text-ink">
-            <span className="text-success">$ </span>
+          <h2 className="mb-4 text-sm font-semibold text-success font-mono">
             {headerTxt}
           </h2>
           <div className="space-y-3">
@@ -338,7 +337,7 @@ export function NewScheduleModal({
             </div>
             <div>
               <button type="button" onClick={setNowStart} className={adjustBtn}>
-                <span className="opacity-70">$ </span>now (시작을 지금으로)
+                now (시작을 지금으로)
               </button>
             </div>
             {!isEdit && nowReady && !isFuture && (
@@ -372,7 +371,7 @@ export function NewScheduleModal({
               </div>
             </div>
             <div className="text-xs font-mono text-muted">
-              <span className="text-muted"># </span>end →{' '}
+              end →{' '}
               {durationMin > 0 ? (
                 formatEndDisplay(endAt)
               ) : (
@@ -387,7 +386,7 @@ export function NewScheduleModal({
                 className="mt-1"
               />
               <span>
-                <span className="text-muted">⤴</span> 이전 스케줄과 연결 (cascade 받음)
+                이전 스케줄과 연결 (cascade 받음)
                 <span className="block text-xs text-muted">
                   앞 스케줄이 늘어나거나 줄면 이 스케줄도 함께 이동 (간격 유지)
                 </span>
@@ -407,7 +406,6 @@ export function NewScheduleModal({
                       : 'border-danger bg-panel text-danger hover:bg-[rgba(224,108,117,0.1)]'
                   }`}
                 >
-                  <span className="opacity-80">! </span>
                   {deleteArmed ? 'confirm delete' : 'delete'}
                 </button>
                 <button
@@ -417,15 +415,12 @@ export function NewScheduleModal({
                   className={adjustBtn}
                   title="현재 편집 저장(dirty 시) + 종료시각 + 10분을 시작으로 가지는 새 스케줄 모달 오픈"
                 >
-                  <span className="opacity-70">$ </span>next +10m (완료 후 새 스케줄)
+                  next +10m (완료 후 새 스케줄)
                 </button>
               </div>
             )}
             {nextAfterWarn && (
-              <p className="text-xs text-danger font-mono">
-                <span className="opacity-80">! </span>
-                {nextAfterWarn}
-              </p>
+              <p className="text-xs text-danger font-mono">{nextAfterWarn}</p>
             )}
             <div className="flex justify-end gap-2">
               <button
@@ -441,7 +436,6 @@ export function NewScheduleModal({
                 disabled={!canSubmit}
                 className="rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <span className="opacity-70">$ </span>
                 {submitLabel}
               </button>
             </div>

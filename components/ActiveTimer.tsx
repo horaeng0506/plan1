@@ -75,7 +75,7 @@ export function ActiveTimer() {
   if (!active || now === null) {
     return (
       <div className="rounded-none border border-dashed border-line p-6 text-center text-sm text-muted font-mono">
-        # idle · no active schedule
+        idle · no active schedule
       </div>
     );
   }
@@ -146,7 +146,7 @@ export function ActiveTimer() {
     <div className="rounded-none border border-line bg-panel p-4">
       {actives.length > 1 && (
         <div className="mb-2 text-[10px] font-mono text-muted">
-          <span className="text-warn"># 겹침 {actives.length}개 </span>· pin=
+          <span className="text-warn">겹침 {actives.length}개</span> · pin=
           <select
             value={pinnedActiveId ?? ''}
             onChange={e => {
@@ -167,7 +167,6 @@ export function ActiveTimer() {
         </div>
       )}
       <div className="mb-1 flex items-center gap-2">
-        <span className="text-muted">▸</span>
         {category && (
           <span
             className="inline-block h-3 w-3 rounded-none"
@@ -194,7 +193,7 @@ export function ActiveTimer() {
       </div>
       {isCountup && (
         <>
-          <div className="mb-1 text-xs font-mono text-muted"># elapsed</div>
+          <div className="mb-1 text-xs font-mono text-muted">elapsed</div>
           <div className="mb-3 font-mono text-5xl font-medium tracking-tight text-ink">
             {formatHMS(elapsed)}
           </div>
@@ -202,26 +201,31 @@ export function ActiveTimer() {
       )}
       {isTimer1 && (
         <>
-          <div className="mb-1 text-xs font-mono text-muted"># target</div>
+          <div className="mb-1 text-xs font-mono text-muted">target</div>
           <div className="mb-1 font-mono text-4xl font-medium tracking-tight text-ink">
             {formatWall12(displayEndAt)}
           </div>
           <div className="mb-3 text-xs font-mono text-muted">
-            # elapsed {formatHMS(now - active.startAt)}
+            elapsed · {formatHMS(now - active.startAt)}
           </div>
-          <button type="button" onClick={toggleFreeze} className={freezeBtn(frozen) + ' mb-3'}>
-            {frozen ? '[focus] (click to idle)' : '[idle] (click to focus)'}
+          <button
+            type="button"
+            onClick={toggleFreeze}
+            className={freezeBtn(frozen) + ' mb-3 whitespace-nowrap'}
+            title={frozen ? '클릭하면 idle 로 전환' : '클릭하면 focus 로 전환'}
+          >
+            {frozen ? 'focus' : 'idle'}
           </button>
         </>
       )}
       {isCountdown && (
         <>
-          <div className="mb-1 text-xs font-mono text-muted"># remaining</div>
+          <div className="mb-1 text-xs font-mono text-muted">remaining</div>
           <div className="mb-1 font-mono text-5xl font-medium tracking-tight text-ink">
             {formatHMS(remaining)}
           </div>
           <div className="mb-3 text-xs font-mono text-muted">
-            # end-at {formatWall12(endAt)}
+            end-at · {formatWall12(endAt)}
           </div>
         </>
       )}
@@ -239,7 +243,7 @@ export function ActiveTimer() {
           +30m
         </button>
         <button type="button" onClick={complete} className={primaryBtn}>
-          <span className="opacity-70">! </span>complete
+          complete
         </button>
       </div>
     </div>
