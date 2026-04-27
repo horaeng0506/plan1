@@ -12,6 +12,10 @@ on:
 
 jobs:
   translate:
+    # security-auditor MEDIUM: fork PR 에서 lockfile 또는 i18n:translate:all script
+    # tampering supply chain 차단. fork 는 ANTHROPIC_API_KEY_TRANSLATION secret 도
+    # 받지 못하므로 어차피 무의미. 같은 repo 내 PR 만 실행.
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,7 +34,9 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # security-auditor MEDIUM: postinstall script 실행 차단 (lockfile 변경 PR 의
+        # 악성 패키지 supply chain 회피). i18n-ai-translate 는 postinstall 없음.
+        run: npm ci --ignore-scripts
 
       - name: Translate 9 languages (es/pt/fr/de/ja/ru/ar/hi + zh→zh-CN)
         env:

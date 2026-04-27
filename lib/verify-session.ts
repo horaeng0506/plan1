@@ -61,18 +61,7 @@ export async function verifySessionJwt(
   }
 }
 
-export async function getCurrentUser(
-  request: Request,
-  issuer: string
-): Promise<SessionUser | null> {
-  const authHeader = request.headers.get('authorization');
-  if (authHeader?.startsWith('Bearer ')) {
-    return verifySessionJwt(authHeader.slice(7).trim(), issuer);
-  }
-  const cookieHeader = request.headers.get('cookie') ?? '';
-  const match = cookieHeader.match(/(?:^|;\s*)cofounder_jwt=([^;]+)/);
-  if (match) {
-    return verifySessionJwt(decodeURIComponent(match[1]), issuer);
-  }
-  return null;
-}
+// dead code — security-auditor MEDIUM 지적: lib/auth-helpers.ts 의 cookies().get()
+// 경로와 별개의 raw cookie 파싱 path 가 공존하면 정책 drift 위험. 사용처 0건 (2026-04-28
+// 기준 — grep getCurrentUser/getJwks 결과 verify-session.ts 외 매칭 없음). 미래에
+// route handler 에서 필요해지면 lib/auth-helpers.ts 패턴으로 통합 신규 구현 권장.
