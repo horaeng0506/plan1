@@ -1,0 +1,31 @@
+{
+  "app": {
+    "title": "plan1",
+    "tagline": "스케줄 관리"
+  },
+  "header": {
+    "today": "오늘",
+    "week": "주간",
+    "clock": "시계",
+    "timer": "타이머"
+  },
+  "nav": {
+    "newSchedule": "새 스케줄",
+    "categories": "카테고리",
+    "workingHours": "업무시간",
+    "weekSpan1": "1주",
+    "weekSpan2": "2주",
+    "weekSpan3": "3주",
+    "themeLight": "라이트",
+    "themeDark": "다크",
+    "themeSystem": "자동",
+    "weeklyShow": "주간 보이기",
+    "weeklyHide": "주간 숨기기"
+  },
+  "auth": {
+    "signInRequired": "plan1 사용을 위해 로그인하세요",
+    "signInDescription": "plan1 은 cross-device 동기화가 되는 개인 스케줄 도구입니다. Google 로 로그인하세요.",
+    "signIn": "Google 로 로그인"
+  },
+  "loading": "로딩 중..."
+}

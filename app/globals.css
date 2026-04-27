@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Terminal/CLI 톤 토큰 (DESIGN.md 기준 · 2026-04-27 prefix 제거 + 4채널 보강) */
+
+:root {
+  --bg: #0d0f12;
+  --panel: #14171c;
+  --line: #2a3036;
+  --muted: #5c6370;
+  --txt: #c8ccd4;
+  --ink: #e6e9ef;
+  --success: #98c379;
+  --info: #61afef;
+  --warn: #d19a66;
+  --danger: #e06c75;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f5f2e7;
+    --panel: #ffffff;
+    --line: #d4cfbf;
+    --muted: #8c8773;
+    --txt: #2d3748;
+    --ink: #1a202c;
+  }
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Pretendard', monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* Body 스캔라인 (매우 옅음) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.015) 2px 3px
+  );
+  z-index: 1;
+}
+
+/* 모든 컴포넌트 border-radius: 0 엄수 (Terminal 톤) */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
