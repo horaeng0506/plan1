@@ -10,6 +10,7 @@ import {ActiveTimer} from './ActiveTimer';
 import {NewScheduleModal} from './NewScheduleModal';
 import {CategoryManager} from './CategoryManager';
 import {WorkingHoursEditor} from './WorkingHoursEditor';
+import {ToastContainer} from './ToastContainer';
 import type {Theme} from '@/lib/domain/types';
 
 const DOW = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -270,8 +271,20 @@ export function PlanApp() {
           </div>
         )}
         {error && (
-          <div className="mb-4 border border-danger bg-[rgba(224,108,117,0.1)] px-4 py-3 text-xs font-mono text-danger">
-            load failed: {error}
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-danger bg-[rgba(224,108,117,0.1)] px-4 py-3 text-xs font-mono text-danger">
+            <span>load failed: {error}</span>
+            <button
+              type="button"
+              onClick={() => {
+                init().catch(err => {
+                  // eslint-disable-next-line no-console
+                  console.error('[plan1 · store.init retry]', err);
+                });
+              }}
+              className="rounded-none border border-danger bg-panel px-3 py-1 text-xs text-danger font-mono hover:bg-[rgba(224,108,117,0.15)]"
+            >
+              retry
+            </button>
           </div>
         )}
 
@@ -343,6 +356,7 @@ export function PlanApp() {
       )}
       {catOpen && <CategoryManager onClose={() => setCatOpen(false)} />}
       {whOpen && <WorkingHoursEditor onClose={() => setWhOpen(false)} />}
+      <ToastContainer />
     </main>
   );
 }
