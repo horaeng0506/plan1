@@ -26,6 +26,7 @@ import * as categoriesApi from '@/app/actions/categories';
 import * as schedulesApi from '@/app/actions/schedules';
 import * as workingHoursApi from '@/app/actions/working-hours';
 import * as settingsApi from '@/app/actions/settings';
+import {unwrapServerActionResult as unwrap} from './server-action';
 
 export const DEFAULT_SETTINGS: AppSettings = {
   theme: 'system',
@@ -101,12 +102,16 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({loading: true, error: null});
     initInflight = (async () => {
       try {
-        const [schedules, categories, whList, settings] = await Promise.all([
+        const [schedulesR, categoriesR, whListR, settingsR] = await Promise.all([
           schedulesApi.listSchedules(),
           categoriesApi.listCategories(),
           workingHoursApi.listWorkingHours(),
           settingsApi.getSettings()
         ]);
+        const schedules = unwrap(schedulesR);
+        const categories = unwrap(categoriesR);
+        const whList = unwrap(whListR);
+        const settings = unwrap(settingsR);
         const workingHours: Record<string, WorkingHours> = {};
         for (const wh of whList) workingHours[wh.date] = wh;
         set({
@@ -128,29 +133,29 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   async refreshSchedules() {
-    const schedules = await schedulesApi.listSchedules();
+    const schedules = unwrap(await schedulesApi.listSchedules());
     set({schedules});
   },
 
   async addSchedule(input) {
-    const next = await schedulesApi.createSchedule({
+    const next = unwrap(await schedulesApi.createSchedule({
       title: input.title,
       categoryId: input.categoryId,
       startAt: input.startAt,
       durationMin: input.durationMin,
       timerType: input.timerType,
       chainedToPrev: input.chainedToPrev
-    });
+    }));
     set({schedules: next});
   },
 
   async updateSchedule(id, patch) {
-    const next = await schedulesApi.updateSchedule({id, ...patch});
+    const next = unwrap(await schedulesApi.updateSchedule({id, ...patch}));
     set({schedules: next});
   },
 
   async removeSchedule(id) {
-    await schedulesApi.deleteSchedule(id);
+    unwrap(await schedulesApi.deleteSchedule(id));
     await get().refreshSchedules();
   },
 
@@ -172,26 +177,26 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   async completeSchedule(id, completeAtMs) {
-    const next = await schedulesApi.completeSchedule({id, completeAtMs});
+    const next = unwrap(await schedulesApi.completeSchedule({id, completeAtMs}));
     set({schedules: next});
   },
 
   async addCategory(input) {
-    const created = await categoriesApi.createCategory({name: input.name, color: input.color});
+    const created = unwrap(await categoriesApi.createCategory({name: input.name, color: input.color}));
     set({categories: [...get().categories, created]});
   },
 
   async removeCategory(id, force) {
-    await categoriesApi.deleteCategory({id, force});
+    unwrap(await categoriesApi.deleteCategory({id, force}));
     // cascade DELETE 로 schedules 도 영향 → schedules 도 refresh
     set({categories: get().categories.filter(c => c.id !== id)});
     if (force) await get().refreshSchedules();
   },
 
   async setWorkingHours(date, hours) {
-    await workingHoursApi.setWorkingHours({date, ...hours});
+    unwrap(await workingHoursApi.setWorkingHours({date, ...hours}));
     // split 재계산 결과 반영 위해 schedules·workingHours refresh
-    const [whList] = await Promise.all([workingHoursApi.listWorkingHours()]);
+    const whList = unwrap(await workingHoursApi.listWorkingHours());
     const wh: Record<string, WorkingHours> = {};
     for (const w of whList) wh[w.date] = w;
     set({workingHours: wh});
@@ -199,8 +204,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   async bulkSetWorkingHours(dates, hours) {
-    await workingHoursApi.bulkSetWorkingHours({dates, ...hours});
-    const whList = await workingHoursApi.listWorkingHours();
+    unwrap(await workingHoursApi.bulkSetWorkingHours({dates, ...hours}));
+    const whList = unwrap(await workingHoursApi.listWorkingHours());
     const wh: Record<string, WorkingHours> = {};
     for (const w of whList) wh[w.date] = w;
     set({workingHours: wh});
@@ -208,13 +213,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   async setDefaultWorkingHours(hours) {
-    const updated = await settingsApi.updateSettings({defaultWorkingHours: hours});
+    const updated = unwrap(await settingsApi.updateSettings({defaultWorkingHours: hours}));
     set({settings: updated});
     await get().refreshSchedules();
   },
 
   async updateSettings(patch) {
-    const updated = await settingsApi.updateSettings(patch);
+    const updated = unwrap(await settingsApi.updateSettings(patch));
     set({settings: updated});
   }
 }));

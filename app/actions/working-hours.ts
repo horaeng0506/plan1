@@ -6,6 +6,8 @@
  * 정책:
  *   - (user_id, date) UNIQUE — 같은 날짜 중복 금지 (DB INDEX 로 enforce)
  *   - 근무시간 변경 시 schedules 의 split 재계산 (Stage 9 마감 초과 split/이월)
+ *
+ * Stage 5.1 part 2: 사용자 facing error 는 ServerActionError throw → runAction 변환.
  */
 
 import {randomUUID} from 'node:crypto';
@@ -14,6 +16,7 @@ import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
 import {plan1WorkingHours, plan1Schedules, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
+import {runAction, type ServerActionResult} from '@/lib/server-action';
 import {splitByWorkingHours} from '@/lib/domain/split';
 import type {WorkingHours, Schedule} from '@/lib/domain/types';
 
@@ -96,85 +99,93 @@ async function applySplitForUser(userId: string): Promise<void> {
   });
 }
 
-export async function listWorkingHours(): Promise<WorkingHours[]> {
-  const user = await requireUser();
-  const rows = await db
-    .select()
-    .from(plan1WorkingHours)
-    .where(eq(plan1WorkingHours.userId, user.id));
-  return rows.map(rowToDomain);
+export async function listWorkingHours(): Promise<ServerActionResult<WorkingHours[]>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    const rows = await db
+      .select()
+      .from(plan1WorkingHours)
+      .where(eq(plan1WorkingHours.userId, user.id));
+    return rows.map(rowToDomain);
+  });
 }
 
 export async function setWorkingHours(input: {
   date: string;
   startMin: number;
   endMin: number;
-}): Promise<void> {
-  const user = await requireUser();
-  // upsert by (user_id, date) UNIQUE
-  const existing = await db
-    .select({id: plan1WorkingHours.id})
-    .from(plan1WorkingHours)
-    .where(and(eq(plan1WorkingHours.userId, user.id), eq(plan1WorkingHours.date, input.date)))
-    .limit(1);
-  if (existing[0]) {
-    await db
-      .update(plan1WorkingHours)
-      .set({startMin: input.startMin, endMin: input.endMin, updatedAt: new Date()})
-      .where(eq(plan1WorkingHours.id, existing[0].id));
-  } else {
-    await db.insert(plan1WorkingHours).values({
-      id: `wh-${randomUUID()}`,
-      userId: user.id,
-      date: input.date,
-      startMin: input.startMin,
-      endMin: input.endMin
-    });
-  }
-  await applySplitForUser(user.id);
-  revalidatePath('/');
+}): Promise<ServerActionResult<void>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    // upsert by (user_id, date) UNIQUE
+    const existing = await db
+      .select({id: plan1WorkingHours.id})
+      .from(plan1WorkingHours)
+      .where(and(eq(plan1WorkingHours.userId, user.id), eq(plan1WorkingHours.date, input.date)))
+      .limit(1);
+    if (existing[0]) {
+      await db
+        .update(plan1WorkingHours)
+        .set({startMin: input.startMin, endMin: input.endMin, updatedAt: new Date()})
+        .where(eq(plan1WorkingHours.id, existing[0].id));
+    } else {
+      await db.insert(plan1WorkingHours).values({
+        id: `wh-${randomUUID()}`,
+        userId: user.id,
+        date: input.date,
+        startMin: input.startMin,
+        endMin: input.endMin
+      });
+    }
+    await applySplitForUser(user.id);
+    revalidatePath('/');
+  });
 }
 
 export async function bulkSetWorkingHours(input: {
   dates: string[];
   startMin: number;
   endMin: number;
-}): Promise<void> {
-  const user = await requireUser();
-  const existing = await db
-    .select({id: plan1WorkingHours.id, date: plan1WorkingHours.date})
-    .from(plan1WorkingHours)
-    .where(and(eq(plan1WorkingHours.userId, user.id), inArray(plan1WorkingHours.date, input.dates)));
-  const existingDates = new Map(existing.map(r => [r.date, r.id]));
+}): Promise<ServerActionResult<void>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    const existing = await db
+      .select({id: plan1WorkingHours.id, date: plan1WorkingHours.date})
+      .from(plan1WorkingHours)
+      .where(and(eq(plan1WorkingHours.userId, user.id), inArray(plan1WorkingHours.date, input.dates)));
+    const existingDates = new Map(existing.map(r => [r.date, r.id]));
 
-  await db.transaction(async tx => {
-    for (const date of input.dates) {
-      const id = existingDates.get(date);
-      if (id) {
-        await tx
-          .update(plan1WorkingHours)
-          .set({startMin: input.startMin, endMin: input.endMin, updatedAt: new Date()})
-          .where(eq(plan1WorkingHours.id, id));
-      } else {
-        await tx.insert(plan1WorkingHours).values({
-          id: `wh-${randomUUID()}`,
-          userId: user.id,
-          date,
-          startMin: input.startMin,
-          endMin: input.endMin
-        });
+    await db.transaction(async tx => {
+      for (const date of input.dates) {
+        const id = existingDates.get(date);
+        if (id) {
+          await tx
+            .update(plan1WorkingHours)
+            .set({startMin: input.startMin, endMin: input.endMin, updatedAt: new Date()})
+            .where(eq(plan1WorkingHours.id, id));
+        } else {
+          await tx.insert(plan1WorkingHours).values({
+            id: `wh-${randomUUID()}`,
+            userId: user.id,
+            date,
+            startMin: input.startMin,
+            endMin: input.endMin
+          });
+        }
       }
-    }
+    });
+    await applySplitForUser(user.id);
+    revalidatePath('/');
   });
-  await applySplitForUser(user.id);
-  revalidatePath('/');
 }
 
-export async function deleteWorkingHours(date: string): Promise<void> {
-  const user = await requireUser();
-  await db
-    .delete(plan1WorkingHours)
-    .where(and(eq(plan1WorkingHours.userId, user.id), eq(plan1WorkingHours.date, date)));
-  await applySplitForUser(user.id);
-  revalidatePath('/');
+export async function deleteWorkingHours(date: string): Promise<ServerActionResult<void>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    await db
+      .delete(plan1WorkingHours)
+      .where(and(eq(plan1WorkingHours.userId, user.id), eq(plan1WorkingHours.date, date)));
+    await applySplitForUser(user.id);
+    revalidatePath('/');
+  });
 }

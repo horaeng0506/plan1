@@ -52,7 +52,8 @@
   },
   "error": {
     "loadFailedLabel": "load failed:",
-    "mutationFailed": "Failed to {action}: {error}"
+    "mutationFailed": "Failed to {action}: {error}",
+    "unknown": "An unexpected error occurred. Please try again."
   },
   "mutation": {
     "removeCategory": "remove category",
@@ -154,5 +155,11 @@
   "wallTime": {
     "am": "am",
     "pm": "pm"
+  },
+  "serverError": {
+    "unauthorized": "Sign in required.",
+    "scheduleNotFound": "Schedule not found.",
+    "categoryNotFound": "Category not found or not owned.",
+    "categoryHasSchedules": "Category has {scheduleCount, plural, one {1 schedule} other {# schedules}}. Confirm cascade delete to remove."
   }
 }
