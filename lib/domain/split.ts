@@ -30,8 +30,10 @@ function whFor(dateKey: string, workingHours: Record<string, WorkingHours>, defa
   return { startMin: defaultWH.startMin, endMin: defaultWH.endMin }
 }
 
-function makePartId(): string {
-  return `sch-${crypto.randomUUID()}`
+// Deterministic part ID — 같은 원본·같은 dayIndex 면 항상 같은 ID.
+// 매 호출마다 새 UUID 발급하던 이전 동작은 ID churn → cascade·pin·revalidate 회귀 (logic-critic Critical #1)
+function makePartId(baseId: string, dayIndex: number): string {
+  return `${baseId}__part_${dayIndex}`
 }
 
 export function splitByWorkingHours(
@@ -40,11 +42,22 @@ export function splitByWorkingHours(
   defaultWH: { startMin: number; endMin: number }
 ): Schedule[] {
   const done = schedules.filter((s) => s.status === 'done')
-  const queue: Schedule[] = schedules.filter((s) => s.status !== 'done')
+  // queue 진입 시 dayIndex 추적 (원본 = 0, 첫 part = 1, 두번째 = 2, ...)
+  type QueueItem = { schedule: Schedule; dayIndex: number }
+  const queue: QueueItem[] = schedules
+    .filter((s) => s.status !== 'done')
+    .map((s) => {
+      // 기존 part 가 input 으로 들어오면 id 패턴에서 dayIndex 추출
+      if (s.splitFrom) {
+        const m = /__part_(\d+)$/.exec(s.id)
+        if (m) return { schedule: s, dayIndex: parseInt(m[1], 10) }
+      }
+      return { schedule: s, dayIndex: 0 }
+    })
   const out: Schedule[] = []
   let iter = 0
   while (queue.length > 0 && iter < 5000) {
-    const s = queue.shift() as Schedule
+    const { schedule: s, dayIndex } = queue.shift() as QueueItem
     iter++
     const dateKey = dateKeyOf(s.startAt)
     const wh = whFor(dateKey, workingHours, defaultWH)
@@ -65,13 +78,20 @@ export function splitByWorkingHours(
     const nextWH = whFor(nextDateKey, workingHours, defaultWH)
     const nextStartAt = nextDayMs + nextWH.startMin * NS
     const baseId = s.splitFrom ?? s.id
+    const nextDayIndex = dayIndex + 1
     queue.push({
-      ...s,
-      id: makePartId(),
-      startAt: nextStartAt,
-      durationMin: remain,
-      splitFrom: baseId,
-      updatedAt: Date.now(),
+      schedule: {
+        ...s,
+        id: makePartId(baseId, nextDayIndex),
+        startAt: nextStartAt,
+        durationMin: remain,
+        splitFrom: baseId,
+        // Part 의 chainedToPrev 는 false 강제 (logic-critic Critical #2).
+        // cascade 가 part 를 별개 chain 으로 보고 이중 shift 하는 것 방지.
+        chainedToPrev: false,
+        updatedAt: Date.now(),
+      },
+      dayIndex: nextDayIndex,
     })
   }
   return [...done, ...out]

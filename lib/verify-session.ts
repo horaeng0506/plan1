@@ -16,12 +16,29 @@ export type SessionUser = {
   image?: string;
 };
 
+// JWKS singleton 캐시 (env-critic Critical #1).
+// 매 호출 신규 createRemoteJWKSet 하면 jose 내부 캐시 무력화 → portal /jwks DDoS 가능.
+// issuer 별 인스턴스 1개 유지 + 30초 cooldown + 10분 max age.
+const jwksCache = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
+
+function getJwks(issuer: string): ReturnType<typeof createRemoteJWKSet> {
+  let jwks = jwksCache.get(issuer);
+  if (!jwks) {
+    jwks = createRemoteJWKSet(new URL(`${issuer}/api/auth/jwks`), {
+      cooldownDuration: 30_000,
+      cacheMaxAge: 600_000
+    });
+    jwksCache.set(issuer, jwks);
+  }
+  return jwks;
+}
+
 export async function verifySessionJwt(
   token: string,
   issuer: string
 ): Promise<SessionUser | null> {
   try {
-    const jwks = createRemoteJWKSet(new URL(`${issuer}/api/auth/jwks`));
+    const jwks = getJwks(issuer);
     const {payload} = await jwtVerify(token, jwks, {
       issuer,
       audience: issuer
@@ -36,7 +53,9 @@ export async function verifySessionJwt(
 
     if (!user.id) return null;
     return user;
-  } catch {
+  } catch (e) {
+    // env-critic Minor — silent catch 가 디버깅 막음. Vercel function logs 에 노출.
+    console.warn('[verify-session] JWT verify failed:', e instanceof Error ? e.message : e);
     return null;
   }
 }
