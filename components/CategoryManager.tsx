@@ -3,6 +3,7 @@
 import {useEffect, useState} from 'react';
 import {useAppStore} from '@/lib/store';
 import {runMutation} from '@/lib/run-mutation';
+import {useEscapeKey} from '@/lib/use-escape-key';
 
 export function CategoryManager({onClose}: {onClose: () => void}) {
   const categories = useAppStore(s => s.categories);
@@ -20,6 +21,9 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
   useEffect(() => {
     if (confirmId && !categories.find(c => c.id === confirmId)) setConfirmId(null);
   }, [categories, confirmId]);
+
+  // Stage 4d-C a11y: Esc → close. busy 중에는 비활성 (mid-mutation 회피).
+  useEscapeKey(onClose, !busy);
 
   const canAdd = name.trim().length > 0 && !busy;
 

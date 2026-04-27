@@ -2,6 +2,7 @@
 
 import {useState} from 'react';
 import {useAppStore} from '@/lib/store';
+import {useEscapeKey} from '@/lib/use-escape-key';
 
 function todayKey(): string {
   const d = new Date();
@@ -70,6 +71,9 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
   const [endTime, setEndTime] = useState(minToTime(defaultWH.endMin));
   const [alsoDefault, setAlsoDefault] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  // Stage 4d-C a11y: Esc → close. busy 중 비활성.
+  useEscapeKey(onClose, !busy);
 
   const startMin = timeToMin(startTime);
   const endMin = timeToMin(endTime);

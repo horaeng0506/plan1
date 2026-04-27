@@ -3,6 +3,7 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
+import {useEscapeKey} from '@/lib/use-escape-key';
 import {CategoryManager} from './CategoryManager';
 
 function todayKey(): string {
@@ -76,6 +77,9 @@ export function NewScheduleModal({
   const [chainedToPrev, setChainedToPrev] = useState<boolean>(initChained);
   const [catOpen, setCatOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  // Stage 4d-C a11y: Esc → close. busy 중 비활성 + catOpen 시 자식 모달이 먼저 받음.
+  useEscapeKey(onClose, !busy && !catOpen);
 
   const [deleteArmed, setDeleteArmed] = useState(false);
   const deleteTimerRef = useRef<number | null>(null);
