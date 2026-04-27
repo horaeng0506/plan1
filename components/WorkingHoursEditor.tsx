@@ -30,11 +30,19 @@ function timeToMin(t: string): number {
   return h * 60 + m;
 }
 
-function enumerateDates(from: string, to: string, weekdaysOnly: boolean): string[] {
+const DATE_GUARD_MAX = 1000;
+
+function enumerateDates(
+  from: string,
+  to: string,
+  weekdaysOnly: boolean
+): {dates: string[]; truncated: boolean} {
+  // from > to 보호 (Stage 3e logic-critic Medium #8 — silent 빈배열 회피).
+  if (from > to) return {dates: [], truncated: false};
   const result: string[] = [];
   let cur = from;
   let guard = 0;
-  while (cur <= to && guard < 1000) {
+  while (cur <= to && guard < DATE_GUARD_MAX) {
     const [y, m, d] = cur.split('-').map(Number);
     const dow = new Date(y, m - 1, d).getDay();
     const isWeekend = dow === 0 || dow === 6;
@@ -42,7 +50,7 @@ function enumerateDates(from: string, to: string, weekdaysOnly: boolean): string
     cur = addDaysKey(cur, 1);
     guard++;
   }
-  return result;
+  return {dates: result, truncated: guard >= DATE_GUARD_MAX && cur <= to};
 }
 
 type Mode = 'single' | 'range';
@@ -65,18 +73,32 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
 
   const startMin = timeToMin(startTime);
   const endMin = timeToMin(endTime);
-  const valid = startMin < endMin;
+  const validTime = startMin < endMin;
+  const validRange = mode === 'single' || fromDate <= toDate;
+  const valid = validTime && validRange;
+  const [warn, setWarn] = useState<string | null>(null);
 
   const save = async () => {
     if (!valid || busy) return;
     setBusy(true);
+    setWarn(null);
     try {
       const hours = {startMin, endMin};
       if (mode === 'single') {
         await setWorkingHours(date, hours);
       } else {
-        const dates = enumerateDates(fromDate, toDate, weekdaysOnly);
-        if (dates.length > 0) await bulkSetWorkingHours(dates, hours);
+        const {dates, truncated} = enumerateDates(fromDate, toDate, weekdaysOnly);
+        if (dates.length === 0) {
+          setWarn('범위에 적용할 날짜가 없습니다. (시작일 > 종료일 또는 평일만 옵션과 충돌)');
+          return;
+        }
+        if (truncated) {
+          setWarn(
+            `범위가 ${DATE_GUARD_MAX}일을 초과해 일부만 처리됩니다. 더 좁은 범위로 다시 시도하세요.`
+          );
+          return;
+        }
+        await bulkSetWorkingHours(dates, hours);
       }
       if (alsoDefault) await setDefaultWorkingHours(hours);
       onClose();
@@ -181,9 +203,20 @@ export function WorkingHoursEditor({onClose}: {onClose: () => void}) {
               />
             </label>
           </div>
-          {!valid && (
+          {!validTime && (
             <p className="text-xs text-red-600 dark:text-red-400">
               종료 시각은 시작 시각보다 늦어야 합니다.
+            </p>
+          )}
+          {mode === 'range' && !validRange && (
+            <p className="text-xs text-red-600 dark:text-red-400">
+              종료일은 시작일과 같거나 이후여야 합니다.
+            </p>
+          )}
+          {warn && (
+            <p className="text-xs text-amber-600 dark:text-amber-400 font-mono">
+              <span className="opacity-80">! </span>
+              {warn}
             </p>
           )}
           <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">

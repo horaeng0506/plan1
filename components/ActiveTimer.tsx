@@ -2,6 +2,7 @@
 
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {useAppStore} from '@/lib/store';
+import {runMutation} from '@/lib/run-mutation';
 import type {Schedule, TimerType} from '@/lib/domain/types';
 
 function findActiveSchedules(schedules: Schedule[], now: number): Schedule[] {
@@ -87,27 +88,38 @@ export function ActiveTimer() {
     isTimer1 && !frozen && idleSince !== null ? endAt + (now - idleSince) : endAt;
 
   const bump = (mins: number) => {
-    void extendScheduleBy(active.id, mins);
+    runMutation(extendScheduleBy(active.id, mins), 'extend timer');
   };
   const complete = () => {
-    void completeSchedule(active.id, Date.now());
+    runMutation(completeSchedule(active.id, Date.now()), 'complete schedule');
   };
   const setType = (t: TimerType) => {
-    void updateSchedule(active.id, {timerType: t});
+    runMutation(updateSchedule(active.id, {timerType: t}), 'change timer type');
   };
 
-  const toggleFreeze = () => {
-    if (frozen) {
-      setIdleSince(Date.now());
-      setFrozen(false);
-    } else {
+  // toggleFreeze busy state — 빠른 토글 race 방지 (Stage 3e logic-critic Medium #4).
+  // Stage 3f logic-critic Critical: 두 분기 모두 togglePending 체크 — focus→idle 도 락 진입.
+  const [togglePending, setTogglePending] = useState(false);
+  const toggleFreeze = async () => {
+    if (togglePending) return;
+    setTogglePending(true);
+    try {
+      if (frozen) {
+        // focus → idle: 진입 시각만 기록, server 호출 없음 (idle 종료 시점에 모아 호출).
+        setIdleSince(Date.now());
+        setFrozen(false);
+        return;
+      }
+      // idle → focus: 누적 idle 시간을 server 에 반영.
       if (idleSince !== null) {
         const elapsedMs = Date.now() - idleSince;
         const elapsedMin = Math.max(0, Math.round(elapsedMs / 60_000));
-        if (elapsedMin > 0) void extendScheduleBy(active.id, elapsedMin);
+        if (elapsedMin > 0) await extendScheduleBy(active.id, elapsedMin);
       }
       setIdleSince(null);
       setFrozen(true);
+    } finally {
+      setTogglePending(false);
     }
   };
 
@@ -136,7 +148,10 @@ export function ActiveTimer() {
           <select
             value={pinnedActiveId ?? ''}
             onChange={e => {
-              void updateSettings({pinnedActiveId: e.target.value || null});
+              runMutation(
+                updateSettings({pinnedActiveId: e.target.value || null}),
+                'pin active timer'
+              );
             }}
             className="ml-1 rounded-none border border-gray-300 bg-white px-1 py-0.5 text-[10px] font-mono dark:border-gray-700 dark:bg-gray-950"
           >

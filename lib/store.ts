@@ -38,6 +38,9 @@ export const DEFAULT_CATEGORIES: Category[] = [
   {id: 'cat-default', name: '기본', color: '#6b7280', createdAt: 0}
 ];
 
+// Strict Mode 이중 mount race 가드용 inflight promise 캐시 (init 만 사용).
+let initInflight: Promise<void> | null = null;
+
 interface AppState {
   schedules: Schedule[];
   categories: Category[];
@@ -87,29 +90,38 @@ export const useAppStore = create<AppState>((set, get) => ({
   error: null,
 
   async init() {
-    if (get().loaded || get().loading) return;
+    // Stage 3f env-critic Critical: React Strict Mode 이중 mount 환경에서 동일 tick 내
+    // useEffect 두 번 실행 → set({loading: true}) batching 전에 두 번째 호출이 가드 통과
+    // 가능. inflight promise 캐싱으로 중복 server action 호출 차단.
+    if (get().loaded) return;
+    if (initInflight) return initInflight;
     set({loading: true, error: null});
-    try {
-      const [schedules, categories, whList, settings] = await Promise.all([
-        schedulesApi.listSchedules(),
-        categoriesApi.listCategories(),
-        workingHoursApi.listWorkingHours(),
-        settingsApi.getSettings()
-      ]);
-      const workingHours: Record<string, WorkingHours> = {};
-      for (const wh of whList) workingHours[wh.date] = wh;
-      set({
-        schedules,
-        categories: categories.length > 0 ? categories : DEFAULT_CATEGORIES,
-        workingHours,
-        settings,
-        loaded: true,
-        loading: false
-      });
-    } catch (e) {
-      set({loading: false, error: e instanceof Error ? e.message : String(e)});
-      throw e;
-    }
+    initInflight = (async () => {
+      try {
+        const [schedules, categories, whList, settings] = await Promise.all([
+          schedulesApi.listSchedules(),
+          categoriesApi.listCategories(),
+          workingHoursApi.listWorkingHours(),
+          settingsApi.getSettings()
+        ]);
+        const workingHours: Record<string, WorkingHours> = {};
+        for (const wh of whList) workingHours[wh.date] = wh;
+        set({
+          schedules,
+          categories: categories.length > 0 ? categories : DEFAULT_CATEGORIES,
+          workingHours,
+          settings,
+          loaded: true,
+          loading: false
+        });
+      } catch (e) {
+        set({loading: false, error: e instanceof Error ? e.message : String(e)});
+        throw e;
+      } finally {
+        initInflight = null;
+      }
+    })();
+    return initInflight;
   },
 
   async refreshSchedules() {

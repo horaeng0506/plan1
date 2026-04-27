@@ -155,6 +155,13 @@ export function NewScheduleModal({
   const submit = async () => {
     if (!canSubmit) return;
     setBusy(true);
+    // mutation 진입 시 deleteArmed 가 살아있으면 stale state — 명시적으로 reset
+    // (Stage 3e logic-critic Medium #9 — busy 상호작용 보호).
+    setDeleteArmed(false);
+    if (deleteTimerRef.current) {
+      clearTimeout(deleteTimerRef.current);
+      deleteTimerRef.current = null;
+    }
     try {
       if (isEdit && editing) {
         await updateSchedule(editing.id, {
@@ -197,9 +204,22 @@ export function NewScheduleModal({
     }
   };
 
+  // 1차 클릭 후 사용자에게 dirty&&!baseOk 경고 노출 위한 ephemeral 메시지 (Stage 3e logic-critic Medium #2).
+  const [nextAfterWarn, setNextAfterWarn] = useState<string | null>(null);
+  // Stage 3f logic-critic Major fix: 입력 변경 시 stale warn 자동 reset.
+  useEffect(() => {
+    if (nextAfterWarn) setNextAfterWarn(null);
+    // baseOk 회복 신호인 title/categoryId/durationMin 변경만 추적.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, categoryId, durationMin]);
   const handleNextAfter = async () => {
     if (!editing || busy) return;
+    if (isDirty && !baseOk) {
+      setNextAfterWarn('현재 편집 내용이 불완전(이름/카테고리/소요분 확인). 저장 안 됨 — 내용 보완 후 다시 시도');
+      return;
+    }
     setBusy(true);
+    setNextAfterWarn(null);
     try {
       if (isDirty && baseOk) {
         await updateSchedule(editing.id, {
@@ -401,6 +421,12 @@ export function NewScheduleModal({
                   <span className="opacity-70">$ </span>next +10m (완료 후 새 스케줄)
                 </button>
               </div>
+            )}
+            {nextAfterWarn && (
+              <p className="text-xs text-red-600 dark:text-red-400 font-mono">
+                <span className="opacity-80">! </span>
+                {nextAfterWarn}
+              </p>
             )}
             <div className="flex justify-end gap-2">
               <button
