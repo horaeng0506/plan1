@@ -1,0 +1,50 @@
+name: i18n auto-translate
+
+# messages/en.json 이 PR 에서 변경되면 나머지 10개 언어 자동 번역 후 PR에 커밋 추가.
+# 모델: Claude Sonnet 4.5 (i18n-ai-translate 경유).
+# KO 는 대장 검수용이라 자동 번역 대상 아님 — 필요 시 대장이 수동 수정.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'messages/en.json'
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Translate 9 languages (es/pt/fr/de/ja/ru/ar/hi + zh→zh-CN)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY_TRANSLATION }}
+        run: npm run i18n:translate:all
+
+      - name: Commit translations back to PR
+        run: |
+          git config user.name "claude-i18n-bot"
+          git config user.email "noreply@cofounder.co.kr"
+          git add messages/
+          if git diff --cached --quiet; then
+            echo "No translation changes"
+          else
+            git commit -m "i18n: auto-translate via Claude Sonnet 4.5 (en.json changed)"
+            git push
+          fi
