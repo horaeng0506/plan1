@@ -9,8 +9,10 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "i18n:translate": "i18n-ai-translate translate -i messages/en.json --skip-translation-verification --skip-styling-verification --override",
-    "i18n:diff": "i18n-ai-translate diff -b messages/en.json -a messages/en.json --skip-translation-verification --skip-styling-verification"
+    "i18n:translate": "i18n-ai-translate translate -i messages/en.json -o es pt fr de ja ru ar hi -e claude -m claude-sonnet-4-5 -p '{' -s '}' --skip-translation-verification --skip-styling-verification --verbose",
+    "i18n:translate:zh": "i18n-ai-translate translate -i messages/en.json -o zh -e claude -m claude-sonnet-4-5 -p '{' -s '}' --skip-translation-verification --skip-styling-verification --verbose && mv messages/zh.json messages/zh-CN.json",
+    "i18n:translate:all": "npm run i18n:translate && npm run i18n:translate:zh",
+    "i18n:diff": "i18n-ai-translate diff -l en -e claude -m claude-sonnet-4-5 -p '{' -s '}' --skip-translation-verification --skip-styling-verification --verbose"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.20",
