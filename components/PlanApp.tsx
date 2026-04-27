@@ -83,10 +83,11 @@ export function PlanApp() {
   const [whOpen, setWhOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Stage 4d-B: 공유 useNow (1초 interval) — meta bar 동적 데이터.
-  // 60초 → 1초 변경: schedules 변경 없으면 useMemo deps[now] 만 갱신, recompute
-  // 비용 schedules 100개 기준 1ms 미만. ActiveTimer/AnalogClock 와 동일 클럭 공유.
+  // Stage 4d-B + critic fix: useNow + useMemo deps 분 단위 떨굼 (60배 recompute 절감).
+  // logic-critic Major: Date 인스턴스를 deps 로 쓰면 매 렌더 새 ref → useMemo 무력화.
+  // todayMeta/weekRange/activeMeta 모두 분 단위 정확도면 충분 (초 단위 갱신 의미 없음).
   const nowMs = useNow();
+  const nowMin = nowMs > 0 ? Math.floor(nowMs / 60_000) : 0;
   const now = nowMs > 0 ? new Date(nowMs) : null;
 
   const todayKey = now ? dateKey(now) : null;
@@ -99,8 +100,8 @@ export function PlanApp() {
   }, [schedules, todayKey]);
 
   const weekRange = useMemo(() => {
-    if (!now) return '';
-    const start = new Date(now);
+    if (nowMs === 0) return '';
+    const start = new Date(nowMs);
     const day = start.getDay();
     // ISO week: Monday=1 ... Sunday=0 → start of week = Monday.
     const offset = day === 0 ? -6 : 1 - day;
@@ -108,24 +109,25 @@ export function PlanApp() {
     const end = new Date(start);
     end.setDate(end.getDate() + 7 * weekViewSpan - 1);
     return `${formatMDshort(start)}–${formatMDshort(end)}`;
-  }, [now, weekViewSpan]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nowMin, weekViewSpan]);
 
   // ui-critic Critical: timer meta DESIGN.md 형식 (`countup · 00:42:13`) 정합 위해
   // 활성 카운트 + 가장 오래 돈 타이머 elapsed 표시.
   const activeMeta = useMemo(() => {
-    if (!now) return null;
-    const ms = now.getTime();
+    if (nowMs === 0) return null;
     const actives = schedules.filter(s => {
       if (s.status === 'done') return false;
       const end = s.startAt + s.durationMin * 60_000;
-      return s.startAt <= ms && ms < end;
+      return s.startAt <= nowMs && nowMs < end;
     });
     if (actives.length === 0) return {count: 0, elapsedMin: 0};
     // 가장 일찍 시작한 (= 가장 오래 돌고 있는) 타이머의 분 단위 elapsed.
     const longest = actives.reduce((a, b) => (a.startAt < b.startAt ? a : b));
-    const elapsedMin = Math.max(0, Math.floor((ms - longest.startAt) / 60_000));
+    const elapsedMin = Math.max(0, Math.floor((nowMs - longest.startAt) / 60_000));
     return {count: actives.length, elapsedMin};
-  }, [schedules, now]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schedules, nowMin]);
 
   function formatElapsedHM(min: number): string {
     const h = Math.floor(min / 60);
@@ -282,15 +284,18 @@ export function PlanApp() {
         {error && (
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-danger bg-[rgba(224,108,117,0.1)] px-4 py-3 text-xs font-mono text-danger">
             <span>load failed: {error}</span>
+            {/* logic-critic Minor: disabled={loading} 로 retry 연타 차단.
+                ui-critic Major: 호버 시 bg-danger text-bg inversion 으로 강한 시각 피드백. */}
             <button
               type="button"
+              disabled={loading}
               onClick={() => {
                 init().catch(err => {
                   // eslint-disable-next-line no-console
                   console.error('[plan1 · store.init retry]', err);
                 });
               }}
-              className="rounded-none border border-danger bg-panel px-3 py-1 text-xs text-danger font-mono hover:bg-[rgba(224,108,117,0.15)]"
+              className="rounded-none border border-danger bg-panel px-3 py-1 text-xs text-danger font-mono hover:bg-danger hover:text-bg disabled:cursor-not-allowed disabled:opacity-50"
             >
               retry
             </button>

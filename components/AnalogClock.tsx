@@ -40,8 +40,9 @@ export function AnalogClock() {
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
   // Stage 4d-B: useState+interval → 공유 useNow (1초 interval 단일화).
+  // logic-critic Major: Date 인스턴스를 직접 deps 로 쓰면 매 렌더 새 ref → useMemo 무력화.
+  // useMemo 안에서 nowMs 로부터 Date 생성하고 deps 는 nowMs (number) 사용.
   const nowMs = useNow();
-  const now = nowMs > 0 ? new Date(nowMs) : null;
 
   const categoryColor = useMemo(() => {
     const map = new Map<string, string>();
@@ -49,8 +50,12 @@ export function AnalogClock() {
     return map;
   }, [categories]);
 
+  // logic-critic Major: deps 를 nowMin (분 단위) 으로 떨궈 60배 recompute 절감.
+  // sector arc 는 분 단위 정확도면 충분 (시침/분침은 별도, 매초 nowMs 로 직접 계산).
+  const nowMin = nowMs > 0 ? Math.floor(nowMs / 60_000) : 0;
   const sectors = useMemo(() => {
-    if (!now) return [] as Array<{id: string; d: string; color: string; opacity: number}>;
+    if (nowMs === 0) return [] as Array<{id: string; d: string; color: string; opacity: number}>;
+    const now = new Date(nowMs);
     const arcGen = d3Arc<{
       startAngle: number;
       endAngle: number;
@@ -62,12 +67,12 @@ export function AnalogClock() {
       .outerRadius(RADIUS_SECTOR)
       .startAngle(d => d.startAngle)
       .endAngle(d => d.endAngle);
-    const nowMs = now.getTime();
+    const ms = now.getTime();
     return schedules
       .filter(s => {
         if (s.status === 'done') return false;
         const endAt = s.startAt + s.durationMin * 60_000;
-        if (endAt <= nowMs) return false;
+        if (endAt <= ms) return false;
         const start = new Date(s.startAt);
         return isSameDay(start, now);
       })
@@ -84,8 +89,11 @@ export function AnalogClock() {
         const d = arcGen({startAngle, endAngle, color, id: s.id, opacity}) ?? '';
         return {id: s.id, d, color, opacity};
       });
-  }, [schedules, now, categoryColor]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schedules, nowMin, categoryColor]);
 
+  // 시침/분침 위치는 매초 nowMs 그대로 사용 (분침 부드러운 갱신 위해).
+  const now = nowMs > 0 ? new Date(nowMs) : null;
   const totalMin = now ? minutesOfDay(now) : 0;
   const hourAngle = ((totalMin % 720) / 720) * Math.PI * 2;
   const minuteAngle = ((totalMin % 60) / 60) * Math.PI * 2;
