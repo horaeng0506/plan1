@@ -51,17 +51,24 @@ function rateLimited(request: NextRequest): boolean {
 
 export function proxy(request: NextRequest) {
   const {pathname} = request.nextUrl;
+  // /api/** 경로: next-intl 우회 + POST 만 rate limit. GET 은 그대로 통과.
+  // Stage 8 follow-up (2026-04-28): GET /api/health 가 intlProxy 통과 시 _not-found
+  // 매칭 → 404. localePrefix:'never' 라도 next-intl middleware 가 GET 라우팅에 개입.
+  // /api/** 는 명시적으로 next-intl 우회.
+  if (pathname.startsWith('/api/')) {
+    if (request.method === 'POST' && rateLimited(request)) {
+      return new NextResponse('rate_limited', {status: 429});
+    }
+    return NextResponse.next();
+  }
   // security-auditor MEDIUM: server action POST 도 rate limit. Next.js 14+ 는 server
   // action 호출을 `Next-Action` header 가진 POST 로 보냄 (페이지 경로에 직접 POST).
-  // /api/** 만 보호하면 server action 무한 호출 가능 (JWT 검증 + DB write 부담).
   const isServerActionPost =
     request.method === 'POST' && request.headers.get('next-action') !== null;
-  const isApiPost = pathname.startsWith('/api/') && request.method === 'POST';
-  if (isApiPost || isServerActionPost) {
+  if (isServerActionPost) {
     if (rateLimited(request)) {
       return new NextResponse('rate_limited', {status: 429});
     }
-    if (isApiPost) return NextResponse.next();
     // server action POST 는 next-intl 라우팅 통과 필요 없음 (이미 locale prefixed
     // path 로 들어오면 server action handler 가 처리)
     return NextResponse.next();
