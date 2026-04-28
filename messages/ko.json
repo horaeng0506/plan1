@@ -4,12 +4,12 @@
     "tagline": "스케줄 관리"
   },
   "topbar": {
-    "back": "back to portal",
-    "creditsLabel": "credits",
+    "back": "포털로 돌아가기",
+    "creditsLabel": "크레딧",
     "creditsPlaceholder": "—",
-    "guest": "guest",
-    "logout": "logout",
-    "languageLabel": "language"
+    "guest": "게스트",
+    "logout": "로그아웃",
+    "languageLabel": "언어"
   },
   "header": {
     "today": "오늘",
@@ -61,7 +61,8 @@
   "error": {
     "loadFailedLabel": "불러오기 실패:",
     "mutationFailed": "{action} 실패: {error}",
-    "unknown": "예상치 못한 오류가 발생했습니다. 다시 시도해주세요."
+    "unknown": "예상치 못한 오류가 발생했습니다. 다시 시도해주세요.",
+    "featureUnavailable": "이 기능은 아직 사용할 수 없습니다 ({feature})."
   },
   "mutation": {
     "removeCategory": "카테고리 삭제",

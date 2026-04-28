@@ -1,15 +1,7 @@
 {
   "app": {
-    "tagline": "gestionnaire de planning",
+    "tagline": "gestionnaire de calendrier",
     "title": "plan1"
-  },
-  "topbar": {
-    "back": "back to portal",
-    "creditsLabel": "credits",
-    "creditsPlaceholder": "—",
-    "guest": "guest",
-    "logout": "logout",
-    "languageLabel": "language"
   },
   "auth": {
     "signIn": "Se connecter avec Google",
@@ -18,14 +10,14 @@
   },
   "category": {
     "confirmRemoveLabel": "confirmer suppr ({count})",
-    "confirmRemoveText": "{count} planning(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
-    "defaultName": "par défaut",
+    "confirmRemoveText": "{count} calendrier(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
+    "defaultName": "défaut",
     "empty": "Aucune catégorie.",
     "fieldColor": "couleur",
     "fieldName": "nom",
     "header": "catégories",
     "removeButton": "suppr",
-    "scheduleCountSuffix": "{count} plannings"
+    "scheduleCountSuffix": "{count} calendriers"
   },
   "common": {
     "add": "ajouter",
@@ -39,9 +31,10 @@
     "save": "enregistrer"
   },
   "error": {
-    "loadFailedLabel": "échec du chargement:",
-    "mutationFailed": "Échec de {action} : {error}",
-    "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer."
+    "loadFailedLabel": "échec chargement:",
+    "mutationFailed": "Échec de {action}: {error}",
+    "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "featureUnavailable": "This feature is not yet available ({feature})."
   },
   "header": {
     "clock": "horloge",
@@ -63,12 +56,12 @@
   },
   "mutation": {
     "changeTimerType": "changer type de minuteur",
-    "completeSchedule": "terminer planning",
+    "completeSchedule": "compléter calendrier",
     "extendTimer": "prolonger minuteur",
     "pinActiveTimer": "épingler minuteur actif",
     "removeCategory": "supprimer catégorie",
     "setTheme": "définir thème",
-    "setWeekSpan": "définir plage de semaine",
+    "setWeekSpan": "définir période semaine",
     "toggleWeeklyPanel": "basculer panneau hebdomadaire"
   },
   "nav": {
@@ -85,21 +78,21 @@
     "workingHours": "heures"
   },
   "onboarding": {
-    "addFirst": "ajouter premier planning",
-    "firstSchedule": "Ajoutez votre premier planning pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
-    "welcome": "Aucun planning pour le moment"
+    "addFirst": "ajouter premier calendrier",
+    "firstSchedule": "Ajoutez votre premier calendrier pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
+    "welcome": "Aucun calendrier pour le moment"
   },
   "schedule": {
     "buttonMinus10": "-10m",
     "buttonMinus30": "-30m",
-    "buttonNextAfter": "prochain +10m (nouveau planning après achèvement)",
+    "buttonNextAfter": "suivant +10m (nouveau calendrier après achèvement)",
     "buttonNow": "maintenant (début = maintenant)",
     "buttonPlus10": "+10m",
     "buttonPlus30": "+30m",
     "buttonPlusHour": "+1h",
     "categoryAddOption": "+ ajouter catégorie",
-    "chainedCheckbox": "chaîner au planning précédent (recevoir cascade)",
-    "chainedHelp": "Lorsque le planning précédent s'étend ou se réduit, celui-ci se déplace avec lui (écart préservé).",
+    "chainedCheckbox": "chaîner au calendrier précédent (recevoir cascade)",
+    "chainedHelp": "Lorsque le calendrier précédent s'étend ou se réduit, celui-ci se déplace avec lui (intervalle préservé).",
     "endEmpty": "— (durée 0m)",
     "endLabel": "fin",
     "fieldCategory": "catégorie",
@@ -108,26 +101,26 @@
     "fieldStartDate": "date de début",
     "fieldStartHour": "heure de début",
     "fieldStartMinute": "minute de début",
-    "headerEdit": "modifier planning",
-    "headerNew": "nouveau planning",
+    "headerEdit": "modifier calendrier",
+    "headerNew": "nouveau calendrier",
     "hourSuffix": "h",
     "minuteSuffix": "m",
-    "nextAfterTooltip": "Sauvegarder modification actuelle (si modifiée) et ouvrir modal nouveau planning avec début = fin + 10m",
-    "warningEditIncomplete": "Modification actuelle incomplète (vérifier nom/catégorie/durée). Non sauvegardé — corriger et réessayer.",
+    "nextAfterTooltip": "Sauvegarder la modification actuelle (si modifiée) et ouvrir la modale de nouveau calendrier avec début = finÀ + 10m",
+    "warningEditIncomplete": "Modification actuelle incomplète (vérifier nom/catégorie/durée). Non enregistré — corriger et réessayer.",
     "warningFutureRequired": "L'heure de début doit être dans le futur."
   },
   "serverError": {
-    "categoryHasSchedules": "La catégorie a {scheduleCount} plannings. Confirmez la suppression en cascade pour retirer.",
-    "categoryNotFound": "Catégorie non trouvée ou non possédée.",
-    "scheduleNotFound": "Planning non trouvé.",
+    "categoryHasSchedules": "La catégorie a {scheduleCount} calendriers. Confirmez la suppression en cascade pour retirer.",
+    "categoryNotFound": "Catégorie introuvable ou non possédée.",
+    "scheduleNotFound": "Calendrier introuvable.",
     "unauthorized": "Connexion requise."
   },
   "timer": {
-    "buttonComplete": "terminer",
+    "buttonComplete": "terminé",
     "buttonFocus": "focus",
     "buttonIdle": "inactif",
     "categoryFallback": "?",
-    "idleEmpty": "inactif · aucun planning actif",
+    "idleEmpty": "inactif · aucun calendrier actif",
     "labelElapsed": "écoulé",
     "labelEndAt": "fin-à",
     "labelRemaining": "restant",
@@ -135,11 +128,19 @@
     "overlapLabel": "chevauchement {count}",
     "pinAuto": "auto (premier)",
     "pinLabel": "épingler",
-    "tooltipClickToFocus": "cliquez pour passer en focus",
-    "tooltipClickToIdle": "cliquez pour passer en inactif",
+    "tooltipClickToFocus": "cliquer pour passer en focus",
+    "tooltipClickToIdle": "cliquer pour passer en inactif",
     "typeCountdown": "compte à rebours",
-    "typeCountup": "compte à rebours",
-    "typeTimer1": "timer1"
+    "typeCountup": "compteur",
+    "typeTimer1": "minuteur1"
+  },
+  "topbar": {
+    "back": "retour au portail",
+    "creditsLabel": "crédits",
+    "creditsPlaceholder": "—",
+    "guest": "invité",
+    "languageLabel": "langue",
+    "logout": "déconnexion"
   },
   "wallTime": {
     "am": "am",
@@ -155,7 +156,7 @@
     "sam"
   ],
   "workingHours": {
-    "checkboxAlsoDefault": "enregistrer aussi par défaut",
+    "checkboxAlsoDefault": "sauvegarder aussi comme défaut",
     "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
     "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
     "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",

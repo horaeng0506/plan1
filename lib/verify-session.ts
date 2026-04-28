@@ -26,7 +26,10 @@ const jwksCache = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
 // 따라서 JWKS endpoint 실제 path 는 `/project/api/auth/jwks`. 단 JWT iss claim 은 baseURL
 // origin = 'https://cofounder.co.kr' (basePath 미포함, Better Auth jwt() default).
 // router 가 /project/* 만 portal 로 forward 하므로 issuer 그대로 fetch 시 404.
-const JWKS_PATH = '/project/api/auth/jwks';
+//
+// ship-gate code-review High: portal basePath 변경 시 plan1 인증 chain 전체 stall 회피 위해
+// env 화 (`PORTAL_JWKS_PATH`). 미설정 시 default 유지 (기존 동작 보존). Stage 8.G.
+const JWKS_PATH = process.env.PORTAL_JWKS_PATH ?? '/project/api/auth/jwks';
 
 function getJwks(issuer: string): ReturnType<typeof createRemoteJWKSet> {
   let jwks = jwksCache.get(issuer);

@@ -61,7 +61,8 @@
   "error": {
     "loadFailedLabel": "load failed:",
     "mutationFailed": "Failed to {action}: {error}",
-    "unknown": "An unexpected error occurred. Please try again."
+    "unknown": "An unexpected error occurred. Please try again.",
+    "featureUnavailable": "This feature is not yet available ({feature})."
   },
   "mutation": {
     "removeCategory": "remove category",

@@ -17,10 +17,13 @@ const WINDOW_MS = 60_000;
 const store = new Map<string, {count: number; resetAt: number}>();
 
 function getClientKey(request: NextRequest): string {
-  // security-auditor MEDIUM: Vercel platform 이 주입하는 IP 우선 (트러스티드 source).
-  // Next.js 15 가 NextRequest.ip 제거 → @vercel/functions ipAddress() 마이그
-  // (https://nextjs.org/docs/app/guides/upgrading/version-15#nextrequestip-and-nextrequestgeo).
-  // x-forwarded-for·cf-connecting-ip 같은 사용자 위조 가능 헤더는 fallback 만.
+  // ship-gate security High (2026-04-28 · Stage 8.G):
+  // cofounder-router 가 신뢰 source (cf-connecting-ip) 를 x-real-ip 로 전파.
+  // router 거친 트래픽은 모두 동일한 Worker egress IP 라 Vercel ipAddress() 만 보면 단일 key
+  // 에 합산 → DoS. 실 클라이언트 IP 가 router 신뢰 헤더로 들어오면 우선 사용.
+  const realIp = request.headers.get('x-real-ip');
+  if (realIp) return realIp;
+  // router 미경유 직접 접근 (개발·dev URL): Vercel platform IP fallback
   const ip = ipAddress(request);
   if (ip) return ip;
   const xff = request.headers.get('x-forwarded-for');

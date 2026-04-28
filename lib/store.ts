@@ -26,7 +26,7 @@ import * as categoriesApi from '@/app/actions/categories';
 import * as schedulesApi from '@/app/actions/schedules';
 import * as workingHoursApi from '@/app/actions/working-hours';
 import * as settingsApi from '@/app/actions/settings';
-import {unwrapServerActionResult as unwrap} from './server-action';
+import {unwrapServerActionResult as unwrap, ServerActionError} from './server-action';
 
 export const DEFAULT_SETTINGS: AppSettings = {
   theme: 'system',
@@ -161,12 +161,13 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   async setScheduleStatus(id, status) {
     // server actions 에 setScheduleStatus 없음 → updateSchedule 로 대체 안 됨 (status 미수용).
-    // 임시: 'done' 인 경우 completeSchedule 호출. 다른 status 변경은 별도 server action 추가 필요 (Major 보류).
+    // 'done' 인 경우 completeSchedule 호출. 다른 status 변경은 별도 server action 추가 필요.
+    // ship-gate code-review High: prod redact 회피 위해 ServerActionError 로 i18n key 화 (Stage 8.G).
     if (status === 'done') {
       await get().completeSchedule(id, Date.now());
-    } else {
-      throw new Error(`setScheduleStatus(${status}): server action not implemented (deferred as Major)`);
+      return;
     }
+    throw new ServerActionError('error.featureUnavailable', {feature: `setScheduleStatus.${status}`});
   },
 
   async extendScheduleBy(id, addMin) {

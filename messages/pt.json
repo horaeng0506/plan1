@@ -1,31 +1,23 @@
 {
   "app": {
-    "tagline": "gerenciador de cronogramas",
-    "title": "plan1"
-  },
-  "topbar": {
-    "back": "back to portal",
-    "creditsLabel": "credits",
-    "creditsPlaceholder": "—",
-    "guest": "guest",
-    "logout": "logout",
-    "languageLabel": "language"
+    "tagline": "gerenciador de agendamentos",
+    "title": "plano1"
   },
   "auth": {
     "signIn": "Entrar com Google",
-    "signInDescription": "plan1 é uma ferramenta de cronograma pessoal com sincronização entre dispositivos. Faça login com Google para começar.",
-    "signInRequired": "Faça login para usar o plan1"
+    "signInDescription": "plan1 é uma ferramenta de agendamento pessoal com sincronização entre dispositivos. Entre com Google para começar.",
+    "signInRequired": "Entre para usar plan1"
   },
   "category": {
     "confirmRemoveLabel": "confirmar rm ({count})",
-    "confirmRemoveText": "{count} cronograma(s) será(ão) excluído(s) com este. Clique novamente para confirmar.",
+    "confirmRemoveText": "{count} agendamento(s) será(ão) excluído(s) com isso. Clique novamente para confirmar.",
     "defaultName": "padrão",
     "empty": "Sem categorias.",
     "fieldColor": "cor",
     "fieldName": "nome",
     "header": "categorias",
     "removeButton": "rm",
-    "scheduleCountSuffix": "{count} cronogramas"
+    "scheduleCountSuffix": "{count} agendamentos"
   },
   "common": {
     "add": "adicionar",
@@ -41,7 +33,8 @@
   "error": {
     "loadFailedLabel": "falha ao carregar:",
     "mutationFailed": "Falha ao {action}: {error}",
-    "unknown": "Ocorreu um erro inesperado. Por favor, tente novamente."
+    "unknown": "Ocorreu um erro inesperado. Por favor, tente novamente.",
+    "featureUnavailable": "This feature is not yet available ({feature})."
   },
   "header": {
     "clock": "relógio",
@@ -63,7 +56,7 @@
   },
   "mutation": {
     "changeTimerType": "alterar tipo de temporizador",
-    "completeSchedule": "completar cronograma",
+    "completeSchedule": "completar agendamento",
     "extendTimer": "estender temporizador",
     "pinActiveTimer": "fixar temporizador ativo",
     "removeCategory": "remover categoria",
@@ -85,21 +78,21 @@
     "workingHours": "horas"
   },
   "onboarding": {
-    "addFirst": "adicionar primeiro cronograma",
-    "firstSchedule": "Adicione seu primeiro cronograma para vê-lo na grade semanal, linha do tempo de hoje e relógio analógico.",
-    "welcome": "Ainda sem cronogramas"
+    "addFirst": "adicionar primeiro agendamento",
+    "firstSchedule": "Adicione seu primeiro agendamento para vê-lo na grade semanal, linha do tempo de hoje e no relógio analógico.",
+    "welcome": "Nenhum agendamento ainda"
   },
   "schedule": {
     "buttonMinus10": "-10m",
     "buttonMinus30": "-30m",
-    "buttonNextAfter": "próximo +10m (novo cronograma após conclusão)",
+    "buttonNextAfter": "próximo +10m (novo agendamento após completar)",
     "buttonNow": "agora (início = agora)",
     "buttonPlus10": "+10m",
     "buttonPlus30": "+30m",
     "buttonPlusHour": "+1h",
     "categoryAddOption": "+ adicionar categoria",
-    "chainedCheckbox": "encadear ao cronograma anterior (receber cascata)",
-    "chainedHelp": "Quando o cronograma anterior se estende ou encolhe, este se move junto (intervalo preservado).",
+    "chainedCheckbox": "encadear ao agendamento anterior (receber cascata)",
+    "chainedHelp": "Quando o agendamento anterior se estende ou encolhe, este se move junto (intervalo preservado).",
     "endEmpty": "— (duração 0m)",
     "endLabel": "fim",
     "fieldCategory": "categoria",
@@ -108,38 +101,46 @@
     "fieldStartDate": "data de início",
     "fieldStartHour": "hora de início",
     "fieldStartMinute": "minuto de início",
-    "headerEdit": "editar cronograma",
-    "headerNew": "novo cronograma",
+    "headerEdit": "editar agendamento",
+    "headerNew": "novo agendamento",
     "hourSuffix": "h",
     "minuteSuffix": "m",
-    "nextAfterTooltip": "Salvar edição atual (se modificada) e abrir modal de novo cronograma com início = términoÀs + 10m",
+    "nextAfterTooltip": "Salvar edição atual (se modificada) e abrir modal de novo agendamento com início = fimÀs + 10m",
     "warningEditIncomplete": "Edição atual incompleta (verifique nome/categoria/duração). Não salvo — corrija e tente novamente.",
     "warningFutureRequired": "Horário de início deve estar no futuro."
   },
   "serverError": {
-    "categoryHasSchedules": "Categoria tem {scheduleCount} cronogramas. Confirme exclusão em cascata para remover.",
-    "categoryNotFound": "Categoria não encontrada ou não pertence a você.",
-    "scheduleNotFound": "Cronograma não encontrado.",
-    "unauthorized": "Login necessário."
+    "categoryHasSchedules": "Categoria tem {scheduleCount} agendamentos. Confirme exclusão em cascata para remover.",
+    "categoryNotFound": "Categoria não encontrada ou não pertence ao usuário.",
+    "scheduleNotFound": "Agendamento não encontrado.",
+    "unauthorized": "Entrada necessária."
   },
   "timer": {
-    "buttonComplete": "completo",
+    "buttonComplete": "completar",
     "buttonFocus": "foco",
     "buttonIdle": "inativo",
     "categoryFallback": "?",
-    "idleEmpty": "inativo · nenhum cronograma ativo",
+    "idleEmpty": "ocioso · nenhum agendamento ativo",
     "labelElapsed": "decorrido",
-    "labelEndAt": "termina-às",
+    "labelEndAt": "terminar-às",
     "labelRemaining": "restante",
-    "labelTarget": "meta",
+    "labelTarget": "alvo",
     "overlapLabel": "sobreposição {count}",
-    "pinAuto": "automático (primeiro)",
+    "pinAuto": "auto (primeiro)",
     "pinLabel": "fixar",
-    "tooltipClickToFocus": "clique para alternar para foco",
-    "tooltipClickToIdle": "clique para alternar para inativo",
+    "tooltipClickToFocus": "clique para mudar para foco",
+    "tooltipClickToIdle": "clique para mudar para ocioso",
     "typeCountdown": "contagem regressiva",
     "typeCountup": "contagem progressiva",
-    "typeTimer1": "timer1"
+    "typeTimer1": "temporizador1"
+  },
+  "topbar": {
+    "back": "voltar ao portal",
+    "creditsLabel": "créditos",
+    "creditsPlaceholder": "—",
+    "guest": "convidado",
+    "languageLabel": "idioma",
+    "logout": "sair"
   },
   "wallTime": {
     "am": "am",
@@ -155,19 +156,19 @@
     "sáb"
   ],
   "workingHours": {
-    "checkboxAlsoDefault": "salvar também como padrão",
-    "checkboxWeekdaysOnly": "apenas dias úteis (seg–sex)",
-    "errorEndAfterStart": "Hora de término deve ser posterior à hora de início.",
-    "errorToAfterFrom": "Data de término deve ser igual ou posterior à data de início.",
+    "checkboxAlsoDefault": "também salvar como padrão",
+    "checkboxWeekdaysOnly": "somente dias úteis (seg–sex)",
+    "errorEndAfterStart": "Horário de término deve ser posterior ao horário de início.",
+    "errorToAfterFrom": "Data de fim deve ser igual ou posterior à data de início.",
     "fieldDate": "data",
     "fieldEndTime": "horário de término",
     "fieldFromDate": "de",
     "fieldStartTime": "horário de início",
-    "fieldToDate": "até",
+    "fieldToDate": "para",
     "header": "horário de trabalho",
     "tabRange": "intervalo",
     "tabSingle": "único",
-    "warningNoDates": "Nenhuma data para aplicar no intervalo. (início > fim ou conflito de apenas dias úteis)",
-    "warningTruncated": "Intervalo excede {max} dias, apenas parcialmente processado. Tente um intervalo mais estreito."
+    "warningNoDates": "Nenhuma data para aplicar no intervalo. (início > fim ou conflito somente dias úteis)",
+    "warningTruncated": "Intervalo excede {max} dias, apenas parcialmente processado. Tente um intervalo menor."
   }
 }
