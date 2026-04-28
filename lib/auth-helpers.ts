@@ -48,14 +48,15 @@ export async function getCurrentSessionUser(): Promise<SessionUser | null> {
   const issuer = getPortalIssuer();
 
   // 1차: Authorization: Bearer 헤더 (API 호출 클라이언트)
-  const headerStore = headers();
+  // Next.js 15+ async request APIs (Stage 8.A · 2026-04-28)
+  const headerStore = await headers();
   const authHeader = headerStore.get('authorization');
   if (authHeader?.startsWith('Bearer ')) {
     return verifySessionJwt(authHeader.slice(7).trim(), issuer);
   }
 
   // 2차: cookie (브라우저 세션 — 일반 케이스)
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const tokenCookie = cookieStore.get(COOKIE_NAME);
   if (tokenCookie?.value) {
     return verifySessionJwt(tokenCookie.value, issuer);

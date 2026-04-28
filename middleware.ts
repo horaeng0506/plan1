@@ -1,4 +1,5 @@
 import {NextRequest, NextResponse} from 'next/server';
+import {ipAddress} from '@vercel/functions';
 import createIntlMiddleware from 'next-intl/middleware';
 import {routing} from './i18n/routing';
 
@@ -15,9 +16,12 @@ const WINDOW_MS = 60_000;
 const store = new Map<string, {count: number; resetAt: number}>();
 
 function getClientKey(request: NextRequest): string {
-  // security-auditor MEDIUM: Vercel platform 이 주입하는 request.ip 우선 (트러스티드 source).
+  // security-auditor MEDIUM: Vercel platform 이 주입하는 IP 우선 (트러스티드 source).
+  // Next.js 15 가 NextRequest.ip 제거 → @vercel/functions ipAddress() 마이그
+  // (https://nextjs.org/docs/app/guides/upgrading/version-15#nextrequestip-and-nextrequestgeo).
   // x-forwarded-for·cf-connecting-ip 같은 사용자 위조 가능 헤더는 fallback 만.
-  if (request.ip) return request.ip;
+  const ip = ipAddress(request);
+  if (ip) return ip;
   const xff = request.headers.get('x-forwarded-for');
   if (xff) return xff.split(',')[0].trim();
   return 'anonymous';
