@@ -34,7 +34,8 @@
     "loadFailedLabel": "読み込み失敗:",
     "mutationFailed": "{action}に失敗しました: {error}",
     "unknown": "予期しないエラーが発生しました。もう一度お試しください。",
-    "featureUnavailable": "This feature is not yet available ({feature})."
+    "featureUnavailable": "This feature is not yet available ({feature}).",
+    "workingHoursInvalid": "Invalid working hours input ({reason})."
   },
   "header": {
     "clock": "時計",

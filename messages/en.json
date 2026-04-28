@@ -62,7 +62,8 @@
     "loadFailedLabel": "load failed:",
     "mutationFailed": "Failed to {action}: {error}",
     "unknown": "An unexpected error occurred. Please try again.",
-    "featureUnavailable": "This feature is not yet available ({feature})."
+    "featureUnavailable": "This feature is not yet available ({feature}).",
+    "workingHoursInvalid": "Invalid working hours input ({reason})."
   },
   "mutation": {
     "removeCategory": "remove category",

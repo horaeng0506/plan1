@@ -34,7 +34,8 @@
     "loadFailedLabel": "Laden fehlgeschlagen:",
     "mutationFailed": "Fehler bei {action}: {error}",
     "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-    "featureUnavailable": "This feature is not yet available ({feature})."
+    "featureUnavailable": "This feature is not yet available ({feature}).",
+    "workingHoursInvalid": "Invalid working hours input ({reason})."
   },
   "header": {
     "clock": "Uhr",

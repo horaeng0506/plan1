@@ -34,7 +34,8 @@
     "loadFailedLabel": "加载失败：",
     "mutationFailed": "操作失败 {action}：{error}",
     "unknown": "发生意外错误。请重试。",
-    "featureUnavailable": "This feature is not yet available ({feature})."
+    "featureUnavailable": "This feature is not yet available ({feature}).",
+    "workingHoursInvalid": "Invalid working hours input ({reason})."
   },
   "header": {
     "clock": "时钟",

@@ -34,7 +34,8 @@
     "loadFailedLabel": "ошибка загрузки:",
     "mutationFailed": "Не удалось {action}: {error}",
     "unknown": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.",
-    "featureUnavailable": "This feature is not yet available ({feature})."
+    "featureUnavailable": "This feature is not yet available ({feature}).",
+    "workingHoursInvalid": "Invalid working hours input ({reason})."
   },
   "header": {
     "clock": "часы",

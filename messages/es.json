@@ -34,7 +34,8 @@
     "loadFailedLabel": "carga fallida:",
     "mutationFailed": "Error al {action}: {error}",
     "unknown": "Ocurrió un error inesperado. Por favor, intente nuevamente.",
-    "featureUnavailable": "This feature is not yet available ({feature})."
+    "featureUnavailable": "This feature is not yet available ({feature}).",
+    "workingHoursInvalid": "Invalid working hours input ({reason})."
   },
   "header": {
     "clock": "reloj",

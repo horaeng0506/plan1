@@ -62,7 +62,8 @@
     "loadFailedLabel": "불러오기 실패:",
     "mutationFailed": "{action} 실패: {error}",
     "unknown": "예상치 못한 오류가 발생했습니다. 다시 시도해주세요.",
-    "featureUnavailable": "이 기능은 아직 사용할 수 없습니다 ({feature})."
+    "featureUnavailable": "이 기능은 아직 사용할 수 없습니다 ({feature}).",
+    "workingHoursInvalid": "업무시간 입력이 잘못되었습니다 ({reason})."
   },
   "mutation": {
     "removeCategory": "카테고리 삭제",

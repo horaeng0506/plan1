@@ -34,7 +34,8 @@
     "loadFailedLabel": "लोड विफल:",
     "mutationFailed": "{action} विफल: {error}",
     "unknown": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें।",
-    "featureUnavailable": "This feature is not yet available ({feature})."
+    "featureUnavailable": "This feature is not yet available ({feature}).",
+    "workingHoursInvalid": "Invalid working hours input ({reason})."
   },
   "header": {
     "clock": "घड़ी",

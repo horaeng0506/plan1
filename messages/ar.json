@@ -34,7 +34,8 @@
     "loadFailedLabel": "فشل التحميل:",
     "mutationFailed": "فشل {action}: {error}",
     "unknown": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
-    "featureUnavailable": "This feature is not yet available ({feature})."
+    "featureUnavailable": "This feature is not yet available ({feature}).",
+    "workingHoursInvalid": "Invalid working hours input ({reason})."
   },
   "header": {
     "clock": "ساعة",

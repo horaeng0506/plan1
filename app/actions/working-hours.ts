@@ -16,7 +16,7 @@ import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
 import {plan1WorkingHours, plan1Schedules, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
-import {runAction, type ServerActionResult} from '@/lib/server-action';
+import {runAction, ServerActionError, type ServerActionResult} from '@/lib/server-action';
 import {splitByWorkingHours} from '@/lib/domain/split';
 import type {WorkingHours, Schedule} from '@/lib/domain/types';
 
@@ -110,6 +110,20 @@ export async function listWorkingHours(): Promise<ServerActionResult<WorkingHour
   });
 }
 
+// ship-gate code-review Medium (2026-04-28): server-side 입력 검증.
+// 음수·>1440·s>=e 조건은 client UI 가드 외에 server 에서도 강제 (조작 가능 헤더·API 직접 호출 대비).
+function assertWorkingHoursInput(startMin: number, endMin: number): void {
+  if (!Number.isInteger(startMin) || !Number.isInteger(endMin)) {
+    throw new ServerActionError('error.workingHoursInvalid', {reason: 'non-integer'});
+  }
+  if (startMin < 0 || startMin > 1440 || endMin < 0 || endMin > 1440) {
+    throw new ServerActionError('error.workingHoursInvalid', {reason: 'out-of-range'});
+  }
+  if (startMin >= endMin) {
+    throw new ServerActionError('error.workingHoursInvalid', {reason: 'start-not-before-end'});
+  }
+}
+
 export async function setWorkingHours(input: {
   date: string;
   startMin: number;
@@ -117,6 +131,7 @@ export async function setWorkingHours(input: {
 }): Promise<ServerActionResult<void>> {
   return runAction(async () => {
     const user = await requireUser();
+    assertWorkingHoursInput(input.startMin, input.endMin);
     // upsert by (user_id, date) UNIQUE
     const existing = await db
       .select({id: plan1WorkingHours.id})
@@ -149,6 +164,7 @@ export async function bulkSetWorkingHours(input: {
 }): Promise<ServerActionResult<void>> {
   return runAction(async () => {
     const user = await requireUser();
+    assertWorkingHoursInput(input.startMin, input.endMin);
     const existing = await db
       .select({id: plan1WorkingHours.id, date: plan1WorkingHours.date})
       .from(plan1WorkingHours)
