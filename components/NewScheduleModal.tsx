@@ -193,11 +193,16 @@ export function NewScheduleModal({
   // 1차 클릭 후 사용자에게 dirty&&!baseOk 경고 노출 위한 ephemeral 메시지 (Stage 3e logic-critic Medium #2).
   const [nextAfterWarn, setNextAfterWarn] = useState<string | null>(null);
   // Stage 3f logic-critic Major fix: 입력 변경 시 stale warn 자동 reset.
+  // Stage 8.C: React 19 react-hooks/set-state-in-effect + exhaustive-deps 와 충돌 — 의도된 동기화
+  // (사용자 입력 변경 = warn 컨텍스트 무효화). cascading render 1tick 비용 수용.
+  // nextAfterWarn 을 deps 에 넣지 않는 이유: 자기 자신 reset 트리거 → 무의미 1회 추가 run.
+  // 정공법 refactor (각 setter 안에서 inline `setNextAfterWarn(null)`) 은 Stage 8 후속.
+  /* eslint-disable react-hooks/exhaustive-deps, react-hooks/set-state-in-effect */
   useEffect(() => {
     if (nextAfterWarn) setNextAfterWarn(null);
     // baseOk 회복 신호인 title/categoryId/durationMin 변경만 추적.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, categoryId, durationMin]);
+  /* eslint-enable react-hooks/exhaustive-deps, react-hooks/set-state-in-effect */
   const handleNextAfter = async () => {
     if (!editing || busy) return;
     if (isDirty && !baseOk) {

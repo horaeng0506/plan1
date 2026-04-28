@@ -14,7 +14,6 @@
 
 export function logClientError(prefix: string, err: unknown): void {
   if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
     console.error(prefix, err);
   }
   // production: silent. 향후 sentry-browser 같은 client logger hook 자리.
@@ -22,13 +21,11 @@ export function logClientError(prefix: string, err: unknown): void {
 
 export function logServerError(prefix: string, err: unknown): void {
   // server-side: 항상 log. Vercel function logs (Logs 탭) 에 자동 캡처.
-  // eslint-disable-next-line no-console
   console.error(prefix, err);
   // 향후 sentry/datadog 통합 hook 자리.
 }
 
 export function logServerWarn(prefix: string, err: unknown): void {
   // server-side warn: 인증 실패 등 expected error 의 진단용. 항상 log.
-  // eslint-disable-next-line no-console
   console.warn(prefix, err);
 }

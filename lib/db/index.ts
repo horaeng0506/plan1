@@ -28,7 +28,6 @@ if (!connectionString) {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var __plan1NeonPool: Pool | undefined;
 }
 

@@ -24,7 +24,12 @@ export function CategoryManager({onClose}: {onClose: () => void}) {
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
   // Stage 3f logic-critic Critical fix: confirmId 잠금 누수 차단.
+  // Stage 8.C: React 19 react-hooks/set-state-in-effect 와 충돌 — 의도된 동기화
+  // (categories 가 외부 mutation 으로 줄어들 때 stale confirmId 즉시 리셋). cascading
+  // render 1tick 비용은 수용. 정공법 refactor (categories 변경 핸들러에서 inline 리셋)
+  // 는 Stage 8 후속.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (confirmId && !categories.find(c => c.id === confirmId)) setConfirmId(null);
   }, [categories, confirmId]);
 

@@ -3,13 +3,14 @@ import {ipAddress} from '@vercel/functions';
 import createIntlMiddleware from 'next-intl/middleware';
 import {routing} from './i18n/routing';
 
-// 병합 middleware (Stage 1 · 2026-04-27):
+// 병합 proxy (Stage 1 · 2026-04-27 / Stage 8.C 리네임 · 2026-04-28):
 //   - /api/** 로 시작하는 POST: in-memory rate limit (LIMIT=20/min · plan1 은 schedule CRUD 위주라 copymaker1 의 LLM 호출보다 한도 ↑)
 //   - 그 외 페이지 경로: next-intl locale detect (쿠키 NEXT_LOCALE 기반, portal 와 동일 origin 쿠키 공유)
 //
+// Next.js 16 부터 file convention `middleware.ts` → `proxy.ts` 리네임 (nodejs runtime 고정 · edge 미지원).
 // copymaker1/middleware.ts 패턴 복제 + plan1-specific LIMIT 조정.
 
-const intlMiddleware = createIntlMiddleware(routing);
+const intlProxy = createIntlMiddleware(routing);
 
 const LIMIT = 20;
 const WINDOW_MS = 60_000;
@@ -48,9 +49,9 @@ function rateLimited(request: NextRequest): boolean {
   return false;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const {pathname} = request.nextUrl;
-  // security-auditor MEDIUM: server action POST 도 rate limit. Next.js 14 는 server
+  // security-auditor MEDIUM: server action POST 도 rate limit. Next.js 14+ 는 server
   // action 호출을 `Next-Action` header 가진 POST 로 보냄 (페이지 경로에 직접 POST).
   // /api/** 만 보호하면 server action 무한 호출 가능 (JWT 검증 + DB write 부담).
   const isServerActionPost =
@@ -65,7 +66,7 @@ export function middleware(request: NextRequest) {
     // path 로 들어오면 server action handler 가 처리)
     return NextResponse.next();
   }
-  return intlMiddleware(request);
+  return intlProxy(request);
 }
 
 export const config = {
