@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Terminal/CLI 톤 토큰 (DESIGN.md 기준 · 2026-04-27 prefix 제거 + 4채널 보강)
+ *
+ * Stage 4a env-critic Critical fix (2026-04-27):
+ *   기존 @media (prefers-color-scheme: light) → SSR 안정성 위해 .light class 기반 swap.
+ *   default = dark (SSR HTML 안전). PlanApp apply() 가 .light/.dark class 토글.
+ *   light 톤 자체는 DESIGN.md "Light variant (후속 구현 예정)" — MVP 임시 베이지.
+ */
+
+:root,
+:root.dark {
+  --bg: #0d0f12;
+  --panel: #14171c;
+  --line: #2a3036;
+  --muted: #5c6370;
+  --txt: #c8ccd4;
+  --ink: #e6e9ef;
+  --success: #98c379;
+  --info: #61afef;
+  --warn: #d19a66;
+  --danger: #e06c75;
+}
+
+:root.light {
+  --bg: #f5f2e7;
+  --panel: #ffffff;
+  --line: #d4cfbf;
+  --muted: #8c8773;
+  --txt: #2d3748;
+  --ink: #1a202c;
+  /* semantic 색상은 light/dark 모두 가시성 유지 — 동일 값 사용 */
+}
+
+/* Stage 4c qa-tester Major: FullCalendar 28개 기본 토큰을 4채널 토큰에 바인딩.
+ * Stage 4a 4채널 토큰화 약속 후 미연결로 dark 모드 그리드가 light 색 cream 으로 렌더되는 회귀.
+ * 토큰 매핑으로 dark/light 자동 swap. */
+:root,
+:root.dark,
+:root.light {
+  --fc-page-bg-color: var(--bg);
+  --fc-neutral-bg-color: var(--panel);
+  --fc-neutral-text-color: var(--txt);
+  --fc-border-color: var(--line);
+  --fc-button-text-color: var(--txt);
+  --fc-button-bg-color: var(--panel);
+  --fc-button-border-color: var(--line);
+  --fc-button-hover-bg-color: var(--bg);
+  --fc-button-hover-border-color: var(--line);
+  --fc-button-active-bg-color: var(--ink);
+  --fc-button-active-border-color: var(--ink);
+  --fc-event-bg-color: var(--panel);
+  --fc-event-border-color: var(--line);
+  --fc-event-text-color: var(--txt);
+  --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.10);
+  --fc-more-link-bg-color: var(--panel);
+  --fc-more-link-text-color: var(--txt);
+  --fc-event-resizer-thickness: 8px;
+  --fc-event-resizer-dot-total-width: 8px;
+  --fc-event-resizer-dot-border-width: 1px;
+  --fc-non-business-color: rgba(0, 0, 0, 0.04);
+  --fc-bg-event-color: rgba(143, 223, 130, 0.30);
+  --fc-bg-event-opacity: 0.3;
+  --fc-highlight-color: rgba(188, 220, 240, 0.20);
+  --fc-today-bg-color: rgba(255, 220, 40, 0.10);
+  --fc-now-indicator-color: var(--danger);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Pretendard', monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* Body 스캔라인 (매우 옅음) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.015) 2px 3px
+  );
+  z-index: 1;
+}
+
+/* 모든 컴포넌트 border-radius: 0 엄수 (Terminal 톤) */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+/* Stage 4b — prefix 제거 후 4채널 위계 운반.
+ * split 연속 part: dashed left border 3px + bg alpha 절반 (원본 vs 분할 구분).
+ *   ui-critic Critical: opacity 제거 (텍스트 가독성 손상). bg alpha 만 낮춤.
+ *   logic-critic Major: border-left-color 명시 (inline borderColor 와 분리되어 묻힘 방지).
+ * chained 연결 스케줄: top dashed 2px var(--success).
+ *   ui-critic Critical: 1px → 2px + semantic success(green) 색상으로 시인성 확보. */
+.fc-event.is-split-cont {
+  border-left-width: 3px !important;
+  border-left-style: dashed !important;
+  border-left-color: var(--muted) !important;
+  background-color: rgba(92, 99, 112, 0.08) !important;
+}
+.fc-event.is-chained {
+  border-top: 2px dashed var(--success) !important;
+}
+
+/* Stage 4c — AnalogClock SVG 토큰 (clock-* class · light/dark 자동 swap).
+ * 기존 컴포넌트가 className 만 부여하고 stroke/fill 미정의 → SVG default 색 노출 회귀.
+ * 토큰 var(--*) 매핑으로 dark/light 토큰 swap 자동 적용. */
+.clock-face {
+  fill: none;
+  stroke: var(--line);
+}
+/* ui-critic Critical: light 모드 face stroke `--line: #d4cfbf` on `#ffffff`
+ * contrast 1.40:1 — WCAG 비텍스트 3:1 미달. light 전용 darker stroke override. */
+:root.light .clock-face {
+  stroke: #a39d8a;
+}
+.clock-tick-major {
+  stroke: var(--ink);
+}
+.clock-tick-minor {
+  stroke: var(--muted);
+}
+.clock-label {
+  fill: var(--muted);
+}
+.clock-hand-hour {
+  stroke: var(--ink);
+}
+.clock-hand-minute {
+  stroke: var(--txt);
+}
+.clock-center-outer {
+  fill: var(--ink);
+}
+.clock-center-inner {
+  fill: var(--bg);
+}

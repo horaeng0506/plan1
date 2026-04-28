@@ -1,0 +1,173 @@
+{
+  "app": {
+    "title": "plan1",
+    "tagline": "schedule manager"
+  },
+  "topbar": {
+    "back": "back to portal",
+    "creditsLabel": "credits",
+    "creditsPlaceholder": "—",
+    "guest": "guest",
+    "logout": "logout",
+    "languageLabel": "language"
+  },
+  "header": {
+    "today": "today",
+    "week": "week",
+    "clock": "clock",
+    "timer": "timer"
+  },
+  "meta": {
+    "spanSuffix": "w",
+    "eventsLabel": "events",
+    "activeLabel": "active",
+    "idle": "idle",
+    "amLower": "am",
+    "pmLower": "pm",
+    "twelveHour": "12h",
+    "loadingFormat": "{name} · loading...",
+    "placeholder": "—"
+  },
+  "nav": {
+    "newSchedule": "new",
+    "categories": "categories",
+    "workingHours": "hours",
+    "weekSpan1": "1w",
+    "weekSpan2": "2w",
+    "weekSpan3": "3w",
+    "themeLight": "light",
+    "themeDark": "dark",
+    "themeSystem": "auto",
+    "weeklyShow": "show week",
+    "weeklyHide": "hide week"
+  },
+  "common": {
+    "cancel": "cancel",
+    "save": "save",
+    "add": "add",
+    "delete": "delete",
+    "close": "close",
+    "retry": "retry",
+    "now": "now",
+    "confirmDelete": "confirm delete",
+    "dismiss": "dismiss"
+  },
+  "loading": "loading...",
+  "auth": {
+    "signInRequired": "Sign in to use plan1",
+    "signInDescription": "plan1 is a personal schedule tool with cross-device sync. Sign in with Google to get started.",
+    "signIn": "Sign in with Google"
+  },
+  "error": {
+    "loadFailedLabel": "load failed:",
+    "mutationFailed": "Failed to {action}: {error}",
+    "unknown": "An unexpected error occurred. Please try again."
+  },
+  "mutation": {
+    "removeCategory": "remove category",
+    "extendTimer": "extend timer",
+    "completeSchedule": "complete schedule",
+    "changeTimerType": "change timer type",
+    "pinActiveTimer": "pin active timer",
+    "setWeekSpan": "set week span",
+    "setTheme": "set theme",
+    "toggleWeeklyPanel": "toggle weekly panel"
+  },
+  "onboarding": {
+    "welcome": "No schedules yet",
+    "firstSchedule": "Add your first schedule to see it on the weekly grid, today's timeline, and the analog clock.",
+    "addFirst": "add first schedule"
+  },
+  "schedule": {
+    "headerNew": "new schedule",
+    "headerEdit": "edit schedule",
+    "fieldName": "name",
+    "fieldCategory": "category",
+    "fieldStartDate": "start date",
+    "fieldStartHour": "start hour",
+    "fieldStartMinute": "start minute",
+    "fieldDuration": "duration (min)",
+    "categoryAddOption": "+ add category",
+    "hourSuffix": "h",
+    "minuteSuffix": "m",
+    "buttonNow": "now (start = now)",
+    "warningFutureRequired": "Start time must be in the future.",
+    "buttonMinus30": "-30m",
+    "buttonMinus10": "-10m",
+    "buttonPlus10": "+10m",
+    "buttonPlus30": "+30m",
+    "buttonPlusHour": "+1h",
+    "endLabel": "end",
+    "endEmpty": "— (duration 0m)",
+    "chainedCheckbox": "chain to previous schedule (receive cascade)",
+    "chainedHelp": "When the previous schedule extends or shrinks, this one moves with it (gap preserved).",
+    "buttonNextAfter": "next +10m (new schedule after complete)",
+    "nextAfterTooltip": "Save current edit (if dirty) and open new schedule modal with start = endAt + 10m",
+    "warningEditIncomplete": "Current edit incomplete (check name/category/duration). Not saved — fix and retry."
+  },
+  "category": {
+    "header": "categories",
+    "empty": "No categories.",
+    "fieldName": "name",
+    "fieldColor": "color",
+    "scheduleCountSuffix": "{count} schedules",
+    "removeButton": "rm",
+    "confirmRemoveLabel": "confirm rm ({count})",
+    "confirmRemoveText": "{count} schedule(s) will be deleted with this. Click again to confirm.",
+    "defaultName": "default"
+  },
+  "workingHours": {
+    "header": "working hours",
+    "tabSingle": "single",
+    "tabRange": "range",
+    "fieldDate": "date",
+    "fieldFromDate": "from",
+    "fieldToDate": "to",
+    "checkboxWeekdaysOnly": "weekdays only (mon–fri)",
+    "fieldStartTime": "start time",
+    "fieldEndTime": "end time",
+    "errorEndAfterStart": "End time must be after start time.",
+    "errorToAfterFrom": "End date must be on or after start date.",
+    "checkboxAlsoDefault": "also save as default",
+    "warningNoDates": "No dates to apply in range. (start > end or weekdays-only conflict)",
+    "warningTruncated": "Range exceeds {max} days, only partial processed. Try a narrower range."
+  },
+  "timer": {
+    "idleEmpty": "idle · no active schedule",
+    "overlapLabel": "overlap {count}",
+    "pinLabel": "pin",
+    "pinAuto": "auto (first)",
+    "typeCountup": "countup",
+    "typeTimer1": "timer1",
+    "typeCountdown": "countdown",
+    "labelElapsed": "elapsed",
+    "labelTarget": "target",
+    "labelRemaining": "remaining",
+    "labelEndAt": "end-at",
+    "buttonFocus": "focus",
+    "buttonIdle": "idle",
+    "tooltipClickToIdle": "click to switch to idle",
+    "tooltipClickToFocus": "click to switch to focus",
+    "buttonComplete": "complete",
+    "categoryFallback": "?"
+  },
+  "weekdays": {
+    "0": "sun",
+    "1": "mon",
+    "2": "tue",
+    "3": "wed",
+    "4": "thu",
+    "5": "fri",
+    "6": "sat"
+  },
+  "wallTime": {
+    "am": "am",
+    "pm": "pm"
+  },
+  "serverError": {
+    "unauthorized": "Sign in required.",
+    "scheduleNotFound": "Schedule not found.",
+    "categoryNotFound": "Category not found or not owned.",
+    "categoryHasSchedules": "Category has {scheduleCount} schedules. Confirm cascade delete to remove."
+  }
+}

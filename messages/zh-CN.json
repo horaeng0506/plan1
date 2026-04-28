@@ -1,0 +1,173 @@
+{
+  "app": {
+    "tagline": "日程管理器",
+    "title": "计划1"
+  },
+  "topbar": {
+    "back": "back to portal",
+    "creditsLabel": "credits",
+    "creditsPlaceholder": "—",
+    "guest": "guest",
+    "logout": "logout",
+    "languageLabel": "language"
+  },
+  "auth": {
+    "signIn": "使用 Google 登录",
+    "signInDescription": "plan1 是一个支持跨设备同步的个人日程工具。使用 Google 登录以开始使用。",
+    "signInRequired": "登录以使用 plan1"
+  },
+  "category": {
+    "confirmRemoveLabel": "确认删除（{count}）",
+    "confirmRemoveText": "{count} 个日程将随之删除。再次点击以确认。",
+    "defaultName": "默认",
+    "empty": "无分类。",
+    "fieldColor": "颜色",
+    "fieldName": "名称",
+    "header": "分类",
+    "removeButton": "删除",
+    "scheduleCountSuffix": "{count} 个日程"
+  },
+  "common": {
+    "add": "添加",
+    "cancel": "取消",
+    "close": "关闭",
+    "confirmDelete": "确认删除",
+    "delete": "删除",
+    "dismiss": "关闭",
+    "now": "现在",
+    "retry": "重试",
+    "save": "保存"
+  },
+  "error": {
+    "loadFailedLabel": "加载失败：",
+    "mutationFailed": "执行 {action} 失败：{error}",
+    "unknown": "发生意外错误。请重试。"
+  },
+  "header": {
+    "clock": "时钟",
+    "timer": "计时器",
+    "today": "今天",
+    "week": "周"
+  },
+  "loading": "加载中...",
+  "meta": {
+    "activeLabel": "活动",
+    "amLower": "上午",
+    "eventsLabel": "事件",
+    "idle": "空闲",
+    "loadingFormat": "{name} · 加载中...",
+    "placeholder": "—",
+    "pmLower": "下午",
+    "spanSuffix": "三",
+    "twelveHour": "12小时制"
+  },
+  "mutation": {
+    "changeTimerType": "更改计时器类型",
+    "completeSchedule": "完成日程",
+    "extendTimer": "延长计时器",
+    "pinActiveTimer": "固定活动计时器",
+    "removeCategory": "移除分类",
+    "setTheme": "设置主题",
+    "setWeekSpan": "设置周跨度",
+    "toggleWeeklyPanel": "切换周视图面板"
+  },
+  "nav": {
+    "categories": "分类",
+    "newSchedule": "新建",
+    "themeDark": "深色",
+    "themeLight": "浅色",
+    "themeSystem": "自动",
+    "weekSpan1": "1周",
+    "weekSpan2": "2周",
+    "weekSpan3": "3周",
+    "weeklyHide": "隐藏星期",
+    "weeklyShow": "显示星期",
+    "workingHours": "小时"
+  },
+  "onboarding": {
+    "addFirst": "添加第一个日程",
+    "firstSchedule": "添加您的第一个日程，即可在周视图、今日时间线和模拟时钟上查看。",
+    "welcome": "暂无日程"
+  },
+  "schedule": {
+    "buttonMinus10": "-10分钟",
+    "buttonMinus30": "-30分钟",
+    "buttonNextAfter": "下一个 +10分钟（完成后新建日程）",
+    "buttonNow": "现在（开始 = 现在）",
+    "buttonPlus10": "+10分钟",
+    "buttonPlus30": "+30分钟",
+    "buttonPlusHour": "+1小时",
+    "categoryAddOption": "+ 添加分类",
+    "chainedCheckbox": "链接到上一个日程（接收级联）",
+    "chainedHelp": "当前一个日程延长或缩短时，此日程随之移动（保持间隔）。",
+    "endEmpty": "— (时长 0分钟)",
+    "endLabel": "结束",
+    "fieldCategory": "分类",
+    "fieldDuration": "时长（分钟）",
+    "fieldName": "名称",
+    "fieldStartDate": "开始日期",
+    "fieldStartHour": "开始小时",
+    "fieldStartMinute": "开始分钟",
+    "headerEdit": "编辑日程",
+    "headerNew": "新建日程",
+    "hourSuffix": "时",
+    "minuteSuffix": "一",
+    "nextAfterTooltip": "保存当前编辑（如有更改）并打开新日程模态框，开始时间 = 结束时间 + 10分钟",
+    "warningEditIncomplete": "当前编辑不完整（检查名称/分类/时长）。未保存 — 修复后重试。",
+    "warningFutureRequired": "开始时间必须是将来的时间。"
+  },
+  "serverError": {
+    "categoryHasSchedules": "分类包含 {scheduleCount} 个日程。确认级联删除以移除。",
+    "categoryNotFound": "未找到分类或不属于您。",
+    "scheduleNotFound": "未找到日程。",
+    "unauthorized": "需要登录。"
+  },
+  "timer": {
+    "buttonComplete": "完成",
+    "buttonFocus": "专注",
+    "buttonIdle": "空闲",
+    "categoryFallback": "？",
+    "idleEmpty": "空闲 · 无活动日程",
+    "labelElapsed": "已过",
+    "labelEndAt": "结束于",
+    "labelRemaining": "剩余",
+    "labelTarget": "目标",
+    "overlapLabel": "重叠 {count}",
+    "pinAuto": "自动（首个）",
+    "pinLabel": "固定",
+    "tooltipClickToFocus": "点击切换到专注",
+    "tooltipClickToIdle": "点击切换到空闲",
+    "typeCountdown": "倒计时",
+    "typeCountup": "正计时",
+    "typeTimer1": "计时器1"
+  },
+  "wallTime": {
+    "am": "上午",
+    "pm": "下午"
+  },
+  "weekdays": [
+    "周日",
+    "周一",
+    "周二",
+    "周三",
+    "周四",
+    "周五",
+    "周六"
+  ],
+  "workingHours": {
+    "checkboxAlsoDefault": "同时保存为默认值",
+    "checkboxWeekdaysOnly": "仅工作日（周一至周五）",
+    "errorEndAfterStart": "结束时间必须晚于开始时间。",
+    "errorToAfterFrom": "结束日期必须在开始日期当天或之后。",
+    "fieldDate": "日期",
+    "fieldEndTime": "结束时间",
+    "fieldFromDate": "从",
+    "fieldStartTime": "开始时间",
+    "fieldToDate": "至",
+    "header": "工作时间",
+    "tabRange": "范围",
+    "tabSingle": "单次",
+    "warningNoDates": "范围内没有可应用的日期。（开始 > 结束或仅工作日冲突）",
+    "warningTruncated": "范围超过 {max} 天，仅处理部分。请尝试缩小范围。"
+  }
+}
