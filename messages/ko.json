@@ -3,6 +3,14 @@
     "title": "plan1",
     "tagline": "스케줄 관리"
   },
+  "topbar": {
+    "back": "back to portal",
+    "creditsLabel": "credits",
+    "creditsPlaceholder": "—",
+    "guest": "guest",
+    "logout": "logout",
+    "languageLabel": "language"
+  },
   "header": {
     "today": "오늘",
     "week": "주간",

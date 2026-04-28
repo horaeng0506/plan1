@@ -3,6 +3,14 @@
     "title": "plan1",
     "tagline": "schedule manager"
   },
+  "topbar": {
+    "back": "back to portal",
+    "creditsLabel": "credits",
+    "creditsPlaceholder": "—",
+    "guest": "guest",
+    "logout": "logout",
+    "languageLabel": "language"
+  },
   "header": {
     "today": "today",
     "week": "week",

@@ -1,165 +1,173 @@
 {
-    "app": {
-        "tagline": "Zeitplanverwaltung",
-        "title": "plan1"
-    },
-    "auth": {
-        "signIn": "Mit Google anmelden",
-        "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisation. Melden Sie sich mit Google an, um loszulegen.",
-        "signInRequired": "Anmelden, um plan1 zu verwenden"
-    },
-    "category": {
-        "confirmRemoveLabel": "Löschen bestätigen ({count})",
-        "confirmRemoveText": "{count} Zeitplan/Zeitpläne wird/werden damit gelöscht. Erneut klicken zum Bestätigen.",
-        "defaultName": "Standard",
-        "empty": "Keine Kategorien.",
-        "fieldColor": "Farbe",
-        "fieldName": "Name",
-        "header": "Kategorien",
-        "removeButton": "entf",
-        "scheduleCountSuffix": "{count} Zeitpläne"
-    },
-    "common": {
-        "add": "hinzufügen",
-        "cancel": "abbrechen",
-        "close": "schließen",
-        "confirmDelete": "Löschen bestätigen",
-        "delete": "löschen",
-        "dismiss": "schließen",
-        "now": "jetzt",
-        "retry": "wiederholen",
-        "save": "speichern"
-    },
-    "error": {
-        "loadFailedLabel": "Laden fehlgeschlagen:",
-        "mutationFailed": "{action} fehlgeschlagen: {error}",
-        "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
-    },
-    "header": {
-        "clock": "Uhr",
-        "timer": "Timer",
-        "today": "heute",
-        "week": "Woche"
-    },
-    "loading": "lädt...",
-    "meta": {
-        "activeLabel": "aktiv",
-        "amLower": "vormittags",
-        "eventsLabel": "Ereignisse",
-        "idle": "inaktiv",
-        "loadingFormat": "{name} · lädt...",
-        "placeholder": "—",
-        "pmLower": "nachmittags",
-        "spanSuffix": "W",
-        "twelveHour": "12h"
-    },
-    "mutation": {
-        "changeTimerType": "Timer-Typ ändern",
-        "completeSchedule": "Zeitplan abschließen",
-        "extendTimer": "Timer verlängern",
-        "pinActiveTimer": "aktiven Timer anheften",
-        "removeCategory": "Kategorie entfernen",
-        "setTheme": "Design festlegen",
-        "setWeekSpan": "Wochenspanne festlegen",
-        "toggleWeeklyPanel": "Wochenpanel umschalten"
-    },
-    "nav": {
-        "categories": "Kategorien",
-        "newSchedule": "neu",
-        "themeDark": "dunkel",
-        "themeLight": "hell",
-        "themeSystem": "auto",
-        "weekSpan1": "1w",
-        "weekSpan2": "2W",
-        "weekSpan3": "3W",
-        "weeklyHide": "Woche ausblenden",
-        "weeklyShow": "Woche anzeigen",
-        "workingHours": "Stunden"
-    },
-    "onboarding": {
-        "addFirst": "ersten Zeitplan hinzufügen",
-        "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, in der heutigen Zeitleiste und auf der Analoguhr zu sehen.",
-        "welcome": "Noch keine Zeitpläne"
-    },
-    "schedule": {
-        "buttonMinus10": "-10m",
-        "buttonMinus30": "-30m",
-        "buttonNextAfter": "nächste +10Min (neuer Zeitplan nach Abschluss)",
-        "buttonNow": "jetzt (Start = jetzt)",
-        "buttonPlus10": "+10m",
-        "buttonPlus30": "+30m",
-        "buttonPlusHour": "+1h",
-        "categoryAddOption": "+ Kategorie hinzufügen",
-        "chainedCheckbox": "mit vorherigem Zeitplan verketten (Kaskade empfangen)",
-        "chainedHelp": "Wenn der vorherige Zeitplan sich verlängert oder verkürzt, bewegt sich dieser mit (Abstand bleibt erhalten).",
-        "endEmpty": "— (Dauer 0m)",
-        "endLabel": "Ende",
-        "fieldCategory": "Kategorie",
-        "fieldDuration": "Dauer (Min)",
-        "fieldName": "Name",
-        "fieldStartDate": "Startdatum",
-        "fieldStartHour": "Startstunde",
-        "fieldStartMinute": "Startminute",
-        "headerEdit": "Zeitplan bearbeiten",
-        "headerNew": "neuer Zeitplan",
-        "hourSuffix": "h",
-        "minuteSuffix": "m",
-        "nextAfterTooltip": "Aktuelle Bearbeitung speichern (falls geändert) und neues Zeitplan-Modal öffnen mit Start = Endzeitpunkt + 10m",
-        "warningEditIncomplete": "Aktuelle Bearbeitung unvollständig (Name/Kategorie/Dauer prüfen). Nicht gespeichert — korrigieren und wiederholen.",
-        "warningFutureRequired": "Startzeit muss in der Zukunft liegen."
-    },
-    "serverError": {
-        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Kaskadenlöschung bestätigen zum Entfernen.",
-        "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
-        "scheduleNotFound": "Zeitplan nicht gefunden.",
-        "unauthorized": "Anmeldung erforderlich."
-    },
-    "timer": {
-        "buttonComplete": "abschließen",
-        "buttonFocus": "Fokus",
-        "buttonIdle": "inaktiv",
-        "categoryFallback": "?",
-        "idleEmpty": "untätig · kein aktiver Zeitplan",
-        "labelElapsed": "vergangen",
-        "labelEndAt": "Endet-um",
-        "labelRemaining": "verbleibend",
-        "labelTarget": "Ziel",
-        "overlapLabel": "Überschneidung {count}",
-        "pinAuto": "auto (erste)",
-        "pinLabel": "anheften",
-        "tooltipClickToFocus": "klicken, um zu fokussiert zu wechseln",
-        "tooltipClickToIdle": "klicken, um zu inaktiv zu wechseln",
-        "typeCountdown": "Countdown",
-        "typeCountup": "Hochzählen",
-        "typeTimer1": "Timer1"
-    },
-    "wallTime": {
-        "am": "vormittags",
-        "pm": "nachmittags"
-    },
-    "weekdays": [
-        "So",
-        "Mo",
-        "Di",
-        "Mi",
-        "Do",
-        "Fr",
-        "Sa"
-    ],
-    "workingHours": {
-        "checkboxAlsoDefault": "auch als Standard speichern",
-        "checkboxWeekdaysOnly": "nur Wochentags (Mo–Fr)",
-        "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
-        "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
-        "fieldDate": "Datum",
-        "fieldEndTime": "Endzeit",
-        "fieldFromDate": "von",
-        "fieldStartTime": "Startzeit",
-        "fieldToDate": "bis",
-        "header": "Arbeitszeiten",
-        "tabRange": "Bereich",
-        "tabSingle": "einzeln",
-        "warningNoDates": "Keine Termine zum Anwenden im Bereich. (Start > Ende oder Wochentags-Konflikt)",
-        "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen engeren Bereich."
-    }
+  "app": {
+    "tagline": "Zeitplanverwaltung",
+    "title": "plan1"
+  },
+  "topbar": {
+    "back": "back to portal",
+    "creditsLabel": "credits",
+    "creditsPlaceholder": "—",
+    "guest": "guest",
+    "logout": "logout",
+    "languageLabel": "language"
+  },
+  "auth": {
+    "signIn": "Mit Google anmelden",
+    "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisation. Melden Sie sich mit Google an, um loszulegen.",
+    "signInRequired": "Anmelden, um plan1 zu verwenden"
+  },
+  "category": {
+    "confirmRemoveLabel": "Löschen bestätigen ({count})",
+    "confirmRemoveText": "{count} Zeitplan/Zeitpläne wird/werden damit gelöscht. Erneut klicken zum Bestätigen.",
+    "defaultName": "Standard",
+    "empty": "Keine Kategorien.",
+    "fieldColor": "Farbe",
+    "fieldName": "Name",
+    "header": "Kategorien",
+    "removeButton": "entf",
+    "scheduleCountSuffix": "{count} Zeitpläne"
+  },
+  "common": {
+    "add": "hinzufügen",
+    "cancel": "abbrechen",
+    "close": "schließen",
+    "confirmDelete": "Löschen bestätigen",
+    "delete": "löschen",
+    "dismiss": "schließen",
+    "now": "jetzt",
+    "retry": "wiederholen",
+    "save": "speichern"
+  },
+  "error": {
+    "loadFailedLabel": "Laden fehlgeschlagen:",
+    "mutationFailed": "{action} fehlgeschlagen: {error}",
+    "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+  },
+  "header": {
+    "clock": "Uhr",
+    "timer": "Timer",
+    "today": "heute",
+    "week": "Woche"
+  },
+  "loading": "lädt...",
+  "meta": {
+    "activeLabel": "aktiv",
+    "amLower": "vormittags",
+    "eventsLabel": "Ereignisse",
+    "idle": "inaktiv",
+    "loadingFormat": "{name} · lädt...",
+    "placeholder": "—",
+    "pmLower": "nachmittags",
+    "spanSuffix": "W",
+    "twelveHour": "12h"
+  },
+  "mutation": {
+    "changeTimerType": "Timer-Typ ändern",
+    "completeSchedule": "Zeitplan abschließen",
+    "extendTimer": "Timer verlängern",
+    "pinActiveTimer": "aktiven Timer anheften",
+    "removeCategory": "Kategorie entfernen",
+    "setTheme": "Design festlegen",
+    "setWeekSpan": "Wochenspanne festlegen",
+    "toggleWeeklyPanel": "Wochenpanel umschalten"
+  },
+  "nav": {
+    "categories": "Kategorien",
+    "newSchedule": "neu",
+    "themeDark": "dunkel",
+    "themeLight": "hell",
+    "themeSystem": "auto",
+    "weekSpan1": "1w",
+    "weekSpan2": "2W",
+    "weekSpan3": "3W",
+    "weeklyHide": "Woche ausblenden",
+    "weeklyShow": "Woche anzeigen",
+    "workingHours": "Stunden"
+  },
+  "onboarding": {
+    "addFirst": "ersten Zeitplan hinzufügen",
+    "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, in der heutigen Zeitleiste und auf der Analoguhr zu sehen.",
+    "welcome": "Noch keine Zeitpläne"
+  },
+  "schedule": {
+    "buttonMinus10": "-10m",
+    "buttonMinus30": "-30m",
+    "buttonNextAfter": "nächste +10Min (neuer Zeitplan nach Abschluss)",
+    "buttonNow": "jetzt (Start = jetzt)",
+    "buttonPlus10": "+10m",
+    "buttonPlus30": "+30m",
+    "buttonPlusHour": "+1h",
+    "categoryAddOption": "+ Kategorie hinzufügen",
+    "chainedCheckbox": "mit vorherigem Zeitplan verketten (Kaskade empfangen)",
+    "chainedHelp": "Wenn der vorherige Zeitplan sich verlängert oder verkürzt, bewegt sich dieser mit (Abstand bleibt erhalten).",
+    "endEmpty": "— (Dauer 0m)",
+    "endLabel": "Ende",
+    "fieldCategory": "Kategorie",
+    "fieldDuration": "Dauer (Min)",
+    "fieldName": "Name",
+    "fieldStartDate": "Startdatum",
+    "fieldStartHour": "Startstunde",
+    "fieldStartMinute": "Startminute",
+    "headerEdit": "Zeitplan bearbeiten",
+    "headerNew": "neuer Zeitplan",
+    "hourSuffix": "h",
+    "minuteSuffix": "m",
+    "nextAfterTooltip": "Aktuelle Bearbeitung speichern (falls geändert) und neues Zeitplan-Modal öffnen mit Start = Endzeitpunkt + 10m",
+    "warningEditIncomplete": "Aktuelle Bearbeitung unvollständig (Name/Kategorie/Dauer prüfen). Nicht gespeichert — korrigieren und wiederholen.",
+    "warningFutureRequired": "Startzeit muss in der Zukunft liegen."
+  },
+  "serverError": {
+    "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Kaskadenlöschung bestätigen zum Entfernen.",
+    "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
+    "scheduleNotFound": "Zeitplan nicht gefunden.",
+    "unauthorized": "Anmeldung erforderlich."
+  },
+  "timer": {
+    "buttonComplete": "abschließen",
+    "buttonFocus": "Fokus",
+    "buttonIdle": "inaktiv",
+    "categoryFallback": "?",
+    "idleEmpty": "untätig · kein aktiver Zeitplan",
+    "labelElapsed": "vergangen",
+    "labelEndAt": "Endet-um",
+    "labelRemaining": "verbleibend",
+    "labelTarget": "Ziel",
+    "overlapLabel": "Überschneidung {count}",
+    "pinAuto": "auto (erste)",
+    "pinLabel": "anheften",
+    "tooltipClickToFocus": "klicken, um zu fokussiert zu wechseln",
+    "tooltipClickToIdle": "klicken, um zu inaktiv zu wechseln",
+    "typeCountdown": "Countdown",
+    "typeCountup": "Hochzählen",
+    "typeTimer1": "Timer1"
+  },
+  "wallTime": {
+    "am": "vormittags",
+    "pm": "nachmittags"
+  },
+  "weekdays": [
+    "So",
+    "Mo",
+    "Di",
+    "Mi",
+    "Do",
+    "Fr",
+    "Sa"
+  ],
+  "workingHours": {
+    "checkboxAlsoDefault": "auch als Standard speichern",
+    "checkboxWeekdaysOnly": "nur Wochentags (Mo–Fr)",
+    "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
+    "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
+    "fieldDate": "Datum",
+    "fieldEndTime": "Endzeit",
+    "fieldFromDate": "von",
+    "fieldStartTime": "Startzeit",
+    "fieldToDate": "bis",
+    "header": "Arbeitszeiten",
+    "tabRange": "Bereich",
+    "tabSingle": "einzeln",
+    "warningNoDates": "Keine Termine zum Anwenden im Bereich. (Start > Ende oder Wochentags-Konflikt)",
+    "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen engeren Bereich."
+  }
 }

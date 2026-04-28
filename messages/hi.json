@@ -1,165 +1,173 @@
 {
-    "app": {
-        "tagline": "शेड्यूल प्रबंधक",
-        "title": "plan1"
-    },
-    "auth": {
-        "signIn": "Google से साइन इन करें",
-        "signInDescription": "plan1 क्रॉस-डिवाइस सिंक के साथ एक व्यक्तिगत शेड्यूल टूल है। शुरू करने के लिए Google से साइन इन करें।",
-        "signInRequired": "plan1 उपयोग करने के लिए साइन इन करें"
-    },
-    "category": {
-        "confirmRemoveLabel": "पुष्टि करें rm ({count})",
-        "confirmRemoveText": "{count} शेड्यूल इसके साथ हटा दिए जाएंगे। पुष्टि करने के लिए फिर से क्लिक करें।",
-        "defaultName": "डिफ़ॉल्ट",
-        "empty": "कोई श्रेणी नहीं।",
-        "fieldColor": "रंग",
-        "fieldName": "नाम",
-        "header": "श्रेणियां",
-        "removeButton": "rm",
-        "scheduleCountSuffix": "{count} शेड्यूल"
-    },
-    "common": {
-        "add": "जोड़ें",
-        "cancel": "रद्द करें",
-        "close": "बंद करें",
-        "confirmDelete": "हटाने की पुष्टि करें",
-        "delete": "हटाएं",
-        "dismiss": "खारिज करें",
-        "now": "अभी",
-        "retry": "पुनः प्रयास",
-        "save": "सहेजें"
-    },
-    "error": {
-        "loadFailedLabel": "लोड विफल:",
-        "mutationFailed": "{action} विफल: {error}",
-        "unknown": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें।"
-    },
-    "header": {
-        "clock": "घड़ी",
-        "timer": "टाइमर",
-        "today": "आज",
-        "week": "सप्ताह"
-    },
-    "loading": "लोड हो रहा है...",
-    "meta": {
-        "activeLabel": "सक्रिय",
-        "amLower": "पूर्वाह्न",
-        "eventsLabel": "इवेंट",
-        "idle": "निष्क्रिय",
-        "loadingFormat": "{name} · लोड हो रहा है...",
-        "placeholder": "—",
-        "pmLower": "अपराह्न",
-        "spanSuffix": "स",
-        "twelveHour": "12घं"
-    },
-    "mutation": {
-        "changeTimerType": "टाइमर प्रकार बदलें",
-        "completeSchedule": "शेड्यूल पूर्ण करें",
-        "extendTimer": "टाइमर बढ़ाएं",
-        "pinActiveTimer": "सक्रिय टाइमर पिन करें",
-        "removeCategory": "श्रेणी हटाएं",
-        "setTheme": "थीम सेट करें",
-        "setWeekSpan": "सप्ताह अवधि सेट करें",
-        "toggleWeeklyPanel": "साप्ताहिक पैनल टॉगल करें"
-    },
-    "nav": {
-        "categories": "श्रेणियां",
-        "newSchedule": "नया",
-        "themeDark": "डार्क",
-        "themeLight": "हल्का",
-        "themeSystem": "स्वचालित",
-        "weekSpan1": "1स",
-        "weekSpan2": "2स",
-        "weekSpan3": "3स",
-        "weeklyHide": "सप्ताह छिपाएं",
-        "weeklyShow": "सप्ताह दिखाएं",
-        "workingHours": "घंटे"
-    },
-    "onboarding": {
-        "addFirst": "पहला शेड्यूल जोड़ें",
-        "firstSchedule": "साप्ताहिक ग्रिड, आज की टाइमलाइन और एनालॉग घड़ी पर देखने के लिए अपना पहला शेड्यूल जोड़ें।",
-        "welcome": "अभी तक कोई शेड्यूल नहीं"
-    },
-    "schedule": {
-        "buttonMinus10": "-10मि",
-        "buttonMinus30": "-30मि",
-        "buttonNextAfter": "अगला +10मि (पूर्ण होने के बाद नया शेड्यूल)",
-        "buttonNow": "अभी (प्रारंभ = अभी)",
-        "buttonPlus10": "+10मि",
-        "buttonPlus30": "+30मि",
-        "buttonPlusHour": "+1घं",
-        "categoryAddOption": "+ श्रेणी जोड़ें",
-        "chainedCheckbox": "पिछले शेड्यूल से जोड़ें (कैस्केड प्राप्त करें)",
-        "chainedHelp": "जब पिछला शेड्यूल बढ़ता या सिकुड़ता है, तो यह उसके साथ चलता है (अंतर संरक्षित)।",
-        "endEmpty": "— (अवधि 0मि)",
-        "endLabel": "समाप्ति",
-        "fieldCategory": "श्रेणी",
-        "fieldDuration": "अवधि (मिनट)",
-        "fieldName": "नाम",
-        "fieldStartDate": "प्रारंभ तिथि",
-        "fieldStartHour": "प्रारंभ घंटा",
-        "fieldStartMinute": "प्रारंभ मिनट",
-        "headerEdit": "शेड्यूल संपादित करें",
-        "headerNew": "नया शेड्यूल",
-        "hourSuffix": "घं",
-        "minuteSuffix": "मि",
-        "nextAfterTooltip": "वर्तमान संपादन सहेजें (यदि डर्टी है) और नया शेड्यूल मोडल खोलें जिसमें प्रारंभ = endAt + 10m",
-        "warningEditIncomplete": "वर्तमान संपादन अधूरा (नाम/श्रेणी/अवधि जांचें)। सहेजा नहीं गया — ठीक करें और पुनः प्रयास करें।",
-        "warningFutureRequired": "प्रारंभ समय भविष्य में होना चाहिए।"
-    },
-    "serverError": {
-        "categoryHasSchedules": "श्रेणी में {scheduleCount} शेड्यूल हैं। हटाने के लिए कैस्केड डिलीट की पुष्टि करें।",
-        "categoryNotFound": "श्रेणी नहीं मिली या स्वामित्व में नहीं।",
-        "scheduleNotFound": "शेड्यूल नहीं मिला।",
-        "unauthorized": "साइन इन आवश्यक।"
-    },
-    "timer": {
-        "buttonComplete": "पूर्ण",
-        "buttonFocus": "फोकस",
-        "buttonIdle": "निष्क्रिय",
-        "categoryFallback": "?",
-        "idleEmpty": "निष्क्रिय · कोई सक्रिय शेड्यूल नहीं",
-        "labelElapsed": "बीता हुआ",
-        "labelEndAt": "समाप्ति-पर",
-        "labelRemaining": "शेष",
-        "labelTarget": "लक्ष्य",
-        "overlapLabel": "ओवरलैप {count}",
-        "pinAuto": "स्वचालित (पहला)",
-        "pinLabel": "पिन",
-        "tooltipClickToFocus": "फोकस पर स्विच करने के लिए क्लिक करें",
-        "tooltipClickToIdle": "निष्क्रिय पर स्विच करने के लिए क्लिक करें",
-        "typeCountdown": "काउंटडाउन",
-        "typeCountup": "काउंटअप",
-        "typeTimer1": "टाइमर1"
-    },
-    "wallTime": {
-        "am": "पूर्वाह्न",
-        "pm": "अपराह्न"
-    },
-    "weekdays": [
-        "रवि",
-        "सोम",
-        "मंगल",
-        "बुध",
-        "गुरु",
-        "शुक्र",
-        "शनि"
-    ],
-    "workingHours": {
-        "checkboxAlsoDefault": "डिफ़ॉल्ट के रूप में भी सहेजें",
-        "checkboxWeekdaysOnly": "केवल सप्ताह के दिन (सोम–शुक्र)",
-        "errorEndAfterStart": "समाप्ति समय प्रारंभ समय के बाद होना चाहिए।",
-        "errorToAfterFrom": "समाप्ति तिथि प्रारंभ तिथि को या उसके बाद होनी चाहिए।",
-        "fieldDate": "तारीख",
-        "fieldEndTime": "समाप्ति समय",
-        "fieldFromDate": "से",
-        "fieldStartTime": "प्रारंभ समय",
-        "fieldToDate": "तक",
-        "header": "कार्य के घंटे",
-        "tabRange": "सीमा",
-        "tabSingle": "एकल",
-        "warningNoDates": "रेंज में लागू करने के लिए कोई तारीख नहीं। (प्रारंभ > समाप्ति या सप्ताह के दिन-केवल विरोध)",
-        "warningTruncated": "सीमा {max} दिनों से अधिक है, केवल आंशिक रूप से संसाधित। एक संकीर्ण सीमा आज़माएं।"
-    }
+  "app": {
+    "tagline": "शेड्यूल प्रबंधक",
+    "title": "plan1"
+  },
+  "topbar": {
+    "back": "back to portal",
+    "creditsLabel": "credits",
+    "creditsPlaceholder": "—",
+    "guest": "guest",
+    "logout": "logout",
+    "languageLabel": "language"
+  },
+  "auth": {
+    "signIn": "Google से साइन इन करें",
+    "signInDescription": "plan1 क्रॉस-डिवाइस सिंक के साथ एक व्यक्तिगत शेड्यूल टूल है। शुरू करने के लिए Google से साइन इन करें।",
+    "signInRequired": "plan1 उपयोग करने के लिए साइन इन करें"
+  },
+  "category": {
+    "confirmRemoveLabel": "पुष्टि करें rm ({count})",
+    "confirmRemoveText": "{count} शेड्यूल इसके साथ हटा दिए जाएंगे। पुष्टि करने के लिए फिर से क्लिक करें।",
+    "defaultName": "डिफ़ॉल्ट",
+    "empty": "कोई श्रेणी नहीं।",
+    "fieldColor": "रंग",
+    "fieldName": "नाम",
+    "header": "श्रेणियां",
+    "removeButton": "rm",
+    "scheduleCountSuffix": "{count} शेड्यूल"
+  },
+  "common": {
+    "add": "जोड़ें",
+    "cancel": "रद्द करें",
+    "close": "बंद करें",
+    "confirmDelete": "हटाने की पुष्टि करें",
+    "delete": "हटाएं",
+    "dismiss": "खारिज करें",
+    "now": "अभी",
+    "retry": "पुनः प्रयास",
+    "save": "सहेजें"
+  },
+  "error": {
+    "loadFailedLabel": "लोड विफल:",
+    "mutationFailed": "{action} विफल: {error}",
+    "unknown": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें।"
+  },
+  "header": {
+    "clock": "घड़ी",
+    "timer": "टाइमर",
+    "today": "आज",
+    "week": "सप्ताह"
+  },
+  "loading": "लोड हो रहा है...",
+  "meta": {
+    "activeLabel": "सक्रिय",
+    "amLower": "पूर्वाह्न",
+    "eventsLabel": "इवेंट",
+    "idle": "निष्क्रिय",
+    "loadingFormat": "{name} · लोड हो रहा है...",
+    "placeholder": "—",
+    "pmLower": "अपराह्न",
+    "spanSuffix": "स",
+    "twelveHour": "12घं"
+  },
+  "mutation": {
+    "changeTimerType": "टाइमर प्रकार बदलें",
+    "completeSchedule": "शेड्यूल पूर्ण करें",
+    "extendTimer": "टाइमर बढ़ाएं",
+    "pinActiveTimer": "सक्रिय टाइमर पिन करें",
+    "removeCategory": "श्रेणी हटाएं",
+    "setTheme": "थीम सेट करें",
+    "setWeekSpan": "सप्ताह अवधि सेट करें",
+    "toggleWeeklyPanel": "साप्ताहिक पैनल टॉगल करें"
+  },
+  "nav": {
+    "categories": "श्रेणियां",
+    "newSchedule": "नया",
+    "themeDark": "डार्क",
+    "themeLight": "हल्का",
+    "themeSystem": "स्वचालित",
+    "weekSpan1": "1स",
+    "weekSpan2": "2स",
+    "weekSpan3": "3स",
+    "weeklyHide": "सप्ताह छिपाएं",
+    "weeklyShow": "सप्ताह दिखाएं",
+    "workingHours": "घंटे"
+  },
+  "onboarding": {
+    "addFirst": "पहला शेड्यूल जोड़ें",
+    "firstSchedule": "साप्ताहिक ग्रिड, आज की टाइमलाइन और एनालॉग घड़ी पर देखने के लिए अपना पहला शेड्यूल जोड़ें।",
+    "welcome": "अभी तक कोई शेड्यूल नहीं"
+  },
+  "schedule": {
+    "buttonMinus10": "-10मि",
+    "buttonMinus30": "-30मि",
+    "buttonNextAfter": "अगला +10मि (पूर्ण होने के बाद नया शेड्यूल)",
+    "buttonNow": "अभी (प्रारंभ = अभी)",
+    "buttonPlus10": "+10मि",
+    "buttonPlus30": "+30मि",
+    "buttonPlusHour": "+1घं",
+    "categoryAddOption": "+ श्रेणी जोड़ें",
+    "chainedCheckbox": "पिछले शेड्यूल से जोड़ें (कैस्केड प्राप्त करें)",
+    "chainedHelp": "जब पिछला शेड्यूल बढ़ता या सिकुड़ता है, तो यह उसके साथ चलता है (अंतर संरक्षित)।",
+    "endEmpty": "— (अवधि 0मि)",
+    "endLabel": "समाप्ति",
+    "fieldCategory": "श्रेणी",
+    "fieldDuration": "अवधि (मिनट)",
+    "fieldName": "नाम",
+    "fieldStartDate": "प्रारंभ तिथि",
+    "fieldStartHour": "प्रारंभ घंटा",
+    "fieldStartMinute": "प्रारंभ मिनट",
+    "headerEdit": "शेड्यूल संपादित करें",
+    "headerNew": "नया शेड्यूल",
+    "hourSuffix": "घं",
+    "minuteSuffix": "मि",
+    "nextAfterTooltip": "वर्तमान संपादन सहेजें (यदि डर्टी है) और नया शेड्यूल मोडल खोलें जिसमें प्रारंभ = endAt + 10m",
+    "warningEditIncomplete": "वर्तमान संपादन अधूरा (नाम/श्रेणी/अवधि जांचें)। सहेजा नहीं गया — ठीक करें और पुनः प्रयास करें।",
+    "warningFutureRequired": "प्रारंभ समय भविष्य में होना चाहिए।"
+  },
+  "serverError": {
+    "categoryHasSchedules": "श्रेणी में {scheduleCount} शेड्यूल हैं। हटाने के लिए कैस्केड डिलीट की पुष्टि करें।",
+    "categoryNotFound": "श्रेणी नहीं मिली या स्वामित्व में नहीं।",
+    "scheduleNotFound": "शेड्यूल नहीं मिला।",
+    "unauthorized": "साइन इन आवश्यक।"
+  },
+  "timer": {
+    "buttonComplete": "पूर्ण",
+    "buttonFocus": "फोकस",
+    "buttonIdle": "निष्क्रिय",
+    "categoryFallback": "?",
+    "idleEmpty": "निष्क्रिय · कोई सक्रिय शेड्यूल नहीं",
+    "labelElapsed": "बीता हुआ",
+    "labelEndAt": "समाप्ति-पर",
+    "labelRemaining": "शेष",
+    "labelTarget": "लक्ष्य",
+    "overlapLabel": "ओवरलैप {count}",
+    "pinAuto": "स्वचालित (पहला)",
+    "pinLabel": "पिन",
+    "tooltipClickToFocus": "फोकस पर स्विच करने के लिए क्लिक करें",
+    "tooltipClickToIdle": "निष्क्रिय पर स्विच करने के लिए क्लिक करें",
+    "typeCountdown": "काउंटडाउन",
+    "typeCountup": "काउंटअप",
+    "typeTimer1": "टाइमर1"
+  },
+  "wallTime": {
+    "am": "पूर्वाह्न",
+    "pm": "अपराह्न"
+  },
+  "weekdays": [
+    "रवि",
+    "सोम",
+    "मंगल",
+    "बुध",
+    "गुरु",
+    "शुक्र",
+    "शनि"
+  ],
+  "workingHours": {
+    "checkboxAlsoDefault": "डिफ़ॉल्ट के रूप में भी सहेजें",
+    "checkboxWeekdaysOnly": "केवल सप्ताह के दिन (सोम–शुक्र)",
+    "errorEndAfterStart": "समाप्ति समय प्रारंभ समय के बाद होना चाहिए।",
+    "errorToAfterFrom": "समाप्ति तिथि प्रारंभ तिथि को या उसके बाद होनी चाहिए।",
+    "fieldDate": "तारीख",
+    "fieldEndTime": "समाप्ति समय",
+    "fieldFromDate": "से",
+    "fieldStartTime": "प्रारंभ समय",
+    "fieldToDate": "तक",
+    "header": "कार्य के घंटे",
+    "tabRange": "सीमा",
+    "tabSingle": "एकल",
+    "warningNoDates": "रेंज में लागू करने के लिए कोई तारीख नहीं। (प्रारंभ > समाप्ति या सप्ताह के दिन-केवल विरोध)",
+    "warningTruncated": "सीमा {max} दिनों से अधिक है, केवल आंशिक रूप से संसाधित। एक संकीर्ण सीमा आज़माएं।"
+  }
 }
