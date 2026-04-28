@@ -70,12 +70,17 @@ export async function Header() {
               <span className="text-txt truncate max-w-[140px]" title={user.email ?? user.id}>
                 {user.name || user.email || user.id}
               </span>
-              <a
-                href={logoutUrl}
-                className="text-muted hover:text-danger transition-colors"
-              >
-                [{t('logout')}]
-              </a>
+              {/* ship-gate security Medium (2026-04-28): GET 링크 → POST form.
+                  Better Auth sign-out 는 POST 만 처리 → GET 클릭 시 cookie 삭제 안 됨.
+                  prefetch/email scanner 의 GET 으로 의도치 않은 로그아웃 (CSRF 표면) 도 동시 차단. */}
+              <form method="post" action={logoutUrl} className="inline">
+                <button
+                  type="submit"
+                  className="text-muted hover:text-danger transition-colors bg-transparent border-0 p-0 m-0 font-mono text-[12px] cursor-pointer"
+                >
+                  [{t('logout')}]
+                </button>
+              </form>
             </span>
           ) : (
             <span className="text-muted whitespace-nowrap">
