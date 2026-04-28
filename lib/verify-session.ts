@@ -22,10 +22,16 @@ export type SessionUser = {
 // issuer 별 인스턴스 1개 유지 + 30초 cooldown + 10분 max age.
 const jwksCache = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
 
+// portal Next.js basePath = '/project' (next.config.mjs). Better Auth basePath = '/api/auth'.
+// 따라서 JWKS endpoint 실제 path 는 `/project/api/auth/jwks`. 단 JWT iss claim 은 baseURL
+// origin = 'https://cofounder.co.kr' (basePath 미포함, Better Auth jwt() default).
+// router 가 /project/* 만 portal 로 forward 하므로 issuer 그대로 fetch 시 404.
+const JWKS_PATH = '/project/api/auth/jwks';
+
 function getJwks(issuer: string): ReturnType<typeof createRemoteJWKSet> {
   let jwks = jwksCache.get(issuer);
   if (!jwks) {
-    jwks = createRemoteJWKSet(new URL(`${issuer}/api/auth/jwks`), {
+    jwks = createRemoteJWKSet(new URL(`${issuer}${JWKS_PATH}`), {
       cooldownDuration: 30_000,
       cacheMaxAge: 600_000
     });
