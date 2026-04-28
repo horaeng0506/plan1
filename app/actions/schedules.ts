@@ -18,6 +18,7 @@ import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
 import {plan1Categories, plan1Schedules, plan1WorkingHours, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
+import {assertCategoryOwnership} from '@/lib/ownership-guards';
 import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
 import {cascade} from '@/lib/domain/cascade';
 import {splitByWorkingHours} from '@/lib/domain/split';
@@ -42,19 +43,9 @@ function rowToDomain(row: ScheduleRow): Schedule {
   };
 }
 
-/**
- * 보안 가드 — categoryId 가 user 소유인지 검증.
- * security-auditor HIGH (IDOR): plan1Schedules.categoryId FK 는 plan1Categories.id 만
- * 참조 → 다른 user 의 category id 를 patch 로 받으면 cross-tenant 데이터 오염.
- */
-async function assertCategoryOwnership(userId: string, categoryId: string): Promise<void> {
-  const [cat] = await db
-    .select({id: plan1Categories.id})
-    .from(plan1Categories)
-    .where(and(eq(plan1Categories.id, categoryId), eq(plan1Categories.userId, userId)))
-    .limit(1);
-  if (!cat) throw new ServerActionError('serverError.categoryNotFound');
-}
+// IDOR 가드는 별도 helper (lib/ownership-guards.ts) 로 추출 — Stage 8.G test 보강.
+// 같은 module 에 inline 시 'use server' directive + vitest mock 상호작용 복잡.
+// import: 파일 상단 import {assertCategoryOwnership} from '@/lib/ownership-guards';
 
 async function loadUserState(userId: string): Promise<{
   schedules: Schedule[];

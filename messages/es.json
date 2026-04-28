@@ -147,15 +147,15 @@
     "am": "am",
     "pm": "pm"
   },
-  "weekdays": [
-    "dom",
-    "lun",
-    "mar",
-    "mié",
-    "jue",
-    "vie",
-    "sáb"
-  ],
+  "weekdays": {
+    "0": "dom",
+    "1": "lun",
+    "2": "mar",
+    "3": "mié",
+    "4": "jue",
+    "5": "vie",
+    "6": "sáb"
+  },
   "workingHours": {
     "checkboxAlsoDefault": "también guardar como predeterminado",
     "checkboxWeekdaysOnly": "solo días laborables (lun–vie)",

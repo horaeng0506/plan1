@@ -147,15 +147,15 @@
     "am": "am",
     "pm": "pm"
   },
-  "weekdays": [
-    "So",
-    "Mo",
-    "Di",
-    "Mi",
-    "Do",
-    "Fr",
-    "Sa"
-  ],
+  "weekdays": {
+    "0": "So",
+    "1": "Mo",
+    "2": "Di",
+    "3": "Mi",
+    "4": "Do",
+    "5": "Fr",
+    "6": "Sa"
+  },
   "workingHours": {
     "checkboxAlsoDefault": "auch als Standard speichern",
     "checkboxWeekdaysOnly": "nur Wochentage (Mo–Fr)",

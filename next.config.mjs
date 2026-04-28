@@ -39,8 +39,27 @@ const nextConfig = {
     }
   },
   // ship-gate security Medium (2026-04-28): 보안 헤더 일괄 적용.
-  // CSP 는 next-intl·Vercel inline 스크립트 호환 검증 후 phased rollout 별도 (Report-Only 1주 → enforce).
+  // CSP 는 phased rollout — Report-Only 1주 (위반 console 노출 모니터) → enforce 전환.
   async headers() {
+    // CSP Report-Only directives.
+    // - 'unsafe-inline' style: Tailwind inline · Next.js framework inline 필요
+    // - 'unsafe-inline' script: Next.js bootstrap inline (서비스 워커 nonce 도입 후 제거 검토)
+    // - 'unsafe-eval' script: Vercel · Next.js dev/Turbopack 호환
+    // - frame-ancestors 'none': X-Frame-Options DENY 와 일관 (CSP 가 더 강한 deny)
+    // - connect-src: server actions · JWKS endpoint · Vercel telemetry
+    // - font-src 'self' data:: JetBrains Mono · 자체 hosted (외부 font CDN 미사용)
+    const cspReportOnly = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob:",
+      "font-src 'self' data:",
+      "connect-src 'self' https://cofounder.co.kr https://*.vercel.app",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self' https://cofounder.co.kr"
+    ].join('; ');
+
     return [
       {
         source: '/:path*',
@@ -55,7 +74,10 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
-          }
+          },
+          // CSP Report-Only — 1주 모니터 후 enforce 전환 (Stage 8.G phased rollout).
+          // 위반 시 브라우저 console 에 'CSP report' 노출 + 페이지 동작 영향 0.
+          {key: 'Content-Security-Policy-Report-Only', value: cspReportOnly}
         ]
       }
     ];
