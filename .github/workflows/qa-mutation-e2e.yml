@@ -1,6 +1,7 @@
 name: QA mutation E2E gate
 
 # Track 2 C-3 (2026-04-29) — PR 마다 격리된 환경에서 mutation E2E 자동 실행 + main push 회귀 검증.
+# 2026-04-30: 첫 PR 검증 트리거 (secrets 8개 등록 후) — Neon branch + Vercel preview + Playwright 통과 확인.
 # 옵션 C 채택: plan1 schema 만 Neon ephemeral branch · portal·router prod 그대로.
 # 근거: wiki/shared/saas-qa-gate-research-20260429.md § 5
 #
@@ -43,7 +44,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -56,12 +57,16 @@ jobs:
       - name: Neon — create ephemeral branch
         if: github.event_name == 'pull_request'
         id: neon
-        uses: neondatabase/create-branch-action@v5
+        # v6 = Node 액션 (composite shell 아님). v5 의 neonctl shell-out 시 발생한
+        # "Unknown command: ***" 마스킹 충돌 회피. 2026-04-30 fix.
+        uses: neondatabase/create-branch-action@v6
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
-          parent: main
+          # cofounder-portal Neon project default branch = "production" (not "main").
+          # 2026-04-30 verify: `neonctl branches list` → ['production', 'preview/perf/sin1-region', 'vercel-dev'].
+          parent_branch: production
           branch_name: pr-${{ github.event.pull_request.number }}
-          username: neondb_owner
+          role: neondb_owner
           api_key: ${{ secrets.NEON_API_KEY }}
 
       - name: Install Vercel CLI
