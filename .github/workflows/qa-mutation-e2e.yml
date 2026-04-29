@@ -60,7 +60,9 @@ jobs:
         uses: neondatabase/create-branch-action@v5
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
-          parent: main
+          # cofounder-portal Neon project default branch = "production" (not "main").
+          # 2026-04-30 verify: `neonctl branches list` → ['production', 'preview/perf/sin1-region', 'vercel-dev'].
+          parent: production
           branch_name: pr-${{ github.event.pull_request.number }}
           username: neondb_owner
           api_key: ${{ secrets.NEON_API_KEY }}
