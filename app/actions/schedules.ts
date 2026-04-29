@@ -18,7 +18,8 @@ import type {BatchItem} from 'drizzle-orm/batch';
 import {db} from '@/lib/db';
 import {plan1Categories, plan1Schedules, plan1WorkingHours, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
-import {assertCategoryOwnership} from '@/lib/ownership-guards';
+// Track 1.5 phase 3 (2026-04-29): assertCategoryOwnership 별도 helper 제거.
+// loadUserState 가 ownership SELECT + loadState 3 SELECT 를 1 batch 로 통합 (cross-continent RTT × 2 → × 1)
 import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
 import {cascade} from '@/lib/domain/cascade';
 import {splitByWorkingHours} from '@/lib/domain/split';
@@ -47,13 +48,49 @@ function rowToDomain(row: ScheduleRow): Schedule {
 // 같은 module 에 inline 시 'use server' directive + vitest mock 상호작용 복잡.
 // import: 파일 상단 import {assertCategoryOwnership} from '@/lib/ownership-guards';
 
-async function loadUserState(userId: string): Promise<{
+async function loadUserState(
+  userId: string,
+  ownerCategoryId?: string
+): Promise<{
   schedules: Schedule[];
   workingHours: Record<string, WorkingHours>;
   defaultWH: {startMin: number; endMin: number};
 }> {
-  // Track 1.5 fix (2026-04-29): Promise.all (3 RTT in HTTP driver) → db.batch (1 RTT atomic)
-  // neon-http 는 per-query HTTPS request — Promise.all 도 N RTT 누적. db.batch 로 1 request 안에 N query
+  // Track 1.5 phase 3 fix (2026-04-29): ownership SELECT + loadState 3 SELECT 을 1 batch 로
+  // 통합. cross-continent RTT × 2 (ownership 700ms + loadState 700ms = 1400ms) → RTT × 1 (~700ms)
+  if (ownerCategoryId !== undefined) {
+    const [ownerRows, scheduleRows, whRows, settingsRow] = await db.batch([
+      db
+        .select({id: plan1Categories.id})
+        .from(plan1Categories)
+        .where(
+          and(eq(plan1Categories.id, ownerCategoryId), eq(plan1Categories.userId, userId))
+        )
+        .limit(1),
+      db.select().from(plan1Schedules).where(eq(plan1Schedules.userId, userId)),
+      db.select().from(plan1WorkingHours).where(eq(plan1WorkingHours.userId, userId)),
+      db
+        .select()
+        .from(plan1Settings)
+        .where(eq(plan1Settings.userId, userId))
+        .limit(1)
+    ]);
+    if (!ownerRows[0]) throw new ServerActionError('serverError.categoryNotFound');
+
+    const workingHours: Record<string, WorkingHours> = {};
+    for (const wh of whRows) {
+      workingHours[wh.date] = {date: wh.date, startMin: wh.startMin, endMin: wh.endMin};
+    }
+    const defaultWH = settingsRow[0]
+      ? {
+          startMin: settingsRow[0].defaultWorkingHoursStartMin,
+          endMin: settingsRow[0].defaultWorkingHoursEndMin
+        }
+      : {startMin: 540, endMin: 1080};
+    return {schedules: scheduleRows.map(rowToDomain), workingHours, defaultWH};
+  }
+
+  // ownership 검증 불요 (completeSchedule · updateSchedule categoryId 미변경)
   const [scheduleRows, whRows, settingsRow] = await db.batch([
     db.select().from(plan1Schedules).where(eq(plan1Schedules.userId, userId)),
     db.select().from(plan1WorkingHours).where(eq(plan1WorkingHours.userId, userId)),
@@ -182,14 +219,13 @@ export async function createSchedule(input: {
   chainedToPrev?: boolean;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
-    // Track 1.5 phase 2 instrument (2026-04-29): db.batch 마이그 후에도 5초 — 재측정
+    // Track 1.5 phase 3 instrument (2026-04-29): ownership + loadState 합친 batch 측정
     const t0 = Date.now();
     const user = await requireUser();
     const t1 = Date.now();
-    await assertCategoryOwnership(user.id, input.categoryId);
+    // loadUserState 가 ownership + loadState 4 SELECT 를 1 batch 로 통합 (cross-continent RTT × 2 → × 1)
+    const state = await loadUserState(user.id, input.categoryId);
     const t2 = Date.now();
-    const state = await loadUserState(user.id);
-    const t3 = Date.now();
     const newSchedule: Schedule = {
       id: `sch-${randomUUID()}`,
       title: input.title,
@@ -205,20 +241,18 @@ export async function createSchedule(input: {
     const originals = state.schedules.filter(s => !s.splitFrom);
     const merged = [...originals, newSchedule];
     const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
-    const t4 = Date.now();
+    const t3 = Date.now();
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, split);
-    const t5 = Date.now();
-    console.log('[plan1.createSchedule.batch]', JSON.stringify({
+    const t4 = Date.now();
+    console.log('[plan1.createSchedule.batch3]', JSON.stringify({
       auth_ms: t1 - t0,
-      ownership_ms: t2 - t1,
-      loadStateBatch_ms: t3 - t2,
-      cascadeSplit_ms: t4 - t3,
-      syncBatch_ms: t5 - t4,
-      total_ms: t5 - t0,
+      ownerLoadStateBatch_ms: t2 - t1,
+      cascadeSplit_ms: t3 - t2,
+      syncBatch_ms: t4 - t3,
+      total_ms: t4 - t0,
       scheduleCount: state.schedules.length,
-      splitCount: split.length,
-      driver: 'neon-http+batch'
+      splitCount: split.length
     }));
     return split;
   });
@@ -235,11 +269,8 @@ export async function updateSchedule(input: {
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    // security HIGH IDOR fix: patch 의 categoryId 가 다른 user 카테고리면 차단
-    if (input.categoryId !== undefined) {
-      await assertCategoryOwnership(user.id, input.categoryId);
-    }
-    const state = await loadUserState(user.id);
+    // Track 1.5 phase 3: ownership + loadState 통합 batch (categoryId 변경 시만)
+    const state = await loadUserState(user.id, input.categoryId);
     const target = state.schedules.find(s => s.id === input.id);
     if (!target) throw new ServerActionError('serverError.scheduleNotFound');
 
