@@ -151,10 +151,15 @@ export async function createSchedule(input: {
   chainedToPrev?: boolean;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
+    // Track 1.5 진단 instrument (2026-04-29): 5초 latency phase 측정. 측정 후 제거 예정.
+    const t0 = Date.now();
     const user = await requireUser();
+    const t1 = Date.now();
     // security HIGH IDOR fix: 다른 user 의 categoryId 차단
     await assertCategoryOwnership(user.id, input.categoryId);
+    const t2 = Date.now();
     const state = await loadUserState(user.id);
+    const t3 = Date.now();
     const newSchedule: Schedule = {
       id: `sch-${randomUUID()}`,
       title: input.title,
@@ -171,7 +176,19 @@ export async function createSchedule(input: {
     const originals = state.schedules.filter(s => !s.splitFrom);
     const merged = [...originals, newSchedule];
     const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
+    const t4 = Date.now();
     await syncSchedules(user.id, split);
+    const t5 = Date.now();
+    console.log('[plan1.createSchedule]', JSON.stringify({
+      auth_ms: t1 - t0,
+      ownership_ms: t2 - t1,
+      loadState_ms: t3 - t2,
+      cascadeSplit_ms: t4 - t3,
+      sync_ms: t5 - t4,
+      total_ms: t5 - t0,
+      scheduleCount: state.schedules.length,
+      splitCount: split.length
+    }));
     return split;
   });
 }
@@ -186,12 +203,17 @@ export async function updateSchedule(input: {
   chainedToPrev?: boolean;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
+    // Track 1.5 진단 instrument (2026-04-29): 측정 후 제거 예정.
+    const t0 = Date.now();
     const user = await requireUser();
+    const t1 = Date.now();
     // security HIGH IDOR fix: patch 의 categoryId 가 다른 user 카테고리면 차단
     if (input.categoryId !== undefined) {
       await assertCategoryOwnership(user.id, input.categoryId);
     }
+    const t2 = Date.now();
     const state = await loadUserState(user.id);
+    const t3 = Date.now();
     const target = state.schedules.find(s => s.id === input.id);
     if (!target) throw new ServerActionError('serverError.scheduleNotFound');
 
@@ -219,7 +241,19 @@ export async function updateSchedule(input: {
 
     // split 가 deterministic ID 로 part 재생성 (idempotent — Critical #1).
     const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
+    const t4 = Date.now();
     await syncSchedules(user.id, split);
+    const t5 = Date.now();
+    console.log('[plan1.updateSchedule]', JSON.stringify({
+      auth_ms: t1 - t0,
+      ownership_ms: t2 - t1,
+      loadState_ms: t3 - t2,
+      cascadeSplit_ms: t4 - t3,
+      sync_ms: t5 - t4,
+      total_ms: t5 - t0,
+      scheduleCount: state.schedules.length,
+      splitCount: split.length
+    }));
     return split;
   });
 }
