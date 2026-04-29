@@ -219,13 +219,9 @@ export async function createSchedule(input: {
   chainedToPrev?: boolean;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
-    // Track 1.5 phase 3 instrument (2026-04-29): ownership + loadState 합친 batch 측정
-    const t0 = Date.now();
     const user = await requireUser();
-    const t1 = Date.now();
-    // loadUserState 가 ownership + loadState 4 SELECT 를 1 batch 로 통합 (cross-continent RTT × 2 → × 1)
+    // loadUserState 가 ownership SELECT + 3 SELECT loadState 를 1 batch (4 SELECT atomic)
     const state = await loadUserState(user.id, input.categoryId);
-    const t2 = Date.now();
     const newSchedule: Schedule = {
       id: `sch-${randomUUID()}`,
       title: input.title,
@@ -241,19 +237,8 @@ export async function createSchedule(input: {
     const originals = state.schedules.filter(s => !s.splitFrom);
     const merged = [...originals, newSchedule];
     const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
-    const t3 = Date.now();
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, split);
-    const t4 = Date.now();
-    console.log('[plan1.createSchedule.batch3]', JSON.stringify({
-      auth_ms: t1 - t0,
-      ownerLoadStateBatch_ms: t2 - t1,
-      cascadeSplit_ms: t3 - t2,
-      syncBatch_ms: t4 - t3,
-      total_ms: t4 - t0,
-      scheduleCount: state.schedules.length,
-      splitCount: split.length
-    }));
     return split;
   });
 }

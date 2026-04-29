@@ -45,44 +45,22 @@ export async function requireUser(): Promise<SessionUser> {
  * server action 자체에선 거의 안 씀 — requireUser 사용.
  */
 export async function getCurrentSessionUser(): Promise<SessionUser | null> {
-  // Track 1.5 phase 3 instrument (2026-04-29): auth_ms 1464ms 비정상 — sub-phase 측정
-  const t0 = Date.now();
   const issuer = getPortalIssuer();
-  const t1 = Date.now();
 
   // 1차: Authorization: Bearer 헤더 (API 호출 클라이언트)
   // Next.js 15+ async request APIs (Stage 8.A · 2026-04-28)
   const headerStore = await headers();
-  const t2 = Date.now();
   const authHeader = headerStore.get('authorization');
   if (authHeader?.startsWith('Bearer ')) {
-    const result = await verifySessionJwt(authHeader.slice(7).trim(), issuer);
-    const t3 = Date.now();
-    console.log('[plan1.session.bearer]', JSON.stringify({
-      issuer_ms: t1 - t0, headers_ms: t2 - t1, verify_ms: t3 - t2, total_ms: t3 - t0
-    }));
-    return result;
+    return verifySessionJwt(authHeader.slice(7).trim(), issuer);
   }
 
   // 2차: cookie (브라우저 세션 — 일반 케이스)
   const cookieStore = await cookies();
-  const t3 = Date.now();
   const tokenCookie = cookieStore.get(COOKIE_NAME);
   if (tokenCookie?.value) {
-    const result = await verifySessionJwt(tokenCookie.value, issuer);
-    const t4 = Date.now();
-    console.log('[plan1.session.cookie]', JSON.stringify({
-      issuer_ms: t1 - t0,
-      headers_ms: t2 - t1,
-      cookies_ms: t3 - t2,
-      verify_ms: t4 - t3,
-      total_ms: t4 - t0
-    }));
-    return result;
+    return verifySessionJwt(tokenCookie.value, issuer);
   }
 
-  console.log('[plan1.session.nocookie]', JSON.stringify({
-    issuer_ms: t1 - t0, headers_ms: t2 - t1, cookies_ms: t3 - t2, total_ms: t3 - t0
-  }));
   return null;
 }
