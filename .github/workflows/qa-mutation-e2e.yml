@@ -54,6 +54,31 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       # ── PR: ephemeral Neon branch + Vercel preview deploy ────────────────
+      - name: Debug — verify NEON_API_KEY shape (length + sha256 prefix · 값 노출 X)
+        if: github.event_name == 'pull_request'
+        env:
+          DEBUG_NEON_KEY: ${{ secrets.NEON_API_KEY }}
+          DEBUG_NEON_PROJECT: ${{ secrets.NEON_PROJECT_ID }}
+        run: |
+          python3 -c "
+          import os, hashlib
+          k = os.environ['DEBUG_NEON_KEY']
+          p = os.environ['DEBUG_NEON_PROJECT']
+          print(f'NEON_API_KEY len={len(k)}')
+          print(f'NEON_API_KEY sha256 prefix: {hashlib.sha256(k.encode()).hexdigest()[:16]}')
+          print(f'NEON_API_KEY any whitespace: {any(c.isspace() for c in k)}')
+          print(f'NEON_API_KEY all ascii: {k.isascii()}')
+          print(f'NEON_PROJECT_ID len={len(p)}')
+          print(f'NEON_PROJECT_ID value: {p[:15]}{\"*\"*5 if len(p)>15 else \"\"}')
+          # local expected: len=69, sha256[:16]=106b6c578218853b
+          "
+          # Direct API test from CI runner (curl + Bearer)
+          echo "--- direct API GET /projects/{id} ---"
+          curl -sS -o /tmp/probe.json -w 'HTTP %{http_code}\n' \
+            -H "Authorization: Bearer $DEBUG_NEON_KEY" \
+            "https://console.neon.tech/api/v2/projects/$DEBUG_NEON_PROJECT"
+          head -c 250 /tmp/probe.json; echo
+
       - name: Neon — create ephemeral branch
         if: github.event_name == 'pull_request'
         id: neon
