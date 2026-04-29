@@ -35,12 +35,16 @@ export const DEFAULT_SETTINGS: AppSettings = {
   defaultWorkingHours: {startMin: 540, endMin: 1080}
 };
 
-// Stage 5 i18n: name='default' 영어 base. 컴포넌트 표시 시 useCategoryDisplay()
-// 가 DEFAULT_CATEGORY_ID 를 t('category.defaultName') 으로 locale 매핑.
-export const DEFAULT_CATEGORY_ID = 'cat-default';
-export const DEFAULT_CATEGORIES: Category[] = [
-  {id: DEFAULT_CATEGORY_ID, name: 'default', color: '#6b7280', createdAt: 0}
-];
+// Stage 5 i18n: name='default' 영어 base. 표시 시 useCategoryDisplay() 가 name 매칭으로
+// t('category.defaultName') locale 매핑.
+//
+// Track 1 fix (2026-04-29 · logic-critic 채택): DEFAULT_CATEGORY_ID + 가짜 id fallback
+// 모두 제거. listCategories 가 user별 unique id (`cat-${randomUUID()}`) 로 시드 → 클라이언트
+// 가 받는 id 가 캐노니컬. 빈 배열 fallback 은 init 실패 시점 modal 캡처 회귀(가짜 id 가
+// useState 초기값으로 박혀 다시 categoryNotFound throw) 를 영구 차단.
+// PlanApp 의 "+ 새 스케줄" 버튼이 `categories.length === 0` 시 disabled 처리해 사용자
+// 인지 명확 + modal 진입 자체 차단.
+export const DEFAULT_CATEGORIES: Category[] = [];
 
 // Strict Mode 이중 mount race 가드용 inflight promise 캐시 (init 만 사용).
 let initInflight: Promise<void> | null = null;

@@ -178,7 +178,12 @@ export function PlanApp() {
 
   // Stage 4e env-critic Major fix: newOpen 과 editingId 동시 mount race 차단.
   // Esc 키 1회로 둘 다 닫히는 시나리오 회피 + 사용자 mental model 정렬.
+  // Track 1 fix (2026-04-29 · logic-critic): listCategories 시드 전 모달 진입 시 modal
+  // useState 초기값이 빈 categoryId 캡처 → submit 시 categoryNotFound throw. loaded +
+  // categories 둘 다 보장되기 전엔 modal open 자체 차단 (버튼 disabled 와 이중 가드).
+  const canOpenNew = loaded && categories.length > 0;
   const openNew = () => {
+    if (!canOpenNew) return;
     setEditingId(null);
     setNewOpen(true);
   };
@@ -204,7 +209,7 @@ export function PlanApp() {
   const neutralBtn =
     'px-3 py-1 text-sm rounded-none border border-line bg-panel text-txt font-mono hover:bg-bg';
   const primaryBtn =
-    'px-3 py-1 text-sm rounded-none border border-ink bg-ink text-bg font-mono hover:opacity-90';
+    'px-3 py-1 text-sm rounded-none border border-ink bg-ink text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50';
 
   return (
     <main className="min-h-screen bg-bg text-txt">
@@ -286,7 +291,12 @@ export function PlanApp() {
             <button type="button" className={neutralBtn} onClick={() => setCatOpen(true)}>
               {t('nav.categories')}
             </button>
-            <button type="button" className={primaryBtn} onClick={openNew}>
+            <button
+              type="button"
+              className={primaryBtn}
+              onClick={openNew}
+              disabled={!canOpenNew}
+            >
               + {t('nav.newSchedule')}
             </button>
           </div>

@@ -35,10 +35,33 @@ function rowToDomain(row: typeof plan1Categories.$inferSelect): Category {
 export async function listCategories(): Promise<ServerActionResult<Category[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    const rows = await db
+    // Track 1 fix (2026-04-29 · env-critic 채택): SELECT-then-INSERT 패턴.
+    // 1) 매 호출 INSERT 부하 제거 (이미 시드된 user 는 INSERT 안 침)
+    // 2) Neon HTTP driver per-query connection 의 read-after-write race 회피
+    //    (INSERT 후 SELECT 가 별도 connection 이면 commit visibility 약함 → 빈 array 가능)
+    // 3) onConflictDoNothing target 을 (user_id, name) UNIQUE INDEX 로 명시 — id PK 등
+    //    의도 외 충돌 흡수 차단
+    let rows = await db
       .select()
       .from(plan1Categories)
       .where(eq(plan1Categories.userId, user.id));
+    if (rows.length === 0) {
+      await db
+        .insert(plan1Categories)
+        .values({
+          id: `cat-${randomUUID()}`,
+          userId: user.id,
+          name: 'default',
+          color: '#6b7280'
+        })
+        .onConflictDoNothing({
+          target: [plan1Categories.userId, plan1Categories.name]
+        });
+      rows = await db
+        .select()
+        .from(plan1Categories)
+        .where(eq(plan1Categories.userId, user.id));
+    }
     return rows.map(rowToDomain);
   });
 }

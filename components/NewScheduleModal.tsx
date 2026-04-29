@@ -7,6 +7,8 @@ import {useNow} from '@/lib/now';
 import {useEscapeKey} from '@/lib/use-escape-key';
 import {useCategoryDisplay} from '@/lib/category-display';
 import {pad2, todayKey, dateKeyFromMs} from '@/lib/date-format';
+import {isServerActionError} from '@/lib/server-action';
+import {logClientError} from '@/lib/log';
 import {CategoryManager} from './CategoryManager';
 
 function defaultHour(): number {
@@ -75,6 +77,9 @@ export function NewScheduleModal({
   const [chainedToPrev, setChainedToPrev] = useState<boolean>(initChained);
   const [catOpen, setCatOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  // Track 1 fix (2026-04-29): submit/handleNextAfter/handleDelete catch + 사용자 표시.
+  // 기존 try/finally (catch 누락) 가 server action throw 를 silent failure 로 만들었음.
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Stage 4d-C a11y: Esc → close. busy 중 비활성 + catOpen 시 자식 모달이 먼저 받음.
   useEscapeKey(onClose, !busy && !catOpen);
@@ -94,7 +99,11 @@ export function NewScheduleModal({
   }, [date, hour, minute]);
   const now = useNow();
   const nowReady = now > 0;
-  const isFuture = nowReady && startAt > now;
+  // Track 1 fix (2026-04-29): UI 분 단위 정밀도 한계 흡수. 사용자가 분 단위로 입력하므로
+  // startAt seconds=0 (분 boundary) 이 현재 분과 같거나 미래면 "지금/미래" 로 인정.
+  // 1분 이상 과거(이전 분 boundary) 만 차단 — 대장 의도와 일치.
+  const isFuture =
+    nowReady && Math.floor(startAt / 60_000) >= Math.floor(now / 60_000);
   const endAt = startAt + durationMin * 60_000;
 
   const minuteOptions = useMemo(() => {
@@ -138,9 +147,22 @@ export function NewScheduleModal({
     setMinute(n.getMinutes());
   };
 
+  // Track 1 fix (2026-04-29): server action error 를 i18n key 로 매핑해 사용자 표시.
+  // useRunMutation toast 패턴 대신 inline error (모달 안에 빨간 텍스트 한 줄) — 사용자가
+  // 모달을 떠나지 않고 즉시 인지 + 재시도 가능. ServerActionError brand 검사 후 t(key, params).
+  const handleMutationError = (err: unknown, where: string) => {
+    if (isServerActionError(err)) {
+      setSubmitError(t(err.errorKey as 'serverError.unauthorized', err.params));
+    } else {
+      setSubmitError(t('error.unknown'));
+    }
+    logClientError(`[NewScheduleModal.${where}]`, err);
+  };
+
   const submit = async () => {
     if (!canSubmit) return;
     setBusy(true);
+    setSubmitError(null);
     // mutation 진입 시 deleteArmed 가 살아있으면 stale state — 명시적으로 reset
     // (Stage 3e logic-critic Medium #9 — busy 상호작용 보호).
     setDeleteArmed(false);
@@ -168,6 +190,8 @@ export function NewScheduleModal({
         });
       }
       onClose();
+    } catch (err) {
+      handleMutationError(err, 'submit');
     } finally {
       setBusy(false);
     }
@@ -182,9 +206,12 @@ export function NewScheduleModal({
     }
     if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
     setBusy(true);
+    setSubmitError(null);
     try {
       await removeSchedule(editing.id);
       onClose();
+    } catch (err) {
+      handleMutationError(err, 'handleDelete');
     } finally {
       setBusy(false);
     }
@@ -211,6 +238,7 @@ export function NewScheduleModal({
     }
     setBusy(true);
     setNextAfterWarn(null);
+    setSubmitError(null);
     try {
       if (isDirty && baseOk) {
         await updateSchedule(editing.id, {
@@ -234,6 +262,8 @@ export function NewScheduleModal({
       setChainedToPrev(false);
       setDeleteArmed(false);
       if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+    } catch (err) {
+      handleMutationError(err, 'handleNextAfter');
     } finally {
       setBusy(false);
     }
@@ -411,6 +441,15 @@ export function NewScheduleModal({
             )}
             {nextAfterWarn && (
               <p className="text-xs text-danger font-mono">{nextAfterWarn}</p>
+            )}
+            {submitError && (
+              <p
+                className="text-xs text-danger font-mono"
+                role="alert"
+                aria-live="polite"
+              >
+                {submitError}
+              </p>
             )}
             <div className="flex justify-end gap-2">
               <button
