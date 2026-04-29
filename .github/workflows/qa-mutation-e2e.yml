@@ -57,14 +57,16 @@ jobs:
       - name: Neon — create ephemeral branch
         if: github.event_name == 'pull_request'
         id: neon
-        uses: neondatabase/create-branch-action@v5
+        # v6 = Node 액션 (composite shell 아님). v5 의 neonctl shell-out 시 발생한
+        # "Unknown command: ***" 마스킹 충돌 회피. 2026-04-30 fix.
+        uses: neondatabase/create-branch-action@v6
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
           # cofounder-portal Neon project default branch = "production" (not "main").
           # 2026-04-30 verify: `neonctl branches list` → ['production', 'preview/perf/sin1-region', 'vercel-dev'].
-          parent: production
+          parent_branch: production
           branch_name: pr-${{ github.event.pull_request.number }}
-          username: neondb_owner
+          role: neondb_owner
           api_key: ${{ secrets.NEON_API_KEY }}
 
       - name: Install Vercel CLI
