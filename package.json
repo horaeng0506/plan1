@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e:qa-gate": "playwright test --config=playwright.config.ts",
+    "test:e2e:qa-gate:headed": "playwright test --config=playwright.config.ts --headed",
     "i18n:translate": "i18n-ai-translate translate -i messages/en.json -o es pt fr de ja ru ar hi -e claude -m claude-sonnet-4-5 -p '{' -s '}' --skip-translation-verification --skip-styling-verification --verbose",
     "i18n:translate:zh": "i18n-ai-translate translate -i messages/en.json -o zh -e claude -m claude-sonnet-4-5 -p '{' -s '}' --skip-translation-verification --skip-styling-verification --verbose && mv messages/zh.json messages/zh-CN.json",
     "i18n:translate:all": "npm run i18n:translate && npm run i18n:translate:zh",
@@ -32,6 +34,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/d3-shape": "^3.1.8",
     "@types/node": "^20",
     "@types/react": "^19",

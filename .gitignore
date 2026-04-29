@@ -38,3 +38,9 @@ tsconfig.tsbuildinfo
 .wrangler/
 .vercel
 .vercel
+
+# Playwright (Track 2 C-2.5 · 2026-04-29)
+playwright-report/
+test-results/
+.auth/
+playwright/.cache/
