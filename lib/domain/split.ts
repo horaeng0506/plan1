@@ -68,9 +68,20 @@ export function splitByWorkingHours(
       continue
     }
     const fittable = Math.max(0, wh.endMin - startMin)
-    if (fittable > 0) {
-      out.push({ ...s, durationMin: fittable })
+    // 2026-04-30 fix: startAt 이 WH endMin 이후면 fittable=0. 원본을 emit 안 한 채 part 만 emit 하면
+    // part.split_from 가 존재하지 않는 원본 ID 를 가리켜 FK violation (Track 2 C-3 1차 PR 검증에서 노출).
+    // → 원본 자체를 다음 날 WH 시작 시각으로 roll forward (split 아닌 reschedule). dayIndex=0 유지 (part 아님).
+    if (fittable === 0) {
+      const rollDayMs = dayStartMs(addDaysMs(s.startAt, 1))
+      const rollDateKey = dateKeyOf(rollDayMs)
+      const rollWH = whFor(rollDateKey, workingHours, defaultWH)
+      queue.push({
+        schedule: { ...s, startAt: rollDayMs + rollWH.startMin * NS, updatedAt: Date.now() },
+        dayIndex: 0,
+      })
+      continue
     }
+    out.push({ ...s, durationMin: fittable })
     const remain = s.durationMin - fittable
     if (remain <= 0) continue
     const nextDayMs = dayStartMs(addDaysMs(s.startAt, 1))

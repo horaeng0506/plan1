@@ -72,3 +72,37 @@ describe('split part chainedToPrev = false (Critical #2)', () => {
     for (const p of parts) expect(p.chainedToPrev).toBe(false);
   });
 });
+
+// 2026-04-30 회귀 가드 — Track 2 C-3 1차 PR 검증에서 발견한 FK violation 패턴.
+// startAt 이 WH endMin 이후면 fittable=0 분기 → 원본 emit 안 되고 part 만 emit
+// → part.split_from 가 미존재 원본을 가리켜 schedules_split_from_schedules_id_fk 위반.
+// fix: fittable=0 일 때 원본 자체를 다음 날 WH 시작으로 roll forward (split 아님).
+describe('splitByWorkingHours: startAt 이 WH endMin 이후 (FK violation 회귀 가드)', () => {
+  it('19시 30분 schedule (WH 18시 종료) → 다음 날 09시로 roll forward + split_from 없음', () => {
+    const s = mkSchedule('sch-late', day(2026, 5, 1, 19, 0), 30);
+    const r = splitByWorkingHours([s], wh, defaultWH);
+    expect(r.length).toBe(1);
+    expect(r[0].id).toBe('sch-late');           // 원본 ID 보존
+    expect(r[0].splitFrom).toBeUndefined();      // FK 안 가리킴
+    expect(r[0].durationMin).toBe(30);
+    expect(r[0].startAt).toBe(day(2026, 5, 2, 9, 0));  // 다음 날 09시 (WH start)
+  });
+
+  it('emit 된 모든 part 의 split_from 은 같은 결과 set 안 원본을 가리킨다 (FK 안전)', () => {
+    // 다양한 시나리오를 한 번에 emit 해서 FK 정합성 일괄 검증
+    const inputs = [
+      mkSchedule('sch-fits', day(2026, 5, 1, 10, 0), 60),       // 정상 fit
+      mkSchedule('sch-spill', day(2026, 5, 1, 17, 0), 180),      // 17시 + 3시간 → fittable=60 + part 2개
+      mkSchedule('sch-late', day(2026, 5, 1, 19, 0), 30),        // 19시 → roll forward
+      mkSchedule('sch-very-late', day(2026, 5, 1, 23, 30), 60),  // 23:30 → roll forward
+    ];
+    const r = splitByWorkingHours(inputs, wh, defaultWH);
+    const ids = new Set(r.map(x => x.id));
+    for (const x of r) {
+      if (x.splitFrom) {
+        expect(ids.has(x.splitFrom),
+          `split_from=${x.splitFrom} (id=${x.id}) 가 emit set 안 존재해야 함`).toBe(true);
+      }
+    }
+  });
+});
