@@ -74,6 +74,8 @@ export function PlanApp() {
   const theme = useAppStore(s => s.settings.theme);
   const updateSettings = useAppStore(s => s.updateSettings);
   const schedules = useAppStore(s => s.schedules);
+  // Track 1 fix (2026-04-29): canOpenNew 가드용 categories select.
+  const categories = useAppStore(s => s.categories);
 
   const [newOpen, setNewOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
