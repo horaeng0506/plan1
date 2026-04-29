@@ -182,10 +182,14 @@ export async function createSchedule(input: {
   chainedToPrev?: boolean;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
+    // Track 1.5 phase 2 instrument (2026-04-29): db.batch 마이그 후에도 5초 — 재측정
+    const t0 = Date.now();
     const user = await requireUser();
-    // security HIGH IDOR fix: 다른 user 의 categoryId 차단
+    const t1 = Date.now();
     await assertCategoryOwnership(user.id, input.categoryId);
+    const t2 = Date.now();
     const state = await loadUserState(user.id);
+    const t3 = Date.now();
     const newSchedule: Schedule = {
       id: `sch-${randomUUID()}`,
       title: input.title,
@@ -198,13 +202,24 @@ export async function createSchedule(input: {
       createdAt: Date.now(),
       updatedAt: Date.now()
     };
-    // logic-critic Critical #1·#2: split input 은 원본만 (기존 part 는 split 이 deterministic ID 로 재생성)
     const originals = state.schedules.filter(s => !s.splitFrom);
     const merged = [...originals, newSchedule];
     const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
-    // Track 1.5 fix: syncSchedules batch 화 — existing SELECT 제거 (loadUserState 결과 재사용)
+    const t4 = Date.now();
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, split);
+    const t5 = Date.now();
+    console.log('[plan1.createSchedule.batch]', JSON.stringify({
+      auth_ms: t1 - t0,
+      ownership_ms: t2 - t1,
+      loadStateBatch_ms: t3 - t2,
+      cascadeSplit_ms: t4 - t3,
+      syncBatch_ms: t5 - t4,
+      total_ms: t5 - t0,
+      scheduleCount: state.schedules.length,
+      splitCount: split.length,
+      driver: 'neon-http+batch'
+    }));
     return split;
   });
 }
