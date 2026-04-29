@@ -1,0 +1,159 @@
+name: QA mutation E2E gate
+
+# Track 2 C-3 (2026-04-29) — PR 마다 격리된 환경에서 mutation E2E 자동 실행 + main push 회귀 검증.
+# 옵션 C 채택: plan1 schema 만 Neon ephemeral branch · portal·router prod 그대로.
+# 근거: wiki/shared/saas-qa-gate-research-20260429.md § 5
+#
+# 흐름 (PR opened/synchronize/reopened):
+#   1. Neon ephemeral branch 생성 (parent: main · copy-on-write)
+#   2. Vercel CLI deploy preview (DATABASE_URL override = ephemeral branch)
+#   3. Playwright qa-bot sign-in (portal prod) + mutation E2E (plan1 preview)
+#   4. 결과 PR comment
+#
+# 흐름 (PR closed):
+#   - Neon ephemeral branch 자동 폐기
+#
+# 비용: $0 (Neon Free 10 branch · Vercel preview 무제한)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: qa-mutation-e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup-and-test:
+    name: Mutation E2E (PR · main)
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright (chromium only)
+        run: npx playwright install chromium --with-deps
+
+      # ── PR: ephemeral Neon branch + Vercel preview deploy ────────────────
+      - name: Neon — create ephemeral branch
+        if: github.event_name == 'pull_request'
+        id: neon
+        uses: neondatabase/create-branch-action@v5
+        with:
+          project_id: ${{ secrets.NEON_PROJECT_ID }}
+          parent: main
+          branch_name: pr-${{ github.event.pull_request.number }}
+          username: neondb_owner
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      - name: Install Vercel CLI
+        if: github.event_name == 'pull_request'
+        run: npm install --global vercel@latest
+
+      - name: Vercel pull preview env
+        if: github.event_name == 'pull_request'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PLAN1 }}
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Vercel build
+        if: github.event_name == 'pull_request'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PLAN1 }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Vercel deploy preview (DATABASE_URL = Neon ephemeral)
+        if: github.event_name == 'pull_request'
+        id: deploy
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PLAN1 }}
+        run: |
+          URL=$(vercel deploy --prebuilt \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --env DATABASE_URL=${{ steps.neon.outputs.db_url_pooled }} \
+            --env DATABASE_URL_UNPOOLED=${{ steps.neon.outputs.db_url }})
+          echo "preview_url=$URL" >> "$GITHUB_OUTPUT"
+          echo "PLAYWRIGHT_BASE_URL=$URL" >> "$GITHUB_ENV"
+
+      # ── main push: prod URL 사용 (회귀 검증) ─────────────────────────────
+      - name: Set prod URL for main push
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: echo "PLAYWRIGHT_BASE_URL=https://cofounder.co.kr" >> "$GITHUB_ENV"
+
+      # ── Playwright run ───────────────────────────────────────────────────
+      - name: Run mutation E2E
+        env:
+          PORTAL_BASE_URL: https://cofounder.co.kr
+          QA_TEST_USER_EMAIL: ${{ secrets.QA_TEST_USER_EMAIL }}
+          QA_TEST_USER_PASSWORD: ${{ secrets.QA_TEST_USER_PASSWORD }}
+          # Vercel SSO 우회 (preview URL)
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_PROTECTION_BYPASS_PLAN1 }}
+        run: npm run test:e2e:qa-gate
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.event.pull_request.number || github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+      - name: Comment PR result (success)
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const previewUrl = '${{ steps.deploy.outputs.preview_url }}';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ **Mutation E2E gate passed**\n\n- Preview: ${previewUrl}\n- Neon branch: \`pr-${context.issue.number}\`\n- SLA: warm < 3000ms / cold < 5000ms\n\n자세한 측정값은 워크플로우 로그의 \`[qa-gate] schedule_add_ms=...\` 라인 참조.`
+            });
+
+      - name: Comment PR result (failure)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `❌ **Mutation E2E gate failed**\n\n- Neon branch: \`pr-${context.issue.number}\`\n- Playwright report 확인: Actions → ${context.workflow} → 이번 run → Artifacts\n\n4/29 5초 latency 사고와 같은 회귀 패턴일 수 있음. instrument 박고 phase 진단 필요.`
+            });
+
+  cleanup:
+    name: Neon ephemeral branch cleanup
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Neon — delete branch
+        uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ secrets.NEON_PROJECT_ID }}
+          branch: pr-${{ github.event.pull_request.number }}
+          api_key: ${{ secrets.NEON_API_KEY }}

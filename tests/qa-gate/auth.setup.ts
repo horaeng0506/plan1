@@ -67,6 +67,34 @@ setup('authenticate qa-bot', async () => {
     secure: true,
     sameSite: 'Lax'
   });
+
+  // 3.5 preview URL 대상일 때 — cofounder.co.kr 도메인 cookie 가 plan1 Vercel preview host
+  //     (예: plan1-xxx.vercel.app) 에 자동 전송 안 됨. preview host 에도 cofounder_jwt + NEXT_LOCALE
+  //     cookie 명시 inject. plan1 verifySession 은 cofounder_jwt 만 사용 (better-auth.session_token 무관).
+  const previewBaseUrl =
+    process.env.PLAYWRIGHT_BASE_URL ?? 'https://cofounder.co.kr';
+  const previewHost = new URL(previewBaseUrl).hostname;
+  if (previewHost !== 'cofounder.co.kr' && !previewHost.endsWith('.cofounder.co.kr')) {
+    const jwtCookie = state.cookies.find(c => c.name === 'cofounder_jwt');
+    if (jwtCookie) {
+      state.cookies.push({
+        ...jwtCookie,
+        domain: previewHost,
+        sameSite: 'Lax'
+      });
+      state.cookies.push({
+        name: 'NEXT_LOCALE',
+        value: 'ko',
+        domain: previewHost,
+        path: '/',
+        expires: -1,
+        httpOnly: false,
+        secure: true,
+        sameSite: 'Lax'
+      });
+    }
+  }
+
   fs.mkdirSync(path.dirname(STORAGE_STATE_PATH), {recursive: true});
   fs.writeFileSync(STORAGE_STATE_PATH, JSON.stringify(state, null, 2));
   await ctx.dispose();

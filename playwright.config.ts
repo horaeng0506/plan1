@@ -38,7 +38,16 @@ export default defineConfig({
     navigationTimeout: 15_000,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
+    // Vercel Protection Bypass for Automation — preview URL (Vercel SSO 게이트) 우회.
+    // prod URL (cofounder.co.kr) 대상 시 secret 미설정 → 헤더 추가 안 함.
+    // x-vercel-set-bypass-cookie 는 후속 페이지 로드 (rewrites · redirects) 도 bypass 유지.
+    extraHTTPHeaders: process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+      ? {
+          'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+          'x-vercel-set-bypass-cookie': 'true'
+        }
+      : {}
   },
   projects: [
     {
