@@ -219,9 +219,11 @@ export async function createSchedule(input: {
   chainedToPrev?: boolean;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
+    const t0 = Date.now();
     const user = await requireUser();
-    // loadUserState 가 ownership SELECT + 3 SELECT loadState 를 1 batch (4 SELECT atomic)
+    const t1 = Date.now();
     const state = await loadUserState(user.id, input.categoryId);
+    const t2 = Date.now();
     const newSchedule: Schedule = {
       id: `sch-${randomUUID()}`,
       title: input.title,
@@ -237,8 +239,19 @@ export async function createSchedule(input: {
     const originals = state.schedules.filter(s => !s.splitFrom);
     const merged = [...originals, newSchedule];
     const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
+    const t3 = Date.now();
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, split);
+    const t4 = Date.now();
+    console.log('[plan1.createSchedule.phase4]', JSON.stringify({
+      auth_ms: t1 - t0,
+      ownerLoadStateBatch_ms: t2 - t1,
+      cascadeSplit_ms: t3 - t2,
+      syncBatch_ms: t4 - t3,
+      total_ms: t4 - t0,
+      scheduleCount: state.schedules.length,
+      splitCount: split.length
+    }));
     return split;
   });
 }
