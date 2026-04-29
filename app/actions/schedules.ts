@@ -14,6 +14,7 @@
 
 import {randomUUID} from 'node:crypto';
 import {and, eq, isNotNull} from 'drizzle-orm';
+import type {BatchItem} from 'drizzle-orm/batch';
 import {db} from '@/lib/db';
 import {plan1Categories, plan1Schedules, plan1WorkingHours, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
@@ -51,7 +52,9 @@ async function loadUserState(userId: string): Promise<{
   workingHours: Record<string, WorkingHours>;
   defaultWH: {startMin: number; endMin: number};
 }> {
-  const [scheduleRows, whRows, settingsRow] = await Promise.all([
+  // Track 1.5 fix (2026-04-29): Promise.all (3 RTT in HTTP driver) → db.batch (1 RTT atomic)
+  // neon-http 는 per-query HTTPS request — Promise.all 도 N RTT 누적. db.batch 로 1 request 안에 N query
+  const [scheduleRows, whRows, settingsRow] = await db.batch([
     db.select().from(plan1Schedules).where(eq(plan1Schedules.userId, userId)),
     db.select().from(plan1WorkingHours).where(eq(plan1WorkingHours.userId, userId)),
     db
@@ -82,53 +85,81 @@ async function loadUserState(userId: string): Promise<{
 
 /**
  * cascade·split 결과 schedule[] 을 DB 와 동기화.
- * 단순 패턴: 신규 = INSERT, 기존 = UPDATE, DB 에 있으나 결과에 없는 것 = DELETE.
- * transaction 으로 atomic 보장.
+ * 신규 = INSERT, 기존 = UPDATE → 통합 UPSERT. DB 에 있으나 결과에 없는 것 = DELETE.
+ *
+ * Track 1.5 fix (2026-04-29): db.transaction (sequential await loop · N round-trip)
+ *   → db.batch (1 round-trip atomic · rollback 보장)
+ *
+ * logic-critic [높] race fix (2026-04-29): existingIds (loadUserState batch1 시점 snapshot)
+ * 에 의존하던 INSERT/UPDATE 분기를 `INSERT ... ON CONFLICT (id) DO UPDATE` 통합 UPSERT 로
+ * 변경. 별도 connection 의 동시 mutation 으로 인한 (a) PK 충돌 (b) UPDATE no-op (c) DELETE
+ * no-op 시나리오 자동 해소. existingIds 매개변수 제거 — 호출자도 단순화.
+ *
+ * Neon HTTP `db.batch` atomicity 근거: `@neondatabase/serverless` 의
+ * `sql.transaction([queries])` 가 단일 HTTP request 안에 BEGIN/COMMIT 으로 wrap (single PG
+ * transaction · same MVCC snapshot · all-or-nothing rollback).
+ * https://neon.com/docs/serverless/serverless-driver § "Multiple queries with `transaction()`"
+ * https://orm.drizzle.team/docs/batch-api § "If any statement fails, the entire transaction rolls back."
  */
-async function syncSchedules(userId: string, next: Schedule[]): Promise<void> {
-  await db.transaction(async tx => {
-    const existing = await tx
-      .select({id: plan1Schedules.id})
-      .from(plan1Schedules)
-      .where(eq(plan1Schedules.userId, userId));
-    const existingIds = new Set(existing.map(r => r.id));
-    const nextIds = new Set(next.map(s => s.id));
+async function syncSchedules(
+  userId: string,
+  dbExistingIds: Set<string>,
+  next: Schedule[]
+): Promise<void> {
+  const nextIds = new Set(next.map(s => s.id));
+  const queries: BatchItem<'pg'>[] = [];
 
-    // DELETE
-    for (const id of Array.from(existingIds)) {
-      if (!nextIds.has(id)) {
-        await tx
+  // DELETE — DB 에 있으나 next 에 없는 row. 다른 connection 이 이미 지운 row 라도 silent no-op (안전)
+  for (const id of Array.from(dbExistingIds)) {
+    if (!nextIds.has(id)) {
+      queries.push(
+        db
           .delete(plan1Schedules)
-          .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, userId)));
-      }
+          .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, userId)))
+      );
     }
+  }
 
-    // UPSERT
-    for (const s of next) {
-      const values = {
-        id: s.id,
-        userId,
-        title: s.title,
-        categoryId: s.categoryId,
-        startAt: new Date(s.startAt),
-        durationMin: s.durationMin,
-        actualDurationMin: s.actualDurationMin ?? null,
-        timerType: s.timerType,
-        status: s.status,
-        splitFrom: s.splitFrom ?? null,
-        chainedToPrev: s.chainedToPrev ?? false,
-        updatedAt: new Date()
-      };
-      if (existingIds.has(s.id)) {
-        await tx
-          .update(plan1Schedules)
-          .set(values)
-          .where(and(eq(plan1Schedules.id, s.id), eq(plan1Schedules.userId, userId)));
-      } else {
-        await tx.insert(plan1Schedules).values(values);
-      }
-    }
-  });
+  // UPSERT (race-safe) — INSERT ... ON CONFLICT (id) DO UPDATE. PK 충돌 자동 해소
+  for (const s of next) {
+    const values = {
+      id: s.id,
+      userId,
+      title: s.title,
+      categoryId: s.categoryId,
+      startAt: new Date(s.startAt),
+      durationMin: s.durationMin,
+      actualDurationMin: s.actualDurationMin ?? null,
+      timerType: s.timerType,
+      status: s.status,
+      splitFrom: s.splitFrom ?? null,
+      chainedToPrev: s.chainedToPrev ?? false,
+      updatedAt: new Date()
+    };
+    queries.push(
+      db
+        .insert(plan1Schedules)
+        .values(values)
+        .onConflictDoUpdate({
+          target: plan1Schedules.id,
+          set: {
+            title: values.title,
+            categoryId: values.categoryId,
+            startAt: values.startAt,
+            durationMin: values.durationMin,
+            actualDurationMin: values.actualDurationMin,
+            timerType: values.timerType,
+            status: values.status,
+            splitFrom: values.splitFrom,
+            chainedToPrev: values.chainedToPrev,
+            updatedAt: values.updatedAt
+          }
+        })
+    );
+  }
+
+  if (queries.length === 0) return;
+  await db.batch(queries as [BatchItem<'pg'>, ...BatchItem<'pg'>[]]);
 }
 
 export async function listSchedules(): Promise<ServerActionResult<Schedule[]>> {
@@ -151,15 +182,10 @@ export async function createSchedule(input: {
   chainedToPrev?: boolean;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
-    // Track 1.5 진단 instrument (2026-04-29): 5초 latency phase 측정. 측정 후 제거 예정.
-    const t0 = Date.now();
     const user = await requireUser();
-    const t1 = Date.now();
     // security HIGH IDOR fix: 다른 user 의 categoryId 차단
     await assertCategoryOwnership(user.id, input.categoryId);
-    const t2 = Date.now();
     const state = await loadUserState(user.id);
-    const t3 = Date.now();
     const newSchedule: Schedule = {
       id: `sch-${randomUUID()}`,
       title: input.title,
@@ -176,19 +202,9 @@ export async function createSchedule(input: {
     const originals = state.schedules.filter(s => !s.splitFrom);
     const merged = [...originals, newSchedule];
     const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
-    const t4 = Date.now();
-    await syncSchedules(user.id, split);
-    const t5 = Date.now();
-    console.log('[plan1.createSchedule]', JSON.stringify({
-      auth_ms: t1 - t0,
-      ownership_ms: t2 - t1,
-      loadState_ms: t3 - t2,
-      cascadeSplit_ms: t4 - t3,
-      sync_ms: t5 - t4,
-      total_ms: t5 - t0,
-      scheduleCount: state.schedules.length,
-      splitCount: split.length
-    }));
+    // Track 1.5 fix: syncSchedules batch 화 — existing SELECT 제거 (loadUserState 결과 재사용)
+    const existingIds = new Set(state.schedules.map(s => s.id));
+    await syncSchedules(user.id, existingIds, split);
     return split;
   });
 }
@@ -203,17 +219,12 @@ export async function updateSchedule(input: {
   chainedToPrev?: boolean;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
-    // Track 1.5 진단 instrument (2026-04-29): 측정 후 제거 예정.
-    const t0 = Date.now();
     const user = await requireUser();
-    const t1 = Date.now();
     // security HIGH IDOR fix: patch 의 categoryId 가 다른 user 카테고리면 차단
     if (input.categoryId !== undefined) {
       await assertCategoryOwnership(user.id, input.categoryId);
     }
-    const t2 = Date.now();
     const state = await loadUserState(user.id);
-    const t3 = Date.now();
     const target = state.schedules.find(s => s.id === input.id);
     if (!target) throw new ServerActionError('serverError.scheduleNotFound');
 
@@ -241,19 +252,8 @@ export async function updateSchedule(input: {
 
     // split 가 deterministic ID 로 part 재생성 (idempotent — Critical #1).
     const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
-    const t4 = Date.now();
-    await syncSchedules(user.id, split);
-    const t5 = Date.now();
-    console.log('[plan1.updateSchedule]', JSON.stringify({
-      auth_ms: t1 - t0,
-      ownership_ms: t2 - t1,
-      loadState_ms: t3 - t2,
-      cascadeSplit_ms: t4 - t3,
-      sync_ms: t5 - t4,
-      total_ms: t5 - t0,
-      scheduleCount: state.schedules.length,
-      splitCount: split.length
-    }));
+    const existingIds = new Set(state.schedules.map(s => s.id));
+    await syncSchedules(user.id, existingIds, split);
     return split;
   });
 }
@@ -299,7 +299,8 @@ export async function completeSchedule(input: {
     );
 
     const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
-    await syncSchedules(user.id, split);
+    const existingIds = new Set(state.schedules.map(s => s.id));
+    await syncSchedules(user.id, existingIds, split);
     return split;
   });
 }
@@ -308,35 +309,33 @@ export async function completeSchedule(input: {
  * Stage 22: orphan split 자동 정리.
  * splitFrom 가 가리키는 원본이 schedules 에 없으면 그 part 삭제.
  * DB self-FK cascade 가 정상 경로에선 처리하지만, 외부 데이터 import·과거 fixture 잔존 시 안전망.
+ *
+ * Track 1.5 fix (2026-04-29): db.transaction → db.batch (atomic, rollback 보장)
  */
 export async function cleanOrphans(): Promise<ServerActionResult<void>> {
   return runAction(async () => {
     const user = await requireUser();
-    const orphanRows = await db
-      .select({id: plan1Schedules.id, splitFrom: plan1Schedules.splitFrom})
-      .from(plan1Schedules)
-      .where(and(eq(plan1Schedules.userId, user.id), isNotNull(plan1Schedules.splitFrom)));
-
+    const [orphanRows, allRows] = await db.batch([
+      db
+        .select({id: plan1Schedules.id, splitFrom: plan1Schedules.splitFrom})
+        .from(plan1Schedules)
+        .where(and(eq(plan1Schedules.userId, user.id), isNotNull(plan1Schedules.splitFrom))),
+      db
+        .select({id: plan1Schedules.id})
+        .from(plan1Schedules)
+        .where(eq(plan1Schedules.userId, user.id))
+    ]);
     if (orphanRows.length === 0) return;
 
-    const allIds = new Set(
-      (
-        await db
-          .select({id: plan1Schedules.id})
-          .from(plan1Schedules)
-          .where(eq(plan1Schedules.userId, user.id))
-      ).map(r => r.id)
-    );
-
+    const allIds = new Set(allRows.map(r => r.id));
     const toDelete = orphanRows.filter(r => r.splitFrom && !allIds.has(r.splitFrom)).map(r => r.id);
     if (toDelete.length === 0) return;
 
-    await db.transaction(async tx => {
-      for (const id of toDelete) {
-        await tx
-          .delete(plan1Schedules)
-          .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)));
-      }
-    });
+    const deleteQueries: BatchItem<'pg'>[] = toDelete.map(id =>
+      db
+        .delete(plan1Schedules)
+        .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)))
+    );
+    await db.batch(deleteQueries as [BatchItem<'pg'>, ...BatchItem<'pg'>[]]);
   });
 }

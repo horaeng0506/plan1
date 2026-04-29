@@ -12,6 +12,7 @@
 
 import {randomUUID} from 'node:crypto';
 import {and, eq, inArray} from 'drizzle-orm';
+import type {BatchItem} from 'drizzle-orm/batch';
 import {db} from '@/lib/db';
 import {plan1WorkingHours, plan1Schedules, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
@@ -41,7 +42,8 @@ function scheduleRowToDomain(row: typeof plan1Schedules.$inferSelect): Schedule 
 }
 
 async function applySplitForUser(userId: string): Promise<void> {
-  const [scheduleRows, whRows, settingsRow] = await Promise.all([
+  // Track 1.5 fix (2026-04-29): Promise.all → db.batch (1 RTT). transaction loop → db.batch (1 RTT atomic)
+  const [scheduleRows, whRows, settingsRow] = await db.batch([
     db.select().from(plan1Schedules).where(eq(plan1Schedules.userId, userId)),
     db.select().from(plan1WorkingHours).where(eq(plan1WorkingHours.userId, userId)),
     db.select().from(plan1Settings).where(eq(plan1Settings.userId, userId)).limit(1)
@@ -63,39 +65,56 @@ async function applySplitForUser(userId: string): Promise<void> {
   const beforeIds = new Set(before.map(s => s.id));
   const afterIds = new Set(after.map(s => s.id));
 
-  await db.transaction(async tx => {
-    for (const id of Array.from(beforeIds)) {
-      if (!afterIds.has(id)) {
-        await tx
+  const queries: BatchItem<'pg'>[] = [];
+  for (const id of Array.from(beforeIds)) {
+    if (!afterIds.has(id)) {
+      queries.push(
+        db
           .delete(plan1Schedules)
-          .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, userId)));
-      }
+          .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, userId)))
+      );
     }
-    for (const s of after) {
-      const values = {
-        id: s.id,
-        userId,
-        title: s.title,
-        categoryId: s.categoryId,
-        startAt: new Date(s.startAt),
-        durationMin: s.durationMin,
-        actualDurationMin: s.actualDurationMin ?? null,
-        timerType: s.timerType,
-        status: s.status,
-        splitFrom: s.splitFrom ?? null,
-        chainedToPrev: s.chainedToPrev ?? false,
-        updatedAt: new Date()
-      };
-      if (beforeIds.has(s.id)) {
-        await tx
-          .update(plan1Schedules)
-          .set(values)
-          .where(and(eq(plan1Schedules.id, s.id), eq(plan1Schedules.userId, userId)));
-      } else {
-        await tx.insert(plan1Schedules).values(values);
-      }
-    }
-  });
+  }
+  // logic-critic [높] race fix (2026-04-29): INSERT/UPDATE 분기 → ON CONFLICT (id) DO UPDATE.
+  // beforeIds (batch1 snapshot) 와 afterIds 차이로 분기하던 race 표면 제거.
+  for (const s of after) {
+    const values = {
+      id: s.id,
+      userId,
+      title: s.title,
+      categoryId: s.categoryId,
+      startAt: new Date(s.startAt),
+      durationMin: s.durationMin,
+      actualDurationMin: s.actualDurationMin ?? null,
+      timerType: s.timerType,
+      status: s.status,
+      splitFrom: s.splitFrom ?? null,
+      chainedToPrev: s.chainedToPrev ?? false,
+      updatedAt: new Date()
+    };
+    queries.push(
+      db
+        .insert(plan1Schedules)
+        .values(values)
+        .onConflictDoUpdate({
+          target: plan1Schedules.id,
+          set: {
+            title: values.title,
+            categoryId: values.categoryId,
+            startAt: values.startAt,
+            durationMin: values.durationMin,
+            actualDurationMin: values.actualDurationMin,
+            timerType: values.timerType,
+            status: values.status,
+            splitFrom: values.splitFrom,
+            chainedToPrev: values.chainedToPrev,
+            updatedAt: values.updatedAt
+          }
+        })
+    );
+  }
+  if (queries.length === 0) return;
+  await db.batch(queries as [BatchItem<'pg'>, ...BatchItem<'pg'>[]]);
 }
 
 export async function listWorkingHours(): Promise<ServerActionResult<WorkingHours[]>> {
@@ -169,25 +188,32 @@ export async function bulkSetWorkingHours(input: {
       .where(and(eq(plan1WorkingHours.userId, user.id), inArray(plan1WorkingHours.date, input.dates)));
     const existingDates = new Map(existing.map(r => [r.date, r.id]));
 
-    await db.transaction(async tx => {
-      for (const date of input.dates) {
-        const id = existingDates.get(date);
-        if (id) {
-          await tx
+    // Track 1.5 fix (2026-04-29): transaction loop → db.batch (1 RTT atomic)
+    const queries: BatchItem<'pg'>[] = [];
+    for (const date of input.dates) {
+      const id = existingDates.get(date);
+      if (id) {
+        queries.push(
+          db
             .update(plan1WorkingHours)
             .set({startMin: input.startMin, endMin: input.endMin, updatedAt: new Date()})
-            .where(eq(plan1WorkingHours.id, id));
-        } else {
-          await tx.insert(plan1WorkingHours).values({
+            .where(eq(plan1WorkingHours.id, id))
+        );
+      } else {
+        queries.push(
+          db.insert(plan1WorkingHours).values({
             id: `wh-${randomUUID()}`,
             userId: user.id,
             date,
             startMin: input.startMin,
             endMin: input.endMin
-          });
-        }
+          })
+        );
       }
-    });
+    }
+    if (queries.length > 0) {
+      await db.batch(queries as [BatchItem<'pg'>, ...BatchItem<'pg'>[]]);
+    }
     await applySplitForUser(user.id);
   });
 }
