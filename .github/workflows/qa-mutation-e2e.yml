@@ -1,6 +1,7 @@
 name: QA mutation E2E gate
 
 # Track 2 C-3 (2026-04-29) — PR 마다 격리된 환경에서 mutation E2E 자동 실행 + main push 회귀 검증.
+# 2026-04-30: 첫 PR 검증 트리거 (secrets 8개 등록 후) — Neon branch + Vercel preview + Playwright 통과 확인.
 # 옵션 C 채택: plan1 schema 만 Neon ephemeral branch · portal·router prod 그대로.
 # 근거: wiki/shared/saas-qa-gate-research-20260429.md § 5
 #
