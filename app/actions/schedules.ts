@@ -14,7 +14,6 @@
 
 import {randomUUID} from 'node:crypto';
 import {and, eq, isNotNull} from 'drizzle-orm';
-import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
 import {plan1Categories, plan1Schedules, plan1WorkingHours, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
@@ -173,7 +172,6 @@ export async function createSchedule(input: {
     const merged = [...originals, newSchedule];
     const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
     await syncSchedules(user.id, split);
-    revalidatePath('/');
     return split;
   });
 }
@@ -222,7 +220,6 @@ export async function updateSchedule(input: {
     // split 가 deterministic ID 로 part 재생성 (idempotent — Critical #1).
     const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
     await syncSchedules(user.id, split);
-    revalidatePath('/');
     return split;
   });
 }
@@ -235,7 +232,6 @@ export async function deleteSchedule(id: string): Promise<ServerActionResult<voi
     await db
       .delete(plan1Schedules)
       .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)));
-    revalidatePath('/');
   });
 }
 
@@ -270,7 +266,6 @@ export async function completeSchedule(input: {
 
     const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
     await syncSchedules(user.id, split);
-    revalidatePath('/');
     return split;
   });
 }
@@ -309,6 +304,5 @@ export async function cleanOrphans(): Promise<ServerActionResult<void>> {
           .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)));
       }
     });
-    revalidatePath('/');
   });
 }

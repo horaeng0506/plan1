@@ -15,7 +15,6 @@
  */
 
 import {and, eq} from 'drizzle-orm';
-import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
 import {plan1Schedules, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
@@ -100,7 +99,6 @@ export async function updateSettings(
       .set(dbPatch)
       .where(eq(plan1Settings.userId, user.id))
       .returning();
-    revalidatePath('/');
     return rowToDomain(updated);
   });
 }

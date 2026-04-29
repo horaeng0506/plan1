@@ -16,7 +16,6 @@
 
 import {randomUUID} from 'node:crypto';
 import {and, count, eq} from 'drizzle-orm';
-import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
 import {plan1Categories, plan1Schedules} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
@@ -81,7 +80,6 @@ export async function createCategory(
         color: input.color
       })
       .returning();
-    revalidatePath('/');
     return rowToDomain(row);
   });
 }
@@ -100,7 +98,6 @@ export async function updateCategory(
       .where(and(eq(plan1Categories.id, input.id), eq(plan1Categories.userId, user.id)))
       .returning();
     if (!row) throw new ServerActionError('serverError.categoryNotFound');
-    revalidatePath('/');
     return rowToDomain(row);
   });
 }
@@ -127,6 +124,5 @@ export async function deleteCategory(
     await db
       .delete(plan1Categories)
       .where(and(eq(plan1Categories.id, input.id), eq(plan1Categories.userId, user.id)));
-    revalidatePath('/');
   });
 }

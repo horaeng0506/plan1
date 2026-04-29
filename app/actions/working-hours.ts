@@ -12,7 +12,6 @@
 
 import {randomUUID} from 'node:crypto';
 import {and, eq, inArray} from 'drizzle-orm';
-import {revalidatePath} from 'next/cache';
 import {db} from '@/lib/db';
 import {plan1WorkingHours, plan1Schedules, plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
@@ -153,7 +152,6 @@ export async function setWorkingHours(input: {
       });
     }
     await applySplitForUser(user.id);
-    revalidatePath('/');
   });
 }
 
@@ -191,7 +189,6 @@ export async function bulkSetWorkingHours(input: {
       }
     });
     await applySplitForUser(user.id);
-    revalidatePath('/');
   });
 }
 
@@ -202,6 +199,5 @@ export async function deleteWorkingHours(date: string): Promise<ServerActionResu
       .delete(plan1WorkingHours)
       .where(and(eq(plan1WorkingHours.userId, user.id), eq(plan1WorkingHours.date, date)));
     await applySplitForUser(user.id);
-    revalidatePath('/');
   });
 }
