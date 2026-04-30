@@ -1,3 +1,4 @@
+import {withSentryConfig} from '@sentry/nextjs';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
@@ -84,4 +85,16 @@ const nextConfig = {
   }
 };
 
-export default withNextIntl(nextConfig);
+// Phase 1 S3 (2026-04-30): Sentry 통합 — DSN 미설정 시 SDK no-op (대장 sentry.io 가입·DSN 발급 전 안전).
+// org/project/authToken 미설정 시 source map upload skip (조용히 빌드 통과).
+// 근거: wiki/shared/qa-strategy-research-20260430.md § Phase 1.1
+export default withSentryConfig(withNextIntl(nextConfig), {
+  silent: !process.env.CI,
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  widenClientFileUpload: true,
+  disableLogger: true,
+  automaticVercelMonitors: false,
+  // tunnel 우회 (ad-blocker 회피) 는 별도 PR (rewrites 충돌 검증 필요)
+  tunnelRoute: undefined
+});
