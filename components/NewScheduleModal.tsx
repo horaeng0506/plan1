@@ -371,6 +371,7 @@ export function NewScheduleModal({
                 value={durationMin}
                 onChange={e => setDurationMin(Math.max(0, Number(e.target.value) || 0))}
                 className={fieldCls}
+                aria-label={t('schedule.fieldDuration')}
               />
               <div className="mt-2 flex flex-wrap gap-1">
                 <button type="button" onClick={() => bumpDuration(-30)} className={adjustBtn}>
