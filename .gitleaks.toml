@@ -1,0 +1,17 @@
+# gitleaks config — Phase 1 S4 (2026-04-30)
+#
+# dev repo 공통 allowlist (i18n · lock · test fixture).
+# 근거: wiki/shared/qa-strategy-research-20260430.md § Phase 1.2
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "false positive 제외 (i18n · lock · test fixture · qa-gate setup)"
+paths = [
+  '''messages/.*\.json''',
+  '''package-lock\.json''',
+  '''.*\.test\.(ts|tsx|js)''',
+  '''.*\.spec\.(ts|tsx|js)''',
+  '''tests/qa-gate/.*''',
+]
