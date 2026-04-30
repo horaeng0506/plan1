@@ -23,6 +23,7 @@
     "@fullcalendar/react": "^6.1.20",
     "@fullcalendar/timegrid": "^6.1.20",
     "@neondatabase/serverless": "^1.1.0",
+    "@sentry/nextjs": "^10.51.0",
     "@vercel/functions": "^3.4.4",
     "d3-shape": "^3.2.0",
     "drizzle-orm": "^0.45.2",
