@@ -1,0 +1,37 @@
+# Semgrep OSS SAST — Phase 1 S2 (2026-04-30)
+#
+# 근거: wiki/shared/qa-strategy-research-20260430.md § Phase 1.4
+# 정책:
+#   - PR 마다 + 주 1회 schedule scan (push: main 트리거 일단 제외 — Phase 1 안정화 후 추가)
+#   - --severity ERROR --error: ERROR 레벨만 fail. WARNING/INFO 는 출력만 (baseline)
+#   - --config auto: 언어 자동 감지 + 적합 ruleset (Next.js · React · TypeScript · 보안)
+#   - SEMGREP_APP_TOKEN 없음 (OSS 모드)
+
+name: Semgrep OSS
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * 0'  # 매주 일요일 00:00 UTC (월요일 09:00 KST)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: semgrep-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  semgrep:
+    name: Scan (OSS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: semgrep/semgrep
+    if: (github.actor != 'dependabot[bot]')
+    steps:
+      - uses: actions/checkout@v5
+      - name: Semgrep scan
+        run: semgrep scan --config auto --severity ERROR --error
