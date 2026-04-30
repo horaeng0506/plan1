@@ -1,0 +1,10 @@
+# pre-commit framework — Phase 1 S4 (2026-04-30)
+#
+# 근거: wiki/shared/qa-strategy-research-20260430.md § Phase 1.2
+# cookie-cutter: wiki-root + 4 dev repo 동일 패턴
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
