@@ -42,7 +42,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.10",
-    "eslint": "^9.0.0",
+    "eslint": "^10.2.1",
     "eslint-config-next": "16.2.4",
     "i18n-ai-translate": "^4.1.2",
     "postcss": "^8",
