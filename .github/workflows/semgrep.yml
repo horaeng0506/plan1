@@ -32,6 +32,6 @@ jobs:
       image: semgrep/semgrep
     if: (github.actor != 'dependabot[bot]')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Semgrep scan
         run: semgrep scan --config auto --severity ERROR --error
