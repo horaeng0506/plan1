@@ -17,12 +17,7 @@
 import {randomUUID} from 'node:crypto';
 import {and, count, eq} from 'drizzle-orm';
 import {db} from '@/lib/db';
-import {
-  plan1Categories,
-  plan1Schedules,
-  createCategoryInputSchema,
-  updateCategoryInputSchema
-} from '@/lib/db/schema';
+import {plan1Categories, plan1Schedules} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
 import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
 import type {Category} from '@/lib/domain/types';
@@ -74,12 +69,10 @@ export async function createCategory(
   input: {name: string; color: string}
 ): Promise<ServerActionResult<Category>> {
   return runAction(async () => {
-    // Phase 1 S5.1 (2026-05-01): drizzle-zod boundary 런타임 검증.
-    // - 시그니처 type 은 backward-compat 유지 (caller store.ts 영향 X)
-    // - zod 가 런타임 가드 — 클라이언트가 type 우회해도 schema 의 .extend
-    //   (name min/max · color hex regex) 가 catch
-    // - parse 실패 시 ZodError throw → runAction 이 ServerActionError 로 변환
-    const validated = createCategoryInputSchema.parse(input);
+    // Phase 1 S5.1 sample 적용 보류 (2026-05-01): zod parse 가 client input
+    // 거부 추정 (정확 원인 미확정 · drizzle-zod refinement function syntax 또는
+    // categoryInsertSchema 의 자동 require 컬럼 mismatch). schema 정의는
+    // lib/db/schema.ts 에 박아두고 server action 적용은 다음 세션 본격 마이그.
     const user = await requireUser();
     const id = `cat-${randomUUID()}`;
     const [row] = await db
@@ -87,8 +80,8 @@ export async function createCategory(
       .values({
         id,
         userId: user.id,
-        name: validated.name.trim(),
-        color: validated.color
+        name: input.name.trim(),
+        color: input.color
       })
       .returning();
     return rowToDomain(row);
