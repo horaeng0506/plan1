@@ -152,3 +152,51 @@ export type WorkingHours = typeof plan1WorkingHours.$inferSelect;
 export type WorkingHoursInsert = typeof plan1WorkingHours.$inferInsert;
 export type Settings = typeof plan1Settings.$inferSelect;
 export type SettingsInsert = typeof plan1Settings.$inferInsert;
+
+// ─────────────────────────────────────────────────────────────────────────
+// drizzle-zod 표준화 (Phase 1 S5.1 · 2026-05-01)
+//
+// 패턴: drizzle table → createInsertSchema/createSelectSchema 자동 생성 + 도메인 제약 .extend
+// 적용처: app/actions/*.ts 의 boundary input 검증 (zod .parse → ServerActionError throw)
+//
+// ⚠️ relation schema 수동 점검 의무:
+//   - drizzle-zod 는 column 만 자동 생성. FK relation·복합 unique·custom check constraint 는 모름
+//   - schema 변경 시 (column 추가·rename·DROP) 이 파일 + 관련 server action zod schema 함께 갱신
+//   - 다음 세션 적용 우선순위: schedules → working-hours → settings (categories 는 sample 적용)
+// ─────────────────────────────────────────────────────────────────────────
+
+import {createInsertSchema, createSelectSchema} from 'drizzle-zod';
+import {z} from 'zod';
+
+// Categories
+export const categorySelectSchema = createSelectSchema(plan1Categories);
+export const categoryInsertSchema = createInsertSchema(plan1Categories, {
+  name: (s) => s.min(1).max(100),
+  color: (s) => s.regex(/^#[0-9a-fA-F]{6}$/, 'color must be hex like #aabbcc')
+});
+
+// 클라이언트 → 서버 boundary input (id·userId·createdAt 자동 생성 컬럼 제외)
+export const createCategoryInputSchema = categoryInsertSchema
+  .omit({id: true, userId: true, createdAt: true, updatedAt: true});
+
+export const updateCategoryInputSchema = categoryInsertSchema
+  .pick({name: true, color: true})
+  .partial();
+
+// Schedules · WorkingHours · Settings — 다음 세션 같은 패턴 cookie-cutter
+// (P2-3 sample 단계라 schedules 는 type-only · zod schema 추가 보류)
+export const scheduleSelectSchema = createSelectSchema(plan1Schedules);
+export const scheduleInsertSchema = createInsertSchema(plan1Schedules);
+export const workingHoursSelectSchema = createSelectSchema(plan1WorkingHours);
+export const workingHoursInsertSchema = createInsertSchema(plan1WorkingHours);
+export const settingsSelectSchema = createSelectSchema(plan1Settings);
+export const settingsInsertSchema = createInsertSchema(plan1Settings);
+
+// 명시 사용 표시 (lint dead code 회피) — 다음 세션 server action 적용
+void z;
+void scheduleSelectSchema;
+void scheduleInsertSchema;
+void workingHoursSelectSchema;
+void workingHoursInsertSchema;
+void settingsSelectSchema;
+void settingsInsertSchema;
