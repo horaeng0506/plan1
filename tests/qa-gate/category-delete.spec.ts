@@ -6,9 +6,15 @@ import {test, expect, Page} from '@playwright/test';
  * 시나리오 (PICT model `category-delete.txt` happy path · no_schedule case):
  *   - 카테고리 모달 진입
  *   - 카테고리 1개 추가
- *   - 같은 카테고리 삭제 버튼 1차 클릭 (armed → "confirm rm (0)" 라벨 변경)
- *   - 2차 클릭 → 실제 삭제 mutation → SLA (warm < 3000ms)
+ *   - 같은 카테고리 삭제 버튼 1차 클릭 → **즉시 삭제 mutation** (CategoryManager.handleRemove
+ *     의 count === 0 분기 = armed 단계 skip · 정공 동작) → SLA (warm < 3000ms)
  *   - 카테고리 list 에서 사라진 것 확인
+ *
+ * 첫 시도 정직성 (2026-05-02):
+ *   - 1차 시도 가정 ("always armed → confirm 2차 클릭") = 환각.
+ *     CategoryManager.handleRemove 실측: scheduleCountByCat===0 이면 1차 즉시 삭제,
+ *     >0 이면 armed→confirm 2단계. PICT model no_schedule case 는 1차 즉시 삭제 정확.
+ *   - armed 단계 검증은 별도 spec (one_schedule 또는 many_schedules_50 case · 후속 PR).
  *
  * 4/29 사고 catch 차이:
  *   - schedule-add: createSchedule mutation
@@ -52,21 +58,18 @@ test.describe('plan1 mutation E2E — A7 카테고리 삭제', () => {
     await cat.dialog.getByRole('button', {name: '추가', exact: true}).click();
     await expect(cat.dialog.getByText(catName)).toBeVisible({timeout: SLA_COLD_MS});
 
-    // 3. 삭제 버튼 1차 클릭 (armed)
-    //    catName 이 포함된 li 행 안의 button (name=/rm/) 찾기
+    // 3. 삭제 버튼 측정: 1차 클릭 = 즉시 삭제 mutation (no_schedule case)
+    //    catName 이 포함된 li 행 안의 button (name="rm") 찾기
     //    i18n category.removeButton = "rm"
+    //    CategoryManager.handleRemove 의 count===0 분기 = armed 단계 skip · 1차 즉시 삭제
     const row = cat.dialog.locator('li').filter({hasText: catName});
     await expect(row).toBeVisible({timeout: 3_000});
-    await row.getByRole('button', {name: 'rm', exact: true}).click();
+    const rmBtn = row.getByRole('button', {name: 'rm', exact: true});
+    await expect(rmBtn).toBeVisible({timeout: 3_000});
 
-    // 4. armed 상태 — 라벨이 "confirm rm (0)" 으로 변경 (사용 schedule 0건)
-    //    i18n category.confirmRemoveLabel = "confirm rm ({count})"
-    const confirmBtn = row.getByRole('button', {name: /^confirm rm/});
-    await expect(confirmBtn).toBeVisible({timeout: 3_000});
-
-    // 5. 측정: 2차 클릭 → mutation 응답 → list 에서 사라짐
+    // 4. 측정: 1차 click → mutation 응답 → list 에서 사라짐
     const startMs = Date.now();
-    await confirmBtn.click();
+    await rmBtn.click();
     await expect(cat.dialog.getByText(catName)).toHaveCount(0, {
       timeout: SLA_COLD_MS + 2_000,
     });
