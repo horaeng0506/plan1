@@ -57,7 +57,8 @@ test.describe('plan1 mutation E2E — A10 instant-complete (High · cascade 영�
     const sched = dialogOf(page, '새 스케줄');
     await expect(sched.heading).toBeVisible({timeout: 5_000});
     await sched.dialog.getByRole('textbox').first().fill(title);
-    await sched.dialog.getByRole('button', {name: '지금', exact: true}).click();
+    // i18n schedule.buttonNow = "now (시작을 지금으로)" — regex 로 i18n 변경 catch
+    await sched.dialog.getByRole('button', {name: /^now/}).click();
     await sched.dialog.locator('input[type="number"]').fill('60');
     await sched.dialog.getByRole('button', {name: '추가', exact: true}).click();
     await expect(sched.heading).toBeHidden({timeout: SLA_COLD_MS + 2_000});

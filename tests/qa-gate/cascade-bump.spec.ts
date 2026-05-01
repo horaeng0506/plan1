@@ -73,10 +73,10 @@ test.describe('plan1 mutation E2E — A9 cascade-bump (Critical · 4/29 영역)'
     await expect(sched.heading).toBeVisible({timeout: 5_000});
     await sched.dialog.getByRole('textbox').first().fill(title);
 
-    // 3. "지금" 버튼 클릭 — date=오늘, hour·minute=현재 시각 자동 set
+    // 3. "now" 버튼 클릭 — date=오늘, hour·minute=현재 시각 자동 set
     //    minuteOptions useMemo 가 표준 boundary 외 분 dynamic 추가 → isFuture 통과
-    //    i18n schedule.buttonNow = "지금"
-    await sched.dialog.getByRole('button', {name: '지금', exact: true}).click();
+    //    i18n schedule.buttonNow = "now (시작을 지금으로)" — regex 로 i18n 변경 catch
+    await sched.dialog.getByRole('button', {name: /^now/}).click();
 
     // 4. duration 60min 입력 (단일 input[type=number] · ActiveTimer 윈도우 충분히 길게)
     await sched.dialog.locator('input[type="number"]').fill('60');
