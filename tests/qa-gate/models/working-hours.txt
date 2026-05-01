@@ -1,0 +1,25 @@
+# plan1 — A11 working hours 설정 (split 재계산 발동)
+# RPN 40 Medium · t-way 2
+# Updated: 2026-05-02
+
+# === 입력 변수 ===
+
+DateRange:           today_only, week, month, year_far_future
+StartHour:           boundary_0, normal_9, normal_22, boundary_23
+EndHour:             boundary_0, normal_18, normal_22, boundary_23
+ExistingSchedules:   none, all_within, all_outside, mixed
+SplitNeeded:         no_split, single_split, multi_split
+
+# === Constraints ===
+
+# end < start = invalid (단 boundary 23 → 0 같은 자정 wrap 은 의도된 케이스)
+IF [StartHour] = "normal_22" AND [EndHour] = "normal_18" THEN [DateRange] = "today_only";
+
+# none schedules → split 의미 없음
+IF [ExistingSchedules] = "none" THEN [SplitNeeded] = "no_split";
+
+# all_outside → split 항상 발생
+IF [ExistingSchedules] = "all_outside" THEN [SplitNeeded] IN {"single_split", "multi_split"};
+
+# all_within → split 발생 안 함
+IF [ExistingSchedules] = "all_within" THEN [SplitNeeded] = "no_split";

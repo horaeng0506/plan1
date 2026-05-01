@@ -1,0 +1,15 @@
+# plan1 — A7 카테고리 삭제 (사용 중 schedule 처리 · cascade 영향)
+# RPN 32 Medium · t-way 2
+# Updated: 2026-05-02
+
+# === 입력 변수 ===
+
+CategoryUsage:    no_schedule, one_schedule, many_schedules_50
+HasOtherCats:     yes, no
+SelectedDuringDelete: yes, no
+NetworkState:     online, offline
+
+# === Constraints ===
+
+# no_schedule + selected_during_delete = 의미 없음 (선택할 schedule 없음)
+IF [CategoryUsage] = "no_schedule" THEN [SelectedDuringDelete] = "no";

@@ -1,0 +1,18 @@
+# plan1 — A1 로그인 (Better Auth → portal SSO via JWT)
+# RPN 60 High · t-way 2
+# Updated: 2026-05-02
+
+# === 입력 변수 ===
+
+SessionState:      none, valid, expired, tampered_jwt
+PortalSession:     active, missing, different_user
+Locale:            ko, en, de, ja, ar
+RedirectTarget:    root, deep_link, malicious_external
+
+# === Constraints ===
+
+# tampered_jwt + valid portal session = 보안 시나리오 (강제 부정합)
+IF [SessionState] = "tampered_jwt" THEN [PortalSession] IN {"missing", "different_user"};
+
+# malicious_external redirect = 무조건 차단 의무 (다른 변수 무관)
+# (constraint 없이 그대로 두기 — 모든 조합에서 차단 검증)

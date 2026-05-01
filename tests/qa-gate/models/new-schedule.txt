@@ -1,0 +1,31 @@
+# plan1 — A3 새 스케줄 추가 모달 (NewScheduleModal · createSchedule)
+# RPN 60 High · t-way 2 (pairwise)
+# Updated: 2026-05-02
+
+# === 입력 변수 (Equivalence Partitioning + Boundary Value Analysis) ===
+
+Title:           empty, one_char, max_200, over_201, unicode_emoji, xss_attempt
+Category:        none, valid_existing, just_deleted, missing_id
+StartDate:       past_invalid, today, tomorrow, far_future_1y
+StartHour:       boundary_0, normal_9, normal_12, boundary_23
+StartMinute:     0, 10, 30, 50
+DurationMin:     invalid_zero, one, sixty, max_1440, invalid_over
+ChainedToPrev:   true, false
+HasPriorSched:   true, false
+WorkingHoursDef: defined_today, undefined
+NetworkState:    online, offline, slow_3g
+
+# === Constraints ===
+
+# past_invalid + 큰 입력 동시 입력 = 두 invalid 가 뭉치면 메시지가 가려짐. 분리 케이스 의무
+IF [StartDate] = "past_invalid" THEN [Title] <> "max_200";
+
+# duration invalid + chained 동시 발동 시 chained 검증 분리 안 됨. 단순화
+IF [DurationMin] IN {"invalid_zero", "invalid_over"} THEN [ChainedToPrev] = "false";
+
+# 카테고리 just_deleted + chained = 직전 스케줄 의존 — 두 invalid 분리
+IF [Category] = "just_deleted" THEN [ChainedToPrev] = "false";
+
+# === 실행 옵션 ===
+# 기본 2-way 환원 (default): pict new-schedule.txt
+# 핵심 입력 (Title × Category × StartDate × StartHour × DurationMin) 자동 pairwise 포함

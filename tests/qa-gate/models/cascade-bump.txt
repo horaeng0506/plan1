@@ -1,0 +1,25 @@
+# plan1 — A9 타이머 bump (cascade 발동) — Critical RPN 80
+# 4/29 5초 latency 사고 직접 영역 (multi-param 결함 catch 강도 ↑)
+# t-way 3 (3-way · NIST Server 영역 89% catch)
+# Updated: 2026-05-02
+
+# === 입력 변수 (4/29 사고 chain 핵심 차원 모두 포함) ===
+
+BumpDelta:        minus_30, minus_10, plus_10, plus_30
+ChainedToPrev:    true, false
+HasNextSchedule:  yes_chained, yes_unchained, none
+ScheduleCount:    n_1, n_10, n_50, n_100
+GapToNext:        less_than_30min, exactly_30min, more_than_30min
+NetworkLatency:   warm_under_500ms, cold_over_2s, slow_3g
+
+# === Constraints ===
+
+# none next + chainedToPrev=true = 의미 없음
+IF [HasNextSchedule] = "none" THEN [ChainedToPrev] = "false";
+
+# slow_3g + n_100 = SLA 측정 의미 없음 (네트워크 자체 병목)
+IF [NetworkLatency] = "slow_3g" THEN [ScheduleCount] IN {"n_1", "n_10"};
+
+# === 실행 옵션 ===
+# 전체 3-way 환원: pict cascade-bump.txt /o:3
+# 4/29 사고 chain (ScheduleCount × NetworkLatency × BumpDelta) 자동 포함
