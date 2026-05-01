@@ -1,0 +1,16 @@
+# plan1 — A10 즉시 완료 (! complete · cascade 발동)
+# RPN 64 High · t-way 2
+# Updated: 2026-05-02
+
+# === 입력 변수 ===
+
+CompletedAt:        before_start, during, after_end, far_after_1d
+HasNextChain:       yes_short_chain, yes_long_chain_5, yes_long_chain_20, no
+RemainingDuration:  positive, zero, negative
+WorkingHoursState:  within, after_close, weekend
+NetworkState:       online, offline
+
+# === Constraints ===
+
+# completed before_start + remaining negative = 의미 없음
+IF [CompletedAt] = "before_start" THEN [RemainingDuration] = "positive";

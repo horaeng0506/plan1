@@ -1,0 +1,21 @@
+# plan1 — A4 스케줄 편집 (NewScheduleModal edit mode · updateSchedule)
+# RPN 48 Medium · t-way 2
+# Updated: 2026-05-02
+
+# === 입력 변수 (편집 시 cascade 발동 가능) ===
+
+FieldChanged:      title_only, category_only, time_only, duration_only, chained_only, multi
+NewDurationDelta:  shrink, same, grow_within_chain, grow_break_chain
+ChainedToPrev:     true, false
+HasNextChain:      yes, no
+NetworkState:      online, offline
+
+# === Constraints ===
+
+# title_only / category_only = duration_delta 의미 없음 → same 으로 고정
+IF [FieldChanged] IN {"title_only", "category_only"} THEN [NewDurationDelta] = "same";
+
+# chained_only 변경 = duration delta 무관
+IF [FieldChanged] = "chained_only" THEN [NewDurationDelta] = "same";
+
+# offline + grow_break_chain = optimistic update 충돌 시나리오 (그대로 catch 대상)
