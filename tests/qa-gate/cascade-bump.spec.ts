@@ -51,7 +51,14 @@ test.describe('plan1 mutation E2E — A9 cascade-bump (Critical · 4/29 영역)'
     const title = `qa-bump-${Date.now()}`;
     const catName = `cat-bump-${Date.now()}`;
 
-    // 0. 진입
+    // 0. 진입 + clock fake (분 boundary race 회피)
+    //    1차 시도: clock fake 불요 (NewScheduleModal "now" 버튼 충분) — 환각
+    //    2차 실측: "now" click ~ "추가" click 사이 분 boundary 넘어가면 isFuture false →
+    //              startAt 이 1분 과거 → 추가 button disabled 또는 schedule active 윈도우 진입 실패
+    //    → page.clock.install 로 시간 freeze (분 boundary 0초) — 정공
+    const fixedTime = new Date();
+    fixedTime.setSeconds(0, 0);
+    await page.clock.install({time: fixedTime});
     await page.goto('/project/plan1/');
 
     // 1. 카테고리 보장
