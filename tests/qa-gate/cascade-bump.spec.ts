@@ -53,13 +53,17 @@ test.describe('plan1 mutation E2E — A9 cascade-bump (Critical · 4/29 영역)'
 
     // 0. 진입 + clock fake (분 boundary race 회피)
     //    1차 시도: clock fake 불요 (NewScheduleModal "now" 버튼 충분) — 환각
-    //    2차 실측: "now" click ~ "추가" click 사이 분 boundary 넘어가면 isFuture false →
-    //              startAt 이 1분 과거 → 추가 button disabled 또는 schedule active 윈도우 진입 실패
-    //    → page.clock.install 로 시간 freeze (분 boundary 0초) — 정공
+    //    2차 실측: "now" click ~ "추가" click 사이 분 boundary 넘어가면 isFuture false → 추가 disabled
+    //    3차 fix: page.clock.install 으로 시간 freeze (분 boundary 0초)
+    //    4차 root cause (trace.zip 분석): clock.install 의 default 가 freeze → setInterval stop
+    //      → useNow (useSyncExternalStore subscribeNow) 의 1초 interval fire X → notify X
+    //      → SSR snapshot 0 → ActiveTimer idle 표시 → +30m 버튼 visible X (PR #20 1·2·3차 fail root cause)
+    //    Fix: clock 2초 fastForward → setInterval 첫 fire → notify → re-render → active 인식
     const fixedTime = new Date();
     fixedTime.setSeconds(0, 0);
     await page.clock.install({time: fixedTime});
     await page.goto('/project/plan1/');
+    await page.clock.fastForward(2000);
 
     // 1. 카테고리 보장
     await page.getByRole('button', {name: '카테고리'}).click();

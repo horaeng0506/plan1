@@ -37,10 +37,14 @@ test.describe('plan1 mutation E2E — A10 instant-complete (High · cascade 영�
     const catName = `cat-cmp-${Date.now()}`;
 
     // 0. 진입 + clock fake (분 boundary race 회피 — cascade-bump.spec.ts 와 동일 패턴)
+    //    4차 root cause (trace.zip 분석): clock.install default freeze → setInterval stop
+    //      → useNow notify X → SSR snapshot 0 → ActiveTimer idle → complete 버튼 visible X
+    //    Fix: clock 2초 fastForward → setInterval 첫 fire → re-render → active 인식
     const fixedTime = new Date();
     fixedTime.setSeconds(0, 0);
     await page.clock.install({time: fixedTime});
     await page.goto('/project/plan1/');
+    await page.clock.fastForward(2000);
 
     // 1. 카테고리 보장
     await page.getByRole('button', {name: '카테고리'}).click();
