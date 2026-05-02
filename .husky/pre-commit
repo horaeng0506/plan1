@@ -1,1 +1,7 @@
-npm test
+#!/usr/bin/env sh
+# pre-commit hook — TIA staged files
+# wiki/shared/qa-meta-policy.md § 7 우리 환경 종합 흐름
+#   git commit → husky pre-commit
+#                → lint-staged (staged 파일만 — typecheck + lint + vitest --related)
+
+npx lint-staged
