@@ -1,0 +1,11 @@
+{
+  "*.{ts,tsx}": [
+    "eslint --fix --max-warnings 0"
+  ],
+  "*.{js,mjs,cjs}": [
+    "eslint --fix --max-warnings 0"
+  ],
+  "messages/*.json": [
+    "vitest run --related lib/i18n-catalog.test.ts"
+  ]
+}

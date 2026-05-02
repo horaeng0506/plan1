@@ -31,6 +31,16 @@ export default defineConfig({
       'tests/e2e/**',
       'reports/**',
     ],
+    // TIA (Test Impact Analysis · qa-meta-policy.md § 6) — `vitest --related <files>` 시
+    // import graph 추적 + 아래 파일 변경 시 보수적 전체 재실행 (TIA false negative 가드)
+    forceRerunTriggers: [
+      '**/package.json',
+      '**/vitest.config.*',
+      '**/tsconfig.json',
+      '**/messages/**.json',  // i18n 변경 광범위 영향
+      '**/lib/db/schema.ts',  // schema 변경 cascade
+      '**/lib/domain/types.ts',  // type 변경 cascade
+    ],
     // PBT 1000 runs 안전 마진 — fast-check property 가 평균 100ms/run
     testTimeout: 60_000,
     hookTimeout: 30_000,
