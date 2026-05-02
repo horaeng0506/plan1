@@ -1,7 +1,11 @@
 import {test, expect, Page} from '@playwright/test';
 
 /**
- * plan1 mutation E2E gate (Track 2 C-2.5 · 2026-04-29).
+ * plan1 mutation E2E gate — A3 schedule 추가 (Track 2 C-2.5 · 2026-04-29).
+ *
+ * 2026-05-02 rename: mutation-e2e.spec.ts → schedule-add.spec.ts
+ *   다른 spec (schedule-edit · category-delete · working-hours · cascade-bump · instant-complete)
+ *   머지 후 명칭 일관성 위해. 일반 "mutation-e2e" 명칭 중복 회피.
  *
  * 시나리오: schedule 추가 → 모달 닫힘 → 응답 시간 SLA.
  *
@@ -34,7 +38,7 @@ function dialogOf(page: Page, headingName: string | RegExp) {
   return {heading, dialog};
 }
 
-test.describe('plan1 mutation E2E', () => {
+test.describe('plan1 mutation E2E — A3 schedule 추가', () => {
   test('schedule 추가 → 응답 SLA + cleanup', async ({page}) => {
     const title = `qa-bot-${Date.now()}`;
     const catName = `cat-${Date.now()}`;
