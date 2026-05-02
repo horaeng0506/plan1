@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+# pre-push hook — TIA changed-since-main + smoke E2E
+# wiki/shared/qa-meta-policy.md § 7 우리 환경 종합 흐름
+#   git push → husky pre-push
+#              → vitest --changed origin/main (10 sec)
+#              → smoke E2E (90 sec · @smoke tag)
+
+# 단위 + 통합 (변경 파일 영향만)
+npx vitest run --changed origin/main || {
+  echo "[pre-push] vitest --changed FAIL — push 차단"
+  exit 1
+}
+
+# smoke E2E 는 prod DB · qa-bot 의존이라 pre-push 마다 실행 시 rate limit 위험
+# → CI 에서만 (.github/workflows/qa-mutation-e2e.yml). 본 hook 에선 vitest 만.
+echo "[pre-push] vitest --changed PASS · smoke E2E 는 CI 에서 자동 실행"
