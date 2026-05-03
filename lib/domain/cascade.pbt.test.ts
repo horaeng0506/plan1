@@ -74,6 +74,11 @@ describe('cascade — Property-Based Testing (1000 runs · invariants)', () => {
   })
 
   it('invariant 3: chainedToPrev=false 첫 발견 후 chain 끊김 (그 이후 schedule 들은 shift 안 됨)', () => {
+    // ⚠️ 검증 시점 주의: cascade 는 **shift 전 mutated 의 active sort** 로 chain 판정.
+    //   shift 후 startAt 변경으로 result sort 결과가 다를 수 있음 (특히 동일 startAt 의 schedule 이 stable sort 결과 mutated 와 result 에서 다른 위치).
+    //   → spec 도 mutated (shift 전) sort 기준으로 chain 판정 의무. result sort 기준 검증은 false positive 발생.
+    //   배경: F4 회귀 (PR fix/plan1-cascade-pbt-invariant3-spec-logic · 2026-05-03)
+    //         counter-example: 3 schedule 모두 startAt=0, target chained=false, s-1 chained=true, s-2 chained=false
     fc.assert(
       fc.property(arbSchedules(10), fc.integer({ min: -120, max: 120 }), (schedules, deltaMin) => {
         const target = schedules[0]
@@ -81,25 +86,56 @@ describe('cascade — Property-Based Testing (1000 runs · invariants)', () => {
         const newDur = target.durationMin + deltaMin
         if (newDur < 1) return
 
+        const origEnd = target.startAt + target.durationMin * NS
+        const newEnd = newStart + newDur * NS
+        const delta = newEnd - origEnd
+
         const result = cascade(schedules, target.id, newStart, newDur)
 
-        // active 만 정렬 (cascade 의 동일 로직)
-        const active = result.filter(s => s.status !== 'done').sort((a, b) => a.startAt - b.startAt)
-        const editedIdx = active.findIndex(s => s.id === target.id)
+        // mutated (shift 전) 의 active sort — cascade source 와 동일 로직
+        const mutated = schedules.map(s =>
+          s.id === target.id ? { ...s, startAt: newStart, durationMin: newDur } : s
+        )
+        const mutatedActive = mutated
+          .filter(s => s.status !== 'done')
+          .sort((a, b) => a.startAt - b.startAt)
+        const editedIdx = mutatedActive.findIndex(s => s.id === target.id)
         if (editedIdx === -1) return
 
-        // 첫 unchained schedule 이후의 모든 schedule 은 원본과 startAt 동일해야 함
+        // editedIdx+1 부터 첫 unchained 직전까지: shifted (startAt = original + delta)
+        // 첫 unchained 부터 끝까지: unshifted (startAt = original)
         let chainBroken = false
-        for (let i = editedIdx + 1; i < active.length; i++) {
-          if (!active[i].chainedToPrev) chainBroken = true
+        for (let i = editedIdx + 1; i < mutatedActive.length; i++) {
+          if (!mutatedActive[i].chainedToPrev) chainBroken = true
+          const original = schedules.find(s => s.id === mutatedActive[i].id)!
+          const after = result.find(s => s.id === mutatedActive[i].id)!
           if (chainBroken) {
-            const original = schedules.find(s => s.id === active[i].id)!
-            expect(active[i].startAt).toBe(original.startAt)
+            expect(after.startAt).toBe(original.startAt)
+          } else {
+            expect(after.startAt).toBe(original.startAt + delta)
           }
         }
       }),
-      { numRuns: 500 }
+      { numRuns: 1000 }
     )
+  })
+
+  it('invariant 3 회귀 case (F4 · seed -658135282): 동일 startAt + chained=false target 의 chain 판정', () => {
+    // 회귀 차단 가드 (F4 catch — `wiki/projects/plan1/qa-pending.md` § 1)
+    // 모든 schedule startAt=0 (stable sort 의존) · target s-0 chained=false · s-1 chained=true · s-2 chained=false
+    const schedules: Schedule[] = [
+      { title: '', startAt: 0, durationMin: 1, timerType: 'countup', status: 'pending', chainedToPrev: false, id: 's-0' as ScheduleId, categoryId: 'cat-1', createdAt: 0, updatedAt: 0 },
+      { title: '', startAt: 0, durationMin: 1, timerType: 'countup', status: 'pending', chainedToPrev: true,  id: 's-1' as ScheduleId, categoryId: 'cat-1', createdAt: 0, updatedAt: 0 },
+      { title: '', startAt: 0, durationMin: 1, timerType: 'countup', status: 'pending', chainedToPrev: false, id: 's-2' as ScheduleId, categoryId: 'cat-1', createdAt: 0, updatedAt: 0 },
+    ]
+    const result = cascade(schedules, 's-0' as ScheduleId, 0, 2) // delta = +1*NS
+    const s0 = result.find(s => s.id === 's-0')!
+    const s1 = result.find(s => s.id === 's-1')!
+    const s2 = result.find(s => s.id === 's-2')!
+    expect(s0.startAt).toBe(0)        // target startAt 변경 X
+    expect(s0.durationMin).toBe(2)    // target dur 변경됨
+    expect(s1.startAt).toBe(NS)       // mutated sort i=1 chained=true → shift +60000
+    expect(s2.startAt).toBe(0)        // mutated sort i=2 chained=false → break · unshifted
   })
 
   it('invariant 4: done 상태 schedule 은 shift 영향 받지 않음', () => {
