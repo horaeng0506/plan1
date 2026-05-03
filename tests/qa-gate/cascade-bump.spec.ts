@@ -59,8 +59,12 @@ test.describe('plan1 mutation E2E — A9 cascade-bump (Critical · 4/29 영역)'
     //      → useNow (useSyncExternalStore subscribeNow) 의 1초 interval fire X → notify X
     //      → SSR snapshot 0 → ActiveTimer idle 표시 → +30m 버튼 visible X (PR #20 1·2·3차 fail root cause)
     //    Fix: clock 2초 fastForward → setInterval 첫 fire → notify → re-render → active 인식
+    // CI runner UTC 기준 spec 실행 시각이 working hours (09:00-18:00 UTC) 밖이면
+    // splitByWorkingHours 가 schedule 을 다음 날 09:00 으로 roll forward → 시야 밖.
+    // (lib/domain/split.ts:71-83 · lib/store.ts:35 defaultWorkingHours {540, 1080})
+    // working hours 안 12:00 UTC 로 fix → split rollover 회피 + active timer 의도 보존.
     const fixedTime = new Date();
-    fixedTime.setSeconds(0, 0);
+    fixedTime.setUTCHours(12, 0, 0, 0);
     await page.clock.install({time: fixedTime});
     await page.goto('/project/plan1/');
     await page.clock.fastForward(2000);
