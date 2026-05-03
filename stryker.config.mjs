@@ -23,7 +23,7 @@
  *
  * @type {import('@stryker-mutator/api/core').PartialStrykerOptions}
  */
-export default {
+const config = {
   packageManager: 'npm',
   testRunner: 'vitest',
   vitest: {
@@ -35,7 +35,8 @@ export default {
     '!lib/domain/**/*.pbt.test.ts',
     '!lib/domain/types.ts',
   ],
-  ignorePatterns: ['node_modules', '.next', 'tests/qa-gate', 'reports'],
+  // sandbox copy 제외 — .vercel (socket .func 파일 ENOTSUP) · .git · coverage 보강 (env-critic 2026-05-03)
+  ignorePatterns: ['node_modules', '.next', '.vercel', '.git', 'coverage', 'tests/qa-gate', 'reports'],
   thresholds: {
     high: 70,
     low: 60,
@@ -46,7 +47,10 @@ export default {
     fileName: 'reports/mutation/index.html',
   },
   timeoutMS: 60_000,
-  concurrency: 4,
+  // CI (느린 머신·shared runner) 는 concurrency ↓ — vitest fileParallelism 와 곱해져 OOM 방지 (env-critic 2026-05-03)
+  concurrency: process.env.CI ? 2 : 4,
   // PBT 가 1000회 run 시 timeout 증가 가능 — 통합 후 측정해서 조정
   // disableTypeChecks 는 mutation 자체 type 변형 검사 X (Stryker 표준 default)
 }
+
+export default config
