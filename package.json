@@ -45,7 +45,6 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
-    "@fast-check/vitest": "^0.4.1",
     "@playwright/test": "^1.59.1",
     "@stryker-mutator/core": "^9.6.1",
     "@stryker-mutator/vitest-runner": "^9.6.1",
