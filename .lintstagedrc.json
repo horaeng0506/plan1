@@ -6,6 +6,6 @@
     "eslint --fix --max-warnings 0"
   ],
   "messages/*.json": [
-    "vitest run --related lib/i18n-catalog.test.ts"
+    "vitest related lib/i18n-catalog.test.ts"
   ]
 }
