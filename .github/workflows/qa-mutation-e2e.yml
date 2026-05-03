@@ -65,7 +65,9 @@ jobs:
           # cofounder-portal Neon project default branch = "production" (not "main").
           # 2026-04-30 verify: `neonctl branches list` → ['production', 'preview/perf/sin1-region', 'vercel-dev'].
           parent_branch: production
-          branch_name: pr-${{ github.event.pull_request.number }}
+          # repo prefix 박힘 — plan1·portal 같은 NEON_PROJECT_ID 라 같은 PR 번호 동시 발생 시
+          # branch 이름 conflict 회피 (cookie-cutter from portal Step 13.c PR #21).
+          branch_name: plan1-pr-${{ github.event.pull_request.number }}
           role: neondb_owner
           api_key: ${{ secrets.NEON_API_KEY }}
 
@@ -136,7 +138,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `✅ **Mutation E2E gate passed**\n\n- Preview: ${previewUrl}\n- Neon branch: \`pr-${context.issue.number}\`\n- SLA: warm < 3000ms / cold < 5000ms\n\n자세한 측정값은 워크플로우 로그의 \`[qa-gate] schedule_add_ms=...\` 라인 참조.`
+              body: `✅ **Mutation E2E gate passed**\n\n- Preview: ${previewUrl}\n- Neon branch: \`plan1-pr-${context.issue.number}\`\n- SLA: warm < 3000ms / cold < 5000ms\n\n자세한 측정값은 워크플로우 로그의 \`[qa-gate] schedule_add_ms=...\` 라인 참조.`
             });
 
       - name: Comment PR result (failure)
@@ -148,7 +150,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `❌ **Mutation E2E gate failed**\n\n- Neon branch: \`pr-${context.issue.number}\`\n- Playwright report 확인: Actions → ${context.workflow} → 이번 run → Artifacts\n\n4/29 5초 latency 사고와 같은 회귀 패턴일 수 있음. instrument 박고 phase 진단 필요.`
+              body: `❌ **Mutation E2E gate failed**\n\n- Neon branch: \`plan1-pr-${context.issue.number}\`\n- Playwright report 확인: Actions → ${context.workflow} → 이번 run → Artifacts\n\n4/29 5초 latency 사고와 같은 회귀 패턴일 수 있음. instrument 박고 phase 진단 필요.`
             });
 
   cleanup:
@@ -160,5 +162,5 @@ jobs:
         uses: neondatabase/delete-branch-action@v3
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
-          branch: pr-${{ github.event.pull_request.number }}
+          branch: plan1-pr-${{ github.event.pull_request.number }}
           api_key: ${{ secrets.NEON_API_KEY }}

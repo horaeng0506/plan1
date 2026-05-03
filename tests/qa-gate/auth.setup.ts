@@ -69,30 +69,38 @@ setup('authenticate qa-bot', async () => {
   });
 
   // 3.5 preview URL 대상일 때 — cofounder.co.kr 도메인 cookie 가 plan1 Vercel preview host
-  //     (예: plan1-xxx.vercel.app) 에 자동 전송 안 됨. preview host 에도 cofounder_jwt + NEXT_LOCALE
-  //     cookie 명시 inject. plan1 verifySession 은 cofounder_jwt 만 사용 (better-auth.session_token 무관).
+  //     (예: plan1-xxx.vercel.app) 에 자동 전송 안 됨. preview host 에 모든 cofounder.co.kr cookie
+  //     명시 inject (cookie-cutter from portal Step 13.c PR #21).
+  //
+  // 미래 server-side `auth.api.getSession()` 검증 spec 신설 시 better-auth.session_token 도
+  // 필요. 현 verify-session.ts 만 쓰는 spec 은 cofounder_jwt 만 필요하지만, cookie-cutter drift
+  // 차단 위해 모든 cookie inject (logic-critic 권고 반영).
+  //
+  // F6 옵션 A (2026-05-04): `vercel deploy --force` 는 분리 적용 안 함 (회귀 catch 후).
   const previewBaseUrl =
     process.env.PLAYWRIGHT_BASE_URL ?? 'https://cofounder.co.kr';
   const previewHost = new URL(previewBaseUrl).hostname;
   if (previewHost !== 'cofounder.co.kr' && !previewHost.endsWith('.cofounder.co.kr')) {
-    const jwtCookie = state.cookies.find(c => c.name === 'cofounder_jwt');
-    if (jwtCookie) {
+    const cofounderCookies = state.cookies.filter(c =>
+      c.domain === '.cofounder.co.kr' || c.domain === 'cofounder.co.kr'
+    );
+    for (const c of cofounderCookies) {
       state.cookies.push({
-        ...jwtCookie,
+        ...c,
         domain: previewHost,
-        sameSite: 'Lax'
-      });
-      state.cookies.push({
-        name: 'NEXT_LOCALE',
-        value: 'ko',
-        domain: previewHost,
-        path: '/',
-        expires: -1,
-        httpOnly: false,
-        secure: true,
         sameSite: 'Lax'
       });
     }
+    state.cookies.push({
+      name: 'NEXT_LOCALE',
+      value: 'ko',
+      domain: previewHost,
+      path: '/',
+      expires: -1,
+      httpOnly: false,
+      secure: true,
+      sameSite: 'Lax'
+    });
   }
 
   fs.mkdirSync(path.dirname(STORAGE_STATE_PATH), {recursive: true});
