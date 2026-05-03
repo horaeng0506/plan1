@@ -66,6 +66,11 @@ test.describe('plan1 mutation E2E — A4 스케줄 편집', () => {
     await sched.dialog.locator('input[type="number"]').fill('30');
     await sched.dialog.getByRole('button', {name: '추가', exact: true}).click();
     await expect(sched.heading).toBeHidden({timeout: SLA_COLD_MS + 2_000});
+    // WeeklyCalendar (firstDay=1 + weekView1) 1주 시야 의존. today.getDay() === 0 (일요일)
+    // 이면 tomorrow=Mon=다음 주 → toolbar `next` 클릭. main run 25279350177 line 69 fail 회귀 catch.
+    if (new Date().getDay() === 0) {
+      await page.locator('.fc-next-button').click();
+    }
     await expect(page.getByText(title).first()).toBeVisible({timeout: 5_000});
 
     // 3. 카드 클릭 → 편집 모달 열림
