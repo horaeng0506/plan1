@@ -65,7 +65,9 @@ jobs:
           # cofounder-portal Neon project default branch = "production" (not "main").
           # 2026-04-30 verify: `neonctl branches list` → ['production', 'preview/perf/sin1-region', 'vercel-dev'].
           parent_branch: production
-          branch_name: pr-${{ github.event.pull_request.number }}
+          # repo prefix 박힘 (cookie-cutter drift 차단 · 2026-05-04 portal Step 13.c F6) —
+          # plan1·portal 같은 NEON_PROJECT_ID 라 같은 PR 번호 동시 발생 시 conflict 회피
+          branch_name: plan1-pr-${{ github.event.pull_request.number }}
           role: neondb_owner
           api_key: ${{ secrets.NEON_API_KEY }}
 
@@ -94,10 +96,25 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PLAN1 }}
         run: |
-          URL=$(vercel deploy --prebuilt \
+          # vercel CLI false positive 회피 (cookie-cutter drift 차단 · 2026-05-04 portal Step 13.c F6):
+          #   - vercel deploy --prebuilt 가 deployment 정상 Ready 후에도 polling 단계
+          #     "Running Checks: 1 failed" exit 1 (vercel inspect 검증: readyState=READY · checks empty)
+          #   - 추정: Vercel CLI v51.8 의 polling false positive 또는 Vercel SSO Protection 응답 401 인식
+          #   - 임시 fix: URL stdout 으로 추출 + CLI exit code 무시. URL 추출 실패 시만 진짜 fail
+          #   - --force: 같은 commit 의 git auto build 와 dedupe 회피 (portal Step 13.c PR #21 학습)
+          set +e
+          OUTPUT=$(vercel deploy --prebuilt --force \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --env DATABASE_URL=${{ steps.neon.outputs.db_url_pooled }} \
-            --env DATABASE_URL_UNPOOLED=${{ steps.neon.outputs.db_url }})
+            --env DATABASE_URL_UNPOOLED=${{ steps.neon.outputs.db_url }} 2>&1)
+          set -e
+          URL=$(echo "$OUTPUT" | grep -oE "https://plan1-[a-z0-9-]+\.vercel\.app" | head -1)
+          if [ -z "$URL" ]; then
+            echo "::error::vercel deploy URL 추출 실패"
+            echo "$OUTPUT"
+            exit 1
+          fi
+          echo "Deploy URL: $URL"
           echo "preview_url=$URL" >> "$GITHUB_OUTPUT"
           echo "PLAYWRIGHT_BASE_URL=$URL" >> "$GITHUB_ENV"
 
@@ -136,7 +153,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `✅ **Mutation E2E gate passed**\n\n- Preview: ${previewUrl}\n- Neon branch: \`pr-${context.issue.number}\`\n- SLA: warm < 3000ms / cold < 5000ms\n\n자세한 측정값은 워크플로우 로그의 \`[qa-gate] schedule_add_ms=...\` 라인 참조.`
+              body: `✅ **Mutation E2E gate passed**\n\n- Preview: ${previewUrl}\n- Neon branch: \`plan1-pr-${context.issue.number}\`\n- SLA: warm < 3000ms / cold < 5000ms\n\n자세한 측정값은 워크플로우 로그의 \`[qa-gate] schedule_add_ms=...\` 라인 참조.`
             });
 
       - name: Comment PR result (failure)
@@ -148,7 +165,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `❌ **Mutation E2E gate failed**\n\n- Neon branch: \`pr-${context.issue.number}\`\n- Playwright report 확인: Actions → ${context.workflow} → 이번 run → Artifacts\n\n4/29 5초 latency 사고와 같은 회귀 패턴일 수 있음. instrument 박고 phase 진단 필요.`
+              body: `❌ **Mutation E2E gate failed**\n\n- Neon branch: \`plan1-pr-${context.issue.number}\`\n- Playwright report 확인: Actions → ${context.workflow} → 이번 run → Artifacts\n\n4/29 5초 latency 사고와 같은 회귀 패턴일 수 있음. instrument 박고 phase 진단 필요.`
             });
 
   cleanup:
@@ -160,5 +177,5 @@ jobs:
         uses: neondatabase/delete-branch-action@v3
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
-          branch: pr-${{ github.event.pull_request.number }}
+          branch: plan1-pr-${{ github.event.pull_request.number }}
           api_key: ${{ secrets.NEON_API_KEY }}

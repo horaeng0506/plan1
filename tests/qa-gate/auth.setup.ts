@@ -68,31 +68,40 @@ setup('authenticate qa-bot', async () => {
     sameSite: 'Lax'
   });
 
-  // 3.5 preview URL 대상일 때 — cofounder.co.kr 도메인 cookie 가 plan1 Vercel preview host
-  //     (예: plan1-xxx.vercel.app) 에 자동 전송 안 됨. preview host 에도 cofounder_jwt + NEXT_LOCALE
-  //     cookie 명시 inject. plan1 verifySession 은 cofounder_jwt 만 사용 (better-auth.session_token 무관).
+  // 3.5 preview URL 대상일 때 — cofounder.co.kr 도메인 cookie 가 Vercel preview host
+  //     (예: plan1-xxx.vercel.app) 에 자동 전송 안 됨. preview host 에도 모든 cookie 명시 inject.
+  //
+  // portal Step 13.c 학습 (2026-05-04 cookie-cutter drift 차단):
+  //   - 기존 plan1 reference 가 cofounder_jwt 만 inject — verify-session.ts (stateless JWKS) 만 쓰는 spec 은 동작
+  //   - portal spec 처럼 server-side `auth.api.getSession()` 검증하는 spec 신설 시 fail
+  //   - cofounder.co.kr 도메인 의 모든 cookie (cofounder_jwt + better-auth.session_token + 기타) 를 preview host 에도 inject
+  //   - 잠재 회귀 차단 (현재 plan1 spec 들은 verify-session.ts 만 사용 — 영향 없지만 미래 spec 신설 대비)
   const previewBaseUrl =
     process.env.PLAYWRIGHT_BASE_URL ?? 'https://cofounder.co.kr';
   const previewHost = new URL(previewBaseUrl).hostname;
   if (previewHost !== 'cofounder.co.kr' && !previewHost.endsWith('.cofounder.co.kr')) {
-    const jwtCookie = state.cookies.find(c => c.name === 'cofounder_jwt');
-    if (jwtCookie) {
+    // cofounder.co.kr 도메인 의 모든 cookie 를 preview host 에도 inject
+    const cofounderCookies = state.cookies.filter(c =>
+      c.domain === '.cofounder.co.kr' || c.domain === 'cofounder.co.kr'
+    );
+    for (const c of cofounderCookies) {
       state.cookies.push({
-        ...jwtCookie,
+        ...c,
         domain: previewHost,
-        sameSite: 'Lax'
-      });
-      state.cookies.push({
-        name: 'NEXT_LOCALE',
-        value: 'ko',
-        domain: previewHost,
-        path: '/',
-        expires: -1,
-        httpOnly: false,
-        secure: true,
         sameSite: 'Lax'
       });
     }
+    // NEXT_LOCALE 명시 (ko)
+    state.cookies.push({
+      name: 'NEXT_LOCALE',
+      value: 'ko',
+      domain: previewHost,
+      path: '/',
+      expires: -1,
+      httpOnly: false,
+      secure: true,
+      sameSite: 'Lax'
+    });
   }
 
   fs.mkdirSync(path.dirname(STORAGE_STATE_PATH), {recursive: true});
