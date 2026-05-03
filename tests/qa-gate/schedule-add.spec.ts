@@ -99,6 +99,14 @@ test.describe('plan1 mutation E2E — A3 schedule 추가', () => {
     ).toBeLessThan(threshold);
 
     // 6. 카드 표시
+    //    WeeklyCalendar (firstDay=1 + weekView1) 1주 시야 의존. CI runner UTC 기준
+    //    today.getDay() === 0 (일요일) 이면 tomorrow=Mon=다음 주 → toolbar `next` 클릭.
+    //    main run 25279350177 (5/3 일요일 UTC) 의 line 102 fail 직접 회귀 catch.
+    if (new Date().getDay() === 0) {
+      // WeeklyCalendar 와 DailyTimeline 둘 다 FullCalendar — `.fc-next-button` 2개 매칭.
+      // PlanApp.tsx 의 layout 순서 (Weekly 위 / Daily 아래) 따라 first() = WeeklyCalendar.
+      await page.locator('.fc-next-button').first().click();
+    }
     await expect(page.getByText(title).first()).toBeVisible({timeout: 5_000});
 
     // 7. cleanup — schedule 삭제 (orphan row 누적 차단)

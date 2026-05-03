@@ -74,6 +74,13 @@ test.describe('plan1 mutation E2E — A7 카테고리 삭제 armed case', () => 
     await sched.dialog.locator('input[type="number"]').fill('30');
     await sched.dialog.getByRole('button', {name: '추가', exact: true}).click();
     await expect(sched.heading).toBeHidden({timeout: SLA_COLD_MS + 2_000});
+    // WeeklyCalendar (firstDay=1 + weekView1) 1주 시야 의존. today.getDay() === 0 (일요일)
+    // 이면 tomorrow=Mon=다음 주 → toolbar `next` 클릭. main run 25279350177 line 77 fail 회귀 catch.
+    if (new Date().getDay() === 0) {
+      // WeeklyCalendar 와 DailyTimeline 둘 다 FullCalendar — `.fc-next-button` 2개 매칭.
+      // PlanApp.tsx 의 layout 순서 (Weekly 위 / Daily 아래) 따라 first() = WeeklyCalendar.
+      await page.locator('.fc-next-button').first().click();
+    }
     await expect(page.getByText(schedTitle).first()).toBeVisible({timeout: 5_000});
 
     // 3. 카테고리 모달 다시 열기
