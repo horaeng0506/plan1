@@ -101,27 +101,8 @@ export const plan1Schedules = plan1Schema.table(
   })
 );
 
-export const plan1WorkingHours = plan1Schema.table(
-  'working_hours',
-  {
-    id: text('id').primaryKey(),
-    userId: text('user_id')
-      .notNull()
-      .references(() => user.id, {onDelete: 'cascade'}),
-    date: text('date').notNull(),
-    startMin: integer('start_min').notNull(),
-    endMin: integer('end_min').notNull(),
-    createdAt: timestamp('created_at', {withTimezone: true})
-      .$defaultFn(() => new Date())
-      .notNull(),
-    updatedAt: timestamp('updated_at', {withTimezone: true})
-      .$defaultFn(() => new Date())
-      .notNull()
-  },
-  table => ({
-    userDateUniqueIdx: uniqueIndex('plan1_working_hours_user_date_idx').on(table.userId, table.date)
-  })
-);
+// PLAN1-WH-FOCUS-20260504 — plan1WorkingHours 테이블 폐기 (업무시간 기능 제거).
+// 14:00 fall-back root cause 가 split.ts 의 wh 의존이라 wh 자체를 폐기.
 
 export const plan1Settings = plan1Schema.table('settings', {
   userId: text('user_id')
@@ -130,8 +111,9 @@ export const plan1Settings = plan1Schema.table('settings', {
   theme: text('theme').$type<'light' | 'dark' | 'system'>().notNull(),
   weekViewSpan: integer('week_view_span').$type<1 | 2 | 3>().notNull(),
   weeklyPanelHidden: boolean('weekly_panel_hidden').$defaultFn(() => false).notNull(),
-  defaultWorkingHoursStartMin: integer('default_working_hours_start_min').notNull(),
-  defaultWorkingHoursEndMin: integer('default_working_hours_end_min').notNull(),
+  // PLAN1-WH-FOCUS-20260504 — defaultWorkingHoursStartMin/EndMin 폐기.
+  // 집중 보기 모드 (focusViewMin) — 분 단위. null = 전체 보기 (default).
+  focusViewMin: integer('focus_view_min'),
   pinnedActiveId: text('pinned_active_id').references((): AnyPgColumn => plan1Schedules.id, {
     onDelete: 'set null'
   }),
@@ -148,7 +130,5 @@ export type Schedule = typeof plan1Schedules.$inferSelect;
 export type ScheduleInsert = typeof plan1Schedules.$inferInsert;
 export type Category = typeof plan1Categories.$inferSelect;
 export type CategoryInsert = typeof plan1Categories.$inferInsert;
-export type WorkingHours = typeof plan1WorkingHours.$inferSelect;
-export type WorkingHoursInsert = typeof plan1WorkingHours.$inferInsert;
 export type Settings = typeof plan1Settings.$inferSelect;
 export type SettingsInsert = typeof plan1Settings.$inferInsert;

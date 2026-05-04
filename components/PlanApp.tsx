@@ -25,11 +25,6 @@ const CategoryManager = dynamic(
   () => import('./CategoryManager').then(m => m.CategoryManager),
   {ssr: false, loading: ModalSkeleton}
 );
-const WorkingHoursEditor = dynamic(
-  () => import('./WorkingHoursEditor').then(m => m.WorkingHoursEditor),
-  {ssr: false, loading: ModalSkeleton}
-);
-
 function formatMD(d: Date, weekdayLabel: (idx: number) => string): string {
   return `${pad2(d.getMonth() + 1)}/${pad2(d.getDate())} (${weekdayLabel(d.getDay())})`;
 }
@@ -79,7 +74,6 @@ export function PlanApp() {
 
   const [newOpen, setNewOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
-  const [whOpen, setWhOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Stage 4d-B + critic fix: useNow + useMemo deps 분 단위 떨굼 (60배 recompute 절감).
@@ -287,9 +281,6 @@ export function PlanApp() {
             >
               {weeklyPanelHidden ? t('nav.weeklyShow') : t('nav.weeklyHide')}
             </button>
-            <button type="button" className={neutralBtn} onClick={() => setWhOpen(true)}>
-              {t('nav.workingHours')}
-            </button>
             <button type="button" className={neutralBtn} onClick={() => setCatOpen(true)}>
               {t('nav.categories')}
             </button>
@@ -410,7 +401,6 @@ export function PlanApp() {
         />
       )}
       {catOpen && <CategoryManager onClose={() => setCatOpen(false)} />}
-      {whOpen && <WorkingHoursEditor onClose={() => setWhOpen(false)} />}
       <ToastContainer />
     </main>
   );

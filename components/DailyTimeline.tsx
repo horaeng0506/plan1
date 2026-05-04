@@ -7,11 +7,13 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {useAppStore} from '@/lib/store';
 import {schedulesToEvents} from '@/lib/schedule-to-event';
-import {pad2, todayKey} from '@/lib/date-format';
+import {pad2} from '@/lib/date-format';
+import {useNow} from '@/lib/now';
 import {renderEventContent} from './event-renderer';
 
 function minToTimeStr(min: number): string {
-  return `${pad2(Math.floor(min / 60))}:${pad2(min % 60)}:00`;
+  const clamped = Math.max(0, Math.min(1440, Math.round(min)));
+  return `${pad2(Math.floor(clamped / 60))}:${pad2(clamped % 60)}:00`;
 }
 
 // next-intl `zh-CN` → FullCalendar `zh-cn`.
@@ -27,13 +29,23 @@ export function DailyTimeline({
   const locale = useLocale();
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
-  const workingHours = useAppStore(s => s.workingHours);
-  const defaultWH = useAppStore(s => s.settings.defaultWorkingHours);
+  // PLAN1-WH-FOCUS-20260504 — workingHours 폐기 + 집중 보기 모드.
+  // focusViewMin null = 0~24h 전체. 값 N 일 때 [now-N/2, now+N/2] 구간 (분 단위).
+  const focusViewMin = useAppStore(s => s.settings.focusViewMin);
 
-  const key = todayKey();
-  const wh = workingHours[key] ?? {date: key, startMin: defaultWH.startMin, endMin: defaultWH.endMin};
-  const slotMinTime = minToTimeStr(wh.startMin);
-  const slotMaxTime = minToTimeStr(wh.endMin);
+  const nowMs = useNow();
+
+  const {slotMinTime, slotMaxTime} = useMemo(() => {
+    if (focusViewMin == null || focusViewMin <= 0 || nowMs <= 0) {
+      return {slotMinTime: '00:00:00', slotMaxTime: '24:00:00'};
+    }
+    const now = new Date(nowMs);
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const half = Math.floor(focusViewMin / 2);
+    const startMin = nowMin - half;
+    const endMin = nowMin + (focusViewMin - half);
+    return {slotMinTime: minToTimeStr(startMin), slotMaxTime: minToTimeStr(endMin)};
+  }, [focusViewMin, nowMs]);
 
   const events = useMemo(() => schedulesToEvents(schedules, categories), [schedules, categories]);
 

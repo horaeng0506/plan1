@@ -1,11 +1,14 @@
 'use server';
 
 /**
- * 사용자 설정 (1:1) — theme · weekViewSpan · weeklyPanelHidden · defaultWorkingHours · pinnedActiveId.
+ * 사용자 설정 (1:1) — theme · weekViewSpan · weeklyPanelHidden · focusViewMin · pinnedActiveId.
+ *
+ * PLAN1-WH-FOCUS-20260504:
+ *   - defaultWorkingHours 폐기 (working hours 기능 자체 제거)
+ *   - focusViewMin 신규 (집중 보기 모드 · null = 전체 보기)
  *
  * 정책:
  *   - PK = user_id (한 사용자 = 1행). 첫 호출 시 default 로 upsert.
- *   - defaultWorkingHours 변경 시 split 재계산 트리거 (working-hours.ts 의 applySplitForUser 와 동일 패턴 — 여기선 reflated import 회피 위해 직접 호출 안 함, 클라이언트가 setWorkingHours 추가 호출 또는 별도 action 호출 권장)
  *   - pinnedActiveId FK set null — 스케줄 삭제 시 자동 해제 (DB enforce, Stage 20)
  *
  * Stage 5.1 part 2: 사용자 facing error 는 ServerActionError throw → runAction 변환.
@@ -25,8 +28,7 @@ const DEFAULT_SETTINGS = {
   theme: 'system' as const,
   weekViewSpan: 1 as const,
   weeklyPanelHidden: false,
-  defaultWorkingHoursStartMin: 540, // 09:00
-  defaultWorkingHoursEndMin: 1080, // 18:00
+  focusViewMin: null as number | null,
   pinnedActiveId: null as string | null
 };
 
@@ -35,10 +37,7 @@ function rowToDomain(row: typeof plan1Settings.$inferSelect): AppSettings {
     theme: row.theme,
     weekViewSpan: row.weekViewSpan,
     weeklyPanelHidden: row.weeklyPanelHidden,
-    defaultWorkingHours: {
-      startMin: row.defaultWorkingHoursStartMin,
-      endMin: row.defaultWorkingHoursEndMin
-    },
+    focusViewMin: row.focusViewMin,
     pinnedActiveId: row.pinnedActiveId
   };
 }
@@ -88,10 +87,7 @@ export async function updateSettings(
     if (patch.theme !== undefined) dbPatch.theme = patch.theme;
     if (patch.weekViewSpan !== undefined) dbPatch.weekViewSpan = patch.weekViewSpan;
     if (patch.weeklyPanelHidden !== undefined) dbPatch.weeklyPanelHidden = patch.weeklyPanelHidden;
-    if (patch.defaultWorkingHours !== undefined) {
-      dbPatch.defaultWorkingHoursStartMin = patch.defaultWorkingHours.startMin;
-      dbPatch.defaultWorkingHoursEndMin = patch.defaultWorkingHours.endMin;
-    }
+    if (patch.focusViewMin !== undefined) dbPatch.focusViewMin = patch.focusViewMin;
     if (patch.pinnedActiveId !== undefined) dbPatch.pinnedActiveId = patch.pinnedActiveId;
 
     const [updated] = await db
