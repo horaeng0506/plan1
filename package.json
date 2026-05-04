@@ -66,6 +66,7 @@
   },
   "overrides": {
     "postcss": "$postcss",
-    "esbuild": ">=0.25.0"
+    "esbuild": ">=0.25.0",
+    "@swc/helpers": ">=0.5.17"
   }
 }
