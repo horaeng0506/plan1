@@ -1,0 +1,43 @@
+# PICT model — schedule TZ fall-back 회귀 catch (PLAN1-SCHEDULE-BUG · 2026-05-04)
+#
+# 출처: wiki/shared/test-case-design-principles.md § 3.4 PICT 표준 형식
+# 환원 5단계 적용:
+#   1. 입력 도메인: schedule 등록·수정 시 timezone 처리 결함
+#   2. EP: server TZ {UTC, KST}, client TZ {KST, UTC, PST}, 입력 시각 {0시, 새벽, 점심, 저녁, 23시}
+#   3. BVA: day boundary 23:30 + 60min, working hours 시작/종료 boundary
+#   4. PICT pairwise: 변수 6개 → 2-way 약 30 케이스 (RPN 50-79 High)
+#   5. RPN filter: timezone race + day boundary = Critical → 3-way 강제 (구조)
+#
+# 변수 정의
+
+ServerTZ:        UTC, Asia/Seoul
+ClientTZ:        Asia/Seoul, UTC, America/Los_Angeles
+InputHour:       0, 6, 7, 9, 13, 18, 23
+InputMin:        0, 30, 59
+DurationMin:     30, 60, 600
+DefaultWHStart:  360, 540, 600
+DefaultWHEnd:    900, 1080, 1320
+Operation:       create, update-no-startat, update-with-startat
+ChainedToPrev:   false, true
+
+# Constraints (logically invalid combinations 제거)
+
+IF [DefaultWHStart] >= [DefaultWHEnd] THEN [DefaultWHStart] = 540, [DefaultWHEnd] = 1080;
+
+# Sub-models — 3-way 강제 영역 (RPN ≥ 80 Critical)
+
+# 1. timezone race triplet — server·client·입력시각 3축 (4/29 catch 한도 보존)
+{ ServerTZ, ClientTZ, InputHour } @ 3
+
+# 2. day boundary — 입력시각·duration·WH end 조합
+{ InputHour, DurationMin, DefaultWHEnd } @ 3
+
+# 3. update flow — operation·ServerTZ·ChainedToPrev (수정 시 14:00 회귀 catch)
+{ Operation, ServerTZ, ChainedToPrev } @ 3
+
+# 사용 절차:
+# 1. pict schedule-tz.txt > ../cases/schedule-tz.csv  (PICT 표준 도구)
+# 2. cases CSV → spec.ts 변환 (test-case-design-principles.md § 7 AI agent 워크플로우)
+# 3. lib/domain/split.timezone.test.ts (단위) + tests/qa-gate/schedule-time.spec.ts (mutation E2E)
+#
+# 주의: PICT binary 미설치 시 손으로 환원 — RPN ≥ 80 영역만 명시 케이스화
