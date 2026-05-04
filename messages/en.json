@@ -105,7 +105,8 @@
     "chainedHelp": "When the previous schedule extends or shrinks, this one moves with it (gap preserved).",
     "buttonNextAfter": "next +10m (new schedule after complete)",
     "nextAfterTooltip": "Save current edit (if dirty) and open new schedule modal with start = endAt + 10m",
-    "warningEditIncomplete": "Current edit incomplete (check name/category/duration). Not saved — fix and retry."
+    "warningEditIncomplete": "Current edit incomplete (check name/category/duration). Not saved — fix and retry.",
+    "warningOverlapLimit": "At most {limit} schedules can overlap at the same time. Adjust start/duration or remove an existing one."
   },
   "category": {
     "header": "categories",
@@ -151,7 +152,10 @@
     "tooltipClickToIdle": "click to switch to idle",
     "tooltipClickToFocus": "click to switch to focus",
     "buttonComplete": "complete",
-    "categoryFallback": "?"
+    "categoryFallback": "?",
+    "labelUpcoming": "next schedule",
+    "labelUntilUpcoming": "until upcoming",
+    "simultaneousLabel": "simultaneous · {count}"
   },
   "weekdays": {
     "0": "sun",

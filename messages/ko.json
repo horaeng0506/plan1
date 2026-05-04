@@ -105,7 +105,8 @@
     "chainedHelp": "앞 스케줄이 늘어나거나 줄면 이 스케줄도 함께 이동 (간격 유지)",
     "buttonNextAfter": "next +10m (완료 후 새 스케줄)",
     "nextAfterTooltip": "현재 편집 저장(dirty 시) + 종료시각 + 10분을 시작으로 가지는 새 스케줄 모달 오픈",
-    "warningEditIncomplete": "현재 편집 내용이 불완전(이름/카테고리/소요분 확인). 저장 안 됨 — 내용 보완 후 다시 시도"
+    "warningEditIncomplete": "현재 편집 내용이 불완전(이름/카테고리/소요분 확인). 저장 안 됨 — 내용 보완 후 다시 시도",
+    "warningOverlapLimit": "같은 시각에는 최대 {limit}개 스케줄까지 가능. 시작/길이를 바꾸거나 기존 항목을 정리하세요."
   },
   "category": {
     "header": "categories",
@@ -151,7 +152,10 @@
     "tooltipClickToIdle": "클릭하면 idle 로 전환",
     "tooltipClickToFocus": "클릭하면 focus 로 전환",
     "buttonComplete": "complete",
-    "categoryFallback": "?"
+    "categoryFallback": "?",
+    "labelUpcoming": "다음 스케줄",
+    "labelUntilUpcoming": "다음 시작까지",
+    "simultaneousLabel": "동시 진행 · {count}"
   },
   "weekdays": {
     "0": "일",

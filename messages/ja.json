@@ -108,7 +108,8 @@
     "minuteSuffix": "分",
     "nextAfterTooltip": "現在の編集を保存（変更がある場合）し、開始 = 終了時刻 + 10分で新しいスケジュールモーダルを開く",
     "warningEditIncomplete": "現在の編集が不完全です（名前/カテゴリ/所要時間を確認）。保存されていません — 修正して再試行してください。",
-    "warningFutureRequired": "開始時刻は未来である必要があります。"
+    "warningFutureRequired": "開始時刻は未来である必要があります。",
+    "warningOverlapLimit": "同じ時間帯に最大{limit}件まで重ねられます。開始/長さを変更するか、既存を削除してください。"
   },
   "serverError": {
     "categoryHasSchedules": "カテゴリには{scheduleCount}件のスケジュールがあります。削除するには連鎖削除を確認してください。",
@@ -133,7 +134,10 @@
     "tooltipClickToIdle": "クリックしてアイドルに切り替え",
     "typeCountdown": "カウントダウン",
     "typeCountup": "カウントアップ",
-    "typeTimer1": "タイマー1"
+    "typeTimer1": "タイマー1",
+    "labelUpcoming": "次のスケジュール",
+    "labelUntilUpcoming": "次の開始まで",
+    "simultaneousLabel": "同時進行 · {count}"
   },
   "topbar": {
     "back": "ポータルに戻る",

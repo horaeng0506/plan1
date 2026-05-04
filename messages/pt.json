@@ -108,7 +108,8 @@
     "minuteSuffix": "m",
     "nextAfterTooltip": "Salvar edição atual (se modificada) e abrir modal de novo agendamento com início = fimÀs + 10m",
     "warningEditIncomplete": "Edição atual incompleta (verifique nome/categoria/duração). Não salvo — corrija e tente novamente.",
-    "warningFutureRequired": "Horário de início deve estar no futuro."
+    "warningFutureRequired": "Horário de início deve estar no futuro.",
+    "warningOverlapLimit": "No máximo {limit} agendamentos podem se sobrepor ao mesmo tempo. Ajuste início/duração ou remova um existente."
   },
   "serverError": {
     "categoryHasSchedules": "Categoria tem {scheduleCount} agendamentos. Confirme exclusão em cascata para remover.",
@@ -133,7 +134,10 @@
     "tooltipClickToIdle": "clique para mudar para ocioso",
     "typeCountdown": "contagem regressiva",
     "typeCountup": "contagem progressiva",
-    "typeTimer1": "temporizador1"
+    "typeTimer1": "temporizador1",
+    "labelUpcoming": "próximo agendamento",
+    "labelUntilUpcoming": "até o próximo",
+    "simultaneousLabel": "simultâneo · {count}"
   },
   "topbar": {
     "back": "voltar ao portal",

@@ -108,7 +108,8 @@
     "minuteSuffix": "m",
     "nextAfterTooltip": "Sauvegarder la modification actuelle (si modifiée) et ouvrir la modale de nouveau calendrier avec début = finÀ + 10m",
     "warningEditIncomplete": "Modification actuelle incomplète (vérifier nom/catégorie/durée). Non enregistré — corriger et réessayer.",
-    "warningFutureRequired": "L'heure de début doit être dans le futur."
+    "warningFutureRequired": "L'heure de début doit être dans le futur.",
+    "warningOverlapLimit": "Au maximum {limit} planifications peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en une existante."
   },
   "serverError": {
     "categoryHasSchedules": "La catégorie a {scheduleCount} calendriers. Confirmez la suppression en cascade pour retirer.",
@@ -133,7 +134,10 @@
     "tooltipClickToIdle": "cliquer pour passer en inactif",
     "typeCountdown": "compte à rebours",
     "typeCountup": "compteur",
-    "typeTimer1": "minuteur1"
+    "typeTimer1": "minuteur1",
+    "labelUpcoming": "prochaine planification",
+    "labelUntilUpcoming": "jusqu'au prochain",
+    "simultaneousLabel": "simultané · {count}"
   },
   "topbar": {
     "back": "retour au portail",
