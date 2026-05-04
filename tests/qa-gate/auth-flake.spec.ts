@@ -72,14 +72,17 @@ test.describe('plan1 mutation E2E — AUTH-FLAKE-EXEC self-heal redirect', () =>
     page,
     context
   }) => {
-    // PLAN1-AUTH-MIDDLEWARE-DEEP (2026-05-04): preview 환경 SLA 완화 + cookie 재발급 검증 분기.
-    // 사유: preview URL (`*.vercel.app`) → portal cofounder.co.kr cross-domain 요청 chain.
-    //   1. plan1.vercel.app middleware → cofounder.co.kr/api/cofounder/refresh-jwt redirect
-    //   2. portal session 검증 통과 시 (storageState 보유) cookie set + 302 → return URL
-    //   3. return host = `plan1-...vercel.app` → whitelist reject → portal home (cofounder.co.kr/project)
-    //   결국 plan1.vercel.app 으로 자연 도달 안 함 — preview 한계.
-    // production cookie 도메인 공유 (`.cofounder.co.kr`) 시 redirect chain warm < 3000ms 정합 가설.
-    // preview 는 qa-bot SSR latency 측정만 (redirect chain 무관) — SLA 5000ms 완화.
+    // PLAN1-AUTH-MIDDLEWARE-DEEP (2026-05-04 · 1차 fix 후 재진단): preview 환경 spec.skip.
+    // 1차 시도: SLA 5000ms 완화 + cookie 재발급 검증 production 한정. 그러나 mutation E2E run
+    //   25318804755 결과 — element(qa-bot) not found timeout 5s. plan1 도달 자체 안 됨.
+    // 재진단: preview 환경 cross-domain chain
+    //   1. plan1.vercel.app/project/plan1 (no jwt) → middleware → cofounder.co.kr/api/cofounder/refresh-jwt?return=https://plan1.vercel.app/...
+    //   2. portal session 통과 (storageState) → cookie set + 302 → return URL
+    //   3. ?return host whitelist 검증: plan1.vercel.app ≠ cofounder.co.kr → reject → fallback portal home
+    //   4. 사용자 finalUrl = cofounder.co.kr/project (plan1 도달 X) → qa-bot text 안 보임
+    // C3 와 동일 패턴 — preview 환경 cross-domain 한계. C1 도 production 의무.
+    // production cookie 도메인 공유 (`.cofounder.co.kr`) 환경에서만 plan1 자연 도달 + SLA 측정 가능.
+    test.skip(!IS_PRODUCTION, 'C1 preview 환경 cross-domain whitelist reject — production 의무');
 
     // 사전 조건: storageState (auth.setup.ts) 의 better-auth session_token 존재 + cofounder_jwt 도 존재
     // 강제로 cofounder_jwt 만 삭제 → "15min idle 후 cookie 만료" 시뮬레이션
