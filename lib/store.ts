@@ -54,6 +54,10 @@ interface AppState {
   loaded: boolean;
   loading: boolean;
   error: string | null;
+  // PLAN1-LOGIN-START-OPT-20260504 #5: unauthorized 식별 (ServerActionError.errorKey).
+  // PlanApp 분기 — `serverError.unauthorized` 면 로그인 화면 (SignInPrompt) 표시.
+  // 일반 error (network · DB · 기타) 는 retry 버튼 유지.
+  errorKey: string | null;
 
   init(): Promise<void>;
   refreshSchedules(): Promise<void>;
@@ -88,11 +92,12 @@ export const useAppStore = create<AppState>((set, get) => ({
   loaded: false,
   loading: false,
   error: null,
+  errorKey: null,
 
   async init() {
     if (get().loaded) return;
     if (initInflight) return initInflight;
-    set({loading: true, error: null});
+    set({loading: true, error: null, errorKey: null});
     initInflight = (async () => {
       try {
         const [schedulesR, categoriesR, settingsR] = await Promise.all([
@@ -111,7 +116,14 @@ export const useAppStore = create<AppState>((set, get) => ({
           loading: false
         });
       } catch (e) {
-        set({loading: false, error: e instanceof Error ? e.message : String(e)});
+        // PLAN1-LOGIN-START-OPT-20260504 #5: ServerActionError 면 errorKey 분리 저장 → PlanApp 가
+        // 'serverError.unauthorized' 검사 후 SignInPrompt 분기. 일반 error 는 message 만 저장 (기존 동작).
+        const isSae = e instanceof ServerActionError;
+        set({
+          loading: false,
+          error: e instanceof Error ? e.message : String(e),
+          errorKey: isSae ? e.errorKey : null
+        });
         throw e;
       } finally {
         initInflight = null;

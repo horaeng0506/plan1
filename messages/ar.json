@@ -1,12 +1,12 @@
 {
   "app": {
     "tagline": "مدير الجداول",
-    "title": "خطة1"
+    "title": "plan1"
   },
   "auth": {
     "signIn": "تسجيل الدخول باستخدام Google",
-    "signInDescription": "plan1 هو أداة جدولة شخصية مع مزامنة عبر الأجهزة. سجل الدخول باستخدام Google للبدء.",
-    "signInRequired": "سجل الدخول لاستخدام plan1"
+    "signInDescription": "plan1 هي أداة جدولة شخصية مع مزامنة عبر الأجهزة. قم بتسجيل الدخول باستخدام Google للبدء.",
+    "signInRequired": "قم بتسجيل الدخول لاستخدام plan1"
   },
   "category": {
     "confirmRemoveLabel": "تأكيد الحذف ({count})",
@@ -16,7 +16,7 @@
     "fieldColor": "اللون",
     "fieldName": "الاسم",
     "header": "الفئات",
-    "removeButton": "إزالة",
+    "removeButton": "حذف",
     "scheduleCountSuffix": "{count} جداول"
   },
   "common": {
@@ -25,44 +25,44 @@
     "close": "إغلاق",
     "confirmDelete": "تأكيد الحذف",
     "delete": "حذف",
-    "dismiss": "رفض",
+    "dismiss": "إغلاق",
     "now": "الآن",
     "retry": "إعادة المحاولة",
     "save": "حفظ"
   },
   "error": {
+    "featureUnavailable": "هذه الميزة غير متاحة بعد ({feature}).",
     "loadFailedLabel": "فشل التحميل:",
     "mutationFailed": "فشل {action}: {error}",
     "unknown": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
-    "featureUnavailable": "This feature is not yet available ({feature}).",
-    "workingHoursInvalid": "Invalid working hours input ({reason})."
+    "workingHoursInvalid": "إدخال ساعات العمل غير صالح ({reason})."
   },
   "header": {
     "clock": "ساعة",
-    "timer": "مؤقت",
+    "timer": "المؤقت",
     "today": "اليوم",
-    "week": "الأسبوع"
+    "week": "أسبوع"
   },
   "loading": "جارٍ التحميل...",
   "meta": {
     "activeLabel": "نشط",
-    "amLower": "صباحاً",
+    "amLower": "ص",
     "eventsLabel": "الأحداث",
     "idle": "خامل",
-    "loadingFormat": "{name} · جارٍ التحميل...",
+    "loadingFormat": "{name} · جاري التحميل...",
     "placeholder": "—",
-    "pmLower": "مساءً",
+    "pmLower": "م",
     "spanSuffix": "أ",
     "twelveHour": "12س"
   },
   "mutation": {
     "changeTimerType": "تغيير نوع المؤقت",
-    "completeSchedule": "الجدول الكامل",
-    "extendTimer": "مؤقت التمديد",
+    "completeSchedule": "إكمال الجدول",
+    "extendTimer": "تمديد المؤقت",
     "pinActiveTimer": "تثبيت المؤقت النشط",
     "removeCategory": "إزالة الفئة",
     "setTheme": "تعيين السمة",
-    "setWeekSpan": "تحديد نطاق الأسبوع",
+    "setWeekSpan": "تعيين نطاق الأسبوع",
     "toggleWeeklyPanel": "تبديل اللوحة الأسبوعية"
   },
   "nav": {
@@ -75,28 +75,28 @@
     "weekSpan2": "2أ",
     "weekSpan3": "3أ",
     "weeklyHide": "إخفاء الأسبوع",
-    "weeklyShow": "عرض الأسبوع",
+    "weeklyShow": "إظهار الأسبوع",
     "workingHours": "ساعات"
   },
   "onboarding": {
-    "addFirst": "إضافة الجدول الأول",
-    "firstSchedule": "أضف جدولك الأول لرؤيته على الشبكة الأسبوعية، والجدول الزمني لليوم، والساعة التناظرية.",
+    "addFirst": "إضافة أول جدول",
+    "firstSchedule": "أضف جدولك الأول لرؤيته على الشبكة الأسبوعية، والجدول الزمني اليوم، والساعة التناظرية.",
     "welcome": "لا توجد جداول بعد"
   },
   "schedule": {
-    "buttonMinus10": "-10 دقائق",
-    "buttonMinus30": "-30 دقيقة",
+    "buttonMinus10": "10د-",
+    "buttonMinus30": "30د-",
     "buttonNextAfter": "التالي +10د (جدول جديد بعد الاكتمال)",
     "buttonNow": "الآن (البداية = الآن)",
-    "buttonPlus10": "+10 دقائق",
-    "buttonPlus30": "+30 دقيقة",
-    "buttonPlusHour": "+1 ساعة",
+    "buttonPlus10": "10د+",
+    "buttonPlus30": "30د+",
+    "buttonPlusHour": "1س+",
     "categoryAddOption": "+ إضافة فئة",
-    "chainedCheckbox": "ربط بالجدول السابق (استقبال التتالي)",
-    "chainedHelp": "عندما يمتد الجدول السابق أو ينكمش، يتحرك هذا معه (مع الحفاظ على الفجوة).",
+    "chainedCheckbox": "ربط بالجدول السابق (استقبال التسلسل)",
+    "chainedHelp": "عندما يمتد أو يتقلص الجدول السابق، ينتقل هذا معه (مع الحفاظ على الفجوة).",
     "endEmpty": "— (المدة 0د)",
     "endLabel": "النهاية",
-    "fieldCategory": "فئة",
+    "fieldCategory": "الفئة",
     "fieldDuration": "المدة (دقيقة)",
     "fieldName": "الاسم",
     "fieldStartDate": "تاريخ البدء",
@@ -106,16 +106,25 @@
     "headerNew": "جدول جديد",
     "hourSuffix": "س",
     "minuteSuffix": "د",
-    "nextAfterTooltip": "حفظ التعديل الحالي (إذا كان معدلاً) وفتح نافذة جدول جديد مع البداية = ينتهي-في + 10 دقائق",
-    "warningEditIncomplete": "التعديل الحالي غير مكتمل (تحقق من الاسم/الفئة/المدة). لم يتم الحفظ — قم بالإصلاح وأعد المحاولة.",
+    "nextAfterTooltip": "حفظ التعديل الحالي (إذا كان متسخاً) وفتح نافذة جدول جديد مع البدء = endAt + 10د",
+    "startModeAfterPrev": "مباشرة بعد الجدول السابق",
+    "startModeLabel": "وضع البدء",
+    "startModeNoPrevHint": "لا يوجد جدول سابق اليوم",
+    "startModeNow": "ابدأ الآن",
+    "warningEditIncomplete": "التعديل الحالي غير مكتمل (تحقق من الاسم/الفئة/المدة). لم يتم الحفظ — أصلح وأعد المحاولة.",
     "warningFutureRequired": "يجب أن يكون وقت البدء في المستقبل.",
-    "warningOverlapLimit": "بحد أقصى {limit} مواعيد يمكن أن تتداخل في نفس الوقت. اضبط البداية/المدة أو أزل عنصرًا موجودًا."
+    "warningOverlapLimit": "يمكن تداخل {limit} جداول كحد أقصى في نفس الوقت. اضبط البداية/المدة أو احذف جدولًا موجودًا."
   },
   "serverError": {
-    "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتتالي للإزالة.",
-    "categoryNotFound": "الفئة غير موجودة أو ليست مملوكة.",
+    "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. قم بتأكيد الحذف المتسلسل للإزالة.",
+    "categoryNotFound": "الفئة غير موجودة أو غير مملوكة.",
     "scheduleNotFound": "الجدول غير موجود.",
     "unauthorized": "تسجيل الدخول مطلوب."
+  },
+  "signIn": {
+    "cta": "تسجيل الدخول",
+    "description": "قم بتسجيل الدخول إلى حساب cofounder الخاص بك لعرض وإدارة جداولك.",
+    "title": "تسجيل الدخول مطلوب"
   },
   "timer": {
     "buttonComplete": "مكتمل",
@@ -127,33 +136,33 @@
     "labelEndAt": "ينتهي-في",
     "labelRemaining": "المتبقي",
     "labelTarget": "الهدف",
+    "labelUntilUpcoming": "حتى القادم",
+    "labelUpcoming": "الجدول التالي",
     "overlapLabel": "تداخل {count}",
     "pinAuto": "تلقائي (الأول)",
     "pinLabel": "تثبيت",
-    "tooltipClickToFocus": "انقر للتبديل إلى التركيز",
-    "tooltipClickToIdle": "انقر للتبديل إلى الخمول",
+    "simultaneousLabel": "متزامن · {count}",
+    "tooltipClickToFocus": "انقر للتبديل إلى تركيز",
+    "tooltipClickToIdle": "انقر للتبديل إلى خامل",
     "typeCountdown": "العد التنازلي",
-    "typeCountup": "العد التصاعدي",
-    "typeTimer1": "مؤقت1",
-    "labelUpcoming": "الجدول التالي",
-    "labelUntilUpcoming": "حتى التالي",
-    "simultaneousLabel": "متزامن · {count}"
+    "typeCountup": "عد تصاعدي",
+    "typeTimer1": "timer1"
   },
   "topbar": {
     "back": "العودة إلى البوابة",
-    "creditsLabel": "الأرصدة",
+    "creditsLabel": "الاعتمادات",
     "creditsPlaceholder": "—",
     "guest": "ضيف",
     "languageLabel": "اللغة",
     "logout": "تسجيل الخروج"
   },
   "wallTime": {
-    "am": "صباحاً",
-    "pm": "مساءً"
+    "am": "ص",
+    "pm": "م"
   },
   "weekdays": {
     "0": "الأحد",
-    "1": "الإثنين",
+    "1": "الاثنين",
     "2": "الثلاثاء",
     "3": "الأربعاء",
     "4": "الخميس",
@@ -161,9 +170,9 @@
     "6": "السبت"
   },
   "workingHours": {
-    "checkboxAlsoDefault": "حفظ أيضاً كافتراضي",
-    "checkboxWeekdaysOnly": "أيام الأسبوع فقط (الإثنين–الجمعة)",
-    "errorEndAfterStart": "يجب أن يكون وقت النهاية بعد وقت البدء.",
+    "checkboxAlsoDefault": "حفظ أيضًا كإعداد افتراضي",
+    "checkboxWeekdaysOnly": "أيام الأسبوع فقط (الاثنين–الجمعة)",
+    "errorEndAfterStart": "يجب أن يكون وقت الانتهاء بعد وقت البدء.",
     "errorToAfterFrom": "يجب أن يكون تاريخ النهاية في أو بعد تاريخ البدء.",
     "fieldDate": "التاريخ",
     "fieldEndTime": "وقت الانتهاء",
@@ -171,9 +180,9 @@
     "fieldStartTime": "وقت البدء",
     "fieldToDate": "إلى",
     "header": "ساعات العمل",
-    "tabRange": "نطاق",
+    "tabRange": "النطاق",
     "tabSingle": "فردي",
     "warningNoDates": "لا توجد تواريخ للتطبيق في النطاق. (البداية > النهاية أو تعارض أيام الأسبوع فقط)",
-    "warningTruncated": "النطاق يتجاوز {max} يوم، تمت معالجة جزئية فقط. جرب نطاقاً أضيق."
+    "warningTruncated": "النطاق يتجاوز {max} يوم، تمت المعالجة الجزئية فقط. حاول نطاقًا أضيق."
   }
 }

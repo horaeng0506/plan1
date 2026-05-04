@@ -76,6 +76,11 @@ export function NewScheduleModal({
   const [minute, setMinute] = useState<number>(initMinute);
   const [durationMin, setDurationMin] = useState<number>(initDuration);
   const [chainedToPrev, setChainedToPrev] = useState<boolean>(initChained);
+  // PLAN1-LOGIN-START-OPT-20260504 #7: 새 스케줄 시작 시점 라디오.
+  // 'now' = 기존 동작 (defaultHour() · 사용자 자유 입력)
+  // 'afterPrev' = 오늘 이전 스케줄의 endAt 으로 자동 set + chainedToPrev 자동 true
+  // 편집 모드 (isEdit) 일 때는 startMode UI 노출 X — 기존 schedule 수정 의미 그대로.
+  const [startMode, setStartMode] = useState<'now' | 'afterPrev'>('now');
   const [catOpen, setCatOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   // Track 1 fix (2026-04-29): submit/handleNextAfter/handleDelete catch + 사용자 표시.
@@ -93,6 +98,36 @@ export function NewScheduleModal({
     },
     []
   );
+
+  // PLAN1-LOGIN-START-OPT-20260504 #7: 오늘 이전 스케줄의 endAt 계산.
+  // 오늘 (todayKey) schedule 중 startAt 가장 큰 것의 startAt + durationMin*60s.
+  // 0건 → null → afterPrev 옵션 비활성.
+  // editing 모드 시 항상 null (기존 schedule 수정 — startMode 무관).
+  const prevScheduleEndAt: number | null = useMemo(() => {
+    if (isEdit) return null;
+    const today = todayKey();
+    const todaySchedules = schedules.filter(s => dateKeyFromMs(s.startAt) === today);
+    if (todaySchedules.length === 0) return null;
+    const lastSchedule = todaySchedules.reduce((a, b) => (a.startAt >= b.startAt ? a : b));
+    return lastSchedule.startAt + lastSchedule.durationMin * 60_000;
+  }, [schedules, isEdit]);
+
+  // PLAN1-LOGIN-START-OPT-20260504 #7: startMode='afterPrev' 선택 시 자동 채움.
+  // useEffect 안 setState 는 React 19 lint (react-hooks/set-state-in-effect) 차단 →
+  // 라디오 onChange 핸들러에서 직접 setState (event-driven).
+  function selectAfterPrev() {
+    if (prevScheduleEndAt === null) return; // disabled 상태 보호
+    setStartMode('afterPrev');
+    const d = new Date(prevScheduleEndAt);
+    setDate(`${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`);
+    setHour(d.getHours());
+    setMinute(d.getMinutes());
+    setChainedToPrev(true);
+  }
+  function selectNow() {
+    setStartMode('now');
+    // 'now' 로 복귀 시 사용자가 직접 시간 조정. 자동 채움 X.
+  }
 
   const startAt = useMemo(() => {
     const [y, m, d] = date.split('-').map(Number);
@@ -330,6 +365,48 @@ export function NewScheduleModal({
                 <option value="__NEW__">{t('schedule.categoryAddOption')}</option>
               </select>
             </label>
+            {/* PLAN1-LOGIN-START-OPT-20260504 #7: 시작 시점 라디오 (편집 모드 X). */}
+            {!isEdit && (
+              <fieldset className="rounded-none border border-line bg-bg p-3">
+                <legend className="px-1 text-xs font-mono text-muted">
+                  {t('schedule.startModeLabel')}
+                </legend>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-2 text-sm font-mono">
+                    <input
+                      type="radio"
+                      name="startMode"
+                      value="now"
+                      checked={startMode === 'now'}
+                      onChange={selectNow}
+                    />
+                    <span>{t('schedule.startModeNow')}</span>
+                  </label>
+                  <label
+                    className={`flex items-center gap-2 text-sm font-mono ${
+                      prevScheduleEndAt === null ? 'opacity-50' : ''
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="startMode"
+                      value="afterPrev"
+                      checked={startMode === 'afterPrev'}
+                      disabled={prevScheduleEndAt === null}
+                      onChange={selectAfterPrev}
+                    />
+                    <span>
+                      {t('schedule.startModeAfterPrev')}
+                      {prevScheduleEndAt === null && (
+                        <span className="ml-2 text-xs text-muted">
+                          ({t('schedule.startModeNoPrevHint')})
+                        </span>
+                      )}
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+            )}
             <label className="block">
               <span className="mb-1 block text-sm text-txt">{t('schedule.fieldStartDate')}</span>
               <input
