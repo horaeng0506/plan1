@@ -56,11 +56,12 @@ async function applySplitForUser(userId: string): Promise<void> {
         endMin: settingsRow[0].defaultWorkingHoursEndMin
       }
     : {startMin: 540, endMin: 1080};
+  const userTz = settingsRow[0]?.userTz ?? 'Asia/Seoul';
 
   const before = scheduleRows.map(scheduleRowToDomain);
   // logic-critic Critical #1·#2: split input 은 원본만. 기존 part 는 split 가 deterministic ID 로 재생성.
   const originals = before.filter(s => !s.splitFrom);
-  const after = splitByWorkingHours(originals, workingHours, defaultWH);
+  const after = splitByWorkingHours(originals, workingHours, defaultWH, userTz);
 
   const beforeIds = new Set(before.map(s => s.id));
   const afterIds = new Set(after.map(s => s.id));

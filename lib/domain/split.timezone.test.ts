@@ -101,20 +101,19 @@ describe('splitByWorkingHours — TZ race fall-back regression', () => {
     expect(result[0].startAt).toBe(startAt);
   });
 
-  it('4. day boundary KST 23:30 + 60min schedule → server TZ KST 시 day boundary 정확', () => {
+  it('4. day boundary KST 23:30 + 60min schedule → fittable=0 → roll forward 다음날 09:00', () => {
     // KST 5/4 23:30 + 60min = KST 5/5 00:30
     // server TZ KST 시: dateKey = '2026-05-04' (시작 기준), minutesOfDay = 1410
     // wh.endMin = 1080 → endMin = 1470 > 1080 → split 유발
-    // fittable = max(0, 1080 - 1410) = 0 → next day 9:00 으로 이동
+    // fittable = max(0, 1080 - 1410) = 0 → roll forward (split 아닌 reschedule · 2026-04-30 fix)
     const startAt = kstWallClockMs(2026, 5, 4, 23, 30);
     const sched = mkSchedule('s-tz-4', startAt, 60);
     const result = splitByWorkingHours([sched], {}, DEFAULT_WH);
 
-    // split 결과: original (시작 23:30 fittable 0 → 빈 part 안 남김) + part dayIndex=1 (5/5 09:00)
-    // 검증: part 의 startAt 이 KST 5/5 09:00 ms 와 정확 일치
-    const expectedNextDay = kstWallClockMs(2026, 5, 5, 9);
-    const part = result.find(s => s.splitFrom === 's-tz-4');
-    expect(part).toBeDefined();
-    expect(part!.startAt).toBe(expectedNextDay);
+    // 단일 원본 schedule + startAt 만 다음날 09:00 KST 으로 이동 (split_from 없음 · FK 안전)
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('s-tz-4');
+    expect(result[0].splitFrom).toBeUndefined();
+    expect(result[0].startAt).toBe(kstWallClockMs(2026, 5, 5, 9));
   });
 });

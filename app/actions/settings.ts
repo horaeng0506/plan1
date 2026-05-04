@@ -27,6 +27,7 @@ const DEFAULT_SETTINGS = {
   weeklyPanelHidden: false,
   defaultWorkingHoursStartMin: 540, // 09:00
   defaultWorkingHoursEndMin: 1080, // 18:00
+  userTz: 'Asia/Seoul',
   pinnedActiveId: null as string | null
 };
 
@@ -39,6 +40,7 @@ function rowToDomain(row: typeof plan1Settings.$inferSelect): AppSettings {
       startMin: row.defaultWorkingHoursStartMin,
       endMin: row.defaultWorkingHoursEndMin
     },
+    userTz: row.userTz,
     pinnedActiveId: row.pinnedActiveId
   };
 }
@@ -92,6 +94,7 @@ export async function updateSettings(
       dbPatch.defaultWorkingHoursStartMin = patch.defaultWorkingHours.startMin;
       dbPatch.defaultWorkingHoursEndMin = patch.defaultWorkingHours.endMin;
     }
+    if (patch.userTz !== undefined) dbPatch.userTz = patch.userTz;
     if (patch.pinnedActiveId !== undefined) dbPatch.pinnedActiveId = patch.pinnedActiveId;
 
     const [updated] = await db

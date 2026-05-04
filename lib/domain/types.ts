@@ -24,5 +24,9 @@ export interface AppSettings {
   weekViewSpan: 1 | 2 | 3;
   weeklyPanelHidden: boolean;
   defaultWorkingHours: { startMin: number; endMin: number };
+  // 옵션 A (PLAN1-SCHEDULE-OPT-A · 2026-05-04) — user wall-clock TZ.
+  // splitByWorkingHours 의 day boundary + minutes-of-day 산출에 사용.
+  // server local TZ (Vercel iad1=UTC) 무관. IANA TZ name. default 'Asia/Seoul'.
+  userTz: string;
   pinnedActiveId?: ScheduleId | null;
 }

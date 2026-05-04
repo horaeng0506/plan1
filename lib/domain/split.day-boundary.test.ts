@@ -42,15 +42,17 @@ describe('splitByWorkingHours — day boundary BVA', () => {
     else delete process.env.TZ;
   });
 
-  it('1. KST 23:30 + 30min → fittable 0 → 다음날 09:00 single part', () => {
+  it('1. KST 23:30 + 30min → fittable=0 → roll forward 다음날 09:00 (split 아님)', () => {
     const startAt = kstMs(2026, 5, 4, 23, 30);
     const sched = mkSchedule('db-1', startAt, 30);
     const result = splitByWorkingHours([sched], {}, DEFAULT_WH);
 
-    const part = result.find(s => s.splitFrom === 'db-1');
-    expect(part).toBeDefined();
-    expect(part!.startAt).toBe(kstMs(2026, 5, 5, 9));
-    expect(part!.durationMin).toBe(30);
+    // 2026-04-30 fix: startAt 이 WH endMin 이후 → roll forward (split 아닌 reschedule)
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('db-1');
+    expect(result[0].splitFrom).toBeUndefined();
+    expect(result[0].startAt).toBe(kstMs(2026, 5, 5, 9));
+    expect(result[0].durationMin).toBe(30);
   });
 
   it('2. KST 17:30 + 60min (정확히 wh.endMin 와 일치) → split 안 일어남', () => {

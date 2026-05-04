@@ -32,7 +32,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   theme: 'system',
   weekViewSpan: 1,
   weeklyPanelHidden: false,
-  defaultWorkingHours: {startMin: 540, endMin: 1080}
+  defaultWorkingHours: {startMin: 540, endMin: 1080},
+  userTz: 'Asia/Seoul'
 };
 
 // Stage 5 i18n: name='default' 영어 base. 표시 시 useCategoryDisplay() 가 name 매칭으로

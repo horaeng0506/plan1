@@ -132,6 +132,9 @@ export const plan1Settings = plan1Schema.table('settings', {
   weeklyPanelHidden: boolean('weekly_panel_hidden').$defaultFn(() => false).notNull(),
   defaultWorkingHoursStartMin: integer('default_working_hours_start_min').notNull(),
   defaultWorkingHoursEndMin: integer('default_working_hours_end_min').notNull(),
+  // 옵션 A (PLAN1-SCHEDULE-OPT-A · 2026-05-04) — user wall-clock TZ. split.ts user TZ aware 인자.
+  // Vercel iad1 (UTC) ↔ user KST 충돌 fall-back 차단. IANA TZ name (e.g. 'Asia/Seoul' · 'America/Los_Angeles').
+  userTz: text('user_tz').notNull().default('Asia/Seoul'),
   pinnedActiveId: text('pinned_active_id').references((): AnyPgColumn => plan1Schedules.id, {
     onDelete: 'set null'
   }),

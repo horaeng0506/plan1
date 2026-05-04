@@ -55,6 +55,7 @@ async function loadUserState(
   schedules: Schedule[];
   workingHours: Record<string, WorkingHours>;
   defaultWH: {startMin: number; endMin: number};
+  userTz: string;
 }> {
   // Track 1.5 phase 3 fix (2026-04-29): ownership SELECT + loadState 3 SELECT 을 1 batch 로
   // 통합. cross-continent RTT × 2 (ownership 700ms + loadState 700ms = 1400ms) → RTT × 1 (~700ms)
@@ -87,7 +88,8 @@ async function loadUserState(
           endMin: settingsRow[0].defaultWorkingHoursEndMin
         }
       : {startMin: 540, endMin: 1080};
-    return {schedules: scheduleRows.map(rowToDomain), workingHours, defaultWH};
+    const userTz = settingsRow[0]?.userTz ?? 'Asia/Seoul';
+    return {schedules: scheduleRows.map(rowToDomain), workingHours, defaultWH, userTz};
   }
 
   // ownership 검증 불요 (completeSchedule · updateSchedule categoryId 미변경)
@@ -112,11 +114,13 @@ async function loadUserState(
         endMin: settingsRow[0].defaultWorkingHoursEndMin
       }
     : {startMin: 540, endMin: 1080}; // 09:00~18:00 default
+  const userTz = settingsRow[0]?.userTz ?? 'Asia/Seoul';
 
   return {
     schedules: scheduleRows.map(rowToDomain),
     workingHours,
-    defaultWH
+    defaultWH,
+    userTz
   };
 }
 
@@ -236,7 +240,7 @@ export async function createSchedule(input: {
     };
     const originals = state.schedules.filter(s => !s.splitFrom);
     const merged = [...originals, newSchedule];
-    const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH);
+    const split = splitByWorkingHours(merged, state.workingHours, state.defaultWH, state.userTz);
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, split);
     return split;
@@ -282,7 +286,7 @@ export async function updateSchedule(input: {
     const cascaded = cascade(metaPatched, input.id, newStartAt, newDuration);
 
     // split 가 deterministic ID 로 part 재생성 (idempotent — Critical #1).
-    const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
+    const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH, state.userTz);
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, split);
     return split;
@@ -329,7 +333,7 @@ export async function completeSchedule(input: {
         : s
     );
 
-    const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH);
+    const split = splitByWorkingHours(cascaded, state.workingHours, state.defaultWH, state.userTz);
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, split);
     return split;
