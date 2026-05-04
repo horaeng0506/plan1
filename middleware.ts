@@ -9,7 +9,9 @@ import {routing} from './i18n/routing';
 //   - 그 외 GET 페이지: cofounder_jwt cookie 부재 시 portal refresh-jwt 로 self-heal redirect (race condition fix)
 //   - 그 후 next-intl locale detect (쿠키 NEXT_LOCALE 기반, portal 와 동일 origin 쿠키 공유)
 //
-// Next.js 16 부터 file convention `middleware.ts` → `proxy.ts` 리네임 (nodejs runtime 고정 · edge 미지원).
+// Next.js 16 file convention: middleware.ts (nodejs runtime 고정 · edge 미지원).
+// PLAN1-AUTH-FLAKE-VERIFY (2026-05-04): proxy.ts → middleware.ts 환원. proxy.ts file convention 의
+// preview build 작동성 의심 (cookie 부재 redirect 미발동) → middleware.ts 정공 사용.
 
 const intlProxy = createIntlMiddleware(routing);
 
@@ -107,7 +109,7 @@ function authRedirectIfMissingJwt(request: NextRequest): NextResponse | null {
   return NextResponse.redirect(refreshUrl, {status: 302});
 }
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const {pathname} = request.nextUrl;
   // /api/** 경로: next-intl 우회 + POST 만 rate limit. GET 은 그대로 통과.
   // Stage 8 follow-up (2026-04-28): GET /api/health 가 intlProxy 통과 시 _not-found
