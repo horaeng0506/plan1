@@ -119,4 +119,76 @@ test.describe('plan1 mutation E2E — A4 스케줄 편집', () => {
     await expect(cleanup.heading).toBeHidden({timeout: SLA_COLD_MS});
     await expect(page.getByText(title)).toHaveCount(0, {timeout: 3_000});
   });
+
+  /**
+   * 14:00 fall-back 회귀 catch — 수정 시 startAt 보존 (PLAN1-SCHEDULE-OPT-A · 2026-05-04).
+   *
+   * 사고: prod 사용자 schedule 수정 시도 → 수정 시도해도 14:00 으로 회귀.
+   * root cause: updateSchedule 도 splitByWorkingHours 거침 (createSchedule 동일 chain).
+   *
+   * 옵션 A 적용 후 검증: hour=7 schedule 등록 → 같은 schedule 수정 (제목만 변경) → hour 그대로 7
+   */
+  test('14:00 fall-back 회귀 catch — update 시 startAt 보존 (제목 변경만)', async ({page}) => {
+    const title = `qa-edit-tz-${Date.now()}`;
+    const newTitle = `${title}-edited`;
+    const catName = `cat-edit-tz-${Date.now()}`;
+    const expectedHour = 7;
+
+    await page.goto('/project/plan1/');
+
+    await page.getByRole('button', {name: '카테고리'}).click();
+    const cat = dialogOf(page, /categories|카테고리/i);
+    await expect(cat.dialog).toBeVisible({timeout: 5_000});
+    await cat.dialog.getByRole('textbox').first().fill(catName);
+    await cat.dialog.getByRole('button', {name: '추가', exact: true}).click();
+    await expect(cat.dialog.getByText(catName)).toBeVisible({timeout: SLA_COLD_MS});
+    await cat.dialog.getByRole('button', {name: '닫기', exact: true}).click();
+    await expect(cat.dialog).toBeHidden({timeout: 3_000});
+
+    await page.getByRole('button', {name: '+ 새 스케줄'}).click();
+    const sched = dialogOf(page, '새 스케줄');
+    await expect(sched.heading).toBeVisible({timeout: 5_000});
+    await sched.dialog.getByRole('textbox').first().fill(title);
+    const tomorrow = new Date(Date.now() + 86_400_000);
+    const tomorrowIso = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
+    await sched.dialog.locator('input[type="date"]').fill(tomorrowIso);
+    await sched.dialog.locator('select').nth(1).selectOption(String(expectedHour));
+    await sched.dialog.locator('input[type="number"]').fill('30');
+    await sched.dialog.getByRole('button', {name: '추가', exact: true}).click();
+    await expect(sched.heading).toBeHidden({timeout: SLA_COLD_MS + 2_000});
+
+    if (new Date().getDay() === 0) await page.locator('.fc-next-button').first().click();
+    await expect(page.getByText(title).first()).toBeVisible({timeout: 5_000});
+
+    // 카드 클릭 → 편집 모달 → title 만 수정 (startAt 패치 없음)
+    await page.getByText(title).first().click();
+    const edit = dialogOf(page, '스케줄 편집');
+    await expect(edit.heading).toBeVisible({timeout: 5_000});
+    const titleInput = edit.dialog.getByRole('textbox').first();
+    await titleInput.fill(newTitle);
+    await edit.dialog.getByRole('button', {name: '저장', exact: true}).click();
+    await expect(edit.heading).toBeHidden({timeout: SLA_COLD_MS + 2_000});
+
+    // round-trip: 새 제목 카드 클릭 → hour select 가 여전히 7 (14:00 회귀 catch)
+    await expect(page.getByText(newTitle).first()).toBeVisible({timeout: 5_000});
+    await page.getByText(newTitle).first().click();
+    const reopen = dialogOf(page, '스케줄 편집');
+    await expect(reopen.heading).toBeVisible({timeout: 5_000});
+    const hourSelect = reopen.dialog.locator('select').nth(1);
+    const actualHour = await hourSelect.inputValue();
+    expect(
+      Number(actualHour),
+      `update (제목 만 변경) 시 hour=${expectedHour} 보존 확인 → round-trip hour=${actualHour}. ` +
+        `14:00 fall-back 회귀 catch (PLAN1-SCHEDULE-OPT-A). ` +
+        `옵션 A 미적용 시 update 흐름의 splitByWorkingHours 가 fall-back 야기.`
+    ).toBe(expectedHour);
+
+    // cleanup
+    await reopen.dialog.getByRole('button', {name: '삭제', exact: true}).click();
+    await reopen.dialog
+      .getByRole('button', {name: '삭제 확인', exact: true})
+      .click();
+    await expect(reopen.heading).toBeHidden({timeout: SLA_COLD_MS});
+    await expect(page.getByText(newTitle)).toHaveCount(0, {timeout: 3_000});
+  });
 });
