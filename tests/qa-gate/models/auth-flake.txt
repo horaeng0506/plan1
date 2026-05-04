@@ -1,0 +1,46 @@
+# plan1 — auth flake (cookie 부재 self-heal redirect) — Critical RPN 80 (인증 = 보안)
+# PLAN1-AUTH-FLAKE-EXEC (2026-05-04)
+# t-way 3 (3-way · 인증=보안 영역 RPN ≥ 80 → NIST Server 89% catch)
+# 4 layer 결합 결함 (race + lifetime + host header + missing recovery) catch 의무
+
+# === 입력 변수 (사용자 보고 증상 + fix 대상 chain 핵심 차원) ===
+
+CookieState:      missing, expired, present
+SessionState:     valid, expired, missing
+EntryPath:        deep_link, portal_first
+RefererSource:    portal_refresh, other, none
+ReturnParam:      cofounder_host, evil_host, missing
+HttpMethod:       get_page, post_server_action
+
+# === Constraints ===
+
+# JWT cookie 가 있으면 portal session 도 valid (JWT 발급 prerequisite)
+IF [CookieState] = "present" THEN [SessionState] = "valid";
+
+# Server action POST 흐름은 redirect 안 함 (UI 가 401 graceful 처리)
+# Return param + open redirect 검증은 portal route 단위 — server action 흐름 외
+IF [HttpMethod] = "post_server_action" THEN [ReturnParam] = "missing";
+
+# RefererSource 는 plan1 proxy.ts 의 무한 루프 가드 검증 — get_page 만 의미
+IF [HttpMethod] = "post_server_action" THEN [RefererSource] = "none";
+
+# evil_host return 은 portal route 단위 검증만 — plan1 proxy 흐름 외
+IF [ReturnParam] = "evil_host" THEN [EntryPath] = "deep_link";
+
+# === 실행 옵션 ===
+# 전체 3-way 환원: pict auth-flake.txt /o:3
+# 핵심 chain (CookieState × SessionState × EntryPath × RefererSource) 자동 포함
+
+# === 핵심 cases (수동 정의 — PICT 출력 보강) ===
+# C1: missing × valid × deep_link × none × cofounder_host × get_page
+#     → portal redirect → cookie set → return 도달 (SLA < 2000ms)
+# C2: missing × valid × portal_first × none × missing × get_page
+#     → portal 의 JwtCookieRefresher 가 cookie set (서버 측 redirect 발동 안 함 — portal 페이지 자체)
+# C3: missing × missing × deep_link × none × cofounder_host × get_page
+#     → portal redirect → portal sign-in 페이지로 redirect
+# C4: missing × valid × deep_link × none × evil_host × get_page
+#     → portal whitelist reject → fallback to portal home (open redirect 차단)
+# C5: missing × any × deep_link × portal_refresh × any × get_page
+#     → 무한 루프 가드 — plan1 proxy 가 redirect 안 함 (next() 통과)
+# C6: present × valid × deep_link × none × missing × get_page
+#     → 정상 플로우 — redirect 없음 · plan1 page 직접 렌더
