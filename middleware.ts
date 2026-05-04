@@ -111,15 +111,29 @@ function authRedirectIfMissingJwt(request: NextRequest): NextResponse | null {
 
 export function middleware(request: NextRequest) {
   const {pathname} = request.nextUrl;
+  // PLAN1-AUTH-FLAKE-VERIFY 디버그 (2026-05-04): middleware fire 확인용.
+  // 검증 후 제거 예정.
+  const debugHeaders = new Headers();
+  debugHeaders.set('x-mw-fired', '1');
+  debugHeaders.set('x-mw-pathname', pathname);
+  debugHeaders.set(
+    'x-mw-cookie-jwt',
+    request.cookies.get('cofounder_jwt') ? 'present' : 'missing'
+  );
+  debugHeaders.set('x-mw-method', request.method);
   // /api/** 경로: next-intl 우회 + POST 만 rate limit. GET 은 그대로 통과.
   // Stage 8 follow-up (2026-04-28): GET /api/health 가 intlProxy 통과 시 _not-found
   // 매칭 → 404. localePrefix:'never' 라도 next-intl middleware 가 GET 라우팅에 개입.
   // /api/** 는 명시적으로 next-intl 우회.
   if (pathname.startsWith('/api/')) {
     if (request.method === 'POST' && rateLimited(request)) {
-      return new NextResponse('rate_limited', {status: 429});
+      const r = new NextResponse('rate_limited', {status: 429});
+      debugHeaders.forEach((v, k) => r.headers.set(k, v));
+      return r;
     }
-    return NextResponse.next();
+    const r = NextResponse.next();
+    debugHeaders.forEach((v, k) => r.headers.set(k, v));
+    return r;
   }
   // security-auditor MEDIUM: server action POST 도 rate limit. Next.js 14+ 는 server
   // action 호출을 `Next-Action` header 가진 POST 로 보냄 (페이지 경로에 직접 POST).
@@ -127,18 +141,27 @@ export function middleware(request: NextRequest) {
     request.method === 'POST' && request.headers.get('next-action') !== null;
   if (isServerActionPost) {
     if (rateLimited(request)) {
-      return new NextResponse('rate_limited', {status: 429});
+      const r = new NextResponse('rate_limited', {status: 429});
+      debugHeaders.forEach((v, k) => r.headers.set(k, v));
+      return r;
     }
     // server action POST 는 next-intl 라우팅 통과 필요 없음 (이미 locale prefixed
     // path 로 들어오면 server action handler 가 처리). 인증은 requireUser 가 처리.
-    return NextResponse.next();
+    const r = NextResponse.next();
+    debugHeaders.forEach((v, k) => r.headers.set(k, v));
+    return r;
   }
 
   // PLAN1-AUTH-FLAKE-EXEC (2026-05-04): GET 페이지 인증 self-heal.
   const authRedirect = authRedirectIfMissingJwt(request);
-  if (authRedirect) return authRedirect;
+  if (authRedirect) {
+    debugHeaders.forEach((v, k) => authRedirect.headers.set(k, v));
+    return authRedirect;
+  }
 
-  return intlProxy(request);
+  const intlResponse = intlProxy(request);
+  debugHeaders.forEach((v, k) => intlResponse.headers.set(k, v));
+  return intlResponse;
 }
 
 export const config = {
