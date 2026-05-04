@@ -40,7 +40,10 @@ function rowToDomain(row: typeof plan1Settings.$inferSelect): AppSettings {
       startMin: row.defaultWorkingHoursStartMin,
       endMin: row.defaultWorkingHoursEndMin
     },
-    userTz: row.userTz,
+    // 옵션 A 가드 (PLAN1-SCHEDULE-VERIFY · 2026-05-04) — schema mismatch 또는 column 부재
+    // 환경에서 fall-back. NOT NULL DEFAULT 'Asia/Seoul' 박혀있어 정상 환경에선 무관하지만
+    // Neon ephemeral branch source mismatch / migration timing race 시 안전 layer.
+    userTz: row.userTz ?? 'Asia/Seoul',
     pinnedActiveId: row.pinnedActiveId
   };
 }
