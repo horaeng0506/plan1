@@ -63,7 +63,8 @@
     "removeCategory": "カテゴリを削除",
     "setTheme": "テーマを設定",
     "setWeekSpan": "週の範囲を設定",
-    "toggleWeeklyPanel": "週間パネルを切り替え"
+    "toggleWeeklyPanel": "週間パネルを切り替え",
+    "setFocus": "set focus view"
   },
   "nav": {
     "categories": "カテゴリ",
@@ -76,7 +77,12 @@
     "weekSpan3": "3週間",
     "weeklyHide": "週を非表示",
     "weeklyShow": "週を表示",
-    "workingHours": "時間"
+    "workingHours": "時間",
+    "focusOff": "all",
+    "focus1h": "1h",
+    "focus2h": "2h",
+    "focus3h": "3h",
+    "focus4h": "4h"
   },
   "onboarding": {
     "addFirst": "最初のスケジュールを追加",

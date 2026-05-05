@@ -39,7 +39,12 @@
     "themeDark": "다크",
     "themeSystem": "자동",
     "weeklyShow": "주간 보이기",
-    "weeklyHide": "주간 숨기기"
+    "weeklyHide": "주간 숨기기",
+    "focusOff": "전체",
+    "focus1h": "1시간",
+    "focus2h": "2시간",
+    "focus3h": "3시간",
+    "focus4h": "4시간"
   },
   "common": {
     "cancel": "취소",
@@ -73,7 +78,8 @@
     "pinActiveTimer": "타이머 고정",
     "setWeekSpan": "주간 범위 설정",
     "setTheme": "테마 설정",
-    "toggleWeeklyPanel": "주간 패널 토글"
+    "toggleWeeklyPanel": "주간 패널 토글",
+    "setFocus": "집중 보기 설정"
   },
   "onboarding": {
     "welcome": "스케줄이 아직 없습니다",

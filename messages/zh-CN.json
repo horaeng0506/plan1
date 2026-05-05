@@ -63,7 +63,8 @@
     "removeCategory": "移除分类",
     "setTheme": "设置主题",
     "setWeekSpan": "设置周跨度",
-    "toggleWeeklyPanel": "切换周视图面板"
+    "toggleWeeklyPanel": "切换周视图面板",
+    "setFocus": "set focus view"
   },
   "nav": {
     "categories": "分类",
@@ -76,7 +77,12 @@
     "weekSpan3": "3周",
     "weeklyHide": "隐藏周",
     "weeklyShow": "显示周",
-    "workingHours": "小时"
+    "workingHours": "小时",
+    "focusOff": "all",
+    "focus1h": "1h",
+    "focus2h": "2h",
+    "focus3h": "3h",
+    "focus4h": "4h"
   },
   "onboarding": {
     "addFirst": "添加第一个日程",

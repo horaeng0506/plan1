@@ -63,7 +63,8 @@
     "removeCategory": "श्रेणी हटाएं",
     "setTheme": "थीम सेट करें",
     "setWeekSpan": "सप्ताह अवधि सेट करें",
-    "toggleWeeklyPanel": "साप्ताहिक पैनल टॉगल करें"
+    "toggleWeeklyPanel": "साप्ताहिक पैनल टॉगल करें",
+    "setFocus": "set focus view"
   },
   "nav": {
     "categories": "श्रेणियाँ",
@@ -76,7 +77,12 @@
     "weekSpan3": "3w",
     "weeklyHide": "सप्ताह छुपाएं",
     "weeklyShow": "सप्ताह दिखाएं",
-    "workingHours": "घंटे"
+    "workingHours": "घंटे",
+    "focusOff": "all",
+    "focus1h": "1h",
+    "focus2h": "2h",
+    "focus3h": "3h",
+    "focus4h": "4h"
   },
   "onboarding": {
     "addFirst": "पहला शेड्यूल जोड़ें",

@@ -69,6 +69,9 @@ export function PlanApp() {
   const init = useAppStore(s => s.init);
   const weekViewSpan = useAppStore(s => s.settings.weekViewSpan);
   const weeklyPanelHidden = useAppStore(s => s.settings.weeklyPanelHidden);
+  // PLAN1-FOCUS-VIEW-UI-20260505 — 집중 보기 모드 UI input.
+  // null = 전체 보기 (0~24h) · 60·120·180·240 = 시계/timeline view 가 [now-N/2, now+N/2] 구간
+  const focusViewMin = useAppStore(s => s.settings.focusViewMin);
   const theme = useAppStore(s => s.settings.theme);
   const updateSettings = useAppStore(s => s.updateSettings);
   const schedules = useAppStore(s => s.schedules);
@@ -205,6 +208,15 @@ export function PlanApp() {
         : 'bg-panel text-txt border-line hover:bg-bg'
     }`;
 
+  // PLAN1-FOCUS-VIEW-UI-20260505 — focusViewMin 선택 button class.
+  // off (null) · 60·120·180·240 분 5개 선택지. spanButtonClass 와 동일 결.
+  const focusButtonClass = (val: number | null) =>
+    `px-2 py-1 text-xs rounded-none border transition-colors font-mono ${
+      focusViewMin === val
+        ? 'bg-ink text-bg border-ink'
+        : 'bg-panel text-txt border-line hover:bg-bg'
+    }`;
+
   const neutralBtn =
     'px-3 py-1 text-sm rounded-none border border-line bg-panel text-txt font-mono hover:bg-bg';
   const primaryBtn =
@@ -281,6 +293,46 @@ export function PlanApp() {
                 onClick={() => runMutation(updateSettings({theme: 'system'}), 'setTheme')}
               >
                 {t('nav.themeSystem')}
+              </button>
+            </div>
+            {/* PLAN1-FOCUS-VIEW-UI-20260505 — 집중 보기 모드 button 그룹.
+                null = 전체 보기 (0~24h · DailyTimeline default) · 60·120·180·240 분 = [now-N/2, now+N/2] 구간 */}
+            <div className="flex gap-1">
+              <button
+                type="button"
+                className={focusButtonClass(null)}
+                onClick={() => runMutation(updateSettings({focusViewMin: null}), 'setFocus')}
+                title={t('nav.focusOff')}
+              >
+                {t('nav.focusOff')}
+              </button>
+              <button
+                type="button"
+                className={focusButtonClass(60)}
+                onClick={() => runMutation(updateSettings({focusViewMin: 60}), 'setFocus')}
+              >
+                {t('nav.focus1h')}
+              </button>
+              <button
+                type="button"
+                className={focusButtonClass(120)}
+                onClick={() => runMutation(updateSettings({focusViewMin: 120}), 'setFocus')}
+              >
+                {t('nav.focus2h')}
+              </button>
+              <button
+                type="button"
+                className={focusButtonClass(180)}
+                onClick={() => runMutation(updateSettings({focusViewMin: 180}), 'setFocus')}
+              >
+                {t('nav.focus3h')}
+              </button>
+              <button
+                type="button"
+                className={focusButtonClass(240)}
+                onClick={() => runMutation(updateSettings({focusViewMin: 240}), 'setFocus')}
+              >
+                {t('nav.focus4h')}
               </button>
             </div>
             <button
