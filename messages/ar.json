@@ -108,7 +108,8 @@
     "minuteSuffix": "د",
     "nextAfterTooltip": "حفظ التعديل الحالي (إذا كان معدلاً) وفتح نافذة جدول جديد مع البداية = ينتهي-في + 10 دقائق",
     "warningEditIncomplete": "التعديل الحالي غير مكتمل (تحقق من الاسم/الفئة/المدة). لم يتم الحفظ — قم بالإصلاح وأعد المحاولة.",
-    "warningFutureRequired": "يجب أن يكون وقت البدء في المستقبل."
+    "warningFutureRequired": "يجب أن يكون وقت البدء في المستقبل.",
+    "warningOverlapLimit": "بحد أقصى {limit} مواعيد يمكن أن تتداخل في نفس الوقت. اضبط البداية/المدة أو أزل عنصرًا موجودًا."
   },
   "serverError": {
     "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتتالي للإزالة.",
@@ -133,7 +134,10 @@
     "tooltipClickToIdle": "انقر للتبديل إلى الخمول",
     "typeCountdown": "العد التنازلي",
     "typeCountup": "العد التصاعدي",
-    "typeTimer1": "مؤقت1"
+    "typeTimer1": "مؤقت1",
+    "labelUpcoming": "الجدول التالي",
+    "labelUntilUpcoming": "حتى التالي",
+    "simultaneousLabel": "متزامن · {count}"
   },
   "topbar": {
     "back": "العودة إلى البوابة",

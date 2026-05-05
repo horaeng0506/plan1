@@ -6,7 +6,14 @@ import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
 import {useCategoryDisplay} from '@/lib/category-display';
 import {useRunMutation} from '@/lib/use-run-mutation';
-import {pad2} from '@/lib/date-format';
+import {pad2, dateKeyFromMs, todayKey} from '@/lib/date-format';
+import {
+  loadTimerState,
+  saveTimerState,
+  clearTimerState,
+  pruneTimerStates,
+  type TimerUIState
+} from '@/lib/timer-state';
 import type {Schedule, TimerType} from '@/lib/domain/types';
 
 function findActiveSchedules(schedules: Schedule[], now: number): Schedule[] {
@@ -17,6 +24,22 @@ function findActiveSchedules(schedules: Schedule[], now: number): Schedule[] {
     if (s.startAt <= now && now < end) result.push(s);
   }
   return result;
+}
+
+/**
+ * PLAN1-TIMER-DUP-20260504 #3: 빈 시간 카운트다운용 — 오늘 시작이 now 이후인
+ * 미완료 schedule 중 가장 이른 것. 오늘 한정 (다음날 schedule 은 표시 안 함).
+ */
+function findNextUpcomingToday(schedules: Schedule[], now: number): Schedule | null {
+  const today = todayKey();
+  let best: Schedule | null = null;
+  for (const s of schedules) {
+    if (s.status === 'done') continue;
+    if (s.startAt <= now) continue;
+    if (dateKeyFromMs(s.startAt) !== today) continue;
+    if (!best || s.startAt < best.startAt) best = s;
+  }
+  return best;
 }
 
 function formatHMS(ms: number): string {
@@ -35,57 +58,53 @@ function formatWall12(ms: number, amLabel: string, pmLabel: string): string {
   return `${ampm} ${h12}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
 }
 
-export function ActiveTimer() {
+interface TimerCardProps {
+  active: Schedule;
+  now: number;
+  amLabel: string;
+  pmLabel: string;
+}
+
+/**
+ * 단일 schedule 의 timer 표시 + 컨트롤. PLAN1-TIMER-DUP-20260504 #6.2 위해 함수
+ * 분리 — main 1개 표시 vs 2개 동시 표시 시 동일 컴포넌트 재사용.
+ *
+ * timer1 persistence (#4): frozen·idleSince 를 schedule.id 별 localStorage 보관.
+ * 다른 schedule 로 active 전환되었다가 돌아와도 idleSince 보존 → idle 누적 분
+ * 잃지 않음. idle 종료 시점 (focus 복귀) 에 server.extendScheduleBy 합산 + clear.
+ */
+function TimerCard({active, now, amLabel, pmLabel}: TimerCardProps) {
   const t = useTranslations();
   const runMutation = useRunMutation();
   const categoryDisplay = useCategoryDisplay();
-  const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
-  const pinnedActiveId = useAppStore(s => s.settings.pinnedActiveId);
-  const updateSettings = useAppStore(s => s.updateSettings);
   const extendScheduleBy = useAppStore(s => s.extendScheduleBy);
   const completeSchedule = useAppStore(s => s.completeSchedule);
   const updateSchedule = useAppStore(s => s.updateSchedule);
-  // Stage 4d-B: useState+interval → 공유 useNow (1초 interval 단일화).
-  // hydration 가드: nowMs === 0 → null (SSR snapshot · canSubmit/findActive 차단).
-  const nowMs = useNow();
-  const now: number | null = nowMs > 0 ? nowMs : null;
-  // Stage 5 critic logic Minor #2: 1초 tick 매번 t() 호출 회피 — useMemo 1회.
-  const wallLabels = useMemo(
-    () => ({am: t('wallTime.am'), pm: t('wallTime.pm')}),
-    [t]
-  );
 
-  const actives = useMemo(
-    () => (now === null ? [] : findActiveSchedules(schedules, now)),
-    [schedules, now]
-  );
-  const pinned = pinnedActiveId ? actives.find(a => a.id === pinnedActiveId) : null;
-  const active = pinned ?? actives[0] ?? null;
-
-  const [frozen, setFrozen] = useState<boolean>(true);
-  const [idleSince, setIdleSince] = useState<number | null>(null);
-  const lastActiveIdRef = useRef<string | null>(null);
-
+  // localStorage backed state — schedule.id 별 보존. SSR snapshot 단계 (typeof window
+  // === 'undefined') 에선 default {frozen:true, idleSince:null}, mount 후 rehydrate.
+  const [timerUI, setTimerUI] = useState<TimerUIState>({
+    frozen: true,
+    idleSince: null
+  });
+  const lastIdRef = useRef<string | null>(null);
   useEffect(() => {
-    if (active?.id !== lastActiveIdRef.current) {
-      lastActiveIdRef.current = active?.id ?? null;
-      setFrozen(true);
-      setIdleSince(null);
+    // active.id 변경 시 (또는 첫 mount) localStorage 에서 rehydrate.
+    if (active.id !== lastIdRef.current) {
+      lastIdRef.current = active.id;
+      setTimerUI(loadTimerState(active.id));
     }
-  }, [active?.id]);
+  }, [active.id]);
 
-  // toggleFreeze busy state — 빠른 토글 race 방지 (Stage 3e logic-critic Medium #4).
-  // Stage 3f logic-critic Critical: 두 분기 모두 togglePending 체크 — focus→idle 도 락 진입.
+  // 변경 시 localStorage 동기화. mount 직후 default 값 저장은 회피 (lastIdRef 동기화 후).
+  useEffect(() => {
+    if (lastIdRef.current === active.id) {
+      saveTimerState(active.id, timerUI);
+    }
+  }, [active.id, timerUI]);
+
   const [togglePending, setTogglePending] = useState(false);
-
-  if (!active || now === null) {
-    return (
-      <div className="rounded-none border border-dashed border-line p-6 text-center text-sm text-muted font-mono">
-        {t('timer.idleEmpty')}
-      </div>
-    );
-  }
 
   const category = categories.find(c => c.id === active.categoryId);
   const endAt = active.startAt + active.durationMin * 60_000;
@@ -96,36 +115,37 @@ export function ActiveTimer() {
   const elapsed = now - active.startAt;
   const remaining = Math.max(0, endAt - now);
   const displayEndAt =
-    isTimer1 && !frozen && idleSince !== null ? endAt + (now - idleSince) : endAt;
+    isTimer1 && !timerUI.frozen && timerUI.idleSince !== null
+      ? endAt + (now - timerUI.idleSince)
+      : endAt;
 
   const bump = (mins: number) => {
     runMutation(extendScheduleBy(active.id, mins), 'extendTimer');
   };
   const complete = () => {
+    clearTimerState(active.id);
     runMutation(completeSchedule(active.id, Date.now()), 'completeSchedule');
   };
-  const setType = (t: TimerType) => {
-    runMutation(updateSchedule(active.id, {timerType: t}), 'changeTimerType');
+  const setType = (typ: TimerType) => {
+    runMutation(updateSchedule(active.id, {timerType: typ}), 'changeTimerType');
   };
 
   const toggleFreeze = async () => {
     if (togglePending) return;
     setTogglePending(true);
     try {
-      if (frozen) {
+      if (timerUI.frozen) {
         // focus → idle: 진입 시각만 기록, server 호출 없음 (idle 종료 시점에 모아 호출).
-        setIdleSince(Date.now());
-        setFrozen(false);
+        setTimerUI({frozen: false, idleSince: Date.now()});
         return;
       }
       // idle → focus: 누적 idle 시간을 server 에 반영.
-      if (idleSince !== null) {
-        const elapsedMs = Date.now() - idleSince;
+      if (timerUI.idleSince !== null) {
+        const elapsedMs = Date.now() - timerUI.idleSince;
         const elapsedMin = Math.max(0, Math.round(elapsedMs / 60_000));
         if (elapsedMin > 0) await extendScheduleBy(active.id, elapsedMin);
       }
-      setIdleSince(null);
-      setFrozen(true);
+      setTimerUI({frozen: true, idleSince: null});
     } finally {
       setTogglePending(false);
     }
@@ -149,29 +169,7 @@ export function ActiveTimer() {
     }`;
 
   return (
-    <div className="rounded-none border border-line bg-panel p-4">
-      {actives.length > 1 && (
-        <div className="mb-2 text-[10px] font-mono text-muted">
-          <span className="text-warn">{t('timer.overlapLabel', {count: actives.length})}</span> · {t('timer.pinLabel')}=
-          <select
-            value={pinnedActiveId ?? ''}
-            onChange={e => {
-              runMutation(
-                updateSettings({pinnedActiveId: e.target.value || null}),
-                'pinActiveTimer'
-              );
-            }}
-            className="ml-1 rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] font-mono text-txt"
-          >
-            <option value="">{t('timer.pinAuto')}</option>
-            {actives.map(a => (
-              <option key={a.id} value={a.id}>
-                {a.title}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+    <div className="rounded-none border border-line bg-panel p-4" data-testid="timer-card" data-schedule-id={active.id}>
       <div className="mb-1 flex items-center gap-2">
         {category && (
           <span
@@ -209,7 +207,7 @@ export function ActiveTimer() {
         <>
           <div className="mb-1 text-xs font-mono text-muted">{t('timer.labelTarget')}</div>
           <div className="mb-1 font-mono text-4xl font-medium tracking-tight text-ink">
-            {formatWall12(displayEndAt, wallLabels.am, wallLabels.pm)}
+            {formatWall12(displayEndAt, amLabel, pmLabel)}
           </div>
           <div className="mb-3 text-xs font-mono text-muted">
             {t('timer.labelElapsed')} · {formatHMS(now - active.startAt)}
@@ -217,10 +215,10 @@ export function ActiveTimer() {
           <button
             type="button"
             onClick={toggleFreeze}
-            className={freezeBtn(frozen) + ' mb-3 whitespace-nowrap'}
-            title={frozen ? t('timer.tooltipClickToIdle') : t('timer.tooltipClickToFocus')}
+            className={freezeBtn(timerUI.frozen) + ' mb-3 whitespace-nowrap'}
+            title={timerUI.frozen ? t('timer.tooltipClickToIdle') : t('timer.tooltipClickToFocus')}
           >
-            {frozen ? t('timer.buttonFocus') : t('timer.buttonIdle')}
+            {timerUI.frozen ? t('timer.buttonFocus') : t('timer.buttonIdle')}
           </button>
         </>
       )}
@@ -231,7 +229,7 @@ export function ActiveTimer() {
             {formatHMS(remaining)}
           </div>
           <div className="mb-3 text-xs font-mono text-muted">
-            {t('timer.labelEndAt')} · {formatWall12(endAt, wallLabels.am, wallLabels.pm)}
+            {t('timer.labelEndAt')} · {formatWall12(endAt, amLabel, pmLabel)}
           </div>
         </>
       )}
@@ -252,6 +250,150 @@ export function ActiveTimer() {
           {t('timer.buttonComplete')}
         </button>
       </div>
+    </div>
+  );
+}
+
+interface IdleCountdownProps {
+  upcoming: Schedule;
+  now: number;
+}
+
+/**
+ * PLAN1-TIMER-DUP-20260504 #3: 빈 시간 카운트다운 — 다음 schedule 까지 남은 시간.
+ * 디자인 차별화: 점선 테두리 + 흐릿한 muted 톤 + "다음 스케줄까지" 라벨.
+ */
+function IdleCountdown({upcoming, now}: IdleCountdownProps) {
+  const t = useTranslations();
+  const categoryDisplay = useCategoryDisplay();
+  const categories = useAppStore(s => s.categories);
+  const category = categories.find(c => c.id === upcoming.categoryId);
+  const remaining = Math.max(0, upcoming.startAt - now);
+  return (
+    <div
+      className="rounded-none border border-dashed border-line bg-panel p-4 opacity-70"
+      data-testid="idle-countdown"
+      data-upcoming-id={upcoming.id}
+    >
+      <div className="mb-1 text-xs font-mono text-muted uppercase tracking-wider">
+        {t('timer.labelUpcoming')}
+      </div>
+      <div className="mb-3 flex items-center gap-2">
+        {category && (
+          <span
+            className="inline-block h-3 w-3 rounded-none opacity-70"
+            style={{backgroundColor: category.color}}
+          />
+        )}
+        <span className="truncate text-sm font-mono text-muted">
+          {upcoming.title}
+        </span>
+      </div>
+      <div className="mb-1 text-xs font-mono text-muted">{t('timer.labelUntilUpcoming')}</div>
+      <div className="font-mono text-4xl font-medium tracking-tight text-muted">
+        {formatHMS(remaining)}
+      </div>
+      <div className="mt-2 text-[10px] font-mono text-muted opacity-80">
+        cat={category ? categoryDisplay(category) : t('timer.categoryFallback')}
+      </div>
+    </div>
+  );
+}
+
+export function ActiveTimer() {
+  const t = useTranslations();
+  const runMutation = useRunMutation();
+  const schedules = useAppStore(s => s.schedules);
+  const pinnedActiveId = useAppStore(s => s.settings.pinnedActiveId);
+  const updateSettings = useAppStore(s => s.updateSettings);
+  // Stage 4d-B: useState+interval → 공유 useNow (1초 interval 단일화).
+  // hydration 가드: nowMs === 0 → null (SSR snapshot · canSubmit/findActive 차단).
+  const nowMs = useNow();
+  const now: number | null = nowMs > 0 ? nowMs : null;
+  // Stage 5 critic logic Minor #2: 1초 tick 매번 t() 호출 회피 — useMemo 1회.
+  const wallLabels = useMemo(
+    () => ({am: t('wallTime.am'), pm: t('wallTime.pm')}),
+    [t]
+  );
+
+  const actives = useMemo(
+    () => (now === null ? [] : findActiveSchedules(schedules, now)),
+    [schedules, now]
+  );
+  const upcoming = useMemo(
+    () => (now === null ? null : findNextUpcomingToday(schedules, now)),
+    [schedules, now]
+  );
+
+  // localStorage stale entry 정리 — schedule list 변경 시 1회.
+  // pruneTimerStates 는 SSR safe (typeof window check).
+  useEffect(() => {
+    pruneTimerStates(schedules.map(s => s.id));
+  }, [schedules]);
+
+  // Empty / hydration 단계.
+  if (now === null) {
+    return (
+      <div className="rounded-none border border-dashed border-line p-6 text-center text-sm text-muted font-mono">
+        {t('timer.idleEmpty')}
+      </div>
+    );
+  }
+
+  // PLAN1-TIMER-DUP-20260504 #6.2: actives.length === 2 시 둘 다 동시 표시 (stack).
+  // length >= 3 (legacy 데이터 — validation 도입 후 새로 생기지 않음) 시 기존 pin
+  // 1개 표시 패턴 유지. length === 1 시 단일 표시. length === 0 시 #3 idle countdown.
+  if (actives.length === 0) {
+    if (upcoming) return <IdleCountdown upcoming={upcoming} now={now} />;
+    return (
+      <div className="rounded-none border border-dashed border-line p-6 text-center text-sm text-muted font-mono">
+        {t('timer.idleEmpty')}
+      </div>
+    );
+  }
+
+  if (actives.length === 2) {
+    return (
+      <div className="flex flex-col gap-3" data-testid="active-timer-multi">
+        <div className="text-[10px] font-mono text-muted uppercase tracking-wider">
+          {t('timer.simultaneousLabel', {count: 2})}
+        </div>
+        {actives.map(a => (
+          <TimerCard key={a.id} active={a} now={now} amLabel={wallLabels.am} pmLabel={wallLabels.pm} />
+        ))}
+      </div>
+    );
+  }
+
+  // 1개 또는 3개+ (legacy) — pinned 우선, 없으면 첫 번째.
+  const pinned = pinnedActiveId ? actives.find(a => a.id === pinnedActiveId) : null;
+  const active = pinned ?? actives[0];
+
+  return (
+    <div className="flex flex-col gap-2">
+      {actives.length > 2 && (
+        <div className="text-[10px] font-mono text-muted">
+          <span className="text-warn">{t('timer.overlapLabel', {count: actives.length})}</span> · {t('timer.pinLabel')}=
+          <select
+            value={pinnedActiveId ?? ''}
+            onChange={e => {
+              runMutation(
+                updateSettings({pinnedActiveId: e.target.value || null}),
+                'pinActiveTimer'
+              );
+            }}
+            className="ml-1 rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] font-mono text-txt"
+          >
+            <option value="">{t('timer.pinAuto')}</option>
+            {actives.map(a => (
+              <option key={a.id} value={a.id}>
+                {a.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      <TimerCard active={active} now={now} amLabel={wallLabels.am} pmLabel={wallLabels.pm} />
     </div>
   );
 }

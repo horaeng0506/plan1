@@ -108,7 +108,8 @@
     "minuteSuffix": "मि",
     "nextAfterTooltip": "वर्तमान संपादन सहेजें (यदि बदला गया हो) और start = endAt + 10m के साथ नया शेड्यूल मोडल खोलें",
     "warningEditIncomplete": "वर्तमान संपादन अधूरा है (नाम/श्रेणी/अवधि जांचें)। सहेजा नहीं गया — ठीक करें और पुनः प्रयास करें।",
-    "warningFutureRequired": "प्रारंभ समय भविष्य में होना चाहिए।"
+    "warningFutureRequired": "प्रारंभ समय भविष्य में होना चाहिए।",
+    "warningOverlapLimit": "एक ही समय पर अधिकतम {limit} शेड्यूल ओवरलैप हो सकते हैं। प्रारंभ/अवधि बदलें या मौजूदा हटाएँ।"
   },
   "serverError": {
     "categoryHasSchedules": "श्रेणी में {scheduleCount} शेड्यूल हैं। हटाने के लिए कैस्केड डिलीट की पुष्टि करें।",
@@ -133,7 +134,10 @@
     "tooltipClickToIdle": "निष्क्रिय पर स्विच करने के लिए क्लिक करें",
     "typeCountdown": "काउंटडाउन",
     "typeCountup": "काउंटअप",
-    "typeTimer1": "टाइमर1"
+    "typeTimer1": "टाइमर1",
+    "labelUpcoming": "अगला शेड्यूल",
+    "labelUntilUpcoming": "अगले तक",
+    "simultaneousLabel": "एक साथ · {count}"
   },
   "topbar": {
     "back": "पोर्टल पर वापस जाएं",

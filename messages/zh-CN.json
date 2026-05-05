@@ -108,7 +108,8 @@
     "minuteSuffix": "分钟",
     "nextAfterTooltip": "保存当前编辑（如有修改）并打开新日程对话框，开始时间 = 结束时间 + 10分钟",
     "warningEditIncomplete": "当前编辑未完成（检查名称/类别/时长）。未保存 — 请修正后重试。",
-    "warningFutureRequired": "开始时间必须是将来的时间。"
+    "warningFutureRequired": "开始时间必须是将来的时间。",
+    "warningOverlapLimit": "同一时间最多 {limit} 个日程可重叠。请调整开始/时长或删除已有项。"
   },
   "serverError": {
     "categoryHasSchedules": "类别有 {scheduleCount} 个日程。确认级联删除以移除。",
@@ -133,7 +134,10 @@
     "tooltipClickToIdle": "点击切换到空闲",
     "typeCountdown": "倒计时",
     "typeCountup": "正计时",
-    "typeTimer1": "计时器1"
+    "typeTimer1": "计时器1",
+    "labelUpcoming": "下一个日程",
+    "labelUntilUpcoming": "距下一个开始",
+    "simultaneousLabel": "同时进行 · {count}"
   },
   "topbar": {
     "back": "返回门户",

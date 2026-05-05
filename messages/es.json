@@ -108,7 +108,8 @@
     "minuteSuffix": "m",
     "nextAfterTooltip": "Guardar edición actual (si hay cambios) y abrir modal de nuevo horario con inicio = finEn + 10m",
     "warningEditIncomplete": "Edición actual incompleta (verificar nombre/categoría/duración). No guardado — corrija y reintente.",
-    "warningFutureRequired": "La hora de inicio debe ser en el futuro."
+    "warningFutureRequired": "La hora de inicio debe ser en el futuro.",
+    "warningOverlapLimit": "Como máximo {limit} horarios pueden superponerse al mismo tiempo. Ajusta inicio/duración o elimina uno existente."
   },
   "serverError": {
     "categoryHasSchedules": "La categoría tiene {scheduleCount} horarios. Confirme eliminación en cascada para remover.",
@@ -133,7 +134,10 @@
     "tooltipClickToIdle": "clic para cambiar a inactivo",
     "typeCountdown": "cuenta regresiva",
     "typeCountup": "cuenta progresiva",
-    "typeTimer1": "temporizador1"
+    "typeTimer1": "temporizador1",
+    "labelUpcoming": "próximo horario",
+    "labelUntilUpcoming": "hasta el próximo",
+    "simultaneousLabel": "simultáneo · {count}"
   },
   "topbar": {
     "back": "volver al portal",

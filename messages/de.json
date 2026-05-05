@@ -108,7 +108,8 @@
     "minuteSuffix": "Min",
     "nextAfterTooltip": "Aktuelle Bearbeitung speichern (falls geändert) und neuen Zeitplan-Dialog öffnen mit Start = Endzeit + 10Min.",
     "warningEditIncomplete": "Aktuelle Bearbeitung unvollständig (Name/Kategorie/Dauer prüfen). Nicht gespeichert — korrigieren und wiederholen.",
-    "warningFutureRequired": "Startzeit muss in der Zukunft liegen."
+    "warningFutureRequired": "Startzeit muss in der Zukunft liegen.",
+    "warningOverlapLimit": "Höchstens {limit} Termine können sich gleichzeitig überschneiden. Start/Dauer anpassen oder einen vorhandenen entfernen."
   },
   "serverError": {
     "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Bestätigen Sie das Löschen mit Untereinträgen.",
@@ -133,7 +134,10 @@
     "tooltipClickToIdle": "klicken, um zu inaktiv zu wechseln",
     "typeCountdown": "Countdown",
     "typeCountup": "Stoppuhr",
-    "typeTimer1": "Timer1"
+    "typeTimer1": "Timer1",
+    "labelUpcoming": "nächster Termin",
+    "labelUntilUpcoming": "bis zum nächsten",
+    "simultaneousLabel": "gleichzeitig · {count}"
   },
   "topbar": {
     "back": "zurück zum Portal",

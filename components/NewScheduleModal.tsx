@@ -9,6 +9,7 @@ import {useCategoryDisplay} from '@/lib/category-display';
 import {pad2, todayKey, dateKeyFromMs} from '@/lib/date-format';
 import {isServerActionError} from '@/lib/server-action';
 import {logClientError} from '@/lib/log';
+import {findOverlapping, MAX_OVERLAP} from '@/lib/domain/overlap';
 import {CategoryManager} from './CategoryManager';
 
 function defaultHour(): number {
@@ -125,8 +126,21 @@ export function NewScheduleModal({
     categoryId !== '__NEW__' &&
     durationMin > 0 &&
     !busy;
+  // PLAN1-TIMER-DUP-20260504 #6.1: 같은 시각 (overlap) schedule 한계 검사.
+  // MAX_OVERLAP=2 — 동시 진행 가능 schedule 수. 3건+ submit 차단.
+  // edit 모드: 자기 자신 exclude. add 모드: 전체 검사.
+  const overlaps = useMemo(
+    () =>
+      durationMin > 0
+        ? findOverlapping(schedules, startAt, durationMin, editing?.id)
+        : [],
+    [schedules, startAt, durationMin, editing?.id]
+  );
+  const overlapBlocked = overlaps.length >= MAX_OVERLAP;
   // add 모드: nowReady 필수 (hydration 전 submit 차단). edit 모드: 미래 검증 면제 (W1 정책).
-  const canSubmit = isEdit ? baseOk && isDirty : baseOk && nowReady && isFuture;
+  const canSubmit = isEdit
+    ? baseOk && isDirty && !overlapBlocked
+    : baseOk && nowReady && isFuture && !overlapBlocked;
 
   const handleCategoryChange = (v: string) => {
     if (v === '__NEW__') {
@@ -362,6 +376,16 @@ export function NewScheduleModal({
             </div>
             {!isEdit && nowReady && !isFuture && (
               <p className="text-xs text-danger">{t('schedule.warningFutureRequired')}</p>
+            )}
+            {durationMin > 0 && overlapBlocked && (
+              <p
+                className="text-xs text-danger font-mono"
+                role="alert"
+                aria-live="polite"
+                data-testid="overlap-limit-warning"
+              >
+                {t('schedule.warningOverlapLimit', {limit: MAX_OVERLAP})}
+              </p>
             )}
             <div>
               <span className="mb-1 block text-sm text-txt">{t('schedule.fieldDuration')}</span>
