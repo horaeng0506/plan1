@@ -1,6 +1,6 @@
 {
   "app": {
-    "tagline": "gestionnaire de calendrier",
+    "tagline": "gestionnaire de planning",
     "title": "plan1"
   },
   "auth": {
@@ -10,20 +10,20 @@
   },
   "category": {
     "confirmRemoveLabel": "confirmer suppr ({count})",
-    "confirmRemoveText": "{count} calendrier(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
-    "defaultName": "défaut",
+    "confirmRemoveText": "{count} planning(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
+    "defaultName": "par défaut",
     "empty": "Aucune catégorie.",
     "fieldColor": "couleur",
     "fieldName": "nom",
     "header": "catégories",
     "removeButton": "suppr",
-    "scheduleCountSuffix": "{count} calendriers"
+    "scheduleCountSuffix": "{count} plannings"
   },
   "common": {
     "add": "ajouter",
     "cancel": "annuler",
     "close": "fermer",
-    "confirmDelete": "confirmer suppression",
+    "confirmDelete": "confirmer la suppression",
     "delete": "supprimer",
     "dismiss": "ignorer",
     "now": "maintenant",
@@ -31,11 +31,11 @@
     "save": "enregistrer"
   },
   "error": {
-    "loadFailedLabel": "échec chargement:",
-    "mutationFailed": "Échec de {action}: {error}",
+    "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
+    "loadFailedLabel": "échec du chargement :",
+    "mutationFailed": "Échec de {action} : {error}",
     "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-    "featureUnavailable": "This feature is not yet available ({feature}).",
-    "workingHoursInvalid": "Invalid working hours input ({reason})."
+    "workingHoursInvalid": "Saisie des heures de travail invalide ({reason})."
   },
   "header": {
     "clock": "horloge",
@@ -56,14 +56,14 @@
     "twelveHour": "12h"
   },
   "mutation": {
-    "changeTimerType": "changer type de minuteur",
-    "completeSchedule": "compléter calendrier",
-    "extendTimer": "prolonger minuteur",
-    "pinActiveTimer": "épingler minuteur actif",
-    "removeCategory": "supprimer catégorie",
-    "setTheme": "définir thème",
-    "setWeekSpan": "définir période semaine",
-    "toggleWeeklyPanel": "basculer panneau hebdomadaire"
+    "changeTimerType": "changer le type de minuteur",
+    "completeSchedule": "terminer le planning",
+    "extendTimer": "prolonger le minuteur",
+    "pinActiveTimer": "épingler le minuteur actif",
+    "removeCategory": "supprimer la catégorie",
+    "setTheme": "définir le thème",
+    "setWeekSpan": "définir intervalle de semaine",
+    "toggleWeeklyPanel": "basculer le panneau hebdomadaire"
   },
   "nav": {
     "categories": "catégories",
@@ -79,21 +79,21 @@
     "workingHours": "heures"
   },
   "onboarding": {
-    "addFirst": "ajouter premier calendrier",
-    "firstSchedule": "Ajoutez votre premier calendrier pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
-    "welcome": "Aucun calendrier pour le moment"
+    "addFirst": "ajouter le premier planning",
+    "firstSchedule": "Ajoutez votre premier planning pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
+    "welcome": "Aucun planning pour le moment"
   },
   "schedule": {
     "buttonMinus10": "-10m",
     "buttonMinus30": "-30m",
-    "buttonNextAfter": "suivant +10m (nouveau calendrier après achèvement)",
+    "buttonNextAfter": "suivant +10m (nouveau planning après terminaison)",
     "buttonNow": "maintenant (début = maintenant)",
     "buttonPlus10": "+10m",
     "buttonPlus30": "+30m",
     "buttonPlusHour": "+1h",
-    "categoryAddOption": "+ ajouter catégorie",
-    "chainedCheckbox": "chaîner au calendrier précédent (recevoir cascade)",
-    "chainedHelp": "Lorsque le calendrier précédent s'étend ou se réduit, celui-ci se déplace avec lui (intervalle préservé).",
+    "categoryAddOption": "+ ajouter une catégorie",
+    "chainedCheckbox": "enchaîner au planning précédent (recevoir cascade)",
+    "chainedHelp": "Lorsque le planning précédent s'étend ou se réduit, celui-ci se déplace avec lui (écart préservé).",
     "endEmpty": "— (durée 0m)",
     "endLabel": "fin",
     "fieldCategory": "catégorie",
@@ -102,42 +102,51 @@
     "fieldStartDate": "date de début",
     "fieldStartHour": "heure de début",
     "fieldStartMinute": "minute de début",
-    "headerEdit": "modifier calendrier",
-    "headerNew": "nouveau calendrier",
+    "headerEdit": "modifier le planning",
+    "headerNew": "nouveau planning",
     "hourSuffix": "h",
     "minuteSuffix": "m",
-    "nextAfterTooltip": "Sauvegarder la modification actuelle (si modifiée) et ouvrir la modale de nouveau calendrier avec début = finÀ + 10m",
-    "warningEditIncomplete": "Modification actuelle incomplète (vérifier nom/catégorie/durée). Non enregistré — corriger et réessayer.",
+    "nextAfterTooltip": "Enregistrer la modification en cours (si modifiée) et ouvrir une nouvelle fenêtre de planning avec début = finÀ + 10m",
+    "startModeAfterPrev": "juste après le planning précédent",
+    "startModeLabel": "mode de démarrage",
+    "startModeNoPrevHint": "aucun planning précédent aujourd'hui",
+    "startModeNow": "commencer maintenant",
+    "warningEditIncomplete": "Modification en cours incomplète (vérifier nom/catégorie/durée). Non enregistré — corriger et réessayer.",
     "warningFutureRequired": "L'heure de début doit être dans le futur.",
-    "warningOverlapLimit": "Au maximum {limit} planifications peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en une existante."
+    "warningOverlapLimit": "Au maximum {limit} plannings peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
   },
   "serverError": {
-    "categoryHasSchedules": "La catégorie a {scheduleCount} calendriers. Confirmez la suppression en cascade pour retirer.",
-    "categoryNotFound": "Catégorie introuvable ou non possédée.",
-    "scheduleNotFound": "Calendrier introuvable.",
+    "categoryHasSchedules": "La catégorie a {scheduleCount} plannings. Confirmer la suppression en cascade pour retirer.",
+    "categoryNotFound": "Catégorie non trouvée ou non possédée.",
+    "scheduleNotFound": "Planning introuvable.",
     "unauthorized": "Connexion requise."
   },
+  "signIn": {
+    "cta": "Se connecter",
+    "description": "Connectez-vous à votre compte cofondateur pour consulter et gérer vos plannings.",
+    "title": "Connexion requise"
+  },
   "timer": {
-    "buttonComplete": "terminé",
+    "buttonComplete": "terminer",
     "buttonFocus": "focus",
     "buttonIdle": "inactif",
     "categoryFallback": "?",
-    "idleEmpty": "inactif · aucun calendrier actif",
+    "idleEmpty": "inactif · aucun planning actif",
     "labelElapsed": "écoulé",
     "labelEndAt": "fin-à",
     "labelRemaining": "restant",
     "labelTarget": "cible",
+    "labelUntilUpcoming": "jusqu'au prochain",
+    "labelUpcoming": "planning suivant",
     "overlapLabel": "chevauchement {count}",
     "pinAuto": "auto (premier)",
     "pinLabel": "épingler",
-    "tooltipClickToFocus": "cliquer pour passer en focus",
+    "simultaneousLabel": "simultané · {count}",
+    "tooltipClickToFocus": "cliquer pour passer en concentration",
     "tooltipClickToIdle": "cliquer pour passer en inactif",
     "typeCountdown": "compte à rebours",
-    "typeCountup": "compteur",
-    "typeTimer1": "minuteur1",
-    "labelUpcoming": "prochaine planification",
-    "labelUntilUpcoming": "jusqu'au prochain",
-    "simultaneousLabel": "simultané · {count}"
+    "typeCountup": "compte croissant",
+    "typeTimer1": "minuteur1"
   },
   "topbar": {
     "back": "retour au portail",
@@ -161,10 +170,10 @@
     "6": "sam"
   },
   "workingHours": {
-    "checkboxAlsoDefault": "sauvegarder aussi comme défaut",
+    "checkboxAlsoDefault": "enregistrer aussi par défaut",
     "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
-    "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
-    "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
+    "errorEndAfterStart": "L'heure de fin doit être postérieure à l'heure de début.",
+    "errorToAfterFrom": "La date de fin doit être identique ou postérieure à la date de début.",
     "fieldDate": "date",
     "fieldEndTime": "heure de fin",
     "fieldFromDate": "de",

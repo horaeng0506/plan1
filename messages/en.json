@@ -80,6 +80,11 @@
     "firstSchedule": "Add your first schedule to see it on the weekly grid, today's timeline, and the analog clock.",
     "addFirst": "add first schedule"
   },
+  "signIn": {
+    "title": "Sign in required",
+    "description": "Sign in to your cofounder account to view and manage your schedules.",
+    "cta": "Sign in"
+  },
   "schedule": {
     "headerNew": "new schedule",
     "headerEdit": "edit schedule",
@@ -103,6 +108,10 @@
     "endEmpty": "— (duration 0m)",
     "chainedCheckbox": "chain to previous schedule (receive cascade)",
     "chainedHelp": "When the previous schedule extends or shrinks, this one moves with it (gap preserved).",
+    "startModeLabel": "start mode",
+    "startModeNow": "start now",
+    "startModeAfterPrev": "right after previous schedule",
+    "startModeNoPrevHint": "no previous schedule today",
     "buttonNextAfter": "next +10m (new schedule after complete)",
     "nextAfterTooltip": "Save current edit (if dirty) and open new schedule modal with start = endAt + 10m",
     "warningEditIncomplete": "Current edit incomplete (check name/category/duration). Not saved — fix and retry.",

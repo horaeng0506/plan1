@@ -9,6 +9,7 @@ import {useRunMutation} from '@/lib/use-run-mutation';
 import {AnalogClock} from './AnalogClock';
 import {ActiveTimer} from './ActiveTimer';
 import {ToastContainer} from './ToastContainer';
+import {SignInPrompt} from './SignInPrompt';
 import {ModalSkeleton} from './ModalSkeleton';
 import {useNow} from '@/lib/now';
 import {pad2, dateKey} from '@/lib/date-format';
@@ -63,6 +64,8 @@ export function PlanApp() {
   const loaded = useAppStore(s => s.loaded);
   const loading = useAppStore(s => s.loading);
   const error = useAppStore(s => s.error);
+  // PLAN1-LOGIN-START-OPT-20260504 #5: unauthorized 식별 → SignInPrompt 분기.
+  const errorKey = useAppStore(s => s.errorKey);
   const init = useAppStore(s => s.init);
   const weekViewSpan = useAppStore(s => s.settings.weekViewSpan);
   const weeklyPanelHidden = useAppStore(s => s.settings.weeklyPanelHidden);
@@ -206,6 +209,17 @@ export function PlanApp() {
     'px-3 py-1 text-sm rounded-none border border-line bg-panel text-txt font-mono hover:bg-bg';
   const primaryBtn =
     'px-3 py-1 text-sm rounded-none border border-ink bg-ink text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50';
+
+  // PLAN1-LOGIN-START-OPT-20260504 #5: unauthorized 시 SignInPrompt 만 노출.
+  // 일반 error (network · DB 등) 는 기존 retry 흐름 유지 (아래 main 안 error 박스).
+  // 모든 server action 이 requireUser → 401 throw 하므로 plan1 UI 노출 자체가 의미 없음.
+  if (errorKey === 'serverError.unauthorized') {
+    return (
+      <main className="min-h-screen bg-bg text-txt">
+        <SignInPrompt />
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-bg text-txt">
