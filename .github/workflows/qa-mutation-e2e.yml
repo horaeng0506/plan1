@@ -65,7 +65,12 @@ jobs:
           # cofounder-portal Neon project default branch = "production" (not "main").
           # 2026-04-30 verify: `neonctl branches list` → ['production', 'preview/perf/sin1-region', 'vercel-dev'].
           parent_branch: production
-          branch_name: pr-${{ github.event.pull_request.number }}
+          # PLAN1-CI-WORKFLOW-FIX (2026-05-05) — branch_name 에 run_attempt 추가하여 매 retry 마다
+          # unique ephemeral 보장. neondatabase/create-branch-action@v6 의 default 동작 (same-name
+          # branch 재사용) 이 stale parent_lsn 영구 보존 문제 야기 — PLAN1-WH-FOCUS-20260504 사이클
+          # 의 root cause (pr-42 ephemeral 가 prod push 6h 37min 전 LSN snapshot 영구 보존). retry
+          # 마다 새 LSN 반영 위해 unique 강제. run_attempt = 1·2·3 (rerun 시 increment) — 사람 친화.
+          branch_name: pr-${{ github.event.pull_request.number }}-${{ github.run_attempt }}
           role: neondb_owner
           api_key: ${{ secrets.NEON_API_KEY }}
 
@@ -156,9 +161,26 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
-      - name: Neon — delete branch
-        uses: neondatabase/delete-branch-action@v3
-        with:
-          project_id: ${{ secrets.NEON_PROJECT_ID }}
-          branch: pr-${{ github.event.pull_request.number }}
-          api_key: ${{ secrets.NEON_API_KEY }}
+      # PLAN1-CI-WORKFLOW-FIX (2026-05-05) — branch_name 에 run_attempt 추가 (매 retry unique)
+      # 후 cleanup 도 wildcard 처리. delete-branch-action@v3 가 단일 name 만 지원하므로
+      # raw Neon API + jq 으로 `pr-${pr_num}-*` 패턴 모두 삭제.
+      - name: Neon — delete all ephemeral branches for this PR
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+          PR_NUM: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          BRANCHES=$(curl -fsS -H "Authorization: Bearer $NEON_API_KEY" \
+            "https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches" \
+            | jq -r ".branches[] | select(.name | startswith(\"pr-${PR_NUM}-\") or . == \"pr-${PR_NUM}\") | .id")
+          if [ -z "$BRANCHES" ]; then
+            echo "No ephemeral branches found for PR $PR_NUM"
+            exit 0
+          fi
+          for BRANCH_ID in $BRANCHES; do
+            echo "Deleting branch $BRANCH_ID"
+            curl -fsS -X DELETE -H "Authorization: Bearer $NEON_API_KEY" \
+              "https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches/$BRANCH_ID" \
+              | jq -r '.branch.pending_state // "deleted"'
+          done
