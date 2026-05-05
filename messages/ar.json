@@ -42,7 +42,6 @@
     "changeTimerType": "تغيير نوع المؤقت",
     "completeSchedule": "إكمال الجدول",
     "extendTimer": "تمديد المؤقت",
-    "pinActiveTimer": "تثبيت المؤقت النشط",
     "removeCategory": "إزالة الفئة",
     "setTheme": "تعيين السمة",
     "setFocus": "set focus view"
@@ -119,8 +118,6 @@
     "labelUntilUpcoming": "حتى القادم",
     "labelUpcoming": "الجدول التالي",
     "overlapLabel": "تداخل {count}",
-    "pinAuto": "تلقائي (الأول)",
-    "pinLabel": "تثبيت",
     "simultaneousLabel": "متزامن · {count}",
     "tooltipClickToFocus": "انقر للتبديل إلى تركيز",
     "tooltipClickToIdle": "انقر للتبديل إلى خامل",

@@ -42,7 +42,6 @@
     "changeTimerType": "Timer-Typ ändern",
     "completeSchedule": "Zeitplan abschließen",
     "extendTimer": "Timer verlängern",
-    "pinActiveTimer": "aktiven Timer anheften",
     "removeCategory": "Kategorie entfernen",
     "setTheme": "Design festlegen",
     "setFocus": "set focus view"
@@ -119,8 +118,6 @@
     "labelUntilUpcoming": "bis bevorstehend",
     "labelUpcoming": "nächster Zeitplan",
     "overlapLabel": "Überschneidung {count}",
-    "pinAuto": "auto (erstes)",
-    "pinLabel": "anheften",
     "simultaneousLabel": "gleichzeitig · {count}",
     "tooltipClickToFocus": "klicken, um zu Fokus zu wechseln",
     "tooltipClickToIdle": "klicken, um zu Leerlauf zu wechseln",

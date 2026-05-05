@@ -42,7 +42,6 @@
     "changeTimerType": "更改计时器类型",
     "completeSchedule": "完成日程",
     "extendTimer": "延长计时器",
-    "pinActiveTimer": "固定活动计时器",
     "removeCategory": "移除分类",
     "setTheme": "设置主题",
     "setFocus": "set focus view"
@@ -119,8 +118,6 @@
     "labelUntilUpcoming": "直到即将到来",
     "labelUpcoming": "下一个日程",
     "overlapLabel": "重叠 {count}",
-    "pinAuto": "自动（首个）",
-    "pinLabel": "固定",
     "simultaneousLabel": "同时进行 · {count}",
     "tooltipClickToFocus": "点击切换到专注",
     "tooltipClickToIdle": "点击切换到空闲",

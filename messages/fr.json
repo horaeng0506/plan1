@@ -42,7 +42,6 @@
     "changeTimerType": "changer le type de minuteur",
     "completeSchedule": "terminer le planning",
     "extendTimer": "prolonger le minuteur",
-    "pinActiveTimer": "épingler le minuteur actif",
     "removeCategory": "supprimer la catégorie",
     "setTheme": "définir le thème",
     "setFocus": "set focus view"
@@ -119,8 +118,6 @@
     "labelUntilUpcoming": "jusqu'au prochain",
     "labelUpcoming": "planning suivant",
     "overlapLabel": "chevauchement {count}",
-    "pinAuto": "auto (premier)",
-    "pinLabel": "épingler",
     "simultaneousLabel": "simultané · {count}",
     "tooltipClickToFocus": "cliquer pour passer en concentration",
     "tooltipClickToIdle": "cliquer pour passer en inactif",

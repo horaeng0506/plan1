@@ -42,7 +42,6 @@
     "changeTimerType": "タイマータイプを変更",
     "completeSchedule": "スケジュールを完了",
     "extendTimer": "タイマーを延長",
-    "pinActiveTimer": "アクティブタイマーを固定",
     "removeCategory": "カテゴリを削除",
     "setTheme": "テーマを設定",
     "setFocus": "set focus view"
@@ -119,8 +118,6 @@
     "labelUntilUpcoming": "次の予定まで",
     "labelUpcoming": "次のスケジュール",
     "overlapLabel": "{count}件重複",
-    "pinAuto": "自動 (最初)",
-    "pinLabel": "固定",
     "simultaneousLabel": "同時進行 · {count}",
     "tooltipClickToFocus": "クリックしてフォーカスに切り替え",
     "tooltipClickToIdle": "クリックしてアイドルに切り替え",

@@ -5,9 +5,7 @@
  * PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q24): is-chained className 폐기 (디폴트 true 후 의미 X).
  */
 
-export function renderEventContent(arg: {
-  event: {title: string; extendedProps: {splitFrom?: string}};
-}) {
+export function renderEventContent(arg: {event: {title: string}}) {
   return (
     <div className="px-1 py-0.5 text-xs leading-tight whitespace-normal break-words">
       {arg.event.title}

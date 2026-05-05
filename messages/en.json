@@ -57,7 +57,6 @@
     "extendTimer": "extend timer",
     "completeSchedule": "complete schedule",
     "changeTimerType": "change timer type",
-    "pinActiveTimer": "pin active timer",
     "setTheme": "set theme",
     "setFocus": "set focus view"
   },
@@ -127,8 +126,6 @@
   "timer": {
     "idleEmpty": "idle · no active schedule",
     "overlapLabel": "overlap {count}",
-    "pinLabel": "pin",
-    "pinAuto": "auto (first)",
     "typeCountup": "countup",
     "typeTimer1": "timer1",
     "typeCountdown": "countdown",

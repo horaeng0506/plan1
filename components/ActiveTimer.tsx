@@ -6,7 +6,7 @@ import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
 import {useCategoryDisplay} from '@/lib/category-display';
 import {useRunMutation} from '@/lib/use-run-mutation';
-import {pad2, dateKeyFromMs, todayKey} from '@/lib/date-format';
+import {pad2} from '@/lib/date-format';
 import {
   loadTimerState,
   saveTimerState,
@@ -27,16 +27,16 @@ function findActiveSchedules(schedules: Schedule[], now: number): Schedule[] {
 }
 
 /**
- * PLAN1-TIMER-DUP-20260504 #3: 빈 시간 카운트다운용 — 오늘 시작이 now 이후인
- * 미완료 schedule 중 가장 이른 것. 오늘 한정 (다음날 schedule 은 표시 안 함).
+ * PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q26 a): 빈 시간 카운트다운용 — "지금부터 향후 24h 안"
+ * 미완료 schedule 중 가장 이른 것. 1일 개념 폐기 후 "오늘 한정" 필터 폐기.
  */
-function findNextUpcomingToday(schedules: Schedule[], now: number): Schedule | null {
-  const today = todayKey();
+function findNextUpcoming(schedules: Schedule[], now: number): Schedule | null {
+  const limit = now + 24 * 3600_000;
   let best: Schedule | null = null;
   for (const s of schedules) {
     if (s.status === 'done') continue;
     if (s.startAt <= now) continue;
-    if (dateKeyFromMs(s.startAt) !== today) continue;
+    if (s.startAt >= limit) continue;
     if (!best || s.startAt < best.startAt) best = s;
   }
   return best;
@@ -302,10 +302,8 @@ function IdleCountdown({upcoming, now}: IdleCountdownProps) {
 
 export function ActiveTimer() {
   const t = useTranslations();
-  const runMutation = useRunMutation();
   const schedules = useAppStore(s => s.schedules);
-  const pinnedActiveId = useAppStore(s => s.settings.pinnedActiveId);
-  const updateSettings = useAppStore(s => s.updateSettings);
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q23): pinnedActiveId UI 폐기 (MAX_OVERLAP=2 후 사용 영역 거의 없음).
   // Stage 4d-B: useState+interval → 공유 useNow (1초 interval 단일화).
   // hydration 가드: nowMs === 0 → null (SSR snapshot · canSubmit/findActive 차단).
   const nowMs = useNow();
@@ -321,7 +319,7 @@ export function ActiveTimer() {
     [schedules, now]
   );
   const upcoming = useMemo(
-    () => (now === null ? null : findNextUpcomingToday(schedules, now)),
+    () => (now === null ? null : findNextUpcoming(schedules, now)),
     [schedules, now]
   );
 
@@ -365,32 +363,14 @@ export function ActiveTimer() {
     );
   }
 
-  // 1개 또는 3개+ (legacy) — pinned 우선, 없으면 첫 번째.
-  const pinned = pinnedActiveId ? actives.find(a => a.id === pinnedActiveId) : null;
-  const active = pinned ?? actives[0];
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q23): pin UI 폐기. 3개+ legacy 케이스만 첫 번째 표시 + 경고 라벨.
+  const active = actives[0];
 
   return (
     <div className="flex flex-col gap-2">
       {actives.length > 2 && (
-        <div className="text-[10px] font-mono text-muted">
-          <span className="text-warn">{t('timer.overlapLabel', {count: actives.length})}</span> · {t('timer.pinLabel')}=
-          <select
-            value={pinnedActiveId ?? ''}
-            onChange={e => {
-              runMutation(
-                updateSettings({pinnedActiveId: e.target.value || null}),
-                'pinActiveTimer'
-              );
-            }}
-            className="ml-1 rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] font-mono text-txt"
-          >
-            <option value="">{t('timer.pinAuto')}</option>
-            {actives.map(a => (
-              <option key={a.id} value={a.id}>
-                {a.title}
-              </option>
-            ))}
-          </select>
+        <div className="text-[10px] font-mono text-warn">
+          {t('timer.overlapLabel', {count: actives.length})}
         </div>
       )}
       <TimerCard active={active} now={now} amLabel={wallLabels.am} pmLabel={wallLabels.pm} />

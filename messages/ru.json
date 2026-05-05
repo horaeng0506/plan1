@@ -42,7 +42,6 @@
     "changeTimerType": "изменить тип таймера",
     "completeSchedule": "завершить расписание",
     "extendTimer": "продлить таймер",
-    "pinActiveTimer": "закрепить активный таймер",
     "removeCategory": "удалить категорию",
     "setTheme": "установить тему",
     "setFocus": "set focus view"
@@ -119,8 +118,6 @@
     "labelUntilUpcoming": "до предстоящего",
     "labelUpcoming": "следующее расписание",
     "overlapLabel": "наложение {count}",
-    "pinAuto": "авто (первое)",
-    "pinLabel": "закрепить",
     "simultaneousLabel": "одновременно · {count}",
     "tooltipClickToFocus": "нажмите, чтобы переключиться на режим фокусировки",
     "tooltipClickToIdle": "нажмите, чтобы переключиться на режим простоя",

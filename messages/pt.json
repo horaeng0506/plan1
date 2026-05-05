@@ -42,7 +42,6 @@
     "changeTimerType": "alterar tipo de temporizador",
     "completeSchedule": "concluir horário",
     "extendTimer": "prolongar temporizador",
-    "pinActiveTimer": "fixar temporizador ativo",
     "removeCategory": "remover categoria",
     "setTheme": "definir tema",
     "setFocus": "set focus view"
@@ -119,8 +118,6 @@
     "labelUntilUpcoming": "até próximo",
     "labelUpcoming": "próximo horário",
     "overlapLabel": "sobreposição {count}",
-    "pinAuto": "automático (primeiro)",
-    "pinLabel": "fixar",
     "simultaneousLabel": "simultâneo · {count}",
     "tooltipClickToFocus": "clique para mudar para foco",
     "tooltipClickToIdle": "clique para mudar para inativo",

@@ -42,7 +42,6 @@
     "changeTimerType": "टाइमर प्रकार बदलें",
     "completeSchedule": "शेड्यूल पूर्ण करें",
     "extendTimer": "टाइमर बढ़ाएं",
-    "pinActiveTimer": "सक्रिय टाइमर पिन करें",
     "removeCategory": "श्रेणी हटाएं",
     "setTheme": "थीम सेट करें",
     "setFocus": "set focus view"
@@ -119,8 +118,6 @@
     "labelUntilUpcoming": "आगामी तक",
     "labelUpcoming": "अगला शेड्यूल",
     "overlapLabel": "ओवरलैप {count}",
-    "pinAuto": "स्वचालित (पहला)",
-    "pinLabel": "पिन",
     "simultaneousLabel": "एक साथ · {count}",
     "tooltipClickToFocus": "फ़ोकस पर स्विच करने के लिए क्लिक करें",
     "tooltipClickToIdle": "निष्क्रिय पर स्विच करने के लिए क्लिक करें",

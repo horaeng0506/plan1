@@ -15,10 +15,9 @@ export function schedulesToEvents(schedules: Schedule[], categories: Category[])
     const start = new Date(schedule.startAt)
     const end = new Date(start.getTime() + schedule.durationMin * 60_000)
     const accent = category?.color ?? '#5c6370'
-    // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q24): is-chained className 폐기 (chained 디폴트 true 후 의미 없음).
+    // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q24·Q25): is-chained · is-split-cont · splitFrom extendedProps 일괄 폐기.
     const classNames = [
       schedule.status === 'done' ? 'opacity-60' : '',
-      schedule.splitFrom ? 'is-split-cont' : '',
     ].filter(Boolean)
     return {
       id: schedule.id,
@@ -32,7 +31,6 @@ export function schedulesToEvents(schedules: Schedule[], categories: Category[])
         categoryId: schedule.categoryId,
         timerType: schedule.timerType,
         status: schedule.status,
-        splitFrom: schedule.splitFrom,
       },
     }
   })

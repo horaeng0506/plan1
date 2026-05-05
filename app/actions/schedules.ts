@@ -1,19 +1,18 @@
 'use server';
 
 /**
- * 스케줄 CRUD + cascade(Stage 18) + cleanOrphans(Stage 22) server actions.
+ * 스케줄 CRUD + cascade(Stage 18) server actions.
  *
  * PLAN1-WH-FOCUS-20260504 — splitByWorkingHours 폐기 (working hours 기능 자체 제거).
- * schedule 입력 시각 그대로 저장 (no fall-back · 14:00 fall-back root cause 제거).
- *
- * 도메인 함수는 number(ms) 입출력. DB Date 변환은 rowToDomain·domainToRow 책임.
+ * PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q25) — splitFrom · cleanOrphans · is-split-cont 잔존 코드 일괄 폐기.
+ * schema 의 splitFrom column 은 S12 portal repo 에서 drop 예정 — 그 전엔 INSERT/SELECT 코드 영역만 폐기.
  *
  * Stage 5.1 part 2: 사용자 facing error 는 ServerActionError throw → runAction 이
  * discriminated union return 으로 변환 (Next.js prod redact 회피).
  */
 
 import {randomUUID} from 'node:crypto';
-import {and, eq, isNotNull} from 'drizzle-orm';
+import {and, eq} from 'drizzle-orm';
 import type {BatchItem} from 'drizzle-orm/batch';
 import {db} from '@/lib/db';
 import {plan1Categories, plan1Schedules} from '@/lib/db/schema';
@@ -34,7 +33,6 @@ function rowToDomain(row: ScheduleRow): Schedule {
     actualDurationMin: row.actualDurationMin ?? undefined,
     timerType: row.timerType,
     status: row.status,
-    splitFrom: row.splitFrom ?? undefined,
     chainedToPrev: row.chainedToPrev,
     createdAt: row.createdAt.getTime(),
     updatedAt: row.updatedAt.getTime()
@@ -105,8 +103,8 @@ async function syncSchedules(
       actualDurationMin: s.actualDurationMin ?? null,
       timerType: s.timerType,
       status: s.status,
-      splitFrom: s.splitFrom ?? null,
-      chainedToPrev: s.chainedToPrev ?? false,
+      // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q6): chainedToPrev 디폴트 true
+      chainedToPrev: s.chainedToPrev ?? true,
       updatedAt: new Date()
     };
     queries.push(
@@ -123,7 +121,6 @@ async function syncSchedules(
             actualDurationMin: values.actualDurationMin,
             timerType: values.timerType,
             status: values.status,
-            splitFrom: values.splitFrom,
             chainedToPrev: values.chainedToPrev,
             updatedAt: values.updatedAt
           }
@@ -258,36 +255,5 @@ export async function completeSchedule(input: {
   });
 }
 
-/**
- * Stage 22: orphan split 자동 정리.
- *
- * PLAN1-WH-FOCUS-20260504 — split 폐기 후에도 옛 row (splitFrom 보유) 정리 위해 유지.
- * 시간 흐름상 새 row 생성 안 됨 (splitByWorkingHours 미호출) — 옛 데이터 안전망.
- */
-export async function cleanOrphans(): Promise<ServerActionResult<void>> {
-  return runAction(async () => {
-    const user = await requireUser();
-    const [orphanRows, allRows] = await db.batch([
-      db
-        .select({id: plan1Schedules.id, splitFrom: plan1Schedules.splitFrom})
-        .from(plan1Schedules)
-        .where(and(eq(plan1Schedules.userId, user.id), isNotNull(plan1Schedules.splitFrom))),
-      db
-        .select({id: plan1Schedules.id})
-        .from(plan1Schedules)
-        .where(eq(plan1Schedules.userId, user.id))
-    ]);
-    if (orphanRows.length === 0) return;
-
-    const allIds = new Set(allRows.map(r => r.id));
-    const toDelete = orphanRows.filter(r => r.splitFrom && !allIds.has(r.splitFrom)).map(r => r.id);
-    if (toDelete.length === 0) return;
-
-    const deleteQueries: BatchItem<'pg'>[] = toDelete.map(id =>
-      db
-        .delete(plan1Schedules)
-        .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)))
-    );
-    await db.batch(deleteQueries as [BatchItem<'pg'>, ...BatchItem<'pg'>[]]);
-  });
-}
+// PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q25): cleanOrphans 함수 폐기 (split 메커니즘 자체 폐기).
+// 옛 splitFrom row 는 S12 portal repo column drop 시 자연 삭제 (FK CASCADE).

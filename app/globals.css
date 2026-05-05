@@ -98,19 +98,9 @@ body::before {
   border-radius: 0 !important;
 }
 
-/* Stage 4b — prefix 제거 후 4채널 위계 운반.
- * split 연속 part: dashed left border 3px + bg alpha 절반 (원본 vs 분할 구분).
- *   ui-critic Critical: opacity 제거 (텍스트 가독성 손상). bg alpha 만 낮춤.
- *   logic-critic Major: border-left-color 명시 (inline borderColor 와 분리되어 묻힘 방지).
- *
- * PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q24): .is-chained 룰 폐기 (chained 디폴트 true 후 의미 X).
- * is-split-cont 룰은 S6 split 폐기 영역에서 별도 정리 예정. */
-.fc-event.is-split-cont {
-  border-left-width: 3px !important;
-  border-left-style: dashed !important;
-  border-left-color: var(--muted) !important;
-  background-color: rgba(92, 99, 112, 0.08) !important;
-}
+/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q24·Q25):
+ * .is-chained 룰 폐기 (chained 디폴트 true 후 의미 X)
+ * .is-split-cont 룰 폐기 (split 메커니즘 자체 폐기 — working hours 폐기 후 의미 X) */
 
 /* Stage 4c — AnalogClock SVG 토큰 (clock-* class · light/dark 자동 swap).
  * 기존 컴포넌트가 className 만 부여하고 stroke/fill 미정의 → SVG default 색 노출 회귀.

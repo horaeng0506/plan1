@@ -57,7 +57,6 @@
     "extendTimer": "타이머 연장",
     "completeSchedule": "스케줄 완료",
     "changeTimerType": "타이머 타입 변경",
-    "pinActiveTimer": "타이머 고정",
     "setTheme": "테마 설정",
     "setFocus": "집중 보기 설정"
   },
@@ -127,8 +126,6 @@
   "timer": {
     "idleEmpty": "idle · 진행 중 스케줄 없음",
     "overlapLabel": "겹침 {count}개",
-    "pinLabel": "pin",
-    "pinAuto": "auto (첫 번째)",
     "typeCountup": "countup",
     "typeTimer1": "timer1",
     "typeCountdown": "countdown",
