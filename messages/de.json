@@ -37,24 +37,7 @@
     "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     "workingHoursInvalid": "Ungültige Arbeitszeit-Eingabe ({reason})."
   },
-  "header": {
-    "clock": "Uhr",
-    "timer": "Timer",
-    "today": "heute",
-    "week": "Woche"
-  },
   "loading": "lädt...",
-  "meta": {
-    "activeLabel": "aktiv",
-    "amLower": "vorm.",
-    "eventsLabel": "Ereignisse",
-    "idle": "inaktiv",
-    "loadingFormat": "{name} · lädt...",
-    "placeholder": "—",
-    "pmLower": "pm",
-    "spanSuffix": "w",
-    "twelveHour": "12h"
-  },
   "mutation": {
     "changeTimerType": "Timer-Typ ändern",
     "completeSchedule": "Zeitplan abschließen",
@@ -62,8 +45,6 @@
     "pinActiveTimer": "aktiven Timer anheften",
     "removeCategory": "Kategorie entfernen",
     "setTheme": "Design festlegen",
-    "setWeekSpan": "Wochenbereich festlegen",
-    "toggleWeeklyPanel": "Wochenpanel umschalten",
     "setFocus": "set focus view"
   },
   "nav": {
@@ -72,11 +53,6 @@
     "themeDark": "dunkel",
     "themeLight": "hell",
     "themeSystem": "auto",
-    "weekSpan1": "1W",
-    "weekSpan2": "2W",
-    "weekSpan3": "3w",
-    "weeklyHide": "Woche ausblenden",
-    "weeklyShow": "Woche anzeigen",
     "workingHours": "Stunden",
     "focus4h": "4h",
     "focusLabel": "focus",

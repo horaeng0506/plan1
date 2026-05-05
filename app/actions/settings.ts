@@ -24,20 +24,22 @@ import {requireUser} from '@/lib/auth-helpers';
 import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
 import type {AppSettings} from '@/lib/domain/types';
 
+// PLAN1-FOCUS-VIEW-REDESIGN-20260506:
+//   - focusViewMin default 720 (12h)
+//   - weekViewSpan / weeklyPanelHidden 은 코드에서 안 읽지만 schema NOT NULL 이라 INSERT 시 보존 (S12 portal repo column drop 후 정리)
 const DEFAULT_SETTINGS = {
   theme: 'system' as const,
-  weekViewSpan: 1 as const,
-  weeklyPanelHidden: false,
-  focusViewMin: null as number | null,
+  weekViewSpan: 1 as const,         // S12 column drop 까지 INSERT 호환 유지
+  weeklyPanelHidden: false,          // S12 column drop 까지 INSERT 호환 유지
+  focusViewMin: 720 as number,
   pinnedActiveId: null as string | null
 };
 
 function rowToDomain(row: typeof plan1Settings.$inferSelect): AppSettings {
   return {
     theme: row.theme,
-    weekViewSpan: row.weekViewSpan,
-    weeklyPanelHidden: row.weeklyPanelHidden,
-    focusViewMin: row.focusViewMin,
+    // 옛 row null fallback (S12 backfill 전까지 안전망 · NOT NULL DEFAULT 720 박힌 후엔 무관)
+    focusViewMin: row.focusViewMin ?? 720,
     pinnedActiveId: row.pinnedActiveId
   };
 }
@@ -85,8 +87,6 @@ export async function updateSettings(
 
     const dbPatch: Partial<typeof plan1Settings.$inferInsert> = {updatedAt: new Date()};
     if (patch.theme !== undefined) dbPatch.theme = patch.theme;
-    if (patch.weekViewSpan !== undefined) dbPatch.weekViewSpan = patch.weekViewSpan;
-    if (patch.weeklyPanelHidden !== undefined) dbPatch.weeklyPanelHidden = patch.weeklyPanelHidden;
     if (patch.focusViewMin !== undefined) dbPatch.focusViewMin = patch.focusViewMin;
     if (patch.pinnedActiveId !== undefined) dbPatch.pinnedActiveId = patch.pinnedActiveId;
 

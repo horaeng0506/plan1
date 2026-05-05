@@ -37,24 +37,7 @@
     "unknown": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.",
     "workingHoursInvalid": "Неверный ввод рабочих часов ({reason})."
   },
-  "header": {
-    "clock": "часы",
-    "timer": "таймер",
-    "today": "сегодня",
-    "week": "неделя"
-  },
   "loading": "загрузка...",
-  "meta": {
-    "activeLabel": "активно",
-    "amLower": "дп",
-    "eventsLabel": "события",
-    "idle": "простой",
-    "loadingFormat": "{name} · загрузка...",
-    "placeholder": "—",
-    "pmLower": "пп",
-    "spanSuffix": "н",
-    "twelveHour": "12ч"
-  },
   "mutation": {
     "changeTimerType": "изменить тип таймера",
     "completeSchedule": "завершить расписание",
@@ -62,8 +45,6 @@
     "pinActiveTimer": "закрепить активный таймер",
     "removeCategory": "удалить категорию",
     "setTheme": "установить тему",
-    "setWeekSpan": "установить диапазон недели",
-    "toggleWeeklyPanel": "переключить недельную панель",
     "setFocus": "set focus view"
   },
   "nav": {
@@ -72,11 +53,6 @@
     "themeDark": "темный",
     "themeLight": "светлая",
     "themeSystem": "авто",
-    "weekSpan1": "1н",
-    "weekSpan2": "2н",
-    "weekSpan3": "3н",
-    "weeklyHide": "скрыть неделю",
-    "weeklyShow": "показать неделю",
     "workingHours": "часы",
     "focus4h": "4h",
     "focusLabel": "focus",

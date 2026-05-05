@@ -37,24 +37,7 @@
     "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
     "workingHoursInvalid": "Saisie des heures de travail invalide ({reason})."
   },
-  "header": {
-    "clock": "horloge",
-    "timer": "minuteur",
-    "today": "aujourd'hui",
-    "week": "semaine"
-  },
   "loading": "chargement...",
-  "meta": {
-    "activeLabel": "actif",
-    "amLower": "am",
-    "eventsLabel": "événements",
-    "idle": "inactif",
-    "loadingFormat": "{name} · chargement...",
-    "placeholder": "—",
-    "pmLower": "pm",
-    "spanSuffix": "s",
-    "twelveHour": "12h"
-  },
   "mutation": {
     "changeTimerType": "changer le type de minuteur",
     "completeSchedule": "terminer le planning",
@@ -62,8 +45,6 @@
     "pinActiveTimer": "épingler le minuteur actif",
     "removeCategory": "supprimer la catégorie",
     "setTheme": "définir le thème",
-    "setWeekSpan": "définir intervalle de semaine",
-    "toggleWeeklyPanel": "basculer le panneau hebdomadaire",
     "setFocus": "set focus view"
   },
   "nav": {
@@ -72,11 +53,6 @@
     "themeDark": "sombre",
     "themeLight": "clair",
     "themeSystem": "auto",
-    "weekSpan1": "1s",
-    "weekSpan2": "2s",
-    "weekSpan3": "3s",
-    "weeklyHide": "masquer semaine",
-    "weeklyShow": "afficher semaine",
     "workingHours": "heures",
     "focus4h": "4h",
     "focusLabel": "focus",

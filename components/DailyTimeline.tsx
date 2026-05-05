@@ -32,7 +32,7 @@ const FOCUS_OPTIONS: Array<{value: number; key: string}> = [
 export function DailyTimeline({
   onEventClick
 }: {
-  onEventClick?: (id: string, splitFrom?: string) => void;
+  onEventClick?: (id: string) => void;
 }) {
   const t = useTranslations();
   const locale = useLocale();
@@ -59,9 +59,8 @@ export function DailyTimeline({
 
   return (
     <div className="[&_.fc-event-title]:whitespace-normal [&_.fc-event-title]:break-words">
-      {/* PLAN1-FOCUS-VIEW-FIX-20260505 — 헤더 우측 상단 select.
-          DailyTimeline 전용 — 다른 view 와 분리. select value `''` = null (전체) */}
-      <div className="mb-2 flex items-center justify-end">
+      {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 — focus select 좌측 이동 (Q3·Q29). */}
+      <div className="mb-2 flex items-center justify-start">
         <label className="flex items-center gap-2 text-xs text-muted font-mono">
           <span>{t('nav.focusLabel')}</span>
           <select
@@ -89,9 +88,7 @@ export function DailyTimeline({
         height="auto"
         events={events}
         editable={false}
-        eventClick={arg =>
-          onEventClick?.(arg.event.id, arg.event.extendedProps?.splitFrom as string | undefined)
-        }
+        eventClick={arg => onEventClick?.(arg.event.id)}
         eventContent={renderEventContent}
       />
     </div>

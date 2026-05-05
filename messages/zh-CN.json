@@ -37,24 +37,7 @@
     "unknown": "发生了意外错误。请重试。",
     "workingHoursInvalid": "工作时间输入无效（{reason}）。"
   },
-  "header": {
-    "clock": "时钟",
-    "timer": "计时器",
-    "today": "今天",
-    "week": "周"
-  },
   "loading": "加载中...",
-  "meta": {
-    "activeLabel": "活动中",
-    "amLower": "上午",
-    "eventsLabel": "事件",
-    "idle": "空闲",
-    "loadingFormat": "{name} · 加载中...",
-    "placeholder": "—",
-    "pmLower": "下午",
-    "spanSuffix": "周",
-    "twelveHour": "12小时制"
-  },
   "mutation": {
     "changeTimerType": "更改计时器类型",
     "completeSchedule": "完成日程",
@@ -62,8 +45,6 @@
     "pinActiveTimer": "固定活动计时器",
     "removeCategory": "移除分类",
     "setTheme": "设置主题",
-    "setWeekSpan": "设置周跨度",
-    "toggleWeeklyPanel": "切换周视图面板",
     "setFocus": "set focus view"
   },
   "nav": {
@@ -72,11 +53,6 @@
     "themeDark": "深色",
     "themeLight": "浅色",
     "themeSystem": "自动",
-    "weekSpan1": "1周",
-    "weekSpan2": "2周",
-    "weekSpan3": "3周",
-    "weeklyHide": "隐藏周",
-    "weeklyShow": "显示周",
     "workingHours": "小时",
     "focus4h": "4h",
     "focusLabel": "focus",

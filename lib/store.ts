@@ -26,11 +26,10 @@ import * as schedulesApi from '@/app/actions/schedules';
 import * as settingsApi from '@/app/actions/settings';
 import {unwrapServerActionResult as unwrap, ServerActionError} from './server-action';
 
+// PLAN1-FOCUS-VIEW-REDESIGN-20260506: weekViewSpan / weeklyPanelHidden 폐기. focusViewMin 720 default.
 export const DEFAULT_SETTINGS: AppSettings = {
   theme: 'system',
-  weekViewSpan: 1,
-  weeklyPanelHidden: false,
-  focusViewMin: null
+  focusViewMin: 720
 };
 
 // Stage 5 i18n: name='default' 영어 base. 표시 시 useCategoryDisplay() 가 name 매칭으로

@@ -37,24 +37,7 @@
     "unknown": "予期しないエラーが発生しました。もう一度お試しください。",
     "workingHoursInvalid": "作業時間の入力が無効です（{reason}）。"
   },
-  "header": {
-    "clock": "時計",
-    "timer": "タイマー",
-    "today": "今日",
-    "week": "週"
-  },
   "loading": "読み込み中...",
-  "meta": {
-    "activeLabel": "アクティブ",
-    "amLower": "午前",
-    "eventsLabel": "イベント",
-    "idle": "アイドル",
-    "loadingFormat": "{name} · 読み込み中...",
-    "placeholder": "—",
-    "pmLower": "午後",
-    "spanSuffix": "週",
-    "twelveHour": "12時間"
-  },
   "mutation": {
     "changeTimerType": "タイマータイプを変更",
     "completeSchedule": "スケジュールを完了",
@@ -62,8 +45,6 @@
     "pinActiveTimer": "アクティブタイマーを固定",
     "removeCategory": "カテゴリを削除",
     "setTheme": "テーマを設定",
-    "setWeekSpan": "週の範囲を設定",
-    "toggleWeeklyPanel": "週間パネルを切り替え",
     "setFocus": "set focus view"
   },
   "nav": {
@@ -72,11 +53,6 @@
     "themeDark": "ダーク",
     "themeLight": "ライト",
     "themeSystem": "自動",
-    "weekSpan1": "1週間",
-    "weekSpan2": "2週間",
-    "weekSpan3": "3週間",
-    "weeklyHide": "週を非表示",
-    "weeklyShow": "週を表示",
     "workingHours": "時間",
     "focus4h": "4h",
     "focusLabel": "focus",

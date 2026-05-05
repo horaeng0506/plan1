@@ -37,24 +37,7 @@
     "unknown": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
     "workingHoursInvalid": "إدخال ساعات العمل غير صالح ({reason})."
   },
-  "header": {
-    "clock": "ساعة",
-    "timer": "المؤقت",
-    "today": "اليوم",
-    "week": "أسبوع"
-  },
   "loading": "جارٍ التحميل...",
-  "meta": {
-    "activeLabel": "نشط",
-    "amLower": "ص",
-    "eventsLabel": "الأحداث",
-    "idle": "خامل",
-    "loadingFormat": "{name} · جاري التحميل...",
-    "placeholder": "—",
-    "pmLower": "م",
-    "spanSuffix": "أ",
-    "twelveHour": "12س"
-  },
   "mutation": {
     "changeTimerType": "تغيير نوع المؤقت",
     "completeSchedule": "إكمال الجدول",
@@ -62,8 +45,6 @@
     "pinActiveTimer": "تثبيت المؤقت النشط",
     "removeCategory": "إزالة الفئة",
     "setTheme": "تعيين السمة",
-    "setWeekSpan": "تعيين نطاق الأسبوع",
-    "toggleWeeklyPanel": "تبديل اللوحة الأسبوعية",
     "setFocus": "set focus view"
   },
   "nav": {
@@ -72,11 +53,6 @@
     "themeDark": "داكن",
     "themeLight": "فاتح",
     "themeSystem": "تلقائي",
-    "weekSpan1": "1أ",
-    "weekSpan2": "2أ",
-    "weekSpan3": "3أ",
-    "weeklyHide": "إخفاء الأسبوع",
-    "weeklyShow": "إظهار الأسبوع",
     "workingHours": "ساعات",
     "focus4h": "4h",
     "focusLabel": "focus",

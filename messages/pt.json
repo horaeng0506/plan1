@@ -37,24 +37,7 @@
     "unknown": "Ocorreu um erro inesperado. Por favor, tente novamente.",
     "workingHoursInvalid": "Entrada de horas de trabalho inválida ({reason})."
   },
-  "header": {
-    "clock": "relógio",
-    "timer": "temporizador",
-    "today": "hoje",
-    "week": "semana"
-  },
   "loading": "a carregar...",
-  "meta": {
-    "activeLabel": "ativo",
-    "amLower": "am",
-    "eventsLabel": "eventos",
-    "idle": "inativo",
-    "loadingFormat": "{name} · a carregar...",
-    "placeholder": "—",
-    "pmLower": "pm",
-    "spanSuffix": "s",
-    "twelveHour": "12h"
-  },
   "mutation": {
     "changeTimerType": "alterar tipo de temporizador",
     "completeSchedule": "concluir horário",
@@ -62,8 +45,6 @@
     "pinActiveTimer": "fixar temporizador ativo",
     "removeCategory": "remover categoria",
     "setTheme": "definir tema",
-    "setWeekSpan": "definir período semanal",
-    "toggleWeeklyPanel": "alternar painel semanal",
     "setFocus": "set focus view"
   },
   "nav": {
@@ -72,11 +53,6 @@
     "themeDark": "escuro",
     "themeLight": "claro",
     "themeSystem": "automático",
-    "weekSpan1": "1s",
-    "weekSpan2": "2s",
-    "weekSpan3": "3s",
-    "weeklyHide": "ocultar semana",
-    "weeklyShow": "mostrar semana",
     "workingHours": "horas",
     "focus4h": "4h",
     "focusLabel": "focus",

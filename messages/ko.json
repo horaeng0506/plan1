@@ -11,35 +11,13 @@
     "logout": "로그아웃",
     "languageLabel": "언어"
   },
-  "header": {
-    "today": "오늘",
-    "week": "주간",
-    "clock": "시계",
-    "timer": "타이머"
-  },
-  "meta": {
-    "spanSuffix": "w",
-    "eventsLabel": "events",
-    "activeLabel": "active",
-    "idle": "idle",
-    "amLower": "am",
-    "pmLower": "pm",
-    "twelveHour": "12h",
-    "loadingFormat": "{name} · loading...",
-    "placeholder": "—"
-  },
   "nav": {
     "newSchedule": "새 스케줄",
     "categories": "카테고리",
     "workingHours": "업무시간",
-    "weekSpan1": "1주",
-    "weekSpan2": "2주",
-    "weekSpan3": "3주",
     "themeLight": "라이트",
     "themeDark": "다크",
     "themeSystem": "자동",
-    "weeklyShow": "주간 보이기",
-    "weeklyHide": "주간 숨기기",
     "focusLabel": "집중",
     "focus4h": "4시간",
     "focus6h": "6시간",
@@ -80,9 +58,7 @@
     "completeSchedule": "스케줄 완료",
     "changeTimerType": "타이머 타입 변경",
     "pinActiveTimer": "타이머 고정",
-    "setWeekSpan": "주간 범위 설정",
     "setTheme": "테마 설정",
-    "toggleWeeklyPanel": "주간 패널 토글",
     "setFocus": "집중 보기 설정"
   },
   "onboarding": {

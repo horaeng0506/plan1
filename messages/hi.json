@@ -37,24 +37,7 @@
     "unknown": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें।",
     "workingHoursInvalid": "अमान्य कार्य घंटे इनपुट ({reason})।"
   },
-  "header": {
-    "clock": "घड़ी",
-    "timer": "टाइमर",
-    "today": "आज",
-    "week": "सप्ताह"
-  },
   "loading": "लोड हो रहा है...",
-  "meta": {
-    "activeLabel": "सक्रिय",
-    "amLower": "am",
-    "eventsLabel": "इवेंट",
-    "idle": "निष्क्रिय",
-    "loadingFormat": "{name} · लोड हो रहा है...",
-    "placeholder": "—",
-    "pmLower": "pm",
-    "spanSuffix": "w",
-    "twelveHour": "12h"
-  },
   "mutation": {
     "changeTimerType": "टाइमर प्रकार बदलें",
     "completeSchedule": "शेड्यूल पूर्ण करें",
@@ -62,8 +45,6 @@
     "pinActiveTimer": "सक्रिय टाइमर पिन करें",
     "removeCategory": "श्रेणी हटाएं",
     "setTheme": "थीम सेट करें",
-    "setWeekSpan": "सप्ताह अवधि सेट करें",
-    "toggleWeeklyPanel": "साप्ताहिक पैनल टॉगल करें",
     "setFocus": "set focus view"
   },
   "nav": {
@@ -72,11 +53,6 @@
     "themeDark": "डार्क",
     "themeLight": "हल्का",
     "themeSystem": "ऑटो",
-    "weekSpan1": "1w",
-    "weekSpan2": "2w",
-    "weekSpan3": "3w",
-    "weeklyHide": "सप्ताह छुपाएं",
-    "weeklyShow": "सप्ताह दिखाएं",
     "workingHours": "घंटे",
     "focus4h": "4h",
     "focusLabel": "focus",
