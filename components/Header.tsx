@@ -29,8 +29,10 @@ export async function Header() {
   const user = await getCurrentSessionUser();
   const portalUrl = getPortalUrl();
   const portalProjectsUrl = `${portalUrl}/project`;
-  // Better Auth 기본 sign-out 엔드포인트. portal 가 노출 안 하면 portal 메인으로 fallback.
-  const logoutUrl = `${portalUrl}/api/auth/sign-out`;
+  // PLAN1-LOGOUT-URL-FIX-20260505: portal basePath = '/project' + Better Auth basePath = '/api/auth'.
+  // 따라서 sign-out endpoint 실제 path 는 `/project/api/auth/sign-out`.
+  // 옛 `/api/auth/sign-out` 은 cofounder-router 의 `/project/*` routing 밖 → not_found 404.
+  const logoutUrl = `${portalUrl}/project/api/auth/sign-out`;
 
   return (
     <header
