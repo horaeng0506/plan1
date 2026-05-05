@@ -39,7 +39,12 @@
     "themeDark": "dark",
     "themeSystem": "auto",
     "weeklyShow": "show week",
-    "weeklyHide": "hide week"
+    "weeklyHide": "hide week",
+    "focusOff": "all",
+    "focus1h": "1h",
+    "focus2h": "2h",
+    "focus3h": "3h",
+    "focus4h": "4h"
   },
   "common": {
     "cancel": "cancel",
@@ -73,7 +78,8 @@
     "pinActiveTimer": "pin active timer",
     "setWeekSpan": "set week span",
     "setTheme": "set theme",
-    "toggleWeeklyPanel": "toggle weekly panel"
+    "toggleWeeklyPanel": "toggle weekly panel",
+    "setFocus": "set focus view"
   },
   "onboarding": {
     "welcome": "No schedules yet",

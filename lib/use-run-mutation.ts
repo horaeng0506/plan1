@@ -44,7 +44,8 @@ export type MutationContextKey =
   | 'pinActiveTimer'
   | 'setWeekSpan'
   | 'setTheme'
-  | 'toggleWeeklyPanel';
+  | 'toggleWeeklyPanel'
+  | 'setFocus';
 
 export function useRunMutation() {
   const t = useTranslations();

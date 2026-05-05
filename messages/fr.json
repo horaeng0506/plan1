@@ -63,7 +63,8 @@
     "removeCategory": "supprimer la catégorie",
     "setTheme": "définir le thème",
     "setWeekSpan": "définir intervalle de semaine",
-    "toggleWeeklyPanel": "basculer le panneau hebdomadaire"
+    "toggleWeeklyPanel": "basculer le panneau hebdomadaire",
+    "setFocus": "set focus view"
   },
   "nav": {
     "categories": "catégories",
@@ -76,7 +77,12 @@
     "weekSpan3": "3s",
     "weeklyHide": "masquer semaine",
     "weeklyShow": "afficher semaine",
-    "workingHours": "heures"
+    "workingHours": "heures",
+    "focusOff": "all",
+    "focus1h": "1h",
+    "focus2h": "2h",
+    "focus3h": "3h",
+    "focus4h": "4h"
   },
   "onboarding": {
     "addFirst": "ajouter le premier planning",

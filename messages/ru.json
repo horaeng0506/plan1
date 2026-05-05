@@ -63,7 +63,8 @@
     "removeCategory": "удалить категорию",
     "setTheme": "установить тему",
     "setWeekSpan": "установить диапазон недели",
-    "toggleWeeklyPanel": "переключить недельную панель"
+    "toggleWeeklyPanel": "переключить недельную панель",
+    "setFocus": "set focus view"
   },
   "nav": {
     "categories": "категории",
@@ -76,7 +77,12 @@
     "weekSpan3": "3н",
     "weeklyHide": "скрыть неделю",
     "weeklyShow": "показать неделю",
-    "workingHours": "часы"
+    "workingHours": "часы",
+    "focusOff": "all",
+    "focus1h": "1h",
+    "focus2h": "2h",
+    "focus3h": "3h",
+    "focus4h": "4h"
   },
   "onboarding": {
     "addFirst": "добавить первое расписание",

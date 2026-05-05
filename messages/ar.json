@@ -63,7 +63,8 @@
     "removeCategory": "إزالة الفئة",
     "setTheme": "تعيين السمة",
     "setWeekSpan": "تعيين نطاق الأسبوع",
-    "toggleWeeklyPanel": "تبديل اللوحة الأسبوعية"
+    "toggleWeeklyPanel": "تبديل اللوحة الأسبوعية",
+    "setFocus": "set focus view"
   },
   "nav": {
     "categories": "الفئات",
@@ -76,7 +77,12 @@
     "weekSpan3": "3أ",
     "weeklyHide": "إخفاء الأسبوع",
     "weeklyShow": "إظهار الأسبوع",
-    "workingHours": "ساعات"
+    "workingHours": "ساعات",
+    "focusOff": "all",
+    "focus1h": "1h",
+    "focus2h": "2h",
+    "focus3h": "3h",
+    "focus4h": "4h"
   },
   "onboarding": {
     "addFirst": "إضافة أول جدول",
