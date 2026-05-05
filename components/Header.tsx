@@ -29,10 +29,11 @@ export async function Header() {
   const user = await getCurrentSessionUser();
   const portalUrl = getPortalUrl();
   const portalProjectsUrl = `${portalUrl}/project`;
-  // PLAN1-LOGOUT-URL-FIX-20260505: portal basePath = '/project' + Better Auth basePath = '/api/auth'.
-  // 따라서 sign-out endpoint 실제 path 는 `/project/api/auth/sign-out`.
-  // 옛 `/api/auth/sign-out` 은 cofounder-router 의 `/project/*` routing 밖 → not_found 404.
-  const logoutUrl = `${portalUrl}/project/api/auth/sign-out`;
+  // PLAN1-LOGOUT-URL-FIX-V2-20260505: portal 신설 `/api/cofounder/sign-out` 사용.
+  // Better Auth session cookie 삭제 + sub-project SSO 용 cofounder_jwt cookie purge 통합 처리.
+  // 옛 Better Auth catch-all `/project/api/auth/sign-out` 은 session cookie 만 삭제 → cofounder_jwt
+  // 1h TTL 동안 SSO 상태 mismatch. PORTAL-LOGOUT-JWT-PURGE-20260505 endpoint 가 정공.
+  const logoutUrl = `${portalUrl}/project/api/cofounder/sign-out`;
 
   return (
     <header
