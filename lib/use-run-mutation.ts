@@ -36,15 +36,13 @@ const SEVERITY_TO_TOAST: Record<Exclude<MutationSeverity, 'silent'>, ToastSeveri
 };
 
 // i18n key union — 빌드 시 검증 (오타 차단). messages/*.json `mutation.*` 와 동기화.
+// PLAN1-FOCUS-VIEW-REDESIGN-20260506: setWeekSpan · toggleWeeklyPanel · pinActiveTimer 폐기.
 export type MutationContextKey =
   | 'removeCategory'
   | 'extendTimer'
   | 'completeSchedule'
   | 'changeTimerType'
-  | 'pinActiveTimer'
-  | 'setWeekSpan'
   | 'setTheme'
-  | 'toggleWeeklyPanel'
   | 'setFocus';
 
 export function useRunMutation() {

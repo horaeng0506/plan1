@@ -17,25 +17,34 @@ function fcLocale(locale: string): string {
   return locale === 'zh-CN' ? 'zh-cn' : locale;
 }
 
-const FOCUS_OPTIONS: Array<{value: number | null; key: string}> = [
-  {value: null, key: 'focusOff'},
+// PLAN1-FOCUS-VIEW-REDESIGN-20260506: null 옵션 폐기 + default 12h. 5h·7h 폐기, 10·12·16·20·24h 신규.
+const FOCUS_OPTIONS: Array<{value: number; key: string}> = [
   {value: 240, key: 'focus4h'},
-  {value: 300, key: 'focus5h'},
   {value: 360, key: 'focus6h'},
-  {value: 420, key: 'focus7h'},
-  {value: 480, key: 'focus8h'}
+  {value: 480, key: 'focus8h'},
+  {value: 600, key: 'focus10h'},
+  {value: 720, key: 'focus12h'},
+  {value: 960, key: 'focus16h'},
+  {value: 1200, key: 'focus20h'},
+  {value: 1440, key: 'focus24h'}
 ];
 
 export function DailyTimeline({
-  onEventClick
+  onEventClick,
+  onDateClick
 }: {
-  onEventClick?: (id: string, splitFrom?: string) => void;
+  onEventClick?: (id: string) => void;
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q7·Q10·Q11·Q18) — 빈 공간 클릭 → 모달.
+  // 30분 floor + auto-bump (focus window 안 과거 영역 클릭 시 startAt = max(clickedMs, now)).
+  onDateClick?: (clickedMs: number) => void;
 }) {
   const t = useTranslations();
   const locale = useLocale();
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
-  const focusViewMin = useAppStore(s => s.settings.focusViewMin);
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506: null 폐기. 옛 row null 받을 수 있어 fallback 720.
+  // S12 portal repo schema migration 후 NOT NULL DEFAULT 720 박힐 때까지 안전망.
+  const focusViewMin = useAppStore(s => s.settings.focusViewMin ?? 720);
   const updateSettings = useAppStore(s => s.updateSettings);
   const runMutation = useRunMutation();
 
@@ -49,25 +58,23 @@ export function DailyTimeline({
   const events = useMemo(() => schedulesToEvents(schedules, categories), [schedules, categories]);
 
   const handleFocusChange = (value: string) => {
-    const next = value === '' ? null : Number(value);
-    runMutation(updateSettings({focusViewMin: next}), 'setFocus');
+    runMutation(updateSettings({focusViewMin: Number(value)}), 'setFocus');
   };
 
   return (
     <div className="[&_.fc-event-title]:whitespace-normal [&_.fc-event-title]:break-words">
-      {/* PLAN1-FOCUS-VIEW-FIX-20260505 — 헤더 우측 상단 select.
-          DailyTimeline 전용 — 다른 view 와 분리. select value `''` = null (전체) */}
-      <div className="mb-2 flex items-center justify-end">
+      {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 — focus select 좌측 이동 (Q3·Q29). */}
+      <div className="mb-2 flex items-center justify-start">
         <label className="flex items-center gap-2 text-xs text-muted font-mono">
           <span>{t('nav.focusLabel')}</span>
           <select
-            value={focusViewMin == null ? '' : String(focusViewMin)}
+            value={String(focusViewMin)}
             onChange={e => handleFocusChange(e.target.value)}
             className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono"
           >
             {FOCUS_OPTIONS.map(opt => (
-              <option key={opt.key} value={opt.value == null ? '' : String(opt.value)}>
-                {t(`nav.${opt.key}` as 'nav.focusOff')}
+              <option key={opt.key} value={String(opt.value)}>
+                {t(`nav.${opt.key}` as 'nav.focus4h')}
               </option>
             ))}
           </select>
@@ -80,14 +87,14 @@ export function DailyTimeline({
         locale={fcLocale(locale)}
         slotMinTime={slotMinTime}
         slotMaxTime={slotMaxTime}
+        slotDuration="00:30:00"
         nowIndicator
         allDaySlot={false}
         height="auto"
         events={events}
         editable={false}
-        eventClick={arg =>
-          onEventClick?.(arg.event.id, arg.event.extendedProps?.splitFrom as string | undefined)
-        }
+        eventClick={arg => onEventClick?.(arg.event.id)}
+        dateClick={arg => onDateClick?.(arg.date.getTime())}
         eventContent={renderEventContent}
       />
     </div>

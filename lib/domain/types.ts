@@ -12,7 +12,7 @@ export interface Schedule {
   actualDurationMin?: number;
   timerType: TimerType;
   status: ScheduleStatus;
-  splitFrom?: ScheduleId;
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q25): splitFrom 폐기 (split 메커니즘 자체 폐기 · S12 column drop).
   chainedToPrev?: boolean;
   createdAt: number;
   updatedAt: number;
@@ -20,10 +20,9 @@ export interface Schedule {
 export type Theme = 'light' | 'dark' | 'system';
 export interface AppSettings {
   theme: Theme;
-  weekViewSpan: 1 | 2 | 3;
-  weeklyPanelHidden: boolean;
-  // PLAN1-WH-FOCUS-20260504 — 집중 보기 모드. null = 전체 보기 (default).
-  // 값 N (분) 일 때 시계/timeline view 가 [now-N/2, now+N/2] 구간만 렌더.
-  focusViewMin: number | null;
-  pinnedActiveId?: ScheduleId | null;
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 — 집중 보기 모드. default 12h(720).
+  // 옵션 [4·6·8·10·12·16·20·24h] · null 폐기 · DailyTimeline view = HOUR floor [(h-1)*60, ...].
+  // S12 portal repo schema migration 후 NOT NULL DEFAULT 720. 그 전에는 store ?? 720 fallback.
+  focusViewMin: number;
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q23): pinnedActiveId 폐기 (MAX_OVERLAP=2 정책 후 사용 영역 거의 없음 · S12 column drop).
 }

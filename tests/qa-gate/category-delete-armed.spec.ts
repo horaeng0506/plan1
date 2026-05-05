@@ -67,20 +67,11 @@ test.describe('plan1 mutation E2E — A7 카테고리 삭제 armed case', () => 
     //   안전: select 안에서 catName 으로 옵션 매칭
     const catSelect = sched.dialog.locator('select').first();
     await catSelect.selectOption({label: catName});
-    // 내일 날짜로 isFuture 통과
-    const tomorrow = new Date(Date.now() + 86_400_000);
-    const tomorrowIso = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
-    await sched.dialog.locator('input[type="date"]').fill(tomorrowIso);
+    // PLAN1-FOCUS-VIEW-REDESIGN-20260506: date input 폐기 · 시작 시각 자동 (현재 hour boundary).
+    // WeeklyCalendar 폐기 → next-button 회피 영역도 사라짐.
     await sched.dialog.locator('input[type="number"]').fill('30');
     await sched.dialog.getByRole('button', {name: '추가', exact: true}).click();
     await expect(sched.heading).toBeHidden({timeout: SLA_COLD_MS + 2_000});
-    // WeeklyCalendar (firstDay=1 + weekView1) 1주 시야 의존. today.getDay() === 0 (일요일)
-    // 이면 tomorrow=Mon=다음 주 → toolbar `next` 클릭. main run 25279350177 line 77 fail 회귀 catch.
-    if (new Date().getDay() === 0) {
-      // WeeklyCalendar 와 DailyTimeline 둘 다 FullCalendar — `.fc-next-button` 2개 매칭.
-      // PlanApp.tsx 의 layout 순서 (Weekly 위 / Daily 아래) 따라 first() = WeeklyCalendar.
-      await page.locator('.fc-next-button').first().click();
-    }
     await expect(page.getByText(schedTitle).first()).toBeVisible({timeout: 5_000});
 
     // 3. 카테고리 모달 다시 열기

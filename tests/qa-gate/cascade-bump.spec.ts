@@ -52,17 +52,9 @@ test.describe('plan1 mutation E2E — A9 cascade-bump (Critical · 4/29 영역)'
     const catName = `cat-bump-${Date.now()}`;
 
     // 0. 진입 + clock fake (분 boundary race 회피)
-    //    1차 시도: clock fake 불요 (NewScheduleModal "now" 버튼 충분) — 환각
-    //    2차 실측: "now" click ~ "추가" click 사이 분 boundary 넘어가면 isFuture false → 추가 disabled
-    //    3차 fix: page.clock.install 으로 시간 freeze (분 boundary 0초)
-    //    4차 root cause (trace.zip 분석): clock.install 의 default 가 freeze → setInterval stop
-    //      → useNow (useSyncExternalStore subscribeNow) 의 1초 interval fire X → notify X
-    //      → SSR snapshot 0 → ActiveTimer idle 표시 → +30m 버튼 visible X (PR #20 1·2·3차 fail root cause)
+    //    PLAN1-FOCUS-VIEW-REDESIGN-20260506: split 메커니즘 폐기 → working hours rollover 회피 영역 사라짐.
+    //    clock.install 은 분 boundary race 회피 + setInterval fire 안정화 위해 유지.
     //    Fix: clock 2초 fastForward → setInterval 첫 fire → notify → re-render → active 인식
-    // CI runner UTC 기준 spec 실행 시각이 working hours (09:00-18:00 UTC) 밖이면
-    // splitByWorkingHours 가 schedule 을 다음 날 09:00 으로 roll forward → 시야 밖.
-    // (lib/domain/split.ts:71-83 · lib/store.ts:35 defaultWorkingHours {540, 1080})
-    // working hours 안 12:00 UTC 로 fix → split rollover 회피 + active timer 의도 보존.
     const fixedTime = new Date();
     fixedTime.setUTCHours(12, 0, 0, 0);
     await page.clock.install({time: fixedTime});
@@ -88,10 +80,9 @@ test.describe('plan1 mutation E2E — A9 cascade-bump (Critical · 4/29 영역)'
     await expect(sched.heading).toBeVisible({timeout: 5_000});
     await sched.dialog.getByRole('textbox').first().fill(title);
 
-    // 3. "now" 버튼 클릭 — date=오늘, hour·minute=현재 시각 자동 set
-    //    minuteOptions useMemo 가 표준 boundary 외 분 dynamic 추가 → isFuture 통과
-    //    i18n schedule.buttonNow = "now (시작을 지금으로)" — regex 로 i18n 변경 catch
-    await sched.dialog.getByRole('button', {name: /^now/}).click();
+    // 3. PLAN1-FOCUS-VIEW-REDESIGN-20260506: $ now 버튼 폐기 · 시작 시각 자동 (모달 mount snapshot).
+    //    nowSnapshot capture → floorToHourMs(hourMs + remainderMin) → startAt = 현재 시각.
+    //    isFuture 통과 + 즉시 active 윈도우 진입.
 
     // 4. duration 60min 입력 (단일 input[type=number] · ActiveTimer 윈도우 충분히 길게)
     await sched.dialog.locator('input[type="number"]').fill('60');

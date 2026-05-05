@@ -28,14 +28,6 @@ function minutes12ToRadians(min: number): number {
   return ((min % 720) / 720) * Math.PI * 2;
 }
 
-function isSameDay(a: Date, b: Date): boolean {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
 export function AnalogClock() {
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
@@ -55,7 +47,6 @@ export function AnalogClock() {
   const nowMin = nowMs > 0 ? Math.floor(nowMs / 60_000) : 0;
   const sectors = useMemo(() => {
     if (nowMs === 0) return [] as Array<{id: string; d: string; color: string; opacity: number}>;
-    const now = new Date(nowMs);
     const arcGen = d3Arc<{
       startAngle: number;
       endAngle: number;
@@ -67,19 +58,19 @@ export function AnalogClock() {
       .outerRadius(RADIUS_SECTOR)
       .startAngle(d => d.startAngle)
       .endAngle(d => d.endAngle);
-    const ms = now.getTime();
+    // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q35):
+    //   - isSameDay 필터 폐기 → endAt > now (진행 중 또는 곧 진행 schedule 표시)
+    //   - endMin clamp 1440 폐기 → 자정 넘는 schedule arc 도 12h modulo 정확 표시 (23시 시작 → 11시 위치 / 02시 종료 → 2시 위치)
     return schedules
       .filter(s => {
         if (s.status === 'done') return false;
         const endAt = s.startAt + s.durationMin * 60_000;
-        if (endAt <= ms) return false;
-        const start = new Date(s.startAt);
-        return isSameDay(start, now);
+        return endAt > nowMs;
       })
       .map(s => {
         const start = new Date(s.startAt);
         const startMin = start.getHours() * 60 + start.getMinutes();
-        const endMin = Math.min(startMin + s.durationMin, 1440);
+        const endMin = startMin + s.durationMin;
         const isPM = startMin >= 720;
         const opacity = isPM ? 0.85 : 0.55;
         const color = categoryColor.get(s.categoryId) ?? '#5c6370';
