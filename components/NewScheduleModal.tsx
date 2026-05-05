@@ -22,10 +22,13 @@ function formatEndDisplay(ms: number, weekdayLabel: (idx: number) => string): st
 
 export function NewScheduleModal({
   onClose,
-  editingId: propEditingId
+  editingId: propEditingId,
+  prefillStartAt
 }: {
   onClose: () => void;
   editingId?: string;
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q7) — 빈 공간 클릭 시 PlanApp 가 30분 floor + auto-bump 후 전달.
+  prefillStartAt?: number;
 }) {
   const t = useTranslations();
   const categoryDisplay = useCategoryDisplay();
@@ -74,15 +77,17 @@ export function NewScheduleModal({
     [nowSnapshot]
   );
 
-  // 진입 시점 startAt 결정:
+  // 진입 시점 startAt 결정 (우선순위):
   //   - 편집 모드: editing.startAt 그대로 (hour floor + remainder)
+  //   - 빈 공간 클릭 (prefillStartAt): PlanApp 가 이미 30분 floor + auto-bump 후 전달
   //   - 새 추가 모드: 현재 시각 자동 (hour floor + 현재 분)
   // selectedHourMs 는 hour boundary 절대 ms · selectedMinute 는 0~59
   const initFloored = useMemo(() => {
     if (editing) return floorToHourMs(editing.startAt);
+    if (prefillStartAt !== undefined) return floorToHourMs(prefillStartAt);
     if (nowSnapshot === 0) return null;
     return floorToHourMs(nowSnapshot);
-  }, [editing, nowSnapshot]);
+  }, [editing, prefillStartAt, nowSnapshot]);
 
   const [selectedHourMs, setSelectedHourMs] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);

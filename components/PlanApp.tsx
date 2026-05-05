@@ -56,6 +56,7 @@ export function PlanApp() {
   const categories = useAppStore(s => s.categories);
 
   const [newOpen, setNewOpen] = useState(false);
+  const [newPrefill, setNewPrefill] = useState<number | undefined>(undefined);
   const [catOpen, setCatOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -91,11 +92,22 @@ export function PlanApp() {
   const openNew = () => {
     if (!canOpenNew) return;
     setEditingId(null);
+    setNewPrefill(undefined);
     setNewOpen(true);
   };
   const handleEventClick = (id: string) => {
     setNewOpen(false);
     setEditingId(id);
+  };
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q7·Q10·Q18) — 빈 공간 클릭 → 모달 + 30분 floor + auto-bump.
+  const handleDateClick = (clickedMs: number) => {
+    if (!canOpenNew) return;
+    const SLOT_MS = 30 * 60_000;
+    const floored = Math.floor(clickedMs / SLOT_MS) * SLOT_MS;
+    const bumped = Math.max(floored, Date.now());
+    setEditingId(null);
+    setNewPrefill(bumped);
+    setNewOpen(true);
   };
 
   const themeButtonClass = (tt: Theme) =>
@@ -208,7 +220,7 @@ export function PlanApp() {
             DailyTimeline 자체 헤더 안 focus select 가 시간 범위 표시 운반. */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
           <section className="rounded-none border border-line bg-panel p-4">
-            <DailyTimeline onEventClick={handleEventClick} />
+            <DailyTimeline onEventClick={handleEventClick} onDateClick={handleDateClick} />
           </section>
           <aside className="space-y-6">
             <section className="rounded-none border border-line bg-panel p-4">
@@ -221,7 +233,9 @@ export function PlanApp() {
         </div>
       </div>
 
-      {newOpen && <NewScheduleModal onClose={() => setNewOpen(false)} />}
+      {newOpen && (
+        <NewScheduleModal prefillStartAt={newPrefill} onClose={() => setNewOpen(false)} />
+      )}
       {editingId && (
         <NewScheduleModal
           key={editingId}

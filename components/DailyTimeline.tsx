@@ -30,9 +30,13 @@ const FOCUS_OPTIONS: Array<{value: number; key: string}> = [
 ];
 
 export function DailyTimeline({
-  onEventClick
+  onEventClick,
+  onDateClick
 }: {
   onEventClick?: (id: string) => void;
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q7·Q10·Q11·Q18) — 빈 공간 클릭 → 모달.
+  // 30분 floor + auto-bump (focus window 안 과거 영역 클릭 시 startAt = max(clickedMs, now)).
+  onDateClick?: (clickedMs: number) => void;
 }) {
   const t = useTranslations();
   const locale = useLocale();
@@ -83,12 +87,14 @@ export function DailyTimeline({
         locale={fcLocale(locale)}
         slotMinTime={slotMinTime}
         slotMaxTime={slotMaxTime}
+        slotDuration="00:30:00"
         nowIndicator
         allDaySlot={false}
         height="auto"
         events={events}
         editable={false}
         eventClick={arg => onEventClick?.(arg.event.id)}
+        dateClick={arg => onDateClick?.(arg.date.getTime())}
         eventContent={renderEventContent}
       />
     </div>
