@@ -102,16 +102,14 @@ body::before {
  * split 연속 part: dashed left border 3px + bg alpha 절반 (원본 vs 분할 구분).
  *   ui-critic Critical: opacity 제거 (텍스트 가독성 손상). bg alpha 만 낮춤.
  *   logic-critic Major: border-left-color 명시 (inline borderColor 와 분리되어 묻힘 방지).
- * chained 연결 스케줄: top dashed 2px var(--success).
- *   ui-critic Critical: 1px → 2px + semantic success(green) 색상으로 시인성 확보. */
+ *
+ * PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q24): .is-chained 룰 폐기 (chained 디폴트 true 후 의미 X).
+ * is-split-cont 룰은 S6 split 폐기 영역에서 별도 정리 예정. */
 .fc-event.is-split-cont {
   border-left-width: 3px !important;
   border-left-style: dashed !important;
   border-left-color: var(--muted) !important;
   background-color: rgba(92, 99, 112, 0.08) !important;
-}
-.fc-event.is-chained {
-  border-top: 2px dashed var(--success) !important;
 }
 
 /* Stage 4c — AnalogClock SVG 토큰 (clock-* class · light/dark 자동 swap).

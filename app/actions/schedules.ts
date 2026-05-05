@@ -165,7 +165,8 @@ export async function createSchedule(input: {
       durationMin: input.durationMin,
       timerType: input.timerType,
       status: 'pending',
-      chainedToPrev: input.chainedToPrev ?? false,
+      // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q6): chainedToPrev 디폴트 true (모든 새 schedule chain).
+      chainedToPrev: input.chainedToPrev ?? true,
       createdAt: Date.now(),
       updatedAt: Date.now()
     };

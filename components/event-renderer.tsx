@@ -1,13 +1,12 @@
 /**
- * FullCalendar eventContent 공유 renderer (simplify code-reuse 추출).
+ * FullCalendar eventContent 공유 renderer.
  *
- * Stage 4b prefix 제거 후 DailyTimeline/WeeklyCalendar 가 동일한 12줄 함수 복사.
- * 한 곳 정의 → 양쪽 import. .is-split-cont/.is-chained CSS 위계는 globals.css 가
- * lib/schedule-to-event.ts 에서 부여하는 className 으로 운반 — 본 함수는 title 만.
+ * Stage 4b prefix 제거 후 DailyTimeline 재사용. 본 함수는 title 만 렌더.
+ * PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q24): is-chained className 폐기 (디폴트 true 후 의미 X).
  */
 
 export function renderEventContent(arg: {
-  event: {title: string; extendedProps: {splitFrom?: string; chainedToPrev?: boolean}};
+  event: {title: string; extendedProps: {splitFrom?: string}};
 }) {
   return (
     <div className="px-1 py-0.5 text-xs leading-tight whitespace-normal break-words">
