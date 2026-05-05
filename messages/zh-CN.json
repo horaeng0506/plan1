@@ -78,13 +78,15 @@
     "weeklyHide": "隐藏周",
     "weeklyShow": "显示周",
     "workingHours": "小时",
-    "focusOff": "all",
     "focus4h": "4h",
     "focusLabel": "focus",
-    "focus5h": "5h",
     "focus6h": "6h",
-    "focus7h": "7h",
-    "focus8h": "8h"
+    "focus8h": "8h",
+    "focus10h": "10h",
+    "focus12h": "12h",
+    "focus16h": "16h",
+    "focus20h": "20h",
+    "focus24h": "24h"
   },
   "onboarding": {
     "addFirst": "添加第一个日程",

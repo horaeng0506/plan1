@@ -40,13 +40,15 @@
     "themeSystem": "자동",
     "weeklyShow": "주간 보이기",
     "weeklyHide": "주간 숨기기",
-    "focusOff": "전체",
-    "focus4h": "4시간",
     "focusLabel": "집중",
-    "focus5h": "5시간",
+    "focus4h": "4시간",
     "focus6h": "6시간",
-    "focus7h": "7시간",
-    "focus8h": "8시간"
+    "focus8h": "8시간",
+    "focus10h": "10시간",
+    "focus12h": "12시간",
+    "focus16h": "16시간",
+    "focus20h": "20시간",
+    "focus24h": "24시간"
   },
   "common": {
     "cancel": "취소",
