@@ -1,56 +1,78 @@
 'use client';
 
 import {useMemo} from 'react';
-import {useLocale} from 'next-intl';
+import {useLocale, useTranslations} from 'next-intl';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {useAppStore} from '@/lib/store';
 import {schedulesToEvents} from '@/lib/schedule-to-event';
-import {pad2} from '@/lib/date-format';
+import {focusBounds} from '@/lib/focus-bounds';
 import {useNow} from '@/lib/now';
+import {useRunMutation} from '@/lib/use-run-mutation';
 import {renderEventContent} from './event-renderer';
-
-function minToTimeStr(min: number): string {
-  const clamped = Math.max(0, Math.min(1440, Math.round(min)));
-  return `${pad2(Math.floor(clamped / 60))}:${pad2(clamped % 60)}:00`;
-}
 
 // next-intl `zh-CN` → FullCalendar `zh-cn`.
 function fcLocale(locale: string): string {
   return locale === 'zh-CN' ? 'zh-cn' : locale;
 }
 
+const FOCUS_OPTIONS: Array<{value: number | null; key: string}> = [
+  {value: null, key: 'focusOff'},
+  {value: 240, key: 'focus4h'},
+  {value: 300, key: 'focus5h'},
+  {value: 360, key: 'focus6h'},
+  {value: 420, key: 'focus7h'},
+  {value: 480, key: 'focus8h'}
+];
+
 export function DailyTimeline({
   onEventClick
 }: {
   onEventClick?: (id: string, splitFrom?: string) => void;
 }) {
+  const t = useTranslations();
   const locale = useLocale();
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
-  // PLAN1-WH-FOCUS-20260504 — workingHours 폐기 + 집중 보기 모드.
-  // focusViewMin null = 0~24h 전체. 값 N 일 때 [now-N/2, now+N/2] 구간 (분 단위).
   const focusViewMin = useAppStore(s => s.settings.focusViewMin);
+  const updateSettings = useAppStore(s => s.updateSettings);
+  const runMutation = useRunMutation();
 
   const nowMs = useNow();
 
-  const {slotMinTime, slotMaxTime} = useMemo(() => {
-    if (focusViewMin == null || focusViewMin <= 0 || nowMs <= 0) {
-      return {slotMinTime: '00:00:00', slotMaxTime: '24:00:00'};
-    }
-    const now = new Date(nowMs);
-    const nowMin = now.getHours() * 60 + now.getMinutes();
-    const half = Math.floor(focusViewMin / 2);
-    const startMin = nowMin - half;
-    const endMin = nowMin + (focusViewMin - half);
-    return {slotMinTime: minToTimeStr(startMin), slotMaxTime: minToTimeStr(endMin)};
-  }, [focusViewMin, nowMs]);
+  const {slotMinTime, slotMaxTime} = useMemo(
+    () => focusBounds(focusViewMin, nowMs),
+    [focusViewMin, nowMs]
+  );
 
   const events = useMemo(() => schedulesToEvents(schedules, categories), [schedules, categories]);
 
+  const handleFocusChange = (value: string) => {
+    const next = value === '' ? null : Number(value);
+    runMutation(updateSettings({focusViewMin: next}), 'setFocus');
+  };
+
   return (
     <div className="[&_.fc-event-title]:whitespace-normal [&_.fc-event-title]:break-words">
+      {/* PLAN1-FOCUS-VIEW-FIX-20260505 — 헤더 우측 상단 select.
+          DailyTimeline 전용 — 다른 view 와 분리. select value `''` = null (전체) */}
+      <div className="mb-2 flex items-center justify-end">
+        <label className="flex items-center gap-2 text-xs text-muted font-mono">
+          <span>{t('nav.focusLabel')}</span>
+          <select
+            value={focusViewMin == null ? '' : String(focusViewMin)}
+            onChange={e => handleFocusChange(e.target.value)}
+            className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono"
+          >
+            {FOCUS_OPTIONS.map(opt => (
+              <option key={opt.key} value={opt.value == null ? '' : String(opt.value)}>
+                {t(`nav.${opt.key}` as 'nav.focusOff')}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridDay"
