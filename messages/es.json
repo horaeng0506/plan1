@@ -79,10 +79,12 @@
     "weeklyShow": "mostrar semana",
     "workingHours": "horas",
     "focusOff": "all",
-    "focus1h": "1h",
-    "focus2h": "2h",
-    "focus3h": "3h",
-    "focus4h": "4h"
+    "focus4h": "4h",
+    "focusLabel": "focus",
+    "focus5h": "5h",
+    "focus6h": "6h",
+    "focus7h": "7h",
+    "focus8h": "8h"
   },
   "onboarding": {
     "addFirst": "agregar primer horario",
