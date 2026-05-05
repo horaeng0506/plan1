@@ -40,10 +40,8 @@ test.describe('plan1 mutation E2E — A10 instant-complete (High · cascade 영�
     //    4차 root cause (trace.zip 분석): clock.install default freeze → setInterval stop
     //      → useNow notify X → SSR snapshot 0 → ActiveTimer idle → complete 버튼 visible X
     //    Fix: clock 2초 fastForward → setInterval 첫 fire → re-render → active 인식
-    // CI runner UTC 기준 spec 실행 시각이 working hours (09:00-18:00 UTC) 밖이면
-    // splitByWorkingHours 가 schedule 을 다음 날 09:00 으로 roll forward → 시야 밖.
-    // (lib/domain/split.ts:71-83 · lib/store.ts:35 defaultWorkingHours {540, 1080})
-    // working hours 안 12:00 UTC 로 fix → split rollover 회피 + active timer 의도 보존.
+    // PLAN1-FOCUS-VIEW-REDESIGN-20260506: split 메커니즘 폐기 → working hours rollover 회피 영역 사라짐.
+    // clock.install 은 분 boundary race 회피 + setInterval fire 안정화 위해 유지.
     const fixedTime = new Date();
     fixedTime.setUTCHours(12, 0, 0, 0);
     await page.clock.install({time: fixedTime});
@@ -68,8 +66,7 @@ test.describe('plan1 mutation E2E — A10 instant-complete (High · cascade 영�
     const sched = dialogOf(page, '새 스케줄');
     await expect(sched.heading).toBeVisible({timeout: 5_000});
     await sched.dialog.getByRole('textbox').first().fill(title);
-    // i18n schedule.buttonNow = "now (시작을 지금으로)" — regex 로 i18n 변경 catch
-    await sched.dialog.getByRole('button', {name: /^now/}).click();
+    // PLAN1-FOCUS-VIEW-REDESIGN-20260506: $ now 버튼 폐기 · 시작 시각 자동 (모달 mount snapshot).
     await sched.dialog.locator('input[type="number"]').fill('60');
     await sched.dialog.getByRole('button', {name: '추가', exact: true}).click();
     await expect(sched.heading).toBeHidden({timeout: SLA_COLD_MS + 2_000});

@@ -67,15 +67,12 @@ test.describe('plan1 mutation E2E — A3 schedule 추가', () => {
     ).toBeEnabled({timeout: 10_000});
     await newBtn.click();
 
-    // 3. NewScheduleModal — title, duration, 내일 날짜 입력
-    //    isFuture 검증 회피: defaultHour 가 23시 이후엔 today 23:00 이라 spec 실행 시각이
-    //    23:30+ 이면 과거 → button disabled. 내일 날짜로 명시 set.
+    // 3. NewScheduleModal — title + duration. 시작 시각 자동 (현재 시각 hour boundary)
+    //    PLAN1-FOCUS-VIEW-REDESIGN-20260506: date input 폐기 · hour select 동적 24h.
+    //    default startAt = 현재 시각 → isFuture true (분 단위 정밀도 한계 흡수).
     const sched = dialogOf(page, '새 스케줄');
     await expect(sched.heading).toBeVisible({timeout: 5_000});
     await sched.dialog.getByRole('textbox').first().fill(title);
-    const tomorrow = new Date(Date.now() + 86_400_000);
-    const tomorrowIso = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
-    await sched.dialog.locator('input[type="date"]').fill(tomorrowIso);
     await sched.dialog.locator('input[type="number"]').fill('30');
 
     // 4. 측정: 추가 click → 모달 닫힘
@@ -98,15 +95,9 @@ test.describe('plan1 mutation E2E — A3 schedule 추가', () => {
       } SLA ${threshold}ms 초과 (4/29 5초 latency 회귀 가능성). instrument 박고 phase 진단 필요.`
     ).toBeLessThan(threshold);
 
-    // 6. 카드 표시
-    //    WeeklyCalendar (firstDay=1 + weekView1) 1주 시야 의존. CI runner UTC 기준
-    //    today.getDay() === 0 (일요일) 이면 tomorrow=Mon=다음 주 → toolbar `next` 클릭.
-    //    main run 25279350177 (5/3 일요일 UTC) 의 line 102 fail 직접 회귀 catch.
-    if (new Date().getDay() === 0) {
-      // WeeklyCalendar 와 DailyTimeline 둘 다 FullCalendar — `.fc-next-button` 2개 매칭.
-      // PlanApp.tsx 의 layout 순서 (Weekly 위 / Daily 아래) 따라 first() = WeeklyCalendar.
-      await page.locator('.fc-next-button').first().click();
-    }
+    // 6. 카드 표시 — DailyTimeline focus window (default 12h · [지금-1h, 지금+11h]) 안.
+    //    PLAN1-FOCUS-VIEW-REDESIGN-20260506: WeeklyCalendar 폐기 → next-button 회피 영역 제거.
+    //    default startAt = 현재 시각이라 항상 focus window 안.
     await expect(page.getByText(title).first()).toBeVisible({timeout: 5_000});
 
     // 7. cleanup — schedule 삭제 (orphan row 누적 차단)
