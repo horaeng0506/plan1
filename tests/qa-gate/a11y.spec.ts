@@ -70,8 +70,15 @@ test.describe('plan1 a11y baseline', () => {
     await catModal.getByRole('button', {name: /^닫기$|^Close$/i}).click();
     await expect(catModal).toBeHidden({timeout: 3_000});
 
-    // 새 스케줄 모달 열기
-    await page.getByRole('button', {name: /\+ (새 스케줄|New schedule)/i}).click();
+    // 새 스케줄 모달 열기 — newBtn enabled wait 명시 (PLAN1-MAIN-REGRESSION-FIX · 2026-05-05).
+    // 본 spec 는 카테고리 추가 후 + 새 스케줄 button 즉시 click 했지만 button 의 enabled 조건은
+    // canOpenNew = loaded && categories.length > 0 (PlanApp.tsx:180). store.init() 의 Promise.all
+    // (listSchedules·listCategories·getSettings) 적재 race 또는 catModal 닫는 시점 timing 으로
+    // button 14× retry disabled 된 채 click timeout 가능. schedule-add·schedule-edit spec 는 이미
+    // toBeEnabled wait 박혀있어 PASS. a11y spec 만 누락 → main run 25354381073 fail.
+    const newBtn = page.getByRole('button', {name: /\+ (새 스케줄|New schedule)/i});
+    await expect(newBtn).toBeEnabled({timeout: 10_000});
+    await newBtn.click();
     await expect(page.getByRole('heading', {name: /새 스케줄|New schedule/i})).toBeVisible({
       timeout: 5_000
     });
