@@ -17,12 +17,13 @@ export interface Schedule {
   createdAt: number;
   updatedAt: number;
 }
-export interface WorkingHours { date: string; startMin: number; endMin: number; }
 export type Theme = 'light' | 'dark' | 'system';
 export interface AppSettings {
   theme: Theme;
   weekViewSpan: 1 | 2 | 3;
   weeklyPanelHidden: boolean;
-  defaultWorkingHours: { startMin: number; endMin: number };
+  // PLAN1-WH-FOCUS-20260504 — 집중 보기 모드. null = 전체 보기 (default).
+  // 값 N (분) 일 때 시계/timeline view 가 [now-N/2, now+N/2] 구간만 렌더.
+  focusViewMin: number | null;
   pinnedActiveId?: ScheduleId | null;
 }
