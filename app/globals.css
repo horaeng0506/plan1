@@ -103,10 +103,18 @@ body::before {
  * chained=true 연속 schedule 2개+ 의 시간 범위에 dashed border + 약한 bg color 표시.
  * .is-chained 룰 (작은 top dashed border) 폐기 — 큰 박스 패턴으로 대체.
  * .is-split-cont 룰 폐기 (split 메커니즘 자체 폐기) */
+/* 2026-05-06 (대장 명시) — chain group 박스 → vertical line.
+ * schedule 카드 가운데 (center) 영역에 좁은 line 으로 chain schedule 들 연결.
+ * z-index: 5 (schedule .fc-event 위) + pointer-events-none (click 통과). */
 .fc-event.chain-group-box {
   border: none !important;
-  background-color: rgba(152, 195, 121, 0.18) !important;
-  opacity: 1 !important;
+  background-color: var(--success) !important;
+  opacity: 0.6 !important;
+  width: 3px !important;
+  left: calc(50% - 1.5px) !important;
+  right: auto !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
 }
 
 /* Stage 4c — AnalogClock SVG 토큰 (clock-* class · light/dark 자동 swap).
