@@ -171,6 +171,6 @@
     "warningTruncated": "रेंज {max} दिनों से अधिक है, केवल आंशिक प्रोसेस किया गया। एक संकीर्ण रेंज आज़माएं।"
   },
   "header": {
-    "finalEndAtSuffix": "completion expected"
+    "finalEndAtSuffix": "end"
   }
 }

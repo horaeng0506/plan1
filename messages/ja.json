@@ -171,6 +171,6 @@
     "warningTruncated": "範囲が{max}日を超えているため、一部のみ処理されました。範囲を狭めてください。"
   },
   "header": {
-    "finalEndAtSuffix": "completion expected"
+    "finalEndAtSuffix": "end"
   }
 }
