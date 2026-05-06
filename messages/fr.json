@@ -1,178 +1,178 @@
 {
-  "app": {
-    "tagline": "gestionnaire d'horaires",
-    "title": "plan1"
-  },
-  "auth": {
-    "signIn": "Se connecter avec Google",
-    "signInDescription": "plan1 est un outil d'horaire personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
-    "signInRequired": "Connectez-vous pour utiliser plan1"
-  },
-  "category": {
-    "confirmRemoveLabel": "confirmer sup ({count})",
-    "confirmRemoveText": "{count} horaire(s) seront supprimés avec ceci. Cliquez à nouveau pour confirmer.",
-    "defaultName": "par défaut",
-    "empty": "Aucune catégorie.",
-    "fieldColor": "couleur",
-    "fieldName": "nom",
-    "header": "catégories",
-    "removeButton": "sup",
-    "scheduleCountSuffix": "{count} horaires"
-  },
-  "common": {
-    "add": "ajouter",
-    "cancel": "annuler",
-    "close": "fermer",
-    "confirmDelete": "confirmer la suppression",
-    "delete": "supprimer",
-    "dismiss": "ignorer",
-    "now": "maintenant",
-    "retry": "réessayer",
-    "save": "enregistrer"
-  },
-  "confirmation": {
-    "scheduleAdded": "Horaire ajouté"
-  },
-  "error": {
-    "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
-    "loadFailedLabel": "échec du chargement :",
-    "mutationFailed": "Échec de {action} : {error}",
-    "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-    "workingHoursInvalid": "Entrée d'heures de travail invalide ({reason})."
-  },
-  "loading": "chargement...",
-  "mutation": {
-    "changeTimerType": "changer le type de minuteur",
-    "completeSchedule": "terminer l'horaire",
-    "extendTimer": "prolonger le minuteur",
-    "removeCategory": "supprimer la catégorie",
-    "setFocus": "définir la vue focus",
-    "setTheme": "définir le thème",
-    "startScheduleNow": "start schedule now"
-  },
-  "nav": {
-    "categories": "catégories",
-    "focus10h": "10h",
-    "focus12h": "12h",
-    "focus16h": "16h",
-    "focus20h": "20h",
-    "focus24h": "24h",
-    "focus4h": "4h",
-    "focus6h": "6h",
-    "focus8h": "8h",
-    "focusLabel": "focus",
-    "newSchedule": "nouveau",
-    "themeDark": "sombre",
-    "themeLight": "clair",
-    "themeSystem": "auto",
-    "workingHours": "heures"
-  },
-  "onboarding": {
-    "addFirst": "ajouter le premier horaire",
-    "firstSchedule": "Ajoutez votre premier horaire pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
-    "welcome": "Aucun horaire pour le moment"
-  },
-  "schedule": {
-    "afterLastNoneHint": "aucun horaire à venir",
-    "buttonAfterLast": "next after last schedule",
-    "buttonMinus10": "-10m",
-    "buttonMinus30": "-30m",
-    "buttonPlus10": "+10m",
-    "buttonPlus30": "+30m",
-    "buttonPlusHour": "+1h",
-    "categoryAddOption": "+ ajouter une catégorie",
-    "chainedCheckbox": "enchaîner à l'horaire précédent",
-    "endLabelV2": "heure de fin",
-    "endPlaceholder": "sélectionner la durée",
-    "fieldCategory": "catégorie",
-    "fieldDuration": "durée (min)",
-    "fieldName": "nom",
-    "fieldStartHour": "heure de début",
-    "fieldStartMinute": "minute de début",
-    "headerEdit": "modifier l'horaire",
-    "headerNew": "nouvel horaire",
-    "hourSuffix": "h",
-    "hourTodaySuffix": "(aujourd'hui)",
-    "hourTomorrowSuffix": "(demain)",
-    "minuteSuffix": "m",
-    "prevChainLabel": "horaire précédent connecté",
-    "titleDefault": "Nouvel horaire",
-    "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
-  },
-  "serverError": {
-    "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour supprimer.",
-    "categoryNotFound": "Catégorie introuvable ou non possédée.",
-    "scheduleNotFound": "Horaire introuvable.",
-    "unauthorized": "Connexion requise."
-  },
-  "signIn": {
-    "cta": "Se connecter",
-    "description": "Connectez-vous à votre compte cofounder pour voir et gérer vos horaires.",
-    "title": "Connexion requise"
-  },
-  "timer": {
-    "buttonComplete": "terminé",
-    "buttonFocus": "focus",
-    "buttonIdle": "inactif",
-    "categoryFallback": "?",
-    "idleEmpty": "inactif · aucun horaire actif",
-    "labelElapsed": "écoulé",
-    "labelEndAt": "fin-à",
-    "labelRemaining": "restant",
-    "labelTarget": "cible",
-    "labelUntilUpcoming": "jusqu'au prochain",
-    "labelUpcoming": "horaire suivant",
-    "overlapLabel": "chevauchement {count}",
-    "simultaneousLabel": "simultané · {count}",
-    "tooltipClickToFocus": "cliquer pour passer en focus",
-    "tooltipClickToIdle": "cliquer pour passer en inactif",
-    "typeCountdown": "compte à rebours",
-    "typeCountup": "compte à rebours inversé",
-    "typeTimer1": "minuteur1",
-    "buttonStartNow": "start now"
-  },
-  "topbar": {
-    "back": "retour au portail",
-    "creditsLabel": "crédits",
-    "creditsPlaceholder": "—",
-    "guest": "invité",
-    "languageLabel": "langue",
-    "logout": "déconnexion"
-  },
-  "undo": {
-    "actionLabel": "annulation disponible",
-    "button": "annuler"
-  },
-  "wallTime": {
-    "am": "am",
-    "pm": "pm"
-  },
-  "weekdays": [
-    "dim",
-    "lun",
-    "mar",
-    "mer",
-    "jeu",
-    "ven",
-    "sam"
-  ],
-  "workingHours": {
-    "checkboxAlsoDefault": "enregistrer aussi par défaut",
-    "checkboxWeekdaysOnly": "jours de semaine seulement (lun–ven)",
-    "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
-    "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
-    "fieldDate": "date",
-    "fieldEndTime": "heure de fin",
-    "fieldFromDate": "de",
-    "fieldStartTime": "heure de début",
-    "fieldToDate": "à",
-    "header": "heures de travail",
-    "tabRange": "plage",
-    "tabSingle": "unique",
-    "warningNoDates": "Aucune date à appliquer dans la plage. (début > fin ou conflit jours de semaine uniquement)",
-    "warningTruncated": "La plage dépasse {max} jours, seulement partiellement traité. Essayez une plage plus étroite."
-  },
-  "header": {
-    "finalEndAtSuffix": "end"
-  }
+    "app": {
+        "tagline": "gestionnaire de plannings",
+        "title": "plan1"
+    },
+    "auth": {
+        "signIn": "Se connecter avec Google",
+        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInRequired": "Connectez-vous pour utiliser plan1"
+    },
+    "category": {
+        "confirmRemoveLabel": "confirmer suppr ({count})",
+        "confirmRemoveText": "{count} planning(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
+        "defaultName": "par défaut",
+        "empty": "Aucune catégorie.",
+        "fieldColor": "couleur",
+        "fieldName": "nom",
+        "header": "catégories",
+        "removeButton": "rm",
+        "scheduleCountSuffix": "{count} plannings"
+    },
+    "common": {
+        "add": "ajouter",
+        "cancel": "annuler",
+        "close": "fermer",
+        "confirmDelete": "confirmer la suppression",
+        "delete": "supprimer",
+        "dismiss": "ignorer",
+        "now": "maintenant",
+        "retry": "réessayer",
+        "save": "enregistrer"
+    },
+    "confirmation": {
+        "scheduleAdded": "Planning ajouté"
+    },
+    "error": {
+        "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
+        "loadFailedLabel": "échec du chargement :",
+        "mutationFailed": "Échec de {action} : {error}",
+        "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+        "workingHoursInvalid": "Entrée des heures de travail invalide ({reason})."
+    },
+    "header": {
+        "finalEndAtSuffix": "fin"
+    },
+    "loading": "chargement...",
+    "mutation": {
+        "changeTimerType": "changer le type de minuteur",
+        "completeSchedule": "terminer le planning",
+        "extendTimer": "prolonger le minuteur",
+        "removeCategory": "supprimer la catégorie",
+        "setFocus": "définir la vue concentration",
+        "setTheme": "définir le thème",
+        "startScheduleNow": "démarrer le planning maintenant"
+    },
+    "nav": {
+        "categories": "catégories",
+        "focus10h": "10h",
+        "focus12h": "12h",
+        "focus16h": "16h",
+        "focus20h": "20h",
+        "focus24h": "24h",
+        "focus4h": "4h",
+        "focus6h": "6h",
+        "focus8h": "8h",
+        "focusLabel": "concentration",
+        "newSchedule": "nouveau",
+        "themeDark": "sombre",
+        "themeLight": "clair",
+        "themeSystem": "auto",
+        "workingHours": "heures"
+    },
+    "onboarding": {
+        "addFirst": "ajouter le premier planning",
+        "firstSchedule": "Ajoutez votre premier planning pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
+        "welcome": "Aucun planning pour le moment"
+    },
+    "schedule": {
+        "afterLastNoneHint": "aucun planning à venir",
+        "buttonAfterLast": "suivant après le dernier planning",
+        "buttonMinus10": "-10m",
+        "buttonMinus30": "-30m",
+        "buttonPlus10": "+10m",
+        "buttonPlus30": "+30m",
+        "buttonPlusHour": "+1h",
+        "categoryAddOption": "+ ajouter une catégorie",
+        "chainedCheckbox": "enchaîner au planning précédent",
+        "endLabelV2": "heure de fin",
+        "endPlaceholder": "sélectionner la durée",
+        "fieldCategory": "catégorie",
+        "fieldDuration": "durée (min)",
+        "fieldName": "nom",
+        "fieldStartHour": "heure de début",
+        "fieldStartMinute": "minute de début",
+        "headerEdit": "modifier le planning",
+        "headerNew": "nouveau planning",
+        "hourSuffix": "h",
+        "hourTodaySuffix": "(aujourd'hui)",
+        "hourTomorrowSuffix": "(demain)",
+        "minuteSuffix": "m",
+        "prevChainLabel": "planning précédent connecté",
+        "titleDefault": "Nouveau planning",
+        "warningOverlapLimit": "Au maximum {limit} plannings peuvent se chevaucher en même temps. Ajustez début/durée ou supprimez-en un existant."
+    },
+    "serverError": {
+        "categoryHasSchedules": "La catégorie contient {scheduleCount} plannings. Confirmez la suppression en cascade pour retirer.",
+        "categoryNotFound": "Catégorie introuvable ou non possédée.",
+        "scheduleNotFound": "Planning introuvable.",
+        "unauthorized": "Connexion requise."
+    },
+    "signIn": {
+        "cta": "Se connecter",
+        "description": "Connectez-vous à votre compte cofounder pour voir et gérer vos plannings.",
+        "title": "Connexion requise"
+    },
+    "timer": {
+        "buttonComplete": "terminer",
+        "buttonFocus": "concentration",
+        "buttonIdle": "inactif",
+        "buttonStartNow": "démarrer maintenant",
+        "categoryFallback": "?",
+        "idleEmpty": "inactif · aucun planning actif",
+        "labelElapsed": "écoulé",
+        "labelEndAt": "fin-à",
+        "labelRemaining": "restant",
+        "labelTarget": "cible",
+        "labelUntilUpcoming": "jusqu'au prochain",
+        "labelUpcoming": "planning suivant",
+        "overlapLabel": "chevauchement {count}",
+        "simultaneousLabel": "simultané · {count}",
+        "tooltipClickToFocus": "cliquer pour passer en concentration",
+        "tooltipClickToIdle": "cliquer pour passer en inactif",
+        "typeCountdown": "compte à rebours",
+        "typeCountup": "compte progressif",
+        "typeTimer1": "minuteur1"
+    },
+    "topbar": {
+        "back": "retour au portail",
+        "creditsLabel": "crédits",
+        "creditsPlaceholder": "—",
+        "guest": "invité",
+        "languageLabel": "langue",
+        "logout": "déconnexion"
+    },
+    "undo": {
+        "actionLabel": "annulation disponible",
+        "button": "annuler"
+    },
+    "wallTime": {
+        "am": "am",
+        "pm": "pm"
+    },
+    "weekdays": [
+        "dim",
+        "lun",
+        "mar",
+        "mer",
+        "jeu",
+        "ven",
+        "sam"
+    ],
+    "workingHours": {
+        "checkboxAlsoDefault": "enregistrer aussi par défaut",
+        "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
+        "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
+        "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
+        "fieldDate": "date",
+        "fieldEndTime": "heure de fin",
+        "fieldFromDate": "de",
+        "fieldStartTime": "heure de début",
+        "fieldToDate": "à",
+        "header": "heures de travail",
+        "tabRange": "plage",
+        "tabSingle": "unique",
+        "warningNoDates": "Aucune date à appliquer dans la plage. (début > fin ou conflit jours de semaine uniquement)",
+        "warningTruncated": "La plage dépasse {max} jours, seulement partiellement traité. Essayez une plage plus étroite."
+    }
 }

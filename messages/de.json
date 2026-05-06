@@ -1,178 +1,178 @@
 {
-  "app": {
-    "tagline": "Zeitplanverwaltung",
-    "title": "plan1"
-  },
-  "auth": {
-    "signIn": "Mit Google anmelden",
-    "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisation. Melden Sie sich mit Google an, um loszulegen.",
-    "signInRequired": "Anmelden, um plan1 zu verwenden"
-  },
-  "category": {
-    "confirmRemoveLabel": "Löschen bestätigen ({count})",
-    "confirmRemoveText": "{count} Zeitplan/Zeitpläne wird/werden damit gelöscht. Klicken Sie erneut zur Bestätigung.",
-    "defaultName": "Standard",
-    "empty": "Keine Kategorien.",
-    "fieldColor": "Farbe",
-    "fieldName": "Name",
-    "header": "Kategorien",
-    "removeButton": "entf",
-    "scheduleCountSuffix": "{count} Zeitpläne"
-  },
-  "common": {
-    "add": "hinzufügen",
-    "cancel": "abbrechen",
-    "close": "schließen",
-    "confirmDelete": "Löschen bestätigen",
-    "delete": "löschen",
-    "dismiss": "verwerfen",
-    "now": "jetzt",
-    "retry": "erneut versuchen",
-    "save": "speichern"
-  },
-  "confirmation": {
-    "scheduleAdded": "Zeitplan hinzugefügt"
-  },
-  "error": {
-    "featureUnavailable": "Diese Funktion ist noch nicht verfügbar ({feature}).",
-    "loadFailedLabel": "Laden fehlgeschlagen:",
-    "mutationFailed": "Fehler bei {action}: {error}",
-    "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-    "workingHoursInvalid": "Ungültige Eingabe für Arbeitszeiten ({reason})."
-  },
-  "loading": "lädt...",
-  "mutation": {
-    "changeTimerType": "Timer-Typ ändern",
-    "completeSchedule": "Zeitplan abschließen",
-    "extendTimer": "Timer verlängern",
-    "removeCategory": "Kategorie entfernen",
-    "setFocus": "Fokusansicht einstellen",
-    "setTheme": "Design einstellen",
-    "startScheduleNow": "start schedule now"
-  },
-  "nav": {
-    "categories": "Kategorien",
-    "focus10h": "10h",
-    "focus12h": "12h",
-    "focus16h": "16h",
-    "focus20h": "20h",
-    "focus24h": "24h",
-    "focus4h": "4h",
-    "focus6h": "6h",
-    "focus8h": "8h",
-    "focusLabel": "Fokus",
-    "newSchedule": "neu",
-    "themeDark": "dunkel",
-    "themeLight": "hell",
-    "themeSystem": "auto",
-    "workingHours": "Stunden"
-  },
-  "onboarding": {
-    "addFirst": "ersten Zeitplan hinzufügen",
-    "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, der heutigen Zeitachse und der analogen Uhr zu sehen.",
-    "welcome": "Noch keine Zeitpläne"
-  },
-  "schedule": {
-    "afterLastNoneHint": "kein anstehender Zeitplan",
-    "buttonAfterLast": "next after last schedule",
-    "buttonMinus10": "-10m",
-    "buttonMinus30": "-30m",
-    "buttonPlus10": "+10m",
-    "buttonPlus30": "+30m",
-    "buttonPlusHour": "+1h",
-    "categoryAddOption": "+ Kategorie hinzufügen",
-    "chainedCheckbox": "mit vorherigem Zeitplan verketten",
-    "endLabelV2": "Endzeit",
-    "endPlaceholder": "Dauer auswählen",
-    "fieldCategory": "Kategorie",
-    "fieldDuration": "Dauer (Min)",
-    "fieldName": "Name",
-    "fieldStartHour": "Startstunde",
-    "fieldStartMinute": "Startminute",
-    "headerEdit": "Zeitplan bearbeiten",
-    "headerNew": "neuer Zeitplan",
-    "hourSuffix": "h",
-    "hourTodaySuffix": "(heute)",
-    "hourTomorrowSuffix": "(morgen)",
-    "minuteSuffix": "m",
-    "prevChainLabel": "verbundener vorheriger Zeitplan",
-    "titleDefault": "Neuer Zeitplan",
-    "warningOverlapLimit": "Maximal {limit} Zeitpläne können gleichzeitig überschneiden. Passen Sie Start/Dauer an oder entfernen Sie einen bestehenden."
-  },
-  "serverError": {
-    "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Bestätigen Sie das Löschen, um sie zu entfernen.",
-    "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
-    "scheduleNotFound": "Zeitplan nicht gefunden.",
-    "unauthorized": "Anmeldung erforderlich."
-  },
-  "signIn": {
-    "cta": "Anmelden",
-    "description": "Melden Sie sich bei Ihrem Cofounder-Konto an, um Ihre Zeitpläne anzuzeigen und zu verwalten.",
-    "title": "Anmeldung erforderlich"
-  },
-  "timer": {
-    "buttonComplete": "abschließen",
-    "buttonFocus": "Fokus",
-    "buttonIdle": "inaktiv",
-    "categoryFallback": "?",
-    "idleEmpty": "Leerlauf · kein aktiver Zeitplan",
-    "labelElapsed": "vergangen",
-    "labelEndAt": "endet um",
-    "labelRemaining": "verbleibend",
-    "labelTarget": "Ziel",
-    "labelUntilUpcoming": "bis bevorstehend",
-    "labelUpcoming": "nächster Zeitplan",
-    "overlapLabel": "Überschneidung {count}",
-    "simultaneousLabel": "gleichzeitig · {count}",
-    "tooltipClickToFocus": "klicken, um zu Fokus zu wechseln",
-    "tooltipClickToIdle": "klicken, um zu Leerlauf zu wechseln",
-    "typeCountdown": "Countdown",
-    "typeCountup": "Hochzählen",
-    "typeTimer1": "timer1",
-    "buttonStartNow": "start now"
-  },
-  "topbar": {
-    "back": "zurück zum Portal",
-    "creditsLabel": "Credits",
-    "creditsPlaceholder": "—",
-    "guest": "Gast",
-    "languageLabel": "Sprache",
-    "logout": "Abmelden"
-  },
-  "undo": {
-    "actionLabel": "Rückgängig verfügbar",
-    "button": "rückgängig"
-  },
-  "wallTime": {
-    "am": "AM",
-    "pm": "PM"
-  },
-  "weekdays": [
-    "So",
-    "Mo",
-    "Di",
-    "Mi",
-    "Do",
-    "Fr",
-    "Sa"
-  ],
-  "workingHours": {
-    "checkboxAlsoDefault": "auch als Standard speichern",
-    "checkboxWeekdaysOnly": "nur Wochentage (Mo–Fr)",
-    "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
-    "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
-    "fieldDate": "Datum",
-    "fieldEndTime": "Endzeit",
-    "fieldFromDate": "von",
-    "fieldStartTime": "Startzeit",
-    "fieldToDate": "bis",
-    "header": "Arbeitszeiten",
-    "tabRange": "Bereich",
-    "tabSingle": "einzeln",
-    "warningNoDates": "Keine Daten zum Anwenden im Bereich. (Start > Ende oder Konflikt mit nur Wochentagen)",
-    "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen kleineren Bereich."
-  },
-  "header": {
-    "finalEndAtSuffix": "end"
-  }
+    "app": {
+        "tagline": "Terminverwaltung",
+        "title": "Plan1"
+    },
+    "auth": {
+        "signIn": "Mit Google anmelden",
+        "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisierung. Melden Sie sich mit Google an, um zu beginnen.",
+        "signInRequired": "Anmelden, um plan1 zu verwenden"
+    },
+    "category": {
+        "confirmRemoveLabel": "Entfernen bestätigen ({count})",
+        "confirmRemoveText": "{count} Termin(e) werden hiermit gelöscht. Klicken Sie erneut zur Bestätigung.",
+        "defaultName": "Standard",
+        "empty": "Keine Kategorien.",
+        "fieldColor": "Farbe",
+        "fieldName": "Name",
+        "header": "Kategorien",
+        "removeButton": "entf",
+        "scheduleCountSuffix": "{count} Termine"
+    },
+    "common": {
+        "add": "hinzufügen",
+        "cancel": "abbrechen",
+        "close": "schließen",
+        "confirmDelete": "Löschen bestätigen",
+        "delete": "löschen",
+        "dismiss": "schließen",
+        "now": "jetzt",
+        "retry": "erneut versuchen",
+        "save": "speichern"
+    },
+    "confirmation": {
+        "scheduleAdded": "Termin hinzugefügt"
+    },
+    "error": {
+        "featureUnavailable": "Diese Funktion ist noch nicht verfügbar ({feature}).",
+        "loadFailedLabel": "Laden fehlgeschlagen:",
+        "mutationFailed": "Fehler bei {action}: {error}",
+        "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+        "workingHoursInvalid": "Ungültige Arbeitszeiteneingabe ({reason})."
+    },
+    "header": {
+        "finalEndAtSuffix": "Ende"
+    },
+    "loading": "lädt...",
+    "mutation": {
+        "changeTimerType": "Timer-Typ ändern",
+        "completeSchedule": "Termin abschließen",
+        "extendTimer": "Timer verlängern",
+        "removeCategory": "Kategorie entfernen",
+        "setFocus": "Fokusansicht festlegen",
+        "setTheme": "Design festlegen",
+        "startScheduleNow": "Termin jetzt starten"
+    },
+    "nav": {
+        "categories": "Kategorien",
+        "focus10h": "10 Std",
+        "focus12h": "12 Std",
+        "focus16h": "16 Std",
+        "focus20h": "20 Std",
+        "focus24h": "24 Std",
+        "focus4h": "4 Std",
+        "focus6h": "6 Std",
+        "focus8h": "8 Std",
+        "focusLabel": "Fokus",
+        "newSchedule": "neu",
+        "themeDark": "dunkel",
+        "themeLight": "hell",
+        "themeSystem": "auto",
+        "workingHours": "Stunden"
+    },
+    "onboarding": {
+        "addFirst": "ersten Termin hinzufügen",
+        "firstSchedule": "Fügen Sie Ihren ersten Termin hinzu, um ihn im Wochenraster, der heutigen Zeitleiste und der analogen Uhr zu sehen.",
+        "welcome": "Noch keine Termine"
+    },
+    "schedule": {
+        "afterLastNoneHint": "kein bevorstehender Termin",
+        "buttonAfterLast": "nächster nach letztem Termin",
+        "buttonMinus10": "-10 Min",
+        "buttonMinus30": "-30 Min",
+        "buttonPlus10": "+10 Min",
+        "buttonPlus30": "+30 Min",
+        "buttonPlusHour": "+1 Std",
+        "categoryAddOption": "+ Kategorie hinzufügen",
+        "chainedCheckbox": "an vorherigen Termin anhängen",
+        "endLabelV2": "Endzeit",
+        "endPlaceholder": "Dauer auswählen",
+        "fieldCategory": "Kategorie",
+        "fieldDuration": "Dauer (Min)",
+        "fieldName": "Name",
+        "fieldStartHour": "Startstunde",
+        "fieldStartMinute": "Startminute",
+        "headerEdit": "Termin bearbeiten",
+        "headerNew": "neuer Termin",
+        "hourSuffix": "Std",
+        "hourTodaySuffix": "(heute)",
+        "hourTomorrowSuffix": "(morgen)",
+        "minuteSuffix": "m",
+        "prevChainLabel": "verbundener vorheriger Termin",
+        "titleDefault": "Neuer Termin",
+        "warningOverlapLimit": "Maximal {limit} Termine können sich gleichzeitig überschneiden. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
+    },
+    "serverError": {
+        "categoryHasSchedules": "Kategorie hat {scheduleCount} Termine. Bestätigen Sie Kaskadenlöschung zum Entfernen.",
+        "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
+        "scheduleNotFound": "Termin nicht gefunden.",
+        "unauthorized": "Anmeldung erforderlich."
+    },
+    "signIn": {
+        "cta": "Anmelden",
+        "description": "Melden Sie sich bei Ihrem Cofounder-Konto an, um Ihre Termine anzuzeigen und zu verwalten.",
+        "title": "Anmeldung erforderlich"
+    },
+    "timer": {
+        "buttonComplete": "abschließen",
+        "buttonFocus": "Fokus",
+        "buttonIdle": "inaktiv",
+        "buttonStartNow": "jetzt starten",
+        "categoryFallback": "?",
+        "idleEmpty": "inaktiv · kein aktiver Termin",
+        "labelElapsed": "vergangen",
+        "labelEndAt": "endet um",
+        "labelRemaining": "verbleibend",
+        "labelTarget": "Ziel",
+        "labelUntilUpcoming": "bis bevorstehend",
+        "labelUpcoming": "nächster Termin",
+        "overlapLabel": "Überschneidung {count}",
+        "simultaneousLabel": "gleichzeitig · {count}",
+        "tooltipClickToFocus": "klicken, um zu Fokus zu wechseln",
+        "tooltipClickToIdle": "klicken, um zu Leerlauf zu wechseln",
+        "typeCountdown": "Countdown",
+        "typeCountup": "Hochzähler",
+        "typeTimer1": "Timer1"
+    },
+    "topbar": {
+        "back": "zurück zum Portal",
+        "creditsLabel": "Credits",
+        "creditsPlaceholder": "—",
+        "guest": "Gast",
+        "languageLabel": "Sprache",
+        "logout": "abmelden"
+    },
+    "undo": {
+        "actionLabel": "Rückgängig verfügbar",
+        "button": "rückgängig"
+    },
+    "wallTime": {
+        "am": "vorm.",
+        "pm": "pm"
+    },
+    "weekdays": [
+        "So",
+        "Mo",
+        "Di",
+        "Mi",
+        "Do",
+        "Fr",
+        "Sa"
+    ],
+    "workingHours": {
+        "checkboxAlsoDefault": "auch als Standard speichern",
+        "checkboxWeekdaysOnly": "nur Wochentage (Mo–Fr)",
+        "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
+        "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
+        "fieldDate": "Datum",
+        "fieldEndTime": "Endzeit",
+        "fieldFromDate": "von",
+        "fieldStartTime": "Startzeit",
+        "fieldToDate": "bis",
+        "header": "Arbeitszeiten",
+        "tabRange": "Bereich",
+        "tabSingle": "einzeln",
+        "warningNoDates": "Keine Daten im Bereich anzuwenden. (Start > Ende oder Wochentags-Konflikt)",
+        "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen engeren Bereich."
+    }
 }
