@@ -220,15 +220,17 @@ export function PlanApp() {
 
         {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506: 헤더 메타 (status meta bar) 폐기.
             DailyTimeline 자체 헤더 안 focus select 가 시간 범위 표시 운반. */}
+        {/* 2026-05-06 (대장 명시) — 모바일 순서: ActiveTimer → AnalogClock → DailyTimeline.
+            데스크탑 (lg+) 은 현재 유지 (좌 timeline · 우 시계+타이머). */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
-          <section className="rounded-none border border-line bg-panel p-4">
+          <section className="order-2 lg:order-1 rounded-none border border-line bg-panel p-4">
             <DailyTimeline onEventClick={handleEventClick} onDateClick={handleDateClick} />
           </section>
-          <aside className="space-y-6">
-            <section className="rounded-none border border-line bg-panel p-4">
+          <aside className="order-1 lg:order-2 flex flex-col gap-6">
+            <section className="order-2 lg:order-1 rounded-none border border-line bg-panel p-4">
               <AnalogClock />
             </section>
-            <section>
+            <section className="order-1 lg:order-2">
               <ActiveTimer />
             </section>
           </aside>
