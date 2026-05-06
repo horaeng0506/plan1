@@ -5,25 +5,25 @@
     },
     "auth": {
         "signIn": "Se connecter avec Google",
-        "signInDescription": "plan1 est un outil d'organisation personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
         "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "category": {
         "confirmRemoveLabel": "confirmer suppr ({count})",
-        "confirmRemoveText": "{count} horaire(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
+        "confirmRemoveText": "{count} horaire(s) seront supprimés avec ceci. Cliquez à nouveau pour confirmer.",
         "defaultName": "par défaut",
         "empty": "Aucune catégorie.",
         "fieldColor": "couleur",
         "fieldName": "nom",
         "header": "catégories",
-        "removeButton": "suppr",
+        "removeButton": "rm",
         "scheduleCountSuffix": "{count} horaires"
     },
     "common": {
         "add": "ajouter",
         "cancel": "annuler",
         "close": "fermer",
-        "confirmDelete": "confirmer suppression",
+        "confirmDelete": "confirmer la suppression",
         "delete": "supprimer",
         "dismiss": "ignorer",
         "now": "maintenant",
@@ -42,12 +42,12 @@
     },
     "loading": "chargement...",
     "mutation": {
-        "changeTimerType": "changer type de minuteur",
-        "completeSchedule": "horaire complet",
-        "extendTimer": "prolonger minuteur",
-        "removeCategory": "supprimer catégorie",
-        "setFocus": "définir vue focus",
-        "setTheme": "définir thème"
+        "changeTimerType": "changer le type de minuteur",
+        "completeSchedule": "terminer l'horaire",
+        "extendTimer": "prolonger le minuteur",
+        "removeCategory": "supprimer la catégorie",
+        "setFocus": "définir la vue focus",
+        "setTheme": "définir le thème"
     },
     "nav": {
         "categories": "catégories",
@@ -67,7 +67,7 @@
         "workingHours": "heures"
     },
     "onboarding": {
-        "addFirst": "ajouter premier horaire",
+        "addFirst": "ajouter le premier horaire",
         "firstSchedule": "Ajoutez votre premier horaire pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
         "welcome": "Aucun horaire pour le moment"
     },
@@ -79,16 +79,16 @@
         "buttonPlus10": "+10m",
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
-        "categoryAddOption": "+ ajouter catégorie",
+        "categoryAddOption": "+ ajouter une catégorie",
         "chainedCheckbox": "enchaîner à l'horaire précédent",
         "endLabelV2": "heure de fin",
-        "endPlaceholder": "sélectionner durée",
+        "endPlaceholder": "sélectionner la durée",
         "fieldCategory": "catégorie",
         "fieldDuration": "durée (min)",
         "fieldName": "nom",
         "fieldStartHour": "heure de début",
         "fieldStartMinute": "minute de début",
-        "headerEdit": "modifier horaire",
+        "headerEdit": "modifier l'horaire",
         "headerNew": "nouvel horaire",
         "hourSuffix": "h",
         "hourTodaySuffix": "(aujourd'hui)",
@@ -99,14 +99,14 @@
         "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez début/durée ou supprimez-en un existant."
     },
     "serverError": {
-        "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour retirer.",
+        "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour supprimer.",
         "categoryNotFound": "Catégorie introuvable ou non possédée.",
         "scheduleNotFound": "Horaire introuvable.",
         "unauthorized": "Connexion requise."
     },
     "signIn": {
         "cta": "Se connecter",
-        "description": "Connectez-vous à votre compte cofondateur pour voir et gérer vos horaires.",
+        "description": "Connectez-vous à votre compte cofounder pour voir et gérer vos horaires.",
         "title": "Connexion requise"
     },
     "timer": {
@@ -116,7 +116,7 @@
         "categoryFallback": "?",
         "idleEmpty": "inactif · aucun horaire actif",
         "labelElapsed": "écoulé",
-        "labelEndAt": "fin-à",
+        "labelEndAt": "se termine à",
         "labelRemaining": "restant",
         "labelTarget": "cible",
         "labelUntilUpcoming": "jusqu'au prochain",
@@ -127,7 +127,7 @@
         "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
         "typeCountup": "compteur croissant",
-        "typeTimer1": "minuteur1"
+        "typeTimer1": "timer1"
     },
     "topbar": {
         "back": "retour au portail",
@@ -155,7 +155,7 @@
         "sam"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "enregistrer aussi par défaut",
+        "checkboxAlsoDefault": "enregistrer également par défaut",
         "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
         "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
         "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",

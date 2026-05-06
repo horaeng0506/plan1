@@ -1,17 +1,17 @@
 {
     "app": {
-        "tagline": "Zeitplan-Manager",
+        "tagline": "Zeitplanverwaltung",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Mit Google anmelden",
-        "signInDescription": "plan1 ist ein persönliches Zeitplan-Tool mit geräteübergreifender Synchronisation. Melden Sie sich mit Google an, um loszulegen.",
+        "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisierung. Melden Sie sich mit Google an, um loszulegen.",
         "signInRequired": "Anmelden, um plan1 zu verwenden"
     },
     "category": {
-        "confirmRemoveLabel": "Löschen bestätigen ({count})",
-        "confirmRemoveText": "{count} Zeitplan/Zeitpläne werden hiermit gelöscht. Klicken Sie erneut zur Bestätigung.",
-        "defaultName": "Standard",
+        "confirmRemoveLabel": "Entfernen bestätigen ({count})",
+        "confirmRemoveText": "{count} Zeitplan/Zeitpläne werden damit gelöscht. Klicken Sie erneut zur Bestätigung.",
+        "defaultName": "standard",
         "empty": "Keine Kategorien.",
         "fieldColor": "Farbe",
         "fieldName": "Name",
@@ -36,18 +36,18 @@
     "error": {
         "featureUnavailable": "Diese Funktion ist noch nicht verfügbar ({feature}).",
         "loadFailedLabel": "Laden fehlgeschlagen:",
-        "mutationFailed": "{action} fehlgeschlagen: {error}",
+        "mutationFailed": "Fehler bei {action}: {error}",
         "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
         "workingHoursInvalid": "Ungültige Eingabe für Arbeitszeiten ({reason})."
     },
-    "loading": "Lädt...",
+    "loading": "lädt...",
     "mutation": {
         "changeTimerType": "Timer-Typ ändern",
         "completeSchedule": "Zeitplan abschließen",
         "extendTimer": "Timer verlängern",
         "removeCategory": "Kategorie entfernen",
-        "setFocus": "Fokusansicht einstellen",
-        "setTheme": "Theme einstellen"
+        "setFocus": "Fokusansicht festlegen",
+        "setTheme": "Design festlegen"
     },
     "nav": {
         "categories": "Kategorien",
@@ -68,63 +68,63 @@
     },
     "onboarding": {
         "addFirst": "ersten Zeitplan hinzufügen",
-        "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, der heutigen Zeitleiste und der Analoguhr zu sehen.",
+        "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, der heutigen Zeitleiste und der analogen Uhr zu sehen.",
         "welcome": "Noch keine Zeitpläne"
     },
     "schedule": {
         "afterLastNoneHint": "kein anstehender Zeitplan",
         "buttonAfterLast": "nach letztem Zeitplan",
-        "buttonMinus10": "-10Min",
-        "buttonMinus30": "-30Min",
-        "buttonPlus10": "+10Min",
-        "buttonPlus30": "+30Min",
+        "buttonMinus10": "-10m",
+        "buttonMinus30": "-30m",
+        "buttonPlus10": "+10m",
+        "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ Kategorie hinzufügen",
         "chainedCheckbox": "mit vorherigem Zeitplan verketten",
         "endLabelV2": "Endzeit",
-        "endPlaceholder": "Dauer auswählen",
+        "endPlaceholder": "Dauer wählen",
         "fieldCategory": "Kategorie",
         "fieldDuration": "Dauer (Min)",
         "fieldName": "Name",
         "fieldStartHour": "Startstunde",
         "fieldStartMinute": "Startminute",
         "headerEdit": "Zeitplan bearbeiten",
-        "headerNew": "Neuer Zeitplan",
+        "headerNew": "neuer Zeitplan",
         "hourSuffix": "h",
         "hourTodaySuffix": "(heute)",
         "hourTomorrowSuffix": "(morgen)",
-        "minuteSuffix": "Min",
+        "minuteSuffix": "m",
         "prevChainLabel": "verbundener vorheriger Zeitplan",
         "titleDefault": "Neuer Zeitplan",
-        "warningOverlapLimit": "Maximal {limit} Zeitpläne können sich gleichzeitig überschneiden. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
+        "warningOverlapLimit": "Höchstens {limit} Zeitpläne können sich gleichzeitig überschneiden. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
     },
     "serverError": {
-        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitplan/Zeitpläne. Bestätigen Sie das Kaskadenlöschen zum Entfernen.",
+        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Bestätigen Sie Löschweitergabe zum Entfernen.",
         "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
         "scheduleNotFound": "Zeitplan nicht gefunden.",
         "unauthorized": "Anmeldung erforderlich."
     },
     "signIn": {
         "cta": "Anmelden",
-        "description": "Melden Sie sich bei Ihrem cofounder-Konto an, um Ihre Zeitpläne anzusehen und zu verwalten.",
+        "description": "Melden Sie sich bei Ihrem Mitgründer-Konto an, um Ihre Zeitpläne anzuzeigen und zu verwalten.",
         "title": "Anmeldung erforderlich"
     },
     "timer": {
-        "buttonComplete": "abschließen",
+        "buttonComplete": "abgeschlossen",
         "buttonFocus": "Fokus",
-        "buttonIdle": "inaktiv",
+        "buttonIdle": "Leerlauf",
         "categoryFallback": "?",
         "idleEmpty": "inaktiv · kein aktiver Zeitplan",
         "labelElapsed": "vergangen",
-        "labelEndAt": "endet um",
+        "labelEndAt": "Endzeit",
         "labelRemaining": "verbleibend",
         "labelTarget": "Ziel",
-        "labelUntilUpcoming": "bis bevorstehend",
+        "labelUntilUpcoming": "bis anstehend",
         "labelUpcoming": "nächster Zeitplan",
         "overlapLabel": "Überschneidung {count}",
         "simultaneousLabel": "gleichzeitig · {count}",
-        "tooltipClickToFocus": "Klicken, um zu Fokus zu wechseln",
-        "tooltipClickToIdle": "Klicken, um zu inaktiv zu wechseln",
+        "tooltipClickToFocus": "klicken, um zu Fokus zu wechseln",
+        "tooltipClickToIdle": "klicken, um zu Leerlauf zu wechseln",
         "typeCountdown": "Countdown",
         "typeCountup": "Hochzählen",
         "typeTimer1": "timer1"
@@ -142,7 +142,7 @@
         "button": "rückgängig"
     },
     "wallTime": {
-        "am": "vorm",
+        "am": "am",
         "pm": "pm"
     },
     "weekdays": [
@@ -167,7 +167,7 @@
         "header": "Arbeitszeiten",
         "tabRange": "Bereich",
         "tabSingle": "einzeln",
-        "warningNoDates": "Keine anzuwendenden Daten im Bereich. (Start > Ende oder Konflikt mit Nur-Wochentagen)",
+        "warningNoDates": "Keine Daten im Bereich anzuwenden. (Start > Ende oder Wochentags-Konflikt)",
         "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen engeren Bereich."
     }
 }

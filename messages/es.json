@@ -5,14 +5,14 @@
     },
     "auth": {
         "signIn": "Iniciar sesión con Google",
-        "signInDescription": "plan1 es una herramienta de horarios personales con sincronización entre dispositivos. Inicie sesión con Google para comenzar.",
-        "signInRequired": "Inicie sesión para usar plan1"
+        "signInDescription": "plan1 es una herramienta de horarios personal con sincronización entre dispositivos. Inicia sesión con Google para comenzar.",
+        "signInRequired": "Inicia sesión para usar plan1"
     },
     "category": {
-        "confirmRemoveLabel": "confirmar eliminar ({count})",
-        "confirmRemoveText": "{count} horario(s) se eliminarán con esto. Haga clic nuevamente para confirmar.",
+        "confirmRemoveLabel": "confirmar elim ({count})",
+        "confirmRemoveText": "{count} horario(s) se eliminará(n) con esto. Haz clic nuevamente para confirmar.",
         "defaultName": "predeterminado",
-        "empty": "Sin categorías.",
+        "empty": "No hay categorías.",
         "fieldColor": "color",
         "fieldName": "nombre",
         "header": "categorías",
@@ -37,8 +37,8 @@
         "featureUnavailable": "Esta función aún no está disponible ({feature}).",
         "loadFailedLabel": "carga fallida:",
         "mutationFailed": "Error al {action}: {error}",
-        "unknown": "Ocurrió un error inesperado. Por favor, inténtelo de nuevo.",
-        "workingHoursInvalid": "Entrada de horas laborales no válida ({reason})."
+        "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
+        "workingHoursInvalid": "Entrada de horas de trabajo inválida ({reason})."
     },
     "loading": "cargando...",
     "mutation": {
@@ -63,12 +63,12 @@
         "newSchedule": "nuevo",
         "themeDark": "oscuro",
         "themeLight": "claro",
-        "themeSystem": "automático",
+        "themeSystem": "auto",
         "workingHours": "horas"
     },
     "onboarding": {
         "addFirst": "agregar primer horario",
-        "firstSchedule": "Agregue su primer horario para verlo en la cuadrícula semanal, la línea de tiempo de hoy y el reloj analógico.",
+        "firstSchedule": "Agrega tu primer horario para verlo en la cuadrícula semanal, la línea de tiempo de hoy y el reloj analógico.",
         "welcome": "Aún no hay horarios"
     },
     "schedule": {
@@ -96,18 +96,18 @@
         "minuteSuffix": "m",
         "prevChainLabel": "horario anterior conectado",
         "titleDefault": "Nuevo horario",
-        "warningOverlapLimit": "Como máximo {limit} horarios pueden superponerse al mismo tiempo. Ajuste inicio/duración o elimine uno existente."
+        "warningOverlapLimit": "Como máximo {limit} horarios pueden superponerse al mismo tiempo. Ajusta inicio/duración o elimina uno existente."
     },
     "serverError": {
         "categoryHasSchedules": "La categoría tiene {scheduleCount} horarios. Confirme eliminación en cascada para remover.",
         "categoryNotFound": "Categoría no encontrada o no es de su propiedad.",
         "scheduleNotFound": "Horario no encontrado.",
-        "unauthorized": "Se requiere iniciar sesión."
+        "unauthorized": "Inicio de sesión requerido."
     },
     "signIn": {
         "cta": "Iniciar sesión",
-        "description": "Inicie sesión en su cuenta de cofundador para ver y administrar sus horarios.",
-        "title": "Se requiere iniciar sesión"
+        "description": "Inicia sesión en tu cuenta de cofounder para ver y administrar tus horarios.",
+        "title": "Inicio de sesión requerido"
     },
     "timer": {
         "buttonComplete": "completar",
@@ -116,18 +116,18 @@
         "categoryFallback": "?",
         "idleEmpty": "inactivo · sin horario activo",
         "labelElapsed": "transcurrido",
-        "labelEndAt": "termina-a-las",
+        "labelEndAt": "fin-a-las",
         "labelRemaining": "restante",
         "labelTarget": "objetivo",
-        "labelUntilUpcoming": "hasta el próximo",
+        "labelUntilUpcoming": "hasta próximo",
         "labelUpcoming": "siguiente horario",
         "overlapLabel": "superposición {count}",
         "simultaneousLabel": "simultáneo · {count}",
         "tooltipClickToFocus": "clic para cambiar a enfoque",
         "tooltipClickToIdle": "clic para cambiar a inactivo",
         "typeCountdown": "cuenta regresiva",
-        "typeCountup": "contar hacia adelante",
-        "typeTimer1": "temporizador1"
+        "typeCountup": "cuenta progresiva",
+        "typeTimer1": "timer1"
     },
     "topbar": {
         "back": "volver al portal",
@@ -155,10 +155,10 @@
         "sáb"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "guardar también como predeterminado",
+        "checkboxAlsoDefault": "también guardar como predeterminado",
         "checkboxWeekdaysOnly": "solo días laborables (lun–vie)",
-        "errorEndAfterStart": "La hora de finalización debe ser posterior a la hora de inicio.",
-        "errorToAfterFrom": "La fecha de finalización debe ser igual o posterior a la fecha de inicio.",
+        "errorEndAfterStart": "La hora de fin debe ser posterior a la hora de inicio.",
+        "errorToAfterFrom": "La fecha de fin debe ser igual o posterior a la fecha de inicio.",
         "fieldDate": "fecha",
         "fieldEndTime": "hora de fin",
         "fieldFromDate": "desde",
@@ -168,6 +168,6 @@
         "tabRange": "rango",
         "tabSingle": "único",
         "warningNoDates": "No hay fechas para aplicar en el rango. (inicio > fin o conflicto de solo días laborables)",
-        "warningTruncated": "El rango excede {max} días, solo se procesó parcialmente. Intente un rango más estrecho."
+        "warningTruncated": "El rango excede {max} días, solo se procesó parcialmente. Prueba un rango más reducido."
     }
 }

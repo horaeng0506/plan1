@@ -9,21 +9,21 @@
         "signInRequired": "plan1を使用するにはサインインしてください"
     },
     "category": {
-        "confirmRemoveLabel": "削除の確認 ({count})",
-        "confirmRemoveText": "{count}個のスケジュールが一緒に削除されます。もう一度クリックして確認してください。",
+        "confirmRemoveLabel": "削除を確認 ({count})",
+        "confirmRemoveText": "{count} 件のスケジュールがこれと共に削除されます。確認するにはもう一度クリックしてください。",
         "defaultName": "デフォルト",
         "empty": "カテゴリがありません。",
         "fieldColor": "色",
         "fieldName": "名前",
         "header": "カテゴリ",
         "removeButton": "削除",
-        "scheduleCountSuffix": "{count}件のスケジュール"
+        "scheduleCountSuffix": "{count} 件のスケジュール"
     },
     "common": {
         "add": "追加",
         "cancel": "キャンセル",
         "close": "閉じる",
-        "confirmDelete": "削除の確認",
+        "confirmDelete": "削除を確認",
         "delete": "削除",
         "dismiss": "閉じる",
         "now": "現在",
@@ -34,11 +34,11 @@
         "scheduleAdded": "スケジュールを追加しました"
     },
     "error": {
-        "featureUnavailable": "この機能はまだ利用できません({feature})。",
-        "loadFailedLabel": "読み込みに失敗しました:",
-        "mutationFailed": "{action}に失敗しました: {error}",
+        "featureUnavailable": "この機能はまだ利用できません ({feature})。",
+        "loadFailedLabel": "読み込み失敗:",
+        "mutationFailed": "{action} に失敗しました: {error}",
         "unknown": "予期しないエラーが発生しました。もう一度お試しください。",
-        "workingHoursInvalid": "稼働時間の入力が無効です({reason})。"
+        "workingHoursInvalid": "無効な勤務時間の入力です ({reason})。"
     },
     "loading": "読み込み中...",
     "mutation": {
@@ -72,7 +72,7 @@
         "welcome": "スケジュールはまだありません"
     },
     "schedule": {
-        "afterLastNoneHint": "次のスケジュールはありません",
+        "afterLastNoneHint": "今後のスケジュールなし",
         "buttonAfterLast": "最後のスケジュールの後",
         "buttonMinus10": "-10分",
         "buttonMinus30": "-30分",
@@ -82,11 +82,11 @@
         "categoryAddOption": "+ カテゴリを追加",
         "chainedCheckbox": "前のスケジュールに連結",
         "endLabelV2": "終了時刻",
-        "endPlaceholder": "時間を選択",
+        "endPlaceholder": "期間を選択",
         "fieldCategory": "カテゴリ",
-        "fieldDuration": "時間 (分)",
+        "fieldDuration": "所要時間 (分)",
         "fieldName": "名前",
-        "fieldStartHour": "開始時刻",
+        "fieldStartHour": "開始時",
         "fieldStartMinute": "開始分",
         "headerEdit": "スケジュールを編集",
         "headerNew": "新しいスケジュール",
@@ -94,12 +94,12 @@
         "hourTodaySuffix": "(今日)",
         "hourTomorrowSuffix": "(明日)",
         "minuteSuffix": "分",
-        "prevChainLabel": "前のスケジュールに接続されました",
+        "prevChainLabel": "前のスケジュールに接続しました",
         "titleDefault": "新しいスケジュール",
-        "warningOverlapLimit": "同時に重複できるスケジュールは最大{limit}件です。開始時刻/期間を調整するか、既存のスケジュールを削除してください。"
+        "warningOverlapLimit": "同時に重複できるスケジュールは最大 {limit} 件です。開始時刻/期間を調整するか、既存のスケジュールを削除してください。"
     },
     "serverError": {
-        "categoryHasSchedules": "カテゴリには{scheduleCount}個のスケジュールがあります。削除するには連鎖削除を確認してください。",
+        "categoryHasSchedules": "カテゴリには {scheduleCount} 件のスケジュールがあります。削除するには連鎖削除を確認してください。",
         "categoryNotFound": "カテゴリが見つからないか、所有していません。",
         "scheduleNotFound": "スケジュールが見つかりません。",
         "unauthorized": "サインインが必要です。"
@@ -112,18 +112,18 @@
     "timer": {
         "buttonComplete": "完了",
         "buttonFocus": "集中",
-        "buttonIdle": "待機中",
+        "buttonIdle": "アイドル",
         "categoryFallback": "?",
-        "idleEmpty": "待機中 · アクティブなスケジュールなし",
+        "idleEmpty": "アイドル · アクティブなスケジュールなし",
         "labelElapsed": "経過",
         "labelEndAt": "終了時刻",
         "labelRemaining": "残り",
         "labelTarget": "目標",
-        "labelUntilUpcoming": "次の予定まで",
+        "labelUntilUpcoming": "次回まで",
         "labelUpcoming": "次のスケジュール",
         "overlapLabel": "重複 {count}",
         "simultaneousLabel": "同時 · {count}",
-        "tooltipClickToFocus": "クリックして集中に切り替え",
+        "tooltipClickToFocus": "クリックして集中モードに切り替え",
         "tooltipClickToIdle": "クリックしてアイドルに切り替え",
         "typeCountdown": "カウントダウン",
         "typeCountup": "カウントアップ",
@@ -138,7 +138,7 @@
         "logout": "ログアウト"
     },
     "undo": {
-        "actionLabel": "元に戻すことができます",
+        "actionLabel": "元に戻せます",
         "button": "元に戻す"
     },
     "wallTime": {
@@ -163,11 +163,11 @@
         "fieldEndTime": "終了時刻",
         "fieldFromDate": "開始",
         "fieldStartTime": "開始時刻",
-        "fieldToDate": "〜",
-        "header": "稼働時間",
+        "fieldToDate": "から",
+        "header": "勤務時間",
         "tabRange": "範囲",
         "tabSingle": "単一",
-        "warningNoDates": "範囲内に適用可能な日付がありません。(開始 > 終了 または 平日のみの競合)",
-        "warningTruncated": "範囲が{max}日を超えているため、一部のみ処理されました。範囲を狭めてお試しください。"
+        "warningNoDates": "範囲内に適用する日付がありません。(開始 > 終了 または 平日のみの競合)",
+        "warningTruncated": "範囲が {max} 日を超えているため、一部のみ処理されました。範囲を狭めてお試しください。"
     }
 }
