@@ -68,7 +68,10 @@ export function schedulesToEvents(schedules: Schedule[], categories: Category[])
   return schedules.map(schedule => {
     const category = categoryMap.get(schedule.categoryId)
     const start = new Date(schedule.startAt)
-    const end = new Date(start.getTime() + schedule.durationMin * 60_000)
+    // 2026-05-06 (대장 명시) — done schedule 은 actualDurationMin 으로 박스 크기 표시.
+    // complete 시점 = 실제 종료 시각. 옛 durationMin (계획값) 그대로면 박스 크기 안 줄어듦.
+    const displayDuration = schedule.actualDurationMin ?? schedule.durationMin
+    const end = new Date(start.getTime() + displayDuration * 60_000)
     const accent = category?.color ?? '#5c6370'
     // PLAN1-FOCUS-VIEW-V2-20260506 (대장 명시 — 큰 박스 패턴 채택):
     // is-chained className (작은 dashed top border) 폐기 → chainGroupsToBackgroundEvents 큰 외곽 박스로 대체.
