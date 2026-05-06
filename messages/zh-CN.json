@@ -171,6 +171,6 @@
     "warningTruncated": "范围超过 {max} 天,仅处理部分。请尝试更窄的范围。"
   },
   "header": {
-    "finalEndAtSuffix": "completion expected"
+    "finalEndAtSuffix": "end"
   }
 }

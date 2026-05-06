@@ -171,6 +171,6 @@
     "warningTruncated": "El rango excede {max} días, solo se procesó parcialmente. Intenta un rango más estrecho."
   },
   "header": {
-    "finalEndAtSuffix": "completion expected"
+    "finalEndAtSuffix": "end"
   }
 }

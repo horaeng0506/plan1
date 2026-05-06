@@ -72,7 +72,8 @@ export function DailyTimeline({
     [startMs, endMs, weekdayLabels]
   );
 
-  // 2026-05-06 (대장 명시) — 등록된 schedule 마지막 종료 시점 ("오후 3시 30분 완료 예정").
+  // 2026-05-06 (대장 명시 · 단순화) — 등록된 schedule 마지막 종료 시점 "X시 끝" / "X시 Y분 끝".
+  // 오전/오후 표기 폐기 · 24h hour 그대로 · "완료 예정" sub label 폐기 · 1줄 단순.
   const finalEndLabel = useMemo(() => {
     const candidates = schedules.filter(s => s.status !== 'done');
     if (candidates.length === 0) return null;
@@ -81,12 +82,10 @@ export function DailyTimeline({
       0
     );
     const d = new Date(finalMs);
-    const h24 = d.getHours();
+    const h = d.getHours();
     const m = d.getMinutes();
-    const ampm = h24 < 12 ? t('wallTime.am') : t('wallTime.pm');
-    const h12 = ((h24 + 11) % 12) + 1;
     const minuteText = m > 0 ? ` ${m}${t('schedule.minuteSuffix')}` : '';
-    return `${ampm} ${h12}${t('schedule.hourSuffix')}${minuteText}`;
+    return `${h}${t('schedule.hourSuffix')}${minuteText} ${t('header.finalEndAtSuffix')}`;
   }, [schedules, t]);
 
   const events = useMemo(
@@ -120,12 +119,9 @@ export function DailyTimeline({
             </option>
           ))}
         </select>
-        {/* 2026-05-06 (대장 명시) — 등록된 schedule 마지막 종료 시점 가운데 표시 */}
+        {/* 2026-05-06 (대장 명시 · 단순화) — 등록된 schedule 마지막 종료 시점 1줄 ("X시 끝"). */}
         {finalEndLabel && (
-          <div className="flex flex-col items-center text-center">
-            <span className="text-base font-medium text-ink font-mono">{finalEndLabel}</span>
-            <span className="text-[10px] text-muted font-mono">{t('header.finalEndAtSuffix')}</span>
-          </div>
+          <span className="text-sm font-medium text-ink font-mono">{finalEndLabel}</span>
         )}
         <span className="text-xs text-muted font-mono">{dateLabel}</span>
       </div>

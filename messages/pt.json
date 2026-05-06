@@ -171,6 +171,6 @@
     "warningTruncated": "Intervalo excede {max} dias, apenas parcialmente processado. Tente um intervalo menor."
   },
   "header": {
-    "finalEndAtSuffix": "completion expected"
+    "finalEndAtSuffix": "end"
   }
 }

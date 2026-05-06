@@ -171,6 +171,6 @@
     "warningTruncated": "النطاق يتجاوز {max} أيام، تمت معالجة جزء فقط. جرب نطاقاً أضيق."
   },
   "header": {
-    "finalEndAtSuffix": "completion expected"
+    "finalEndAtSuffix": "end"
   }
 }
