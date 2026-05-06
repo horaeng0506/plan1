@@ -98,12 +98,15 @@ body::before {
   border-radius: 0 !important;
 }
 
-/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 (Q-NEW3 둘다 부활):
- * .is-chained — chain 시각 위계 (chained=true schedule 의 앞 연결 표식 · top dashed 2px success).
- * 디폴트 true 라 거의 모든 schedule 박힘 — 사용자 unchecked (chain 끊김) schedule 만 표식 없음 (시각 차이).
+/* PLAN1-FOCUS-VIEW-V2-20260506 (대장 명시 — 큰 박스 패턴):
+ * .chain-group-box — chain 안 schedule 들을 묶는 큰 외곽 박스 (FullCalendar background event).
+ * chained=true 연속 schedule 2개+ 의 시간 범위에 dashed border + 약한 bg color 표시.
+ * .is-chained 룰 (작은 top dashed border) 폐기 — 큰 박스 패턴으로 대체.
  * .is-split-cont 룰 폐기 (split 메커니즘 자체 폐기) */
-.fc-event.is-chained {
-  border-top: 2px dashed var(--success) !important;
+.fc-event.chain-group-box {
+  border: 2px dashed var(--success) !important;
+  background-color: rgba(152, 195, 121, 0.08) !important;
+  opacity: 1 !important;
 }
 
 /* Stage 4c — AnalogClock SVG 토큰 (clock-* class · light/dark 자동 swap).
