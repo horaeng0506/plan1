@@ -104,8 +104,8 @@ body::before {
  * .is-chained 룰 (작은 top dashed border) 폐기 — 큰 박스 패턴으로 대체.
  * .is-split-cont 룰 폐기 (split 메커니즘 자체 폐기) */
 .fc-event.chain-group-box {
-  border: 2px dashed var(--success) !important;
-  background-color: rgba(152, 195, 121, 0.08) !important;
+  border: none !important;
+  background-color: rgba(152, 195, 121, 0.18) !important;
   opacity: 1 !important;
 }
 
