@@ -13,6 +13,7 @@ import {findOverlapping, MAX_OVERLAP} from '@/lib/domain/overlap';
 import {buildHourOptions, floorToHourMs} from '@/lib/hour-options';
 import type {Schedule} from '@/lib/domain/types';
 import {CategoryManager} from './CategoryManager';
+import {Spinner} from './Spinner';
 
 const MINUTE_OPTIONS = [0, 10, 20, 30, 40, 50];
 
@@ -530,8 +531,9 @@ export function NewScheduleModal({
                   type="button"
                   onClick={handleDelete}
                   disabled={busy}
-                  className="rounded-none border border-danger bg-panel px-4 py-2 text-sm text-danger font-mono hover:bg-[rgba(224,108,117,0.1)] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-none border border-danger bg-panel px-4 py-2 text-sm text-danger font-mono hover:bg-[rgba(224,108,117,0.1)] disabled:cursor-not-allowed disabled:opacity-50"
                 >
+                  {busy && <Spinner size={12} />}
                   {t('common.delete')}
                 </button>
               ) : (
@@ -550,8 +552,9 @@ export function NewScheduleModal({
                   type="button"
                   onClick={submit}
                   disabled={!canSubmit}
-                  className="rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                 >
+                  {busy && <Spinner size={12} />}
                   {submitLabel}
                 </button>
               </div>

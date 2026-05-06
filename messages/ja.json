@@ -162,5 +162,9 @@
     "tabSingle": "単発",
     "warningNoDates": "範囲内に適用する日付がありません。（開始 > 終了 または 平日のみの競合）",
     "warningTruncated": "範囲が{max}日を超えているため、一部のみ処理されました。範囲を狭めてお試しください。"
+  },
+  "undo": {
+    "actionLabel": "undo available",
+    "button": "undo"
   }
 }

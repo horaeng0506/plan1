@@ -162,5 +162,9 @@
     "tabSingle": "مفرد",
     "warningNoDates": "لا توجد تواريخ للتطبيق في النطاق. (البداية > النهاية أو تعارض أيام الأسبوع فقط)",
     "warningTruncated": "النطاق يتجاوز {max} يوم، تمت معالجة جزء فقط. جرب نطاقاً أضيق."
+  },
+  "undo": {
+    "actionLabel": "undo available",
+    "button": "undo"
   }
 }

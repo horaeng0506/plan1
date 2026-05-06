@@ -162,5 +162,9 @@
     "tabSingle": "单个",
     "warningNoDates": "范围内没有可应用的日期。（开始 > 结束 或 仅工作日冲突）",
     "warningTruncated": "范围超过 {max} 天，仅处理部分。请尝试更窄的范围。"
+  },
+  "undo": {
+    "actionLabel": "undo available",
+    "button": "undo"
   }
 }

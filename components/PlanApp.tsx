@@ -11,6 +11,7 @@ import {ActiveTimer} from './ActiveTimer';
 import {ToastContainer} from './ToastContainer';
 import {SignInPrompt} from './SignInPrompt';
 import {ModalSkeleton} from './ModalSkeleton';
+import {UndoBar} from './UndoBar';
 import type {Theme} from '@/lib/domain/types';
 
 // Stage 4d-B: 모달 lazy import (사용자 trigger 전 로드 안 됨 → bundle 절약).
@@ -245,6 +246,7 @@ export function PlanApp() {
       )}
       {catOpen && <CategoryManager onClose={() => setCatOpen(false)} />}
       <ToastContainer />
+      <UndoBar />
     </main>
   );
 }

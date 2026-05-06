@@ -162,5 +162,9 @@
     "tabSingle": "einzeln",
     "warningNoDates": "Keine anzuwendenden Daten im Bereich. (Start > Ende oder Wochentags-Konflikt)",
     "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen engeren Bereich."
+  },
+  "undo": {
+    "actionLabel": "undo available",
+    "button": "undo"
   }
 }

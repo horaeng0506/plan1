@@ -162,5 +162,9 @@
     "scheduleNotFound": "Schedule not found.",
     "categoryNotFound": "Category not found or not owned.",
     "categoryHasSchedules": "Category has {scheduleCount} schedules. Confirm cascade delete to remove."
+  },
+  "undo": {
+    "actionLabel": "undo available",
+    "button": "undo"
   }
 }

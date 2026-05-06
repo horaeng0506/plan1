@@ -162,5 +162,9 @@
     "tabSingle": "unique",
     "warningNoDates": "Aucune date à appliquer dans la plage. (début > fin ou conflit jours de semaine uniquement)",
     "warningTruncated": "La plage dépasse {max} jours, seulement partiellement traité. Essayez une plage plus étroite."
+  },
+  "undo": {
+    "actionLabel": "undo available",
+    "button": "undo"
   }
 }
