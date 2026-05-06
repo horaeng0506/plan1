@@ -105,10 +105,8 @@ test.describe('plan1 mutation E2E — A10 instant-complete (High · cascade 영�
     await page.getByText(title).first().click();
     const edit = dialogOf(page, '스케줄 편집');
     await expect(edit.heading).toBeVisible({timeout: 5_000});
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2 #15: 즉시 삭제 (deleteArmed 폐기)
     await edit.dialog.getByRole('button', {name: '삭제', exact: true}).click();
-    await edit.dialog
-      .getByRole('button', {name: '삭제 확인', exact: true})
-      .click();
     await expect(edit.heading).toBeHidden({timeout: SLA_COLD_MS});
     await expect(page.getByText(title)).toHaveCount(0, {timeout: 3_000});
   });
