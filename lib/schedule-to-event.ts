@@ -46,20 +46,18 @@ export function findChainGroups(
 }
 
 /**
- * chain group 들을 FullCalendar background event 로 변환 — 큰 외곽 박스 시각화.
- * display='background' 는 schedule 카드 뒤 영역에 색상 + border 표시 (chained 카드들 묶음).
+ * chain group 들을 FullCalendar background event 로 변환 — schedule 박스 영역에 딱 맞는 bg color.
+ * display='background' 는 schedule 카드 뒤 영역에 색상 표시 (chained 카드들 묶음).
  *
- * 2026-05-06 fix: padding 8분 (위·아래) — background event 영역이 schedule 카드 영역 보다 살짝 큼.
- * → 외곽 dashed border 가 카드 영역 밖에 보임 → 시각적 큰 박스 효과 (각 카드 별 작은 박스 X).
+ * 2026-05-06 fix: padding 폐기 — schedule 박스 시간 영역에 딱 맞게 (대장 명시).
  */
-const GROUP_PADDING_MS = 8 * 60_000
 export function chainGroupsToBackgroundEvents(
   schedules: Schedule[]
 ): EventInput[] {
   return findChainGroups(schedules).map((g, i) => ({
     id: `chain-group-${i}`,
-    start: new Date(g.startAt - GROUP_PADDING_MS),
-    end: new Date(g.endAt + GROUP_PADDING_MS),
+    start: new Date(g.startAt),
+    end: new Date(g.endAt),
     display: 'background',
     classNames: ['chain-group-box']
   }))
