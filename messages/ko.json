@@ -81,20 +81,21 @@
     "categoryAddOption": "+ 카테고리 추가",
     "hourSuffix": "시",
     "minuteSuffix": "분",
-    "warningFutureRequired": "시작 시각은 현재보다 미래여야 합니다.",
     "buttonMinus30": "-30분",
     "buttonMinus10": "-10분",
     "buttonPlus10": "+10분",
     "buttonPlus30": "+30분",
     "buttonPlusHour": "+1시간",
-    "endLabel": "end",
-    "endEmpty": "— (소요 0분)",
-    "chainedCheckbox": "이전 스케줄과 연결 (cascade 받음)",
+    "chainedCheckbox": "이전 스케줄과 연결",
     "warningOverlapLimit": "같은 시각에는 최대 {limit}개 스케줄까지 가능. 시작/길이를 바꾸거나 기존 항목을 정리하세요.",
     "buttonAfterLast": "마지막 직후",
     "afterLastNoneHint": "다음 스케줄 없음",
     "hourTodaySuffix": "(오늘)",
-    "hourTomorrowSuffix": "(내일)"
+    "hourTomorrowSuffix": "(내일)",
+    "titleDefault": "새 스케줄",
+    "endLabelV2": "종료 시간",
+    "endPlaceholder": "소요 시간을 선택하세요",
+    "prevChainLabel": "연결된 이전 스케줄"
   },
   "category": {
     "header": "categories",
@@ -161,5 +162,12 @@
     "scheduleNotFound": "스케줄을 찾을 수 없습니다.",
     "categoryNotFound": "카테고리를 찾을 수 없거나 권한이 없습니다.",
     "categoryHasSchedules": "카테고리에 스케줄 {scheduleCount}개가 있습니다. cascade 삭제를 확인하면 함께 제거됩니다."
+  },
+  "undo": {
+    "actionLabel": "실행 취소 가능",
+    "button": "실행 취소"
+  },
+  "confirmation": {
+    "scheduleAdded": "스케줄이 등록되었습니다"
   }
 }

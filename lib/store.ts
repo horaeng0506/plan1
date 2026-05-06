@@ -25,6 +25,7 @@ import * as categoriesApi from '@/app/actions/categories';
 import * as schedulesApi from '@/app/actions/schedules';
 import * as settingsApi from '@/app/actions/settings';
 import {unwrapServerActionResult as unwrap, ServerActionError} from './server-action';
+import {armUndo} from './undo-store';
 
 // PLAN1-FOCUS-VIEW-REDESIGN-20260506: weekViewSpan / weeklyPanelHidden 폐기. focusViewMin 720 default.
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -53,6 +54,8 @@ interface AppState {
   loaded: boolean;
   loading: boolean;
   error: string | null;
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #13: 등록 confirmation modal — 새 schedule 추가 시 set, 2초 후 PlanApp 가 clear.
+  lastAddedSchedule: Schedule | null;
   // PLAN1-LOGIN-START-OPT-20260504 #5: unauthorized 식별 (ServerActionError.errorKey).
   // PlanApp 분기 — `serverError.unauthorized` 면 로그인 화면 (SignInPrompt) 표시.
   // 일반 error (network · DB · 기타) 는 retry 버튼 유지.
@@ -60,6 +63,7 @@ interface AppState {
 
   init(): Promise<void>;
   refreshSchedules(): Promise<void>;
+  clearLastAddedSchedule(): void;
 
   addSchedule(input: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Promise<void>;
   updateSchedule(
@@ -92,6 +96,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   loading: false,
   error: null,
   errorKey: null,
+  lastAddedSchedule: null,
+
+  clearLastAddedSchedule() {
+    set({lastAddedSchedule: null});
+  },
 
   async init() {
     if (get().loaded) return;
@@ -137,6 +146,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   async addSchedule(input) {
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #17·#13: undo arm + lastAddedSchedule 박음
+    const prevIds = new Set(get().schedules.map(s => s.id));
     const next = unwrap(await schedulesApi.createSchedule({
       title: input.title,
       categoryId: input.categoryId,
@@ -145,17 +156,31 @@ export const useAppStore = create<AppState>((set, get) => ({
       timerType: input.timerType,
       chainedToPrev: input.chainedToPrev
     }));
-    set({schedules: next});
+    const newSchedule = next.find(s => !prevIds.has(s.id));
+    set({schedules: next, lastAddedSchedule: newSchedule ?? null});
+    if (newSchedule) {
+      armUndo({type: 'add', scheduleId: newSchedule.id, ts: Date.now()});
+    }
   },
 
   async updateSchedule(id, patch) {
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #17: undo arm — prev schedule snapshot
+    const prev = get().schedules.find(s => s.id === id);
     const next = unwrap(await schedulesApi.updateSchedule({id, ...patch}));
     set({schedules: next});
+    if (prev) {
+      armUndo({type: 'edit', scheduleId: id, prev, ts: Date.now()});
+    }
   },
 
   async removeSchedule(id) {
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #17: undo arm — 삭제 직전 schedule snapshot
+    const deleted = get().schedules.find(s => s.id === id);
     unwrap(await schedulesApi.deleteSchedule(id));
     await get().refreshSchedules();
+    if (deleted) {
+      armUndo({type: 'delete', schedule: deleted, ts: Date.now()});
+    }
   },
 
   async setScheduleStatus(id, status) {

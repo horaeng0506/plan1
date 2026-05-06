@@ -5,7 +5,7 @@
     },
     "auth": {
         "signIn": "Se connecter avec Google",
-        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInDescription": "plan1 est un outil d'horaire personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
         "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "category": {
@@ -30,6 +30,9 @@
         "retry": "réessayer",
         "save": "enregistrer"
     },
+    "confirmation": {
+        "scheduleAdded": "Horaire ajouté"
+    },
     "error": {
         "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
         "loadFailedLabel": "échec du chargement :",
@@ -40,7 +43,7 @@
     "loading": "chargement...",
     "mutation": {
         "changeTimerType": "changer le type de minuteur",
-        "completeSchedule": "horaire terminé",
+        "completeSchedule": "terminer l'horaire",
         "extendTimer": "prolonger le minuteur",
         "removeCategory": "supprimer la catégorie",
         "setFocus": "définir la vue focus",
@@ -56,7 +59,7 @@
         "focus4h": "4h",
         "focus6h": "6h",
         "focus8h": "8h",
-        "focusLabel": "concentration",
+        "focusLabel": "focus",
         "newSchedule": "nouveau",
         "themeDark": "sombre",
         "themeLight": "clair",
@@ -77,9 +80,9 @@
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ ajouter une catégorie",
-        "chainedCheckbox": "chaîner à l'horaire précédent (recevoir la cascade)",
-        "endEmpty": "— (durée 0m)",
-        "endLabel": "fin",
+        "chainedCheckbox": "enchaîner à l'horaire précédent",
+        "endLabelV2": "heure de fin",
+        "endPlaceholder": "sélectionner la durée",
         "fieldCategory": "catégorie",
         "fieldDuration": "durée (min)",
         "fieldName": "nom",
@@ -91,38 +94,39 @@
         "hourTodaySuffix": "(aujourd'hui)",
         "hourTomorrowSuffix": "(demain)",
         "minuteSuffix": "m",
-        "warningFutureRequired": "L'heure de début doit être dans le futur.",
+        "prevChainLabel": "horaire précédent connecté",
+        "titleDefault": "Nouvel horaire",
         "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
     },
     "serverError": {
-        "categoryHasSchedules": "La catégorie contient {scheduleCount} horaires. Confirmez la suppression en cascade pour retirer.",
+        "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour supprimer.",
         "categoryNotFound": "Catégorie introuvable ou non possédée.",
         "scheduleNotFound": "Horaire introuvable.",
         "unauthorized": "Connexion requise."
     },
     "signIn": {
         "cta": "Se connecter",
-        "description": "Connectez-vous à votre compte cofondateur pour voir et gérer vos horaires.",
+        "description": "Connectez-vous à votre compte cofounder pour voir et gérer vos horaires.",
         "title": "Connexion requise"
     },
     "timer": {
         "buttonComplete": "terminé",
-        "buttonFocus": "concentration",
+        "buttonFocus": "focus",
         "buttonIdle": "inactif",
         "categoryFallback": "?",
         "idleEmpty": "inactif · aucun horaire actif",
         "labelElapsed": "écoulé",
-        "labelEndAt": "se-termine-à",
+        "labelEndAt": "fin-à",
         "labelRemaining": "restant",
         "labelTarget": "cible",
         "labelUntilUpcoming": "jusqu'au prochain",
         "labelUpcoming": "horaire suivant",
         "overlapLabel": "chevauchement {count}",
         "simultaneousLabel": "simultané · {count}",
-        "tooltipClickToFocus": "cliquer pour passer en concentration",
+        "tooltipClickToFocus": "cliquer pour passer en focus",
         "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
-        "typeCountup": "compte à rebours croissant",
+        "typeCountup": "compte à rebours inversé",
         "typeTimer1": "minuteur1"
     },
     "topbar": {
@@ -132,6 +136,10 @@
         "guest": "invité",
         "languageLabel": "langue",
         "logout": "déconnexion"
+    },
+    "undo": {
+        "actionLabel": "annulation disponible",
+        "button": "annuler"
     },
     "wallTime": {
         "am": "am",
@@ -148,7 +156,7 @@
     ],
     "workingHours": {
         "checkboxAlsoDefault": "enregistrer aussi par défaut",
-        "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
+        "checkboxWeekdaysOnly": "jours de semaine seulement (lun–ven)",
         "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
         "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
         "fieldDate": "date",

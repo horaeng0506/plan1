@@ -25,9 +25,9 @@ export function minToTimeStr(min: number): string {
 export function focusBounds(
   focusViewMin: number,
   nowMs: number
-): {slotMinTime: string; slotMaxTime: string} {
+): {slotMinTime: string; slotMaxTime: string; startMs: number; endMs: number} {
   if (nowMs <= 0) {
-    return {slotMinTime: '00:00:00', slotMaxTime: '24:00:00'};
+    return {slotMinTime: '00:00:00', slotMaxTime: '24:00:00', startMs: 0, endMs: 0};
   }
   const now = new Date(nowMs);
   const h = now.getHours();
@@ -39,5 +39,12 @@ export function focusBounds(
     endMin -= startMin;
     startMin = 0;
   }
-  return {slotMinTime: minToTimeStr(startMin), slotMaxTime: minToTimeStr(endMin)};
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506: ms timestamp 도 같이 반환 (날짜 라벨 표시용)
+  const dayBase = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0).getTime();
+  return {
+    slotMinTime: minToTimeStr(startMin),
+    slotMaxTime: minToTimeStr(endMin),
+    startMs: dayBase + startMin * 60_000,
+    endMs: dayBase + endMin * 60_000
+  };
 }

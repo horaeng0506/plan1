@@ -1,23 +1,23 @@
 {
     "app": {
-        "tagline": "gerenciador de horários",
+        "tagline": "gerenciador de agendamentos",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Entrar com Google",
-        "signInDescription": "plan1 é uma ferramenta de agenda pessoal com sincronização entre dispositivos. Entre com Google para começar.",
-        "signInRequired": "Entre para usar plan1"
+        "signInDescription": "plan1 é uma ferramenta de agendamento pessoal com sincronização entre dispositivos. Entre com Google para começar.",
+        "signInRequired": "Entre para usar plano1"
     },
     "category": {
         "confirmRemoveLabel": "confirmar rm ({count})",
-        "confirmRemoveText": "{count} horário(s) será(ão) excluído(s) com este. Clique novamente para confirmar.",
+        "confirmRemoveText": "{count} agendamento(s) será(ão) excluído(s) com isso. Clique novamente para confirmar.",
         "defaultName": "padrão",
         "empty": "Nenhuma categoria.",
         "fieldColor": "cor",
         "fieldName": "nome",
         "header": "categorias",
         "removeButton": "rm",
-        "scheduleCountSuffix": "{count} horários"
+        "scheduleCountSuffix": "{count} agendamentos"
     },
     "common": {
         "add": "adicionar",
@@ -30,17 +30,20 @@
         "retry": "tentar novamente",
         "save": "salvar"
     },
+    "confirmation": {
+        "scheduleAdded": "Agendamento adicionado"
+    },
     "error": {
         "featureUnavailable": "Este recurso ainda não está disponível ({feature}).",
         "loadFailedLabel": "falha ao carregar:",
         "mutationFailed": "Falha ao {action}: {error}",
         "unknown": "Ocorreu um erro inesperado. Por favor, tente novamente.",
-        "workingHoursInvalid": "Entrada de horas de trabalho inválida ({reason})."
+        "workingHoursInvalid": "Entrada de horário de trabalho inválida ({reason})."
     },
     "loading": "carregando...",
     "mutation": {
-        "changeTimerType": "alterar tipo de temporizador",
-        "completeSchedule": "completar horário",
+        "changeTimerType": "alterar tipo de cronômetro",
+        "completeSchedule": "completar agendamento",
         "extendTimer": "estender temporizador",
         "removeCategory": "remover categoria",
         "setFocus": "definir visualização de foco",
@@ -60,70 +63,71 @@
         "newSchedule": "novo",
         "themeDark": "escuro",
         "themeLight": "claro",
-        "themeSystem": "automático",
+        "themeSystem": "auto",
         "workingHours": "horas"
     },
     "onboarding": {
-        "addFirst": "adicionar primeiro horário",
-        "firstSchedule": "Adicione seu primeiro horário para vê-lo na grade semanal, linha do tempo de hoje e no relógio analógico.",
-        "welcome": "Nenhum horário ainda"
+        "addFirst": "adicionar primeiro agendamento",
+        "firstSchedule": "Adicione seu primeiro agendamento para vê-lo na grade semanal, linha do tempo de hoje e relógio analógico.",
+        "welcome": "Nenhum agendamento ainda"
     },
     "schedule": {
-        "afterLastNoneHint": "nenhum horário próximo",
-        "buttonAfterLast": "após o último horário",
+        "afterLastNoneHint": "nenhum agendamento próximo",
+        "buttonAfterLast": "após último agendamento",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
         "buttonPlus10": "+10m",
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ adicionar categoria",
-        "chainedCheckbox": "encadear ao horário anterior (receber cascata)",
-        "endEmpty": "— (duração 0m)",
-        "endLabel": "fim",
+        "chainedCheckbox": "encadear ao agendamento anterior",
+        "endLabelV2": "hora final",
+        "endPlaceholder": "selecionar duração",
         "fieldCategory": "categoria",
         "fieldDuration": "duração (min)",
         "fieldName": "nome",
-        "fieldStartHour": "hora de início",
-        "fieldStartMinute": "minuto de início",
-        "headerEdit": "editar horário",
-        "headerNew": "novo horário",
+        "fieldStartHour": "hora inicial",
+        "fieldStartMinute": "minuto inicial",
+        "headerEdit": "editar agendamento",
+        "headerNew": "novo agendamento",
         "hourSuffix": "h",
         "hourTodaySuffix": "(hoje)",
         "hourTomorrowSuffix": "(amanhã)",
         "minuteSuffix": "m",
-        "warningFutureRequired": "Horário de início deve estar no futuro.",
-        "warningOverlapLimit": "No máximo {limit} horários podem se sobrepor ao mesmo tempo. Ajuste início/duração ou remova um existente."
+        "prevChainLabel": "agendamento anterior conectado",
+        "titleDefault": "Novo agendamento",
+        "warningOverlapLimit": "No máximo {limit} agendamentos podem se sobrepor ao mesmo tempo. Ajuste início/duração ou remova um existente."
     },
     "serverError": {
-        "categoryHasSchedules": "Categoria tem {scheduleCount} horários. Confirme exclusão em cascata para remover.",
+        "categoryHasSchedules": "Categoria possui {scheduleCount} agendamentos. Confirme exclusão em cascata para remover.",
         "categoryNotFound": "Categoria não encontrada ou não pertence a você.",
-        "scheduleNotFound": "Horário não encontrado.",
+        "scheduleNotFound": "Agendamento não encontrado.",
         "unauthorized": "Entrada necessária."
     },
     "signIn": {
         "cta": "Entrar",
-        "description": "Entre na sua conta cofounder para visualizar e gerenciar seus horários.",
+        "description": "Entre na sua conta cofounder para visualizar e gerenciar seus agendamentos.",
         "title": "Entrada necessária"
     },
     "timer": {
-        "buttonComplete": "completo",
+        "buttonComplete": "concluir",
         "buttonFocus": "foco",
-        "buttonIdle": "inativo",
+        "buttonIdle": "ocioso",
         "categoryFallback": "?",
-        "idleEmpty": "inativo · nenhum horário ativo",
+        "idleEmpty": "ocioso · nenhum agendamento ativo",
         "labelElapsed": "decorrido",
-        "labelEndAt": "termina-em",
+        "labelEndAt": "termina-às",
         "labelRemaining": "restante",
-        "labelTarget": "alvo",
+        "labelTarget": "meta",
         "labelUntilUpcoming": "até próximo",
-        "labelUpcoming": "próximo horário",
+        "labelUpcoming": "próximo agendamento",
         "overlapLabel": "sobreposição {count}",
-        "simultaneousLabel": "simultâneo · {count}",
+        "simultaneousLabel": "simultâneos · {count}",
         "tooltipClickToFocus": "clique para mudar para foco",
         "tooltipClickToIdle": "clique para mudar para ocioso",
         "typeCountdown": "contagem regressiva",
-        "typeCountup": "contagem crescente",
-        "typeTimer1": "timer1"
+        "typeCountup": "contagem progressiva",
+        "typeTimer1": "temporizador1"
     },
     "topbar": {
         "back": "voltar ao portal",
@@ -132,6 +136,10 @@
         "guest": "convidado",
         "languageLabel": "idioma",
         "logout": "sair"
+    },
+    "undo": {
+        "actionLabel": "desfazer disponível",
+        "button": "desfazer"
     },
     "wallTime": {
         "am": "am",
@@ -149,14 +157,14 @@
     "workingHours": {
         "checkboxAlsoDefault": "salvar também como padrão",
         "checkboxWeekdaysOnly": "apenas dias úteis (seg–sex)",
-        "errorEndAfterStart": "Horário de término deve ser depois do horário de início.",
-        "errorToAfterFrom": "Data de término deve ser igual ou posterior à data de início.",
+        "errorEndAfterStart": "Hora final deve ser posterior à hora inicial.",
+        "errorToAfterFrom": "Data final deve ser igual ou posterior à data inicial.",
         "fieldDate": "data",
-        "fieldEndTime": "horário de término",
+        "fieldEndTime": "hora final",
         "fieldFromDate": "de",
-        "fieldStartTime": "horário de início",
-        "fieldToDate": "para",
-        "header": "horas de trabalho",
+        "fieldStartTime": "hora de início",
+        "fieldToDate": "até",
+        "header": "horário de trabalho",
         "tabRange": "intervalo",
         "tabSingle": "único",
         "warningNoDates": "Nenhuma data para aplicar no intervalo. (início > fim ou conflito apenas dias úteis)",

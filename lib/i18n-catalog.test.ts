@@ -26,11 +26,24 @@ import zhCN from '../messages/zh-CN.json';
 
 type Catalog = Record<string, unknown>;
 
+// PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506: array 도 평탄화 (옛 weekdays array drift catch).
+// 9 언어 옛 array (`["dom",...]`) vs en/ko object (`{"0":"sun"}`) drift 가 silent fail 됐음.
 function flattenKeys(obj: Catalog, prefix = ''): string[] {
   const out: string[] = [];
+  if (Array.isArray(obj)) {
+    obj.forEach((v, i) => {
+      const path = prefix ? `${prefix}.${i}` : String(i);
+      if (v && typeof v === 'object') {
+        out.push(...flattenKeys(v as Catalog, path));
+      } else {
+        out.push(path);
+      }
+    });
+    return out.sort();
+  }
   for (const [k, v] of Object.entries(obj)) {
     const path = prefix ? `${prefix}.${k}` : k;
-    if (v && typeof v === 'object' && !Array.isArray(v)) {
+    if (v && typeof v === 'object') {
       out.push(...flattenKeys(v as Catalog, path));
     } else {
       out.push(path);

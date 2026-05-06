@@ -18,7 +18,7 @@ import {test, expect, Page} from '@playwright/test';
  *   1. 카테고리 자동 보장 (qa-bot prod DB 신규 가입 직후 categories 비어있으면 button disabled)
  *   2. + 새 스케줄 → 모달 → title + duration → 추가 → 모달 닫힘 wait → SLA
  *   3. 카드 표시 확인
- *   4. cleanup: 카드 클릭 → 편집 모달 → 삭제 (deleteArmed) → 삭제 확인
+ *   4. cleanup: 카드 클릭 → 편집 모달 → 삭제 (즉시 진행 · V2 #15)
  *
  * SLA:
  *   - warm  : < 3000ms
@@ -104,11 +104,8 @@ test.describe('plan1 mutation E2E — A3 schedule 추가', () => {
     await page.getByText(title).first().click();
     const edit = dialogOf(page, '스케줄 편집');
     await expect(edit.heading).toBeVisible({timeout: 5_000});
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2 #15: 즉시 삭제 (deleteArmed 폐기 · 1차 click 만)
     await edit.dialog.getByRole('button', {name: '삭제', exact: true}).click();
-    // deleteArmed → 삭제 확인 button 표시
-    await edit.dialog
-      .getByRole('button', {name: '삭제 확인', exact: true})
-      .click();
     await expect(edit.heading).toBeHidden({timeout: SLA_COLD_MS});
     await expect(page.getByText(title)).toHaveCount(0, {timeout: 3_000});
   });

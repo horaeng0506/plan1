@@ -8,6 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import {useAppStore} from '@/lib/store';
 import {schedulesToEvents} from '@/lib/schedule-to-event';
 import {focusBounds} from '@/lib/focus-bounds';
+import {formatDateRangeLabel} from '@/lib/date-format';
 import {useNow} from '@/lib/now';
 import {useRunMutation} from '@/lib/use-run-mutation';
 import {renderEventContent} from './event-renderer';
@@ -50,9 +51,25 @@ export function DailyTimeline({
 
   const nowMs = useNow();
 
-  const {slotMinTime, slotMaxTime} = useMemo(
+  const {slotMinTime, slotMaxTime, startMs, endMs} = useMemo(
     () => focusBounds(focusViewMin, nowMs),
     [focusViewMin, nowMs]
+  );
+
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #2·#3: 자체 헤더 날짜 라벨 (5.6(수) / 5.6(수)-7).
+  const weekdayLabels = useMemo(
+    () => [
+      t('weekdays.0'), t('weekdays.1'), t('weekdays.2'), t('weekdays.3'),
+      t('weekdays.4'), t('weekdays.5'), t('weekdays.6')
+    ],
+    [t]
+  );
+  const weekdayLabel = (w: number) => weekdayLabels[w] ?? '';
+  const dateLabel = useMemo(
+    () => (startMs > 0 ? formatDateRangeLabel(startMs, endMs - 1, weekdayLabel) : ''),
+    // endMs 는 exclusive (slotMaxTime "24:00:00" 시 다음날 0:00 ms) → -1 로 inclusive 변환
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [startMs, endMs, weekdayLabels]
   );
 
   const events = useMemo(() => schedulesToEvents(schedules, categories), [schedules, categories]);
@@ -63,27 +80,30 @@ export function DailyTimeline({
 
   return (
     <div className="[&_.fc-event-title]:whitespace-normal [&_.fc-event-title]:break-words">
-      {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 — focus select 좌측 이동 (Q3·Q29). */}
-      <div className="mb-2 flex items-center justify-start">
-        <label className="flex items-center gap-2 text-xs text-muted font-mono">
-          <span>{t('nav.focusLabel')}</span>
-          <select
-            value={String(focusViewMin)}
-            onChange={e => handleFocusChange(e.target.value)}
-            className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono"
-          >
-            {FOCUS_OPTIONS.map(opt => (
-              <option key={opt.key} value={String(opt.value)}>
-                {t(`nav.${opt.key}` as 'nav.focus4h')}
-              </option>
-            ))}
-          </select>
-        </label>
+      {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #1·#2·#3:
+            - headerToolbar=false (< > today 폐기)
+            - dayHeaders=false (빈칸|요일 row 폐기)
+            - 자체 헤더: focus dropdown (좌) + 날짜 라벨 (우) · "집중" 라벨 폐기 */}
+      <div className="mb-2 flex items-center justify-between">
+        <select
+          value={String(focusViewMin)}
+          onChange={e => handleFocusChange(e.target.value)}
+          className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono"
+          aria-label={t('nav.focusLabel')}
+        >
+          {FOCUS_OPTIONS.map(opt => (
+            <option key={opt.key} value={String(opt.value)}>
+              {t(`nav.${opt.key}` as 'nav.focus4h')}
+            </option>
+          ))}
+        </select>
+        <span className="text-xs text-muted font-mono">{dateLabel}</span>
       </div>
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridDay"
-        headerToolbar={{left: 'prev,next today', center: 'title', right: ''}}
+        headerToolbar={false}
+        dayHeaders={false}
         locale={fcLocale(locale)}
         slotMinTime={slotMinTime}
         slotMaxTime={slotMaxTime}

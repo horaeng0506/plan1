@@ -81,20 +81,21 @@
     "categoryAddOption": "+ add category",
     "hourSuffix": "h",
     "minuteSuffix": "m",
-    "warningFutureRequired": "Start time must be in the future.",
     "buttonMinus30": "-30m",
     "buttonMinus10": "-10m",
     "buttonPlus10": "+10m",
     "buttonPlus30": "+30m",
     "buttonPlusHour": "+1h",
-    "endLabel": "end",
-    "endEmpty": "— (duration 0m)",
-    "chainedCheckbox": "chain to previous schedule (receive cascade)",
+    "chainedCheckbox": "chain to previous schedule",
     "warningOverlapLimit": "At most {limit} schedules can overlap at the same time. Adjust start/duration or remove an existing one.",
     "buttonAfterLast": "after last schedule",
     "afterLastNoneHint": "no upcoming schedule",
     "hourTodaySuffix": "(today)",
-    "hourTomorrowSuffix": "(tomorrow)"
+    "hourTomorrowSuffix": "(tomorrow)",
+    "titleDefault": "New schedule",
+    "endLabelV2": "end time",
+    "endPlaceholder": "select duration",
+    "prevChainLabel": "connected previous schedule"
   },
   "category": {
     "header": "categories",
@@ -161,5 +162,12 @@
     "scheduleNotFound": "Schedule not found.",
     "categoryNotFound": "Category not found or not owned.",
     "categoryHasSchedules": "Category has {scheduleCount} schedules. Confirm cascade delete to remove."
+  },
+  "undo": {
+    "actionLabel": "undo available",
+    "button": "undo"
+  },
+  "confirmation": {
+    "scheduleAdded": "Schedule added"
   }
 }
