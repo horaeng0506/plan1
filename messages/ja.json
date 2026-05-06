@@ -1,173 +1,173 @@
 {
-  "app": {
-    "tagline": "スケジュール管理",
-    "title": "プラン1"
-  },
-  "auth": {
-    "signIn": "Googleでログイン",
-    "signInDescription": "plan1は、クロスデバイス同期に対応した個人用スケジュールツールです。Googleでログインして始めましょう。",
-    "signInRequired": "プラン1を使用するにはログインしてください"
-  },
-  "category": {
-    "confirmRemoveLabel": "削除確認 ({count})",
-    "confirmRemoveText": "{count}個のスケジュールがこれと一緒に削除されます。確認するにはもう一度クリックしてください。",
-    "defaultName": "デフォルト",
-    "empty": "カテゴリがありません。",
-    "fieldColor": "色",
-    "fieldName": "名前",
-    "header": "カテゴリ",
-    "removeButton": "削",
-    "scheduleCountSuffix": "{count} 件のスケジュール"
-  },
-  "common": {
-    "add": "追加",
-    "cancel": "キャンセル",
-    "close": "閉じる",
-    "confirmDelete": "削除の確認",
-    "delete": "削除",
-    "dismiss": "閉じる",
-    "now": "現在",
-    "retry": "再試行",
-    "save": "保存"
-  },
-  "error": {
-    "featureUnavailable": "この機能はまだ利用できません（{feature}）。",
-    "loadFailedLabel": "読み込み失敗：",
-    "mutationFailed": "{action}に失敗しました：{error}",
-    "unknown": "予期しないエラーが発生しました。もう一度お試しください。",
-    "workingHoursInvalid": "無効な作業時間の入力 ({reason})。"
-  },
-  "loading": "読み込み中...",
-  "mutation": {
-    "changeTimerType": "タイマータイプを変更",
-    "completeSchedule": "完全なスケジュール",
-    "extendTimer": "タイマーを延長",
-    "removeCategory": "カテゴリを削除",
-    "setFocus": "フォーカスビューを設定",
-    "setTheme": "テーマを設定"
-  },
-  "nav": {
-    "categories": "カテゴリ",
-    "focus10h": "10時間",
-    "focus12h": "12時間",
-    "focus16h": "16時間",
-    "focus20h": "20時間",
-    "focus24h": "24時間",
-    "focus4h": "4時間",
-    "focus6h": "6時間",
-    "focus8h": "8時間",
-    "focusLabel": "集中",
-    "newSchedule": "新規",
-    "themeDark": "ダーク",
-    "themeLight": "ライト",
-    "themeSystem": "自動",
-    "workingHours": "時間"
-  },
-  "onboarding": {
-    "addFirst": "最初のスケジュールを追加",
-    "firstSchedule": "最初のスケジュールを追加すると、週間グリッド、今日のタイムライン、アナログ時計に表示されます。",
-    "welcome": "スケジュールがありません"
-  },
-  "schedule": {
-    "afterLastNoneHint": "次のスケジュールはありません",
-    "buttonAfterLast": "最後のスケジュール以降",
-    "buttonMinus10": "-10分",
-    "buttonMinus30": "-30分",
-    "buttonPlus10": "+10分",
-    "buttonPlus30": "+30分",
-    "buttonPlusHour": "+1時間",
-    "categoryAddOption": "+ カテゴリを追加",
-    "chainedCheckbox": "chain to previous schedule",
-    "fieldCategory": "カテゴリ",
-    "fieldDuration": "期間（分）",
-    "fieldName": "名前",
-    "fieldStartHour": "開始時刻",
-    "fieldStartMinute": "開始分",
-    "headerEdit": "スケジュールを編集",
-    "headerNew": "新しいスケジュール",
-    "hourSuffix": "時間",
-    "hourTodaySuffix": "(今日)",
-    "hourTomorrowSuffix": "(明日)",
-    "minuteSuffix": "分",
-    "warningOverlapLimit": "同時に重複できるスケジュールは最大{limit}個です。開始時刻/期間を調整するか、既存のものを削除してください。",
-    "titleDefault": "New schedule",
-    "endLabelV2": "end time",
-    "endPlaceholder": "select duration",
-    "prevChainLabel": "connected previous schedule"
-  },
-  "serverError": {
-    "categoryHasSchedules": "カテゴリには{scheduleCount}個のスケジュールがあります。削除するにはカスケード削除を確認してください。",
-    "categoryNotFound": "カテゴリが見つからないか、所有していません。",
-    "scheduleNotFound": "スケジュールが見つかりません。",
-    "unauthorized": "ログインが必要です。"
-  },
-  "signIn": {
-    "cta": "ログイン",
-    "description": "cofounderアカウントにログインしてスケジュールを表示・管理してください。",
-    "title": "ログインが必要です"
-  },
-  "timer": {
-    "buttonComplete": "完了",
-    "buttonFocus": "集中",
-    "buttonIdle": "アイドル",
-    "categoryFallback": "?",
-    "idleEmpty": "アイドル · アクティブなスケジュールなし",
-    "labelElapsed": "経過",
-    "labelEndAt": "終了時刻",
-    "labelRemaining": "残り",
-    "labelTarget": "ターゲット",
-    "labelUntilUpcoming": "次の予定まで",
-    "labelUpcoming": "次のスケジュール",
-    "overlapLabel": "{count} 件の重複",
-    "simultaneousLabel": "同時 · {count}",
-    "tooltipClickToFocus": "クリックして集中に切り替え",
-    "tooltipClickToIdle": "クリックしてアイドルに切り替え",
-    "typeCountdown": "カウントダウン",
-    "typeCountup": "カウントアップ",
-    "typeTimer1": "タイマー1"
-  },
-  "topbar": {
-    "back": "ポータルに戻る",
-    "creditsLabel": "クレジット",
-    "creditsPlaceholder": "—",
-    "guest": "ゲスト",
-    "languageLabel": "言語",
-    "logout": "ログアウト"
-  },
-  "wallTime": {
-    "am": "午前",
-    "pm": "午後"
-  },
-  "weekdays": {
-    "0": "日",
-    "1": "月",
-    "2": "火",
-    "3": "水",
-    "4": "木",
-    "5": "金",
-    "6": "土"
-  },
-  "workingHours": {
-    "checkboxAlsoDefault": "デフォルトとしても保存",
-    "checkboxWeekdaysOnly": "平日のみ（月〜金）",
-    "errorEndAfterStart": "終了時刻は開始時刻より後でなければなりません。",
-    "errorToAfterFrom": "終了日は開始日以降でなければなりません。",
-    "fieldDate": "日付",
-    "fieldEndTime": "終了時刻",
-    "fieldFromDate": "から",
-    "fieldStartTime": "開始時刻",
-    "fieldToDate": "まで",
-    "header": "作業時間",
-    "tabRange": "範囲",
-    "tabSingle": "単発",
-    "warningNoDates": "範囲内に適用する日付がありません。（開始 > 終了 または 平日のみの競合）",
-    "warningTruncated": "範囲が{max}日を超えているため、一部のみ処理されました。範囲を狭めてお試しください。"
-  },
-  "undo": {
-    "actionLabel": "undo available",
-    "button": "undo"
-  },
-  "confirmation": {
-    "scheduleAdded": "Schedule added"
-  }
+    "app": {
+        "tagline": "スケジュール管理",
+        "title": "plan1"
+    },
+    "auth": {
+        "signIn": "Googleでサインイン",
+        "signInDescription": "plan1はデバイス間同期機能を備えた個人用スケジュールツールです。Googleでサインインして始めましょう。",
+        "signInRequired": "plan1を使用するにはサインインしてください"
+    },
+    "category": {
+        "confirmRemoveLabel": "削除の確認 ({count})",
+        "confirmRemoveText": "{count}個のスケジュールが一緒に削除されます。もう一度クリックして確認してください。",
+        "defaultName": "デフォルト",
+        "empty": "カテゴリがありません。",
+        "fieldColor": "色",
+        "fieldName": "名前",
+        "header": "カテゴリ",
+        "removeButton": "削除",
+        "scheduleCountSuffix": "{count}件のスケジュール"
+    },
+    "common": {
+        "add": "追加",
+        "cancel": "キャンセル",
+        "close": "閉じる",
+        "confirmDelete": "削除の確認",
+        "delete": "削除",
+        "dismiss": "閉じる",
+        "now": "現在",
+        "retry": "再試行",
+        "save": "保存"
+    },
+    "confirmation": {
+        "scheduleAdded": "スケジュールを追加しました"
+    },
+    "error": {
+        "featureUnavailable": "この機能はまだ利用できません({feature})。",
+        "loadFailedLabel": "読み込みに失敗しました:",
+        "mutationFailed": "{action}に失敗しました: {error}",
+        "unknown": "予期しないエラーが発生しました。もう一度お試しください。",
+        "workingHoursInvalid": "稼働時間の入力が無効です({reason})。"
+    },
+    "loading": "読み込み中...",
+    "mutation": {
+        "changeTimerType": "タイマータイプを変更",
+        "completeSchedule": "スケジュールを完了",
+        "extendTimer": "タイマーを延長",
+        "removeCategory": "カテゴリを削除",
+        "setFocus": "フォーカスビューを設定",
+        "setTheme": "テーマを設定"
+    },
+    "nav": {
+        "categories": "カテゴリ",
+        "focus10h": "10時間",
+        "focus12h": "12時間",
+        "focus16h": "16時間",
+        "focus20h": "20時間",
+        "focus24h": "24時間",
+        "focus4h": "4時間",
+        "focus6h": "6時間",
+        "focus8h": "8時間",
+        "focusLabel": "集中",
+        "newSchedule": "新規",
+        "themeDark": "ダーク",
+        "themeLight": "ライト",
+        "themeSystem": "自動",
+        "workingHours": "時間"
+    },
+    "onboarding": {
+        "addFirst": "最初のスケジュールを追加",
+        "firstSchedule": "最初のスケジュールを追加すると、週間グリッド、今日のタイムライン、アナログ時計に表示されます。",
+        "welcome": "スケジュールはまだありません"
+    },
+    "schedule": {
+        "afterLastNoneHint": "次のスケジュールはありません",
+        "buttonAfterLast": "最後のスケジュールの後",
+        "buttonMinus10": "-10分",
+        "buttonMinus30": "-30分",
+        "buttonPlus10": "+10分",
+        "buttonPlus30": "+30分",
+        "buttonPlusHour": "+1時間",
+        "categoryAddOption": "+ カテゴリを追加",
+        "chainedCheckbox": "前のスケジュールに連結",
+        "endLabelV2": "終了時刻",
+        "endPlaceholder": "時間を選択",
+        "fieldCategory": "カテゴリ",
+        "fieldDuration": "時間 (分)",
+        "fieldName": "名前",
+        "fieldStartHour": "開始時刻",
+        "fieldStartMinute": "開始分",
+        "headerEdit": "スケジュールを編集",
+        "headerNew": "新しいスケジュール",
+        "hourSuffix": "時間",
+        "hourTodaySuffix": "(今日)",
+        "hourTomorrowSuffix": "(明日)",
+        "minuteSuffix": "分",
+        "prevChainLabel": "前のスケジュールに接続されました",
+        "titleDefault": "新しいスケジュール",
+        "warningOverlapLimit": "同時に重複できるスケジュールは最大{limit}件です。開始時刻/期間を調整するか、既存のスケジュールを削除してください。"
+    },
+    "serverError": {
+        "categoryHasSchedules": "カテゴリには{scheduleCount}個のスケジュールがあります。削除するには連鎖削除を確認してください。",
+        "categoryNotFound": "カテゴリが見つからないか、所有していません。",
+        "scheduleNotFound": "スケジュールが見つかりません。",
+        "unauthorized": "サインインが必要です。"
+    },
+    "signIn": {
+        "cta": "サインイン",
+        "description": "cofounderアカウントにサインインして、スケジュールを表示および管理してください。",
+        "title": "サインインが必要です"
+    },
+    "timer": {
+        "buttonComplete": "完了",
+        "buttonFocus": "集中",
+        "buttonIdle": "待機中",
+        "categoryFallback": "?",
+        "idleEmpty": "待機中 · アクティブなスケジュールなし",
+        "labelElapsed": "経過",
+        "labelEndAt": "終了時刻",
+        "labelRemaining": "残り",
+        "labelTarget": "目標",
+        "labelUntilUpcoming": "次の予定まで",
+        "labelUpcoming": "次のスケジュール",
+        "overlapLabel": "重複 {count}",
+        "simultaneousLabel": "同時 · {count}",
+        "tooltipClickToFocus": "クリックして集中に切り替え",
+        "tooltipClickToIdle": "クリックしてアイドルに切り替え",
+        "typeCountdown": "カウントダウン",
+        "typeCountup": "カウントアップ",
+        "typeTimer1": "timer1"
+    },
+    "topbar": {
+        "back": "ポータルに戻る",
+        "creditsLabel": "クレジット",
+        "creditsPlaceholder": "—",
+        "guest": "ゲスト",
+        "languageLabel": "言語",
+        "logout": "ログアウト"
+    },
+    "undo": {
+        "actionLabel": "元に戻すことができます",
+        "button": "元に戻す"
+    },
+    "wallTime": {
+        "am": "午前",
+        "pm": "午後"
+    },
+    "weekdays": [
+        "日",
+        "月",
+        "火",
+        "水",
+        "木",
+        "金",
+        "土"
+    ],
+    "workingHours": {
+        "checkboxAlsoDefault": "デフォルトとしても保存",
+        "checkboxWeekdaysOnly": "平日のみ (月–金)",
+        "errorEndAfterStart": "終了時刻は開始時刻より後である必要があります。",
+        "errorToAfterFrom": "終了日は開始日以降である必要があります。",
+        "fieldDate": "日付",
+        "fieldEndTime": "終了時刻",
+        "fieldFromDate": "開始",
+        "fieldStartTime": "開始時刻",
+        "fieldToDate": "〜",
+        "header": "稼働時間",
+        "tabRange": "範囲",
+        "tabSingle": "単一",
+        "warningNoDates": "範囲内に適用可能な日付がありません。(開始 > 終了 または 平日のみの競合)",
+        "warningTruncated": "範囲が{max}日を超えているため、一部のみ処理されました。範囲を狭めてお試しください。"
+    }
 }
