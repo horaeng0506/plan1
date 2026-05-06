@@ -43,7 +43,8 @@ export type MutationContextKey =
   | 'completeSchedule'
   | 'changeTimerType'
   | 'setTheme'
-  | 'setFocus';
+  | 'setFocus'
+  | 'startScheduleNow';
 
 export function useRunMutation() {
   const t = useTranslations();

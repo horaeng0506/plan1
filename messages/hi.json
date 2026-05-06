@@ -47,7 +47,8 @@
     "extendTimer": "टाइमर बढ़ाएं",
     "removeCategory": "श्रेणी हटाएं",
     "setFocus": "फोकस व्यू सेट करें",
-    "setTheme": "थीम सेट करें"
+    "setTheme": "थीम सेट करें",
+    "startScheduleNow": "start schedule now"
   },
   "nav": {
     "categories": "श्रेणियां",
@@ -127,7 +128,8 @@
     "tooltipClickToIdle": "निष्क्रिय पर स्विच करने के लिए क्लिक करें",
     "typeCountdown": "उलटी गिनती",
     "typeCountup": "काउंटअप",
-    "typeTimer1": "टाइमर1"
+    "typeTimer1": "टाइमर1",
+    "buttonStartNow": "start now"
   },
   "topbar": {
     "back": "पोर्टल पर वापस जाएं",

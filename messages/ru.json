@@ -47,7 +47,8 @@
     "extendTimer": "продлить таймер",
     "removeCategory": "удалить категорию",
     "setFocus": "установить вид фокуса",
-    "setTheme": "установить тему"
+    "setTheme": "установить тему",
+    "startScheduleNow": "start schedule now"
   },
   "nav": {
     "categories": "категории",
@@ -127,7 +128,8 @@
     "tooltipClickToIdle": "нажмите для переключения в простой",
     "typeCountdown": "обратный отсчёт",
     "typeCountup": "прямой отсчёт",
-    "typeTimer1": "timer1"
+    "typeTimer1": "timer1",
+    "buttonStartNow": "start now"
   },
   "topbar": {
     "back": "вернуться на портал",

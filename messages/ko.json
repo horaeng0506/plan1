@@ -58,7 +58,8 @@
     "completeSchedule": "스케줄 완료",
     "changeTimerType": "타이머 타입 변경",
     "setTheme": "테마 설정",
-    "setFocus": "집중 보기 설정"
+    "setFocus": "집중 보기 설정",
+    "startScheduleNow": "스케줄 즉시 시작"
   },
   "onboarding": {
     "welcome": "스케줄이 아직 없습니다",
@@ -142,7 +143,8 @@
     "categoryFallback": "?",
     "labelUpcoming": "다음 스케줄",
     "labelUntilUpcoming": "다음 시작까지",
-    "simultaneousLabel": "동시 진행 · {count}"
+    "simultaneousLabel": "동시 진행 · {count}",
+    "buttonStartNow": "즉시 시작"
   },
   "weekdays": {
     "0": "일",

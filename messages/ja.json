@@ -47,7 +47,8 @@
     "extendTimer": "タイマーを延長",
     "removeCategory": "カテゴリを削除",
     "setFocus": "フォーカスビューを設定",
-    "setTheme": "テーマを設定"
+    "setTheme": "テーマを設定",
+    "startScheduleNow": "start schedule now"
   },
   "nav": {
     "categories": "カテゴリ",
@@ -127,7 +128,8 @@
     "tooltipClickToIdle": "クリックして待機中に切り替え",
     "typeCountdown": "カウントダウン",
     "typeCountup": "カウントアップ",
-    "typeTimer1": "タイマー1"
+    "typeTimer1": "タイマー1",
+    "buttonStartNow": "start now"
   },
   "topbar": {
     "back": "ポータルに戻る",
