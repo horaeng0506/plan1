@@ -44,7 +44,8 @@ export function ScheduleAddedModal() {
       aria-live="polite"
       aria-modal="false"
     >
-      <div className="rounded-none border border-success bg-panel px-6 py-4 shadow-lg">
+      {/* inner box 도 pointer-events-none — click intercept 차단 (mutation E2E cleanup step 통과 의무) */}
+      <div className="rounded-none border border-success bg-panel px-6 py-4 shadow-lg pointer-events-none">
         <h3 className="mb-2 text-sm font-semibold text-success font-mono text-center">
           {t('confirmation.scheduleAdded')}
         </h3>
