@@ -169,5 +169,8 @@
     "tabSingle": "एकल",
     "warningNoDates": "रेंज में लागू करने के लिए कोई तिथि नहीं। (शुरुआत > समाप्ति या केवल-सप्ताह के दिन विरोध)",
     "warningTruncated": "रेंज {max} दिनों से अधिक है, केवल आंशिक प्रोसेस किया गया। एक संकीर्ण रेंज आज़माएं।"
+  },
+  "header": {
+    "finalEndAtSuffix": "completion expected"
   }
 }

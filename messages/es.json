@@ -169,5 +169,8 @@
     "tabSingle": "individual",
     "warningNoDates": "No hay fechas para aplicar en el rango. (inicio > fin o conflicto de solo días laborables)",
     "warningTruncated": "El rango excede {max} días, solo se procesó parcialmente. Intenta un rango más estrecho."
+  },
+  "header": {
+    "finalEndAtSuffix": "completion expected"
   }
 }

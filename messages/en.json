@@ -169,5 +169,8 @@
   },
   "confirmation": {
     "scheduleAdded": "Schedule added"
+  },
+  "header": {
+    "finalEndAtSuffix": "completion expected"
   }
 }
