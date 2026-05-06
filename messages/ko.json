@@ -169,5 +169,8 @@
   },
   "confirmation": {
     "scheduleAdded": "스케줄이 등록되었습니다"
+  },
+  "header": {
+    "finalEndAtSuffix": "완료 예정"
   }
 }

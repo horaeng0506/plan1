@@ -169,5 +169,8 @@
     "tabSingle": "único",
     "warningNoDates": "Nenhuma data para aplicar no intervalo. (início > fim ou conflito apenas dias úteis)",
     "warningTruncated": "Intervalo excede {max} dias, apenas parcialmente processado. Tente um intervalo menor."
+  },
+  "header": {
+    "finalEndAtSuffix": "completion expected"
   }
 }

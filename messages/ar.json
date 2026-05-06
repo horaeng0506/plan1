@@ -169,5 +169,8 @@
     "tabSingle": "مفرد",
     "warningNoDates": "لا توجد تواريخ للتطبيق في النطاق. (البداية > النهاية أو تعارض أيام الأسبوع فقط)",
     "warningTruncated": "النطاق يتجاوز {max} أيام، تمت معالجة جزء فقط. جرب نطاقاً أضيق."
+  },
+  "header": {
+    "finalEndAtSuffix": "completion expected"
   }
 }

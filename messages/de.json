@@ -169,5 +169,8 @@
     "tabSingle": "einzeln",
     "warningNoDates": "Keine Daten zum Anwenden im Bereich. (Start > Ende oder Konflikt mit nur Wochentagen)",
     "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen kleineren Bereich."
+  },
+  "header": {
+    "finalEndAtSuffix": "completion expected"
   }
 }
