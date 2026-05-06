@@ -77,9 +77,7 @@
     "buttonPlus30": "+30د",
     "buttonPlusHour": "+١س",
     "categoryAddOption": "+ إضافة فئة",
-    "chainedCheckbox": "ربط بالجدول السابق (استقبال التسلسل)",
-    "endEmpty": "— (المدة 0د)",
-    "endLabel": "نهاية",
+    "chainedCheckbox": "chain to previous schedule",
     "fieldCategory": "الفئة",
     "fieldDuration": "المدة (دقيقة)",
     "fieldName": "الاسم",
@@ -91,8 +89,11 @@
     "hourTodaySuffix": "(اليوم)",
     "hourTomorrowSuffix": "(غداً)",
     "minuteSuffix": "د",
-    "warningFutureRequired": "يجب أن يكون وقت البدء في المستقبل.",
-    "warningOverlapLimit": "يمكن أن يتداخل {limit} جداول كحد أقصى في نفس الوقت. اضبط البدء/المدة أو احذف جدولاً موجوداً."
+    "warningOverlapLimit": "يمكن أن يتداخل {limit} جداول كحد أقصى في نفس الوقت. اضبط البدء/المدة أو احذف جدولاً موجوداً.",
+    "titleDefault": "New schedule",
+    "endLabelV2": "end time",
+    "endPlaceholder": "select duration",
+    "prevChainLabel": "connected previous schedule"
   },
   "serverError": {
     "categoryHasSchedules": "الفئة لديها {scheduleCount} جداول. أكد الحذف المتسلسل للإزالة.",

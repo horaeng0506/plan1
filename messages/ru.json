@@ -77,9 +77,7 @@
     "buttonPlus30": "+30м",
     "buttonPlusHour": "+1ч",
     "categoryAddOption": "+ добавить категорию",
-    "chainedCheckbox": "связать с предыдущим расписанием (получить каскад)",
-    "endEmpty": "— (длительность 0м)",
-    "endLabel": "конец",
+    "chainedCheckbox": "chain to previous schedule",
     "fieldCategory": "категория",
     "fieldDuration": "длительность (мин)",
     "fieldName": "название",
@@ -91,8 +89,11 @@
     "hourTodaySuffix": "(сегодня)",
     "hourTomorrowSuffix": "(завтра)",
     "minuteSuffix": "м",
-    "warningFutureRequired": "Время начала должно быть в будущем.",
-    "warningOverlapLimit": "Максимум {limit} расписаний могут пересекаться одновременно. Измените начало/длительность или удалите существующее."
+    "warningOverlapLimit": "Максимум {limit} расписаний могут пересекаться одновременно. Измените начало/длительность или удалите существующее.",
+    "titleDefault": "New schedule",
+    "endLabelV2": "end time",
+    "endPlaceholder": "select duration",
+    "prevChainLabel": "connected previous schedule"
   },
   "serverError": {
     "categoryHasSchedules": "У категории {scheduleCount} расписаний. Подтвердите каскадное удаление для удаления.",

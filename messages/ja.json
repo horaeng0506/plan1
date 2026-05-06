@@ -77,9 +77,7 @@
     "buttonPlus30": "+30分",
     "buttonPlusHour": "+1時間",
     "categoryAddOption": "+ カテゴリを追加",
-    "chainedCheckbox": "前のスケジュールに連鎖（カスケードを受ける）",
-    "endEmpty": "— (時間 0分)",
-    "endLabel": "終了",
+    "chainedCheckbox": "chain to previous schedule",
     "fieldCategory": "カテゴリ",
     "fieldDuration": "期間（分）",
     "fieldName": "名前",
@@ -91,8 +89,11 @@
     "hourTodaySuffix": "(今日)",
     "hourTomorrowSuffix": "(明日)",
     "minuteSuffix": "分",
-    "warningFutureRequired": "開始時刻は未来でなければなりません。",
-    "warningOverlapLimit": "同時に重複できるスケジュールは最大{limit}個です。開始時刻/期間を調整するか、既存のものを削除してください。"
+    "warningOverlapLimit": "同時に重複できるスケジュールは最大{limit}個です。開始時刻/期間を調整するか、既存のものを削除してください。",
+    "titleDefault": "New schedule",
+    "endLabelV2": "end time",
+    "endPlaceholder": "select duration",
+    "prevChainLabel": "connected previous schedule"
   },
   "serverError": {
     "categoryHasSchedules": "カテゴリには{scheduleCount}個のスケジュールがあります。削除するにはカスケード削除を確認してください。",

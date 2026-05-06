@@ -1,16 +1,17 @@
 'use client';
 
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {Fragment, useEffect, useMemo, useRef, useState} from 'react';
 import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useNow} from '@/lib/now';
 import {useEscapeKey} from '@/lib/use-escape-key';
 import {useCategoryDisplay} from '@/lib/category-display';
-import {pad2} from '@/lib/date-format';
+import {pad2, formatDateShort} from '@/lib/date-format';
 import {isServerActionError} from '@/lib/server-action';
 import {logClientError} from '@/lib/log';
 import {findOverlapping, MAX_OVERLAP} from '@/lib/domain/overlap';
 import {buildHourOptions, floorToHourMs} from '@/lib/hour-options';
+import type {Schedule} from '@/lib/domain/types';
 import {CategoryManager} from './CategoryManager';
 
 const MINUTE_OPTIONS = [0, 10, 20, 30, 40, 50];
@@ -18,6 +19,23 @@ const MINUTE_OPTIONS = [0, 10, 20, 30, 40, 50];
 function formatEndDisplay(ms: number, weekdayLabel: (idx: number) => string): string {
   const d = new Date(ms);
   return `${pad2(d.getMonth() + 1)}/${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())} (${weekdayLabel(d.getDay())})`;
+}
+
+/**
+ * PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #5: prev chain 산식.
+ * 새 schedule.startAt 이전 + 미완료 + chainedToPrev=true 연속 chain.
+ * 시간순 가장 가까운 prev (직전) 부터 chained=false 만나기 전까지.
+ */
+function getPrevChain(schedules: Schedule[], newStartAt: number): Schedule[] {
+  const sorted = schedules
+    .filter(s => s.status !== 'done' && s.startAt < newStartAt)
+    .sort((a, b) => b.startAt - a.startAt);
+  const result: Schedule[] = [];
+  for (const s of sorted) {
+    result.unshift(s);
+    if (!s.chainedToPrev) break;
+  }
+  return result;
 }
 
 export function NewScheduleModal({
@@ -105,7 +123,12 @@ export function NewScheduleModal({
   }, [initFloored]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  const [title, setTitle] = useState(editing?.title ?? '');
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #10: 디폴트 "새 스케줄" + onFocus 디폴트 값일 때만 자동 삭제.
+  const titleDefault = t('schedule.titleDefault');
+  const [title, setTitle] = useState(editing?.title ?? titleDefault);
+  const handleTitleFocus = () => {
+    if (title === titleDefault) setTitle('');
+  };
   const [categoryId, setCategoryId] = useState(editing?.categoryId ?? (categories[0]?.id ?? ''));
   const [durationMin, setDurationMin] = useState(editing?.durationMin ?? 0);
   // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q6·Q30): chainedToPrev 디폴트 true. checkbox 유지.
@@ -127,8 +150,8 @@ export function NewScheduleModal({
     []
   );
 
-  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q15) — 마지막 스케줄 = 지금 이후 종료 미완료 (어제 시작 오늘 종료 포함).
-  // done 제외 + endAt > now reduce maxEndAt. 0건 시 버튼 disabled.
+  // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q15) — 마지막 스케줄 = 지금 이후 종료 미완료.
+  // V2 #9 (Q-NEW4 b · Q-NEW10 b): 0건 시 클릭 → Date.now() 박음.
   const lastScheduleEndAt: number | null = useMemo(() => {
     if (isEdit || nowSnapshot === 0) return null;
     const candidates = schedules.filter(
@@ -141,15 +164,16 @@ export function NewScheduleModal({
     return last.startAt + last.durationMin * 60_000;
   }, [schedules, isEdit, nowSnapshot]);
 
-  // 옵션 범위 안 (nowSnapshot ~ +24h) 확인. 옵션 밖이면 버튼 disabled.
-  const lastWithinRange =
-    lastScheduleEndAt !== null &&
-    nowSnapshot > 0 &&
-    lastScheduleEndAt < nowSnapshot + 24 * 3600_000;
-
   function handleAfterLast() {
-    if (!lastWithinRange || lastScheduleEndAt === null) return;
-    const {hourMs, remainderMin} = floorToHourMs(lastScheduleEndAt);
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #9·Q-NEW10 b: 0건 또는 24h 옵션 밖이면 Date.now() 박음.
+    const nowMs = Date.now();
+    let targetMs: number;
+    if (lastScheduleEndAt !== null && lastScheduleEndAt > nowMs && lastScheduleEndAt < nowMs + 24 * 3600_000) {
+      targetMs = lastScheduleEndAt;
+    } else {
+      targetMs = nowMs;
+    }
+    const {hourMs, remainderMin} = floorToHourMs(targetMs);
     setSelectedHourMs(hourMs);
     setMinute(remainderMin);
     setChainedToPrev(true);
@@ -157,10 +181,32 @@ export function NewScheduleModal({
 
   const startAt = selectedHourMs + minute * 60_000;
   const nowReady = nowSnapshot > 0;
-  const live60Min = Math.floor(live / 60_000);
-  const start60Min = Math.floor(startAt / 60_000);
-  const isFuture = nowReady && start60Min >= live60Min;
   const endAt = startAt + durationMin * 60_000;
+
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #12 (Q-NEW6 d·Q-NEW11 d):
+  // 시작 분 자동 갱신. 사용자 명시 변경 = lock (선택값 ≠ 직전 자동값).
+  // 사용자 입력값이 시간 흐름 후 자연 일치 (= 직전 자동값) 시 자동 모드 자연 복원.
+  const prevAutoMsRef = useRef<number>(0);
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (!nowReady || isEdit) return;
+    const currentSelected = selectedHourMs + minute * 60_000;
+    // 첫 mount 시 prevAutoMs 초기화 (사용자 변경 비교 baseline)
+    if (prevAutoMsRef.current === 0) {
+      prevAutoMsRef.current = currentSelected;
+      return;
+    }
+    // 사용자 명시 변경 → lock (자동 갱신 안 함)
+    if (currentSelected !== prevAutoMsRef.current) return;
+    // 자동 갱신: live 의 hour boundary + remainder
+    const {hourMs: newHourMs, remainderMin: newMinute} = floorToHourMs(live);
+    const newAutoMs = newHourMs + newMinute * 60_000;
+    if (newAutoMs === currentSelected) return; // 동일 → noop (1초 tick 안 분 안 바뀜)
+    setSelectedHourMs(newHourMs);
+    setMinute(newMinute);
+    prevAutoMsRef.current = newAutoMs;
+  }, [live, selectedHourMs, minute, nowReady, isEdit]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // minute select 옵션 동적 — 편집 모드 또는 마지막 다음 클릭 시 minute 가 옵션 밖이면 추가.
   const minuteOptions = useMemo(() => {
@@ -176,11 +222,12 @@ export function NewScheduleModal({
       chainedToPrev !== (editing.chainedToPrev ?? false)
     : false;
 
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #11: durationMin 0 허용 (submit 시점 30 fallback).
+  // #10 디폴트 "새 스케줄" 도 baseOk 통과 (title.trim() 길이 검증만).
   const baseOk =
     title.trim().length > 0 &&
     categoryId !== '' &&
     categoryId !== '__NEW__' &&
-    durationMin > 0 &&
     !busy;
 
   // PLAN1-TIMER-DUP-20260504 #6.1: overlap 검사 (MAX_OVERLAP=2 한도). 3건+ 차단.
@@ -193,10 +240,17 @@ export function NewScheduleModal({
   );
   const overlapBlocked = overlaps.length >= MAX_OVERLAP;
 
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #5 (Q-NEW3 둘다): prev chain 시각화 — 새 schedule 의 직전 chain 보여줌.
+  const prevChain = useMemo(
+    () => (chainedToPrev && !isEdit ? getPrevChain(schedules, startAt) : []),
+    [schedules, startAt, chainedToPrev, isEdit]
+  );
+
   // add 모드: nowReady 필수 (hydration 전 submit 차단). edit 모드: 미래 검증 면제.
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #12: isFuture 검증 폐기 (자동 갱신으로 startAt 항상 현재 시각).
   const canSubmit = isEdit
     ? baseOk && isDirty && !overlapBlocked
-    : baseOk && nowReady && isFuture && !overlapBlocked;
+    : baseOk && nowReady && !overlapBlocked;
 
   const handleCategoryChange = (v: string) => {
     if (v === '__NEW__') {
@@ -228,21 +282,25 @@ export function NewScheduleModal({
       clearTimeout(deleteTimerRef.current);
       deleteTimerRef.current = null;
     }
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #11: durationMin 0 → 30 fallback.
+    const finalDuration = durationMin === 0 ? 30 : durationMin;
+    // #10: title 디폴트 "새 스케줄" 그대로 등록 가능.
+    const finalTitle = title.trim() || titleDefault;
     try {
       if (isEdit && editing) {
         await updateSchedule(editing.id, {
-          title: title.trim(),
+          title: finalTitle,
           categoryId,
           startAt,
-          durationMin,
+          durationMin: finalDuration,
           chainedToPrev
         });
       } else {
         await addSchedule({
-          title: title.trim(),
+          title: finalTitle,
           categoryId,
           startAt,
-          durationMin,
+          durationMin: finalDuration,
           timerType: 'countup',
           chainedToPrev
         });
@@ -303,8 +361,8 @@ export function NewScheduleModal({
                 type="text"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
+                onFocus={handleTitleFocus}
                 className={fieldCls}
-                autoFocus
               />
             </label>
             <label className="block">
@@ -322,26 +380,11 @@ export function NewScheduleModal({
                 <option value="__NEW__">{t('schedule.categoryAddOption')}</option>
               </select>
             </label>
-            {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q4): "마지막 스케줄 다음" 버튼 (add 모드만). */}
-            {!isEdit && (
-              <div>
-                <button
-                  type="button"
-                  onClick={handleAfterLast}
-                  disabled={!lastWithinRange}
-                  className={adjustBtn}
-                  title={
-                    lastWithinRange
-                      ? undefined
-                      : t('schedule.afterLastNoneHint')
-                  }
-                >
-                  {t('schedule.buttonAfterLast')}
-                </button>
-              </div>
-            )}
-            {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q14): hour select 동적 24h. fieldStartDate 폐기. */}
-            <div className="grid grid-cols-2 gap-2">
+            {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #4·#6·#9·#12:
+                  - hour select: disabled separator (5.6(수) 그룹 헤더)
+                  - grid-cols-3 (시작시 | 시작분 | 마지막직후 · 세로 통일)
+                  - 마지막 직후: 0건 또는 24h 밖이면 Date.now() 박음 (disabled X) */}
+            <div className="grid grid-cols-3 gap-2">
               <label className="block">
                 <span className="mb-1 block text-sm text-txt">{t('schedule.fieldStartHour')}</span>
                 <select
@@ -357,15 +400,28 @@ export function NewScheduleModal({
                       {t('schedule.hourSuffix')}
                     </option>
                   )}
-                  {hourOptions.map(opt => (
-                    <option key={opt.value} value={String(opt.value)}>
-                      {pad2(opt.hourLabel)}
-                      {t('schedule.hourSuffix')}{' '}
-                      {opt.isTomorrow
-                        ? t('schedule.hourTomorrowSuffix')
-                        : t('schedule.hourTodaySuffix')}
-                    </option>
-                  ))}
+                  {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 (Q-NEW12 b): disabled separator pattern (a11y 안전).
+                      day 그룹 분기: 첫 옵션 + tomorrow 첫 옵션 직전에 separator 박음 */}
+                  {hourOptions.map((opt, idx) => {
+                    const prev = idx > 0 ? hourOptions[idx - 1] : null;
+                    const showSeparator =
+                      idx === 0 || (prev !== null && prev.isTomorrow !== opt.isTomorrow);
+                    const dayDate = new Date(opt.value);
+                    const dayLabel = formatDateShort(dayDate, w => weekdayLabel(w));
+                    return (
+                      <Fragment key={opt.value}>
+                        {showSeparator && (
+                          <option disabled value={`__sep_${opt.value}`}>
+                            ━ {dayLabel} ━
+                          </option>
+                        )}
+                        <option value={String(opt.value)}>
+                          {pad2(opt.hourLabel)}
+                          {t('schedule.hourSuffix')}
+                        </option>
+                      </Fragment>
+                    );
+                  })}
                 </select>
               </label>
               <label className="block">
@@ -382,10 +438,21 @@ export function NewScheduleModal({
                   ))}
                 </select>
               </label>
+              {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #6: 마지막 직후 버튼 — grid-cols-3 안 세로 통일 (label spacer + 버튼) */}
+              {!isEdit && (
+                <div className="flex flex-col">
+                  <span className="mb-1 block text-sm text-txt opacity-0 select-none">.</span>
+                  <button
+                    type="button"
+                    onClick={handleAfterLast}
+                    className={fieldCls + ' hover:bg-bg cursor-pointer'}
+                  >
+                    {t('schedule.buttonAfterLast')}
+                  </button>
+                </div>
+              )}
             </div>
-            {!isEdit && nowReady && !isFuture && (
-              <p className="text-xs text-danger">{t('schedule.warningFutureRequired')}</p>
-            )}
+            {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #12: warningFutureRequired 영역 폐기 (자동 갱신). */}
             {durationMin > 0 && overlapBlocked && (
               <p
                 className="text-xs text-danger font-mono"
@@ -424,15 +491,16 @@ export function NewScheduleModal({
                 </button>
               </div>
             </div>
+            {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #7: "종료 시간" 라벨 + placeholder. */}
             <div className="text-xs font-mono text-muted">
-              {t('schedule.endLabel')} →{' '}
+              {t('schedule.endLabelV2')}:{' '}
               {durationMin > 0 ? (
                 formatEndDisplay(endAt, weekdayLabel)
               ) : (
-                <span className="text-muted opacity-60">{t('schedule.endEmpty')}</span>
+                <span className="text-muted opacity-60">{t('schedule.endPlaceholder')}</span>
               )}
             </div>
-            {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q30): chainedToPrev 디폴트 체크 + 토글 유지. */}
+            {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #8: chainedToPrev 라벨 단순화 (cascade 받음 폐기 — i18n key 갱신). */}
             <label className="flex items-start gap-2 text-sm text-txt font-mono">
               <input
                 type="checkbox"
@@ -442,6 +510,24 @@ export function NewScheduleModal({
               />
               <span>{t('schedule.chainedCheckbox')}</span>
             </label>
+            {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #5 (Q-NEW3 둘다): prev chain 시각 박스 (add 모드 + chained=true 시). */}
+            {!isEdit && chainedToPrev && prevChain.length > 0 && (
+              <div className="rounded-none border border-dashed border-line bg-bg p-2">
+                <span className="mb-1 block text-[10px] text-muted font-mono uppercase tracking-wider">
+                  {t('schedule.prevChainLabel')}
+                </span>
+                <ul className="space-y-1">
+                  {prevChain.map(s => (
+                    <li key={s.id} className="flex items-center justify-between text-xs font-mono text-txt">
+                      <span className="truncate">▸ {s.title}</span>
+                      <span className="ml-2 text-muted whitespace-nowrap">
+                        {pad2(new Date(s.startAt).getHours())}:{pad2(new Date(s.startAt).getMinutes())}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
           <div className="mt-6 flex flex-col gap-2">
             {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q22): $ next +10m 버튼 폐기. delete 만 유지. */}

@@ -77,9 +77,7 @@
     "buttonPlus30": "+30m",
     "buttonPlusHour": "+1h",
     "categoryAddOption": "+ adicionar categoria",
-    "chainedCheckbox": "encadear ao horário anterior (receber cascata)",
-    "endEmpty": "— (duração 0m)",
-    "endLabel": "fim",
+    "chainedCheckbox": "chain to previous schedule",
     "fieldCategory": "categoria",
     "fieldDuration": "duração (min)",
     "fieldName": "nome",
@@ -91,8 +89,11 @@
     "hourTodaySuffix": "(hoje)",
     "hourTomorrowSuffix": "(amanhã)",
     "minuteSuffix": "m",
-    "warningFutureRequired": "Horário de início deve estar no futuro.",
-    "warningOverlapLimit": "No máximo {limit} horários podem se sobrepor ao mesmo tempo. Ajuste início/duração ou remova um existente."
+    "warningOverlapLimit": "No máximo {limit} horários podem se sobrepor ao mesmo tempo. Ajuste início/duração ou remova um existente.",
+    "titleDefault": "New schedule",
+    "endLabelV2": "end time",
+    "endPlaceholder": "select duration",
+    "prevChainLabel": "connected previous schedule"
   },
   "serverError": {
     "categoryHasSchedules": "Categoria tem {scheduleCount} horários. Confirme exclusão em cascata para remover.",

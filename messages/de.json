@@ -77,9 +77,7 @@
     "buttonPlus30": "+30m",
     "buttonPlusHour": "+1h",
     "categoryAddOption": "+ Kategorie hinzufügen",
-    "chainedCheckbox": "an vorherigen Zeitplan ketten (Kaskade empfangen)",
-    "endEmpty": "— (Dauer 0m)",
-    "endLabel": "Ende",
+    "chainedCheckbox": "chain to previous schedule",
     "fieldCategory": "Kategorie",
     "fieldDuration": "Dauer (Min)",
     "fieldName": "Name",
@@ -91,8 +89,11 @@
     "hourTodaySuffix": "(heute)",
     "hourTomorrowSuffix": "(morgen)",
     "minuteSuffix": "m",
-    "warningFutureRequired": "Startzeit muss in der Zukunft liegen.",
-    "warningOverlapLimit": "Maximal {limit} Zeitpläne können sich gleichzeitig überschneiden. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
+    "warningOverlapLimit": "Maximal {limit} Zeitpläne können sich gleichzeitig überschneiden. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen.",
+    "titleDefault": "New schedule",
+    "endLabelV2": "end time",
+    "endPlaceholder": "select duration",
+    "prevChainLabel": "connected previous schedule"
   },
   "serverError": {
     "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Bestätigen Sie das kaskadierende Löschen zum Entfernen.",

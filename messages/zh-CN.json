@@ -77,9 +77,7 @@
     "buttonPlus30": "+30分钟",
     "buttonPlusHour": "+1小时",
     "categoryAddOption": "+ 添加分类",
-    "chainedCheckbox": "链接到前一个日程（接收级联）",
-    "endEmpty": "—（持续时间 0分钟）",
-    "endLabel": "结束",
+    "chainedCheckbox": "chain to previous schedule",
     "fieldCategory": "分类",
     "fieldDuration": "时长（分钟）",
     "fieldName": "名称",
@@ -91,8 +89,11 @@
     "hourTodaySuffix": "（今天）",
     "hourTomorrowSuffix": "（明天）",
     "minuteSuffix": "分钟",
-    "warningFutureRequired": "开始时间必须是将来的时间。",
-    "warningOverlapLimit": "最多 {limit} 个日程可以同时重叠。请调整开始时间/持续时间或删除现有日程。"
+    "warningOverlapLimit": "最多 {limit} 个日程可以同时重叠。请调整开始时间/持续时间或删除现有日程。",
+    "titleDefault": "New schedule",
+    "endLabelV2": "end time",
+    "endPlaceholder": "select duration",
+    "prevChainLabel": "connected previous schedule"
   },
   "serverError": {
     "categoryHasSchedules": "分类有 {scheduleCount} 个日程。确认级联删除以移除。",

@@ -77,9 +77,7 @@
     "buttonPlus30": "+30मि",
     "buttonPlusHour": "+1घं",
     "categoryAddOption": "+ श्रेणी जोड़ें",
-    "chainedCheckbox": "पिछले शेड्यूल से जोड़ें (कैस्केड प्राप्त करें)",
-    "endEmpty": "— (अवधि 0मि)",
-    "endLabel": "समाप्त",
+    "chainedCheckbox": "chain to previous schedule",
     "fieldCategory": "श्रेणी",
     "fieldDuration": "अवधि (मिनट)",
     "fieldName": "नाम",
@@ -91,8 +89,11 @@
     "hourTodaySuffix": "(आज)",
     "hourTomorrowSuffix": "(कल)",
     "minuteSuffix": "मि",
-    "warningFutureRequired": "प्रारंभ समय भविष्य में होना चाहिए।",
-    "warningOverlapLimit": "अधिकतम {limit} शेड्यूल एक ही समय में ओवरलैप हो सकते हैं। प्रारंभ/अवधि समायोजित करें या मौजूदा को हटाएं।"
+    "warningOverlapLimit": "अधिकतम {limit} शेड्यूल एक ही समय में ओवरलैप हो सकते हैं। प्रारंभ/अवधि समायोजित करें या मौजूदा को हटाएं।",
+    "titleDefault": "New schedule",
+    "endLabelV2": "end time",
+    "endPlaceholder": "select duration",
+    "prevChainLabel": "connected previous schedule"
   },
   "serverError": {
     "categoryHasSchedules": "श्रेणी में {scheduleCount} शेड्यूल हैं। हटाने के लिए कैस्केड डिलीट की पुष्टि करें।",
