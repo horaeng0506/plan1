@@ -166,5 +166,8 @@
   "undo": {
     "actionLabel": "undo available",
     "button": "undo"
+  },
+  "confirmation": {
+    "scheduleAdded": "Schedule added"
   }
 }

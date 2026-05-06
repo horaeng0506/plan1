@@ -166,5 +166,8 @@
   "undo": {
     "actionLabel": "실행 취소 가능",
     "button": "실행 취소"
+  },
+  "confirmation": {
+    "scheduleAdded": "스케줄이 등록되었습니다"
   }
 }

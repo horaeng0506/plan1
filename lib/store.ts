@@ -54,6 +54,8 @@ interface AppState {
   loaded: boolean;
   loading: boolean;
   error: string | null;
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #13: 등록 confirmation modal — 새 schedule 추가 시 set, 2초 후 PlanApp 가 clear.
+  lastAddedSchedule: Schedule | null;
   // PLAN1-LOGIN-START-OPT-20260504 #5: unauthorized 식별 (ServerActionError.errorKey).
   // PlanApp 분기 — `serverError.unauthorized` 면 로그인 화면 (SignInPrompt) 표시.
   // 일반 error (network · DB · 기타) 는 retry 버튼 유지.
@@ -61,6 +63,7 @@ interface AppState {
 
   init(): Promise<void>;
   refreshSchedules(): Promise<void>;
+  clearLastAddedSchedule(): void;
 
   addSchedule(input: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Promise<void>;
   updateSchedule(
@@ -93,6 +96,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   loading: false,
   error: null,
   errorKey: null,
+  lastAddedSchedule: null,
+
+  clearLastAddedSchedule() {
+    set({lastAddedSchedule: null});
+  },
 
   async init() {
     if (get().loaded) return;
@@ -138,7 +146,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   async addSchedule(input) {
-    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #17: undo arm — 새 schedule id capture (prev set 의 차이)
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #17·#13: undo arm + lastAddedSchedule 박음
     const prevIds = new Set(get().schedules.map(s => s.id));
     const next = unwrap(await schedulesApi.createSchedule({
       title: input.title,
@@ -148,8 +156,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       timerType: input.timerType,
       chainedToPrev: input.chainedToPrev
     }));
-    set({schedules: next});
     const newSchedule = next.find(s => !prevIds.has(s.id));
+    set({schedules: next, lastAddedSchedule: newSchedule ?? null});
     if (newSchedule) {
       armUndo({type: 'add', scheduleId: newSchedule.id, ts: Date.now()});
     }
