@@ -98,9 +98,13 @@ body::before {
   border-radius: 0 !important;
 }
 
-/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q24·Q25):
- * .is-chained 룰 폐기 (chained 디폴트 true 후 의미 X)
- * .is-split-cont 룰 폐기 (split 메커니즘 자체 폐기 — working hours 폐기 후 의미 X) */
+/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 (Q-NEW3 둘다 부활):
+ * .is-chained — chain 시각 위계 (chained=true schedule 의 앞 연결 표식 · top dashed 2px success).
+ * 디폴트 true 라 거의 모든 schedule 박힘 — 사용자 unchecked (chain 끊김) schedule 만 표식 없음 (시각 차이).
+ * .is-split-cont 룰 폐기 (split 메커니즘 자체 폐기) */
+.fc-event.is-chained {
+  border-top: 2px dashed var(--success) !important;
+}
 
 /* Stage 4c — AnalogClock SVG 토큰 (clock-* class · light/dark 자동 swap).
  * 기존 컴포넌트가 className 만 부여하고 stroke/fill 미정의 → SVG default 색 노출 회귀.
