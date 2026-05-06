@@ -141,14 +141,7 @@ export function NewScheduleModal({
   // Stage 4d-C a11y: Esc → close.
   useEscapeKey(onClose, !busy && !catOpen);
 
-  const [deleteArmed, setDeleteArmed] = useState(false);
-  const deleteTimerRef = useRef<number | null>(null);
-  useEffect(
-    () => () => {
-      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
-    },
-    []
-  );
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #15: deleteArmed state 폐기 (즉시 삭제 · undo bar 5초로 회복 가능).
 
   // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q15) — 마지막 스케줄 = 지금 이후 종료 미완료.
   // V2 #9 (Q-NEW4 b · Q-NEW10 b): 0건 시 클릭 → Date.now() 박음.
@@ -277,11 +270,6 @@ export function NewScheduleModal({
     if (!canSubmit) return;
     setBusy(true);
     setSubmitError(null);
-    setDeleteArmed(false);
-    if (deleteTimerRef.current) {
-      clearTimeout(deleteTimerRef.current);
-      deleteTimerRef.current = null;
-    }
     // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #11: durationMin 0 → 30 fallback.
     const finalDuration = durationMin === 0 ? 30 : durationMin;
     // #10: title 디폴트 "새 스케줄" 그대로 등록 가능.
@@ -313,14 +301,9 @@ export function NewScheduleModal({
     }
   };
 
+  // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #15: 즉시 삭제 (확인 단계 폐기 · undo bar 회복).
   const handleDelete = async () => {
     if (!editing || busy) return;
-    if (!deleteArmed) {
-      setDeleteArmed(true);
-      deleteTimerRef.current = window.setTimeout(() => setDeleteArmed(false), 2000);
-      return;
-    }
-    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
     setBusy(true);
     setSubmitError(null);
     try {
@@ -530,23 +513,6 @@ export function NewScheduleModal({
             )}
           </div>
           <div className="mt-6 flex flex-col gap-2">
-            {/* PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q22): $ next +10m 버튼 폐기. delete 만 유지. */}
-            {isEdit && (
-              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  disabled={busy}
-                  className={`rounded-none border px-3 py-2 text-sm font-mono disabled:cursor-not-allowed disabled:opacity-50 ${
-                    deleteArmed
-                      ? 'border-danger bg-danger text-bg hover:opacity-90'
-                      : 'border-danger bg-panel text-danger hover:bg-[rgba(224,108,117,0.1)]'
-                  }`}
-                >
-                  {deleteArmed ? t('common.confirmDelete') : t('common.delete')}
-                </button>
-              </div>
-            )}
             {submitError && (
               <p
                 className="text-xs text-danger font-mono"
@@ -556,22 +522,39 @@ export function NewScheduleModal({
                 {submitError}
               </p>
             )}
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
-              >
-                {t('common.cancel')}
-              </button>
-              <button
-                type="button"
-                onClick={submit}
-                disabled={!canSubmit}
-                className="rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {submitLabel}
-              </button>
+            {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #14: 삭제 + 취소 + 저장 같은 row · y 통일 */}
+            <div className="flex items-center justify-between gap-2">
+              {/* 좌측: 삭제 (편집 모드만 · 그 외 빈 영역) */}
+              {isEdit ? (
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={busy}
+                  className="rounded-none border border-danger bg-panel px-4 py-2 text-sm text-danger font-mono hover:bg-[rgba(224,108,117,0.1)] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {t('common.delete')}
+                </button>
+              ) : (
+                <span />
+              )}
+              {/* 우측: 취소 + 저장 */}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
+                >
+                  {t('common.cancel')}
+                </button>
+                <button
+                  type="button"
+                  onClick={submit}
+                  disabled={!canSubmit}
+                  className="rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {submitLabel}
+                </button>
+              </div>
             </div>
           </div>
         </div>
