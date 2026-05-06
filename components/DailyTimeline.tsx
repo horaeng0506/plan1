@@ -119,11 +119,11 @@ export function DailyTimeline({
             </option>
           ))}
         </select>
-        {/* 2026-05-06 (대장 명시 · 단순화) — 등록된 schedule 마지막 종료 시점 1줄 ("X시 끝"). */}
+        {/* 2026-05-06 (대장 명시 · 위치 swap) — 가운데 날짜 · 우측 끝 시각. */}
+        <span className="text-xs text-muted font-mono">{dateLabel}</span>
         {finalEndLabel && (
           <span className="text-sm font-medium text-ink font-mono">{finalEndLabel}</span>
         )}
-        <span className="text-xs text-muted font-mono">{dateLabel}</span>
       </div>
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
