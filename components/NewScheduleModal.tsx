@@ -24,12 +24,19 @@ function formatEndDisplay(ms: number, weekdayLabel: (idx: number) => string): st
 
 /**
  * PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #5: prev chain 산식.
- * 새 schedule.startAt 이전 + 미완료 + chainedToPrev=true 연속 chain.
+ * 새 schedule.startAt 이전 + 미완료 + endAt > now (지나간 schedule 폐기) + chainedToPrev=true 연속 chain.
  * 시간순 가장 가까운 prev (직전) 부터 chained=false 만나기 전까지.
+ *
+ * 2026-05-06 fix: 지나간 (endAt < now) schedule 폐기 — 사용자 입장 "오늘 새로 시작" 시 옛 chain 노출 X.
  */
-function getPrevChain(schedules: Schedule[], newStartAt: number): Schedule[] {
+function getPrevChain(schedules: Schedule[], newStartAt: number, nowMs: number): Schedule[] {
   const sorted = schedules
-    .filter(s => s.status !== 'done' && s.startAt < newStartAt)
+    .filter(
+      s =>
+        s.status !== 'done' &&
+        s.startAt < newStartAt &&
+        s.startAt + s.durationMin * 60_000 > nowMs
+    )
     .sort((a, b) => b.startAt - a.startAt);
   const result: Schedule[] = [];
   for (const s of sorted) {
@@ -236,8 +243,11 @@ export function NewScheduleModal({
 
   // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #5 (Q-NEW3 둘다): prev chain 시각화 — 새 schedule 의 직전 chain 보여줌.
   const prevChain = useMemo(
-    () => (chainedToPrev && !isEdit ? getPrevChain(schedules, startAt) : []),
-    [schedules, startAt, chainedToPrev, isEdit]
+    () =>
+      chainedToPrev && !isEdit && nowReady
+        ? getPrevChain(schedules, startAt, live)
+        : [],
+    [schedules, startAt, chainedToPrev, isEdit, nowReady, live]
   );
 
   // add 모드: nowReady 필수 (hydration 전 submit 차단). edit 모드: 미래 검증 면제.
@@ -422,14 +432,15 @@ export function NewScheduleModal({
                   ))}
                 </select>
               </label>
-              {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #6: 마지막 직후 버튼 — grid-cols-3 안 세로 통일 (label spacer + 버튼) */}
+              {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #6: 마지막 직후 버튼 — grid-cols-3 안 세로 통일 (label spacer + 버튼).
+                  2026-05-06 fix: select 와 height 정합 + 취소 버튼 색 (border-line bg-panel text-txt) 통일 */}
               {!isEdit && (
                 <div className="flex flex-col">
                   <span className="mb-1 block text-sm text-txt opacity-0 select-none">.</span>
                   <button
                     type="button"
                     onClick={handleAfterLast}
-                    className={fieldCls + ' hover:bg-bg cursor-pointer'}
+                    className="w-full rounded-none border border-line bg-panel px-3 py-2 text-sm text-txt font-mono hover:bg-bg cursor-pointer"
                   >
                     {t('schedule.buttonAfterLast')}
                   </button>
