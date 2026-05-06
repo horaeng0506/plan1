@@ -262,13 +262,25 @@ interface IdleCountdownProps {
 /**
  * PLAN1-TIMER-DUP-20260504 #3: 빈 시간 카운트다운 — 다음 schedule 까지 남은 시간.
  * 디자인 차별화: 점선 테두리 + 흐릿한 muted 톤 + "다음 스케줄까지" 라벨.
+ *
+ * PLAN1-IDLE-START-NOW-20260506: "즉시 시작" 버튼 — upcoming.startAt = now 로 set.
+ * cascade 자동 적용 (뒤 chainedToPrev=true 연속 구간 같이 당김 · gap 유지).
+ * store.updateSchedule 가 armUndo 자동 호출 → UndoBar 5초 안 되돌리기.
+ * overlap 검사는 submit 경로 외 — silent 진행 (Q3 a · 다른 timer 액션과 일관).
  */
 function IdleCountdown({upcoming, now}: IdleCountdownProps) {
   const t = useTranslations();
   const categoryDisplay = useCategoryDisplay();
   const categories = useAppStore(s => s.categories);
+  const updateSchedule = useAppStore(s => s.updateSchedule);
+  const runMutation = useRunMutation();
   const category = categories.find(c => c.id === upcoming.categoryId);
   const remaining = Math.max(0, upcoming.startAt - now);
+
+  const startNow = () => {
+    runMutation(updateSchedule(upcoming.id, {startAt: Date.now()}), 'startScheduleNow');
+  };
+
   return (
     <div
       className="rounded-none border border-dashed border-line bg-panel p-4 opacity-70"
@@ -290,10 +302,18 @@ function IdleCountdown({upcoming, now}: IdleCountdownProps) {
         </span>
       </div>
       <div className="mb-1 text-xs font-mono text-muted">{t('timer.labelUntilUpcoming')}</div>
-      <div className="font-mono text-4xl font-medium tracking-tight text-muted">
+      <div className="mb-3 font-mono text-4xl font-medium tracking-tight text-muted">
         {formatHMS(remaining)}
       </div>
-      <div className="mt-2 text-[10px] font-mono text-muted opacity-80">
+      <button
+        type="button"
+        onClick={startNow}
+        data-testid="idle-start-now"
+        className="mb-2 w-full rounded-none border border-ink bg-ink px-3 py-2 text-sm font-mono text-bg hover:opacity-90"
+      >
+        {t('timer.buttonStartNow')}
+      </button>
+      <div className="text-[10px] font-mono text-muted opacity-80">
         cat={category ? categoryDisplay(category) : t('timer.categoryFallback')}
       </div>
     </div>

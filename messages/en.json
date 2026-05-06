@@ -58,7 +58,8 @@
     "completeSchedule": "complete schedule",
     "changeTimerType": "change timer type",
     "setTheme": "set theme",
-    "setFocus": "set focus view"
+    "setFocus": "set focus view",
+    "startScheduleNow": "start schedule now"
   },
   "onboarding": {
     "welcome": "No schedules yet",
@@ -142,7 +143,8 @@
     "categoryFallback": "?",
     "labelUpcoming": "next schedule",
     "labelUntilUpcoming": "until upcoming",
-    "simultaneousLabel": "simultaneous · {count}"
+    "simultaneousLabel": "simultaneous · {count}",
+    "buttonStartNow": "start now"
   },
   "weekdays": {
     "0": "sun",

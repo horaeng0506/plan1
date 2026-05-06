@@ -47,7 +47,8 @@
     "extendTimer": "تمديد المؤقت",
     "removeCategory": "إزالة الفئة",
     "setFocus": "تعيين عرض التركيز",
-    "setTheme": "تعيين المظهر"
+    "setTheme": "تعيين المظهر",
+    "startScheduleNow": "start schedule now"
   },
   "nav": {
     "categories": "الفئات",
@@ -127,7 +128,8 @@
     "tooltipClickToIdle": "انقر للتبديل إلى خامل",
     "typeCountdown": "العد التنازلي",
     "typeCountup": "عد تصاعدي",
-    "typeTimer1": "timer1"
+    "typeTimer1": "timer1",
+    "buttonStartNow": "start now"
   },
   "topbar": {
     "back": "العودة إلى البوابة",

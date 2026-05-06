@@ -47,7 +47,8 @@
     "extendTimer": "延长计时器",
     "removeCategory": "删除类别",
     "setFocus": "设置专注视图",
-    "setTheme": "设置主题"
+    "setTheme": "设置主题",
+    "startScheduleNow": "start schedule now"
   },
   "nav": {
     "categories": "类别",
@@ -127,7 +128,8 @@
     "tooltipClickToIdle": "点击切换到空闲",
     "typeCountdown": "倒计时",
     "typeCountup": "正计时",
-    "typeTimer1": "timer1"
+    "typeTimer1": "timer1",
+    "buttonStartNow": "start now"
   },
   "topbar": {
     "back": "返回门户",

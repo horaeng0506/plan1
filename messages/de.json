@@ -47,7 +47,8 @@
     "extendTimer": "Timer verlängern",
     "removeCategory": "Kategorie entfernen",
     "setFocus": "Fokusansicht einstellen",
-    "setTheme": "Design einstellen"
+    "setTheme": "Design einstellen",
+    "startScheduleNow": "start schedule now"
   },
   "nav": {
     "categories": "Kategorien",
@@ -127,7 +128,8 @@
     "tooltipClickToIdle": "klicken, um zu Leerlauf zu wechseln",
     "typeCountdown": "Countdown",
     "typeCountup": "Hochzählen",
-    "typeTimer1": "timer1"
+    "typeTimer1": "timer1",
+    "buttonStartNow": "start now"
   },
   "topbar": {
     "back": "zurück zum Portal",

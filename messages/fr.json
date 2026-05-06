@@ -47,7 +47,8 @@
     "extendTimer": "prolonger le minuteur",
     "removeCategory": "supprimer la catégorie",
     "setFocus": "définir la vue focus",
-    "setTheme": "définir le thème"
+    "setTheme": "définir le thème",
+    "startScheduleNow": "start schedule now"
   },
   "nav": {
     "categories": "catégories",
@@ -127,7 +128,8 @@
     "tooltipClickToIdle": "cliquer pour passer en inactif",
     "typeCountdown": "compte à rebours",
     "typeCountup": "compte à rebours inversé",
-    "typeTimer1": "minuteur1"
+    "typeTimer1": "minuteur1",
+    "buttonStartNow": "start now"
   },
   "topbar": {
     "back": "retour au portail",

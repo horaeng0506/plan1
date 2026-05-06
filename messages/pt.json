@@ -47,7 +47,8 @@
     "extendTimer": "estender temporizador",
     "removeCategory": "remover categoria",
     "setFocus": "definir visualização de foco",
-    "setTheme": "definir tema"
+    "setTheme": "definir tema",
+    "startScheduleNow": "start schedule now"
   },
   "nav": {
     "categories": "categorias",
@@ -127,7 +128,8 @@
     "tooltipClickToIdle": "clique para mudar para ocioso",
     "typeCountdown": "contagem regressiva",
     "typeCountup": "contagem progressiva",
-    "typeTimer1": "temporizador1"
+    "typeTimer1": "temporizador1",
+    "buttonStartNow": "start now"
   },
   "topbar": {
     "back": "voltar ao portal",
