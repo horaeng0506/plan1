@@ -1,22 +1,22 @@
 {
     "app": {
-        "tagline": "менеджер расписаний",
+        "tagline": "менеджер расписания",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Войти через Google",
-        "signInDescription": "plan1 — это персональный инструмент для планирования с синхронизацией между устройствами. Войдите через Google, чтобы начать.",
+        "signInDescription": "plan1 — это персональный инструмент планирования с синхронизацией между устройствами. Войдите через Google, чтобы начать.",
         "signInRequired": "Войдите, чтобы использовать plan1"
     },
     "category": {
-        "confirmRemoveLabel": "подтвердить уд ({count})",
-        "confirmRemoveText": "{count} расписание(й) будет удалено вместе с этим. Нажмите снова для подтверждения.",
+        "confirmRemoveLabel": "подтвердить удаление ({count})",
+        "confirmRemoveText": "При этом будет удалено {count} расписание(й). Нажмите еще раз для подтверждения.",
         "defaultName": "по умолчанию",
         "empty": "Нет категорий.",
         "fieldColor": "цвет",
-        "fieldName": "имя",
+        "fieldName": "название",
         "header": "категории",
-        "removeButton": "уд",
+        "removeButton": "удалить",
         "scheduleCountSuffix": "{count} расписаний"
     },
     "common": {
@@ -27,7 +27,7 @@
         "delete": "удалить",
         "dismiss": "закрыть",
         "now": "сейчас",
-        "retry": "повтор",
+        "retry": "повторить",
         "save": "сохранить"
     },
     "confirmation": {
@@ -36,7 +36,7 @@
     "error": {
         "featureUnavailable": "Эта функция пока недоступна ({feature}).",
         "loadFailedLabel": "ошибка загрузки:",
-        "mutationFailed": "Не удалось {action}: {error}",
+        "mutationFailed": "Не удалось выполнить {action}: {error}",
         "unknown": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.",
         "workingHoursInvalid": "Неверный ввод рабочих часов ({reason})."
     },
@@ -46,7 +46,7 @@
         "completeSchedule": "завершить расписание",
         "extendTimer": "продлить таймер",
         "removeCategory": "удалить категорию",
-        "setFocus": "установить режим фокуса",
+        "setFocus": "установить вид фокуса",
         "setTheme": "установить тему"
     },
     "nav": {
@@ -61,18 +61,18 @@
         "focus8h": "8ч",
         "focusLabel": "фокус",
         "newSchedule": "новое",
-        "themeDark": "темная",
+        "themeDark": "тёмная",
         "themeLight": "светлая",
         "themeSystem": "авто",
         "workingHours": "часы"
     },
     "onboarding": {
         "addFirst": "добавить первое расписание",
-        "firstSchedule": "Добавьте свое первое расписание, чтобы увидеть его в недельной сетке, сегодняшней временной шкале и аналоговых часах.",
-        "welcome": "Пока нет расписаний"
+        "firstSchedule": "Добавьте ваше первое расписание, чтобы увидеть его в недельной сетке, на временной шкале сегодня и на аналоговых часах.",
+        "welcome": "Расписаний пока нет"
     },
     "schedule": {
-        "afterLastNoneHint": "нет предстоящего расписания",
+        "afterLastNoneHint": "нет предстоящих расписаний",
         "buttonAfterLast": "после последнего расписания",
         "buttonMinus10": "-10м",
         "buttonMinus30": "-30м",
@@ -82,11 +82,11 @@
         "categoryAddOption": "+ добавить категорию",
         "chainedCheckbox": "связать с предыдущим расписанием",
         "endLabelV2": "время окончания",
-        "endPlaceholder": "выбрать длительность",
+        "endPlaceholder": "выберите длительность",
         "fieldCategory": "категория",
         "fieldDuration": "длительность (мин)",
-        "fieldName": "имя",
-        "fieldStartHour": "начальный час",
+        "fieldName": "название",
+        "fieldStartHour": "час начала",
         "fieldStartMinute": "минута начала",
         "headerEdit": "редактировать расписание",
         "headerNew": "новое расписание",
@@ -96,10 +96,10 @@
         "minuteSuffix": "м",
         "prevChainLabel": "связанное предыдущее расписание",
         "titleDefault": "Новое расписание",
-        "warningOverlapLimit": "Максимум {limit} расписаний могут пересекаться одновременно. Настройте начало/длительность или удалите существующее."
+        "warningOverlapLimit": "Максимум {limit} расписаний могут пересекаться одновременно. Измените начало/длительность или удалите существующее."
     },
     "serverError": {
-        "categoryHasSchedules": "В категории {scheduleCount} расписаний. Подтвердите каскадное удаление.",
+        "categoryHasSchedules": "У категории {scheduleCount} расписаний. Подтвердите каскадное удаление.",
         "categoryNotFound": "Категория не найдена или не принадлежит вам.",
         "scheduleNotFound": "Расписание не найдено.",
         "unauthorized": "Требуется вход."
@@ -112,26 +112,26 @@
     "timer": {
         "buttonComplete": "завершить",
         "buttonFocus": "фокус",
-        "buttonIdle": "ожидание",
+        "buttonIdle": "простой",
         "categoryFallback": "?",
-        "idleEmpty": "ожидание · нет активного расписания",
+        "idleEmpty": "простой · нет активного расписания",
         "labelElapsed": "прошло",
-        "labelEndAt": "закончить-в",
+        "labelEndAt": "завершить-в",
         "labelRemaining": "осталось",
         "labelTarget": "цель",
         "labelUntilUpcoming": "до предстоящего",
         "labelUpcoming": "следующее расписание",
-        "overlapLabel": "перекрытие {count}",
-        "simultaneousLabel": "одновременные · {count}",
-        "tooltipClickToFocus": "нажмите для переключения в режим фокуса",
-        "tooltipClickToIdle": "нажмите для переключения в режим ожидания",
-        "typeCountdown": "обратный отсчет",
-        "typeCountup": "прямой отсчет",
-        "typeTimer1": "таймер1"
+        "overlapLabel": "наложение {count}",
+        "simultaneousLabel": "одновременно · {count}",
+        "tooltipClickToFocus": "нажмите для переключения в фокус",
+        "tooltipClickToIdle": "нажмите для переключения в простой",
+        "typeCountdown": "обратный отсчёт",
+        "typeCountup": "прямой отсчёт",
+        "typeTimer1": "timer1"
     },
     "topbar": {
         "back": "вернуться на портал",
-        "creditsLabel": "титры",
+        "creditsLabel": "авторы",
         "creditsPlaceholder": "—",
         "guest": "гость",
         "languageLabel": "язык",
@@ -142,7 +142,7 @@
         "button": "отменить"
     },
     "wallTime": {
-        "am": "дп",
+        "am": "am",
         "pm": "pm"
     },
     "weekdays": [
@@ -155,19 +155,19 @@
         "сб"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "также сохранить как по умолчанию",
+        "checkboxAlsoDefault": "также сохранить по умолчанию",
         "checkboxWeekdaysOnly": "только будни (пн–пт)",
         "errorEndAfterStart": "Время окончания должно быть после времени начала.",
-        "errorToAfterFrom": "Дата окончания должна быть равна или позже даты начала.",
+        "errorToAfterFrom": "Дата окончания должна быть не раньше даты начала.",
         "fieldDate": "дата",
         "fieldEndTime": "время окончания",
         "fieldFromDate": "с",
         "fieldStartTime": "время начала",
-        "fieldToDate": "до",
+        "fieldToDate": "к",
         "header": "рабочие часы",
         "tabRange": "диапазон",
         "tabSingle": "одиночное",
-        "warningNoDates": "Нет дат для применения в диапазоне. (начало > конца или конфликт только будних дней)",
-        "warningTruncated": "Диапазон превышает {max} дней, обработана только часть. Попробуйте более узкий диапазон."
+        "warningNoDates": "Нет дат для применения в диапазоне. (начало > конца или конфликт только по будням)",
+        "warningTruncated": "Диапазон превышает {max} дней, обработано только частично. Попробуйте более узкий диапазон."
     }
 }

@@ -5,18 +5,18 @@
     },
     "auth": {
         "signIn": "Se connecter avec Google",
-        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInDescription": "plan1 est un outil d'horaire personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
         "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "category": {
-        "confirmRemoveLabel": "confirmer suppr ({count})",
+        "confirmRemoveLabel": "confirmer sup ({count})",
         "confirmRemoveText": "{count} horaire(s) seront supprimés avec ceci. Cliquez à nouveau pour confirmer.",
         "defaultName": "par défaut",
         "empty": "Aucune catégorie.",
         "fieldColor": "couleur",
         "fieldName": "nom",
         "header": "catégories",
-        "removeButton": "rm",
+        "removeButton": "sup",
         "scheduleCountSuffix": "{count} horaires"
     },
     "common": {
@@ -38,7 +38,7 @@
         "loadFailedLabel": "échec du chargement :",
         "mutationFailed": "Échec de {action} : {error}",
         "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-        "workingHoursInvalid": "Saisie des heures de travail invalide ({reason})."
+        "workingHoursInvalid": "Entrée d'heures de travail invalide ({reason})."
     },
     "loading": "chargement...",
     "mutation": {
@@ -96,7 +96,7 @@
         "minuteSuffix": "m",
         "prevChainLabel": "horaire précédent connecté",
         "titleDefault": "Nouvel horaire",
-        "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez début/durée ou supprimez-en un existant."
+        "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
     },
     "serverError": {
         "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour supprimer.",
@@ -116,7 +116,7 @@
         "categoryFallback": "?",
         "idleEmpty": "inactif · aucun horaire actif",
         "labelElapsed": "écoulé",
-        "labelEndAt": "se termine à",
+        "labelEndAt": "fin-à",
         "labelRemaining": "restant",
         "labelTarget": "cible",
         "labelUntilUpcoming": "jusqu'au prochain",
@@ -126,8 +126,8 @@
         "tooltipClickToFocus": "cliquer pour passer en focus",
         "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
-        "typeCountup": "compteur croissant",
-        "typeTimer1": "timer1"
+        "typeCountup": "compte à rebours inversé",
+        "typeTimer1": "minuteur1"
     },
     "topbar": {
         "back": "retour au portail",
@@ -155,8 +155,8 @@
         "sam"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "enregistrer également par défaut",
-        "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
+        "checkboxAlsoDefault": "enregistrer aussi par défaut",
+        "checkboxWeekdaysOnly": "jours de semaine seulement (lun–ven)",
         "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
         "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
         "fieldDate": "date",

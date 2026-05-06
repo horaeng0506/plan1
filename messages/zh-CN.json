@@ -10,12 +10,12 @@
     },
     "category": {
         "confirmRemoveLabel": "确认删除 ({count})",
-        "confirmRemoveText": "{count} 个日程将随之删除。再次点击以确认。",
+        "confirmRemoveText": "将同时删除 {count} 个日程。再次点击以确认。",
         "defaultName": "默认",
-        "empty": "无分类。",
+        "empty": "暂无类别。",
         "fieldColor": "颜色",
         "fieldName": "名称",
-        "header": "分类",
+        "header": "类别",
         "removeButton": "删除",
         "scheduleCountSuffix": "{count} 个日程"
     },
@@ -25,7 +25,7 @@
         "close": "关闭",
         "confirmDelete": "确认删除",
         "delete": "删除",
-        "dismiss": "忽略",
+        "dismiss": "关闭",
         "now": "现在",
         "retry": "重试",
         "save": "保存"
@@ -36,7 +36,7 @@
     "error": {
         "featureUnavailable": "此功能尚未可用 ({feature})。",
         "loadFailedLabel": "加载失败:",
-        "mutationFailed": "{action} 失败: {error}",
+        "mutationFailed": "操作失败 {action}: {error}",
         "unknown": "发生意外错误。请重试。",
         "workingHoursInvalid": "工作时间输入无效 ({reason})。"
     },
@@ -45,12 +45,12 @@
         "changeTimerType": "更改计时器类型",
         "completeSchedule": "完成日程",
         "extendTimer": "延长计时器",
-        "removeCategory": "移除分类",
+        "removeCategory": "删除类别",
         "setFocus": "设置专注视图",
         "setTheme": "设置主题"
     },
     "nav": {
-        "categories": "分类",
+        "categories": "类别",
         "focus10h": "10小时",
         "focus12h": "12小时",
         "focus16h": "16小时",
@@ -68,22 +68,22 @@
     },
     "onboarding": {
         "addFirst": "添加第一个日程",
-        "firstSchedule": "添加您的第一个日程,以在周视图、今日时间线和模拟时钟上查看。",
+        "firstSchedule": "添加您的第一个日程,即可在周视图、今日时间线和模拟时钟上看到它。",
         "welcome": "暂无日程"
     },
     "schedule": {
         "afterLastNoneHint": "无即将到来的日程",
-        "buttonAfterLast": "在最后一个日程之后",
+        "buttonAfterLast": "最后一个日程之后",
         "buttonMinus10": "-10分钟",
         "buttonMinus30": "-30分钟",
         "buttonPlus10": "+10分钟",
         "buttonPlus30": "+30分钟",
         "buttonPlusHour": "+1小时",
-        "categoryAddOption": "+ 添加分类",
+        "categoryAddOption": "+ 添加类别",
         "chainedCheckbox": "链接到上一个日程",
         "endLabelV2": "结束时间",
         "endPlaceholder": "选择时长",
-        "fieldCategory": "分类",
+        "fieldCategory": "类别",
         "fieldDuration": "时长 (分钟)",
         "fieldName": "名称",
         "fieldStartHour": "开始小时",
@@ -96,17 +96,17 @@
         "minuteSuffix": "分钟",
         "prevChainLabel": "已连接上一个日程",
         "titleDefault": "新建日程",
-        "warningOverlapLimit": "最多 {limit} 个日程可以同时重叠。请调整开始时间/时长或删除现有日程。"
+        "warningOverlapLimit": "最多 {limit} 个日程可以同时重叠。调整开始时间/时长或删除现有日程。"
     },
     "serverError": {
-        "categoryHasSchedules": "分类包含 {scheduleCount} 个日程。确认级联删除以移除。",
-        "categoryNotFound": "未找到分类或不属于您。",
+        "categoryHasSchedules": "类别有 {scheduleCount} 个日程。确认级联删除以移除。",
+        "categoryNotFound": "未找到类别或非拥有者。",
         "scheduleNotFound": "未找到日程。",
         "unauthorized": "需要登录。"
     },
     "signIn": {
         "cta": "登录",
-        "description": "登录到您的 cofounder 账户以查看和管理您的日程。",
+        "description": "登录您的 cofounder 账户以查看和管理您的日程。",
         "title": "需要登录"
     },
     "timer": {
@@ -115,7 +115,7 @@
         "buttonIdle": "空闲",
         "categoryFallback": "?",
         "idleEmpty": "空闲 · 无活动日程",
-        "labelElapsed": "已过",
+        "labelElapsed": "已过去",
         "labelEndAt": "结束于",
         "labelRemaining": "剩余",
         "labelTarget": "目标",
@@ -131,7 +131,7 @@
     },
     "topbar": {
         "back": "返回门户",
-        "creditsLabel": "积分",
+        "creditsLabel": "制作人员",
         "creditsPlaceholder": "—",
         "guest": "访客",
         "languageLabel": "语言",
@@ -158,7 +158,7 @@
         "checkboxAlsoDefault": "同时保存为默认",
         "checkboxWeekdaysOnly": "仅工作日 (周一至周五)",
         "errorEndAfterStart": "结束时间必须晚于开始时间。",
-        "errorToAfterFrom": "结束日期必须等于或晚于开始日期。",
+        "errorToAfterFrom": "结束日期必须在开始日期当天或之后。",
         "fieldDate": "日期",
         "fieldEndTime": "结束时间",
         "fieldFromDate": "从",
@@ -167,7 +167,7 @@
         "header": "工作时间",
         "tabRange": "范围",
         "tabSingle": "单次",
-        "warningNoDates": "范围内无可应用的日期。(开始 > 结束或仅工作日冲突)",
-        "warningTruncated": "范围超过 {max} 天,仅处理部分。请尝试缩小范围。"
+        "warningNoDates": "范围内没有可应用的日期。(开始 > 结束 或 仅工作日冲突)",
+        "warningTruncated": "范围超过 {max} 天,仅处理部分。请尝试更窄的范围。"
     }
 }
