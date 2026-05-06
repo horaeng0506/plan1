@@ -88,7 +88,7 @@
     "buttonPlusHour": "+1h",
     "chainedCheckbox": "chain to previous schedule",
     "warningOverlapLimit": "At most {limit} schedules can overlap at the same time. Adjust start/duration or remove an existing one.",
-    "buttonAfterLast": "after last schedule",
+    "buttonAfterLast": "next after last schedule",
     "afterLastNoneHint": "no upcoming schedule",
     "hourTodaySuffix": "(today)",
     "hourTomorrowSuffix": "(tomorrow)",

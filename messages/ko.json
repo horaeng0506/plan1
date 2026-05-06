@@ -88,7 +88,7 @@
     "buttonPlusHour": "+1시간",
     "chainedCheckbox": "이전 스케줄과 연결",
     "warningOverlapLimit": "같은 시각에는 최대 {limit}개 스케줄까지 가능. 시작/길이를 바꾸거나 기존 항목을 정리하세요.",
-    "buttonAfterLast": "마지막 직후",
+    "buttonAfterLast": "마지막 스케줄 다음",
     "afterLastNoneHint": "다음 스케줄 없음",
     "hourTodaySuffix": "(오늘)",
     "hourTomorrowSuffix": "(내일)",
