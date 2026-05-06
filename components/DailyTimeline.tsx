@@ -6,7 +6,7 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {useAppStore} from '@/lib/store';
-import {schedulesToEvents} from '@/lib/schedule-to-event';
+import {schedulesToEvents, chainGroupsToBackgroundEvents} from '@/lib/schedule-to-event';
 import {focusBounds} from '@/lib/focus-bounds';
 import {formatDateRangeLabel} from '@/lib/date-format';
 import {useNow} from '@/lib/now';
@@ -72,7 +72,13 @@ export function DailyTimeline({
     [startMs, endMs, weekdayLabels]
   );
 
-  const events = useMemo(() => schedulesToEvents(schedules, categories), [schedules, categories]);
+  const events = useMemo(
+    () => [
+      ...chainGroupsToBackgroundEvents(schedules),
+      ...schedulesToEvents(schedules, categories)
+    ],
+    [schedules, categories]
+  );
 
   const handleFocusChange = (value: string) => {
     runMutation(updateSettings({focusViewMin: Number(value)}), 'setFocus');
