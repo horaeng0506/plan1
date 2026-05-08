@@ -114,10 +114,9 @@ export const plan1Settings = plan1Schema.table('settings', {
   // PLAN1-WH-FOCUS-20260504 — defaultWorkingHoursStartMin/EndMin 폐기.
   // 집중 보기 모드 (focusViewMin) — 분 단위. null = 전체 보기 (default).
   focusViewMin: integer('focus_view_min'),
-  // PLAN1-ZOOM-PX-PER-HOUR-20260509 — DailyTimeline 시간 간격 줌 (1시간 height px). default 50.
-  // 사용자 +/- 버튼으로 ±20 조정. min = 50 (default · - 비활성) · max = 200 (10분 슬롯 가독성).
-  // pxPerHour ≥ 120 시 slotDuration 30분 → 10분 자동 변환.
-  zoomPxPerHour: integer('zoom_px_per_hour').default(50).notNull(),
+  // PLAN1-ZOOM-PX-PER-HOUR-20260509 — DailyTimeline 시간 간격 (1시간 height px).
+  // 2026-05-09 (대장) — UI +/- 버튼 폐기 + default 50 → 90. 사용자 변경 영역 X (column 보존만).
+  zoomPxPerHour: integer('zoom_px_per_hour').default(90).notNull(),
   pinnedActiveId: text('pinned_active_id').references((): AnyPgColumn => plan1Schedules.id, {
     onDelete: 'set null'
   }),

@@ -26,9 +26,7 @@
     "focus12h": "12h",
     "focus16h": "16h",
     "focus20h": "20h",
-    "focus24h": "24h",
-    "zoomIn": "zoom in",
-    "zoomOut": "zoom out"
+    "focus24h": "24h"
   },
   "common": {
     "cancel": "cancel",
@@ -61,7 +59,6 @@
     "changeTimerType": "change timer type",
     "setTheme": "set theme",
     "setFocus": "set focus view",
-    "setZoom": "set zoom",
     "startScheduleNow": "start schedule now"
   },
   "onboarding": {

@@ -5,21 +5,18 @@ import {useLocale, useTranslations} from 'next-intl';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import type {SlotLabelContentArg} from '@fullcalendar/core';
 import {useAppStore} from '@/lib/store';
 import {schedulesToEvents, chainGroupsToBackgroundEvents} from '@/lib/schedule-to-event';
 import {focusBounds} from '@/lib/focus-bounds';
 import {formatDateRangeLabel} from '@/lib/date-format';
 import {useNow} from '@/lib/now';
 import {useRunMutation} from '@/lib/use-run-mutation';
-import {
-  ZOOM_MIN,
-  ZOOM_MAX,
-  ZOOM_STEP,
-  clampZoomPxPerHour,
-  zoomDenseSlotDuration,
-  zoomSlotHeightPx
-} from '@/lib/zoom-helpers';
 import {renderEventContent} from './event-renderer';
+
+// PLAN1-ZOOM-DEFAULT-90-20260509 — DailyTimeline 시간 간격 default 90px (1시간 height).
+// UI +/- 버튼 폐기. column 보존 (향후 줌 재도입 시).
+const DEFAULT_ZOOM_PX_PER_HOUR = 90;
 
 // next-intl `zh-CN` → FullCalendar `zh-cn`.
 function fcLocale(locale: string): string {
@@ -38,7 +35,15 @@ const FOCUS_OPTIONS: Array<{value: number; key: string}> = [
   {value: 1440, key: 'focus24h'}
 ];
 
-// PLAN1-ZOOM-PX-PER-HOUR-20260509 — DailyTimeline 시간 간격 줌. 상수·헬퍼는 lib/zoom-helpers.ts.
+// PLAN1-ZOOM-DEFAULT-90-20260509 — slotLabelContent 한국어 12h 변환.
+// 0시 → "오전 0시" · 1~11시 → "{h}시" · 12시 → "오후 12시" · 13~23시 → "{h-12}시"
+// 다른 locale = FullCalendar default 박음 (undefined return).
+function koSlotLabel(hour: number): string {
+  if (hour === 0) return '오전 0시';
+  if (hour === 12) return '오후 12시';
+  if (hour < 12) return `${hour}시`;
+  return `${hour - 12}시`;
+}
 
 export function DailyTimeline({
   onEventClick,
@@ -56,8 +61,8 @@ export function DailyTimeline({
   // PLAN1-FOCUS-VIEW-REDESIGN-20260506: null 폐기. 옛 row null 받을 수 있어 fallback 720.
   // S12 portal repo schema migration 후 NOT NULL DEFAULT 720 박힐 때까지 안전망.
   const focusViewMin = useAppStore(s => s.settings.focusViewMin ?? 720);
-  // PLAN1-ZOOM-PX-PER-HOUR-20260509: 옛 row 부재 fallback 50 (NOT NULL DEFAULT 50 적용 직후 안전망).
-  const zoomPxPerHour = useAppStore(s => s.settings.zoomPxPerHour ?? ZOOM_MIN);
+  // PLAN1-ZOOM-DEFAULT-90-20260509: 옛 row 부재 fallback 90 (NOT NULL DEFAULT 90).
+  const zoomPxPerHour = useAppStore(s => s.settings.zoomPxPerHour ?? DEFAULT_ZOOM_PX_PER_HOUR);
   const updateSettings = useAppStore(s => s.updateSettings);
   const runMutation = useRunMutation();
 
@@ -112,27 +117,24 @@ export function DailyTimeline({
     runMutation(updateSettings({focusViewMin: Number(value)}), 'setFocus');
   };
 
-  // PLAN1-ZOOM-PX-PER-HOUR-20260509 — 줌 +/- handler. clamp 후 변경.
-  const handleZoom = (delta: number) => {
-    const next = clampZoomPxPerHour(zoomPxPerHour + delta);
-    if (next === zoomPxPerHour) return; // no-op (min/max 도달)
-    runMutation(updateSettings({zoomPxPerHour: next}), 'setZoom');
-  };
+  // PLAN1-ZOOM-DEFAULT-90-20260509: slot 30분 fixed (default 90 < 120 · 10분 슬롯 trigger 영역 X).
+  // .fc-timegrid-slot height = pxPerHour/2 (45px @ 90).
+  const slotHeightPx = zoomPxPerHour / 2;
 
-  const slotDuration = zoomDenseSlotDuration(zoomPxPerHour);
-  const slotHeightPx = zoomSlotHeightPx(zoomPxPerHour);
-
-  const atZoomMin = zoomPxPerHour <= ZOOM_MIN;
-  const atZoomMax = zoomPxPerHour >= ZOOM_MAX;
+  // PLAN1-ZOOM-DEFAULT-90-20260509 — 한국어 영역만 12h 변환 박음. 다른 locale = FullCalendar default.
+  const slotLabelContent =
+    locale === 'ko'
+      ? (arg: SlotLabelContentArg) => koSlotLabel(arg.date.getHours())
+      : undefined;
 
   return (
     <div
       className="[&_.fc-event-title]:whitespace-normal [&_.fc-event-title]:break-words"
       style={{['--plan1-fc-slot-height' as string]: `${slotHeightPx}px`}}
     >
-      {/* PLAN1-ZOOM-PX-PER-HOUR-20260509 (대장 이미지 정합):
-            - 좌: 날짜 라벨 + 끝 시각 (한 줄 통합 · 폰트 크기 finalEndLabel 과 동일)
-            - 우: focus dropdown + zoom − + 버튼
+      {/* PLAN1-ZOOM-DEFAULT-90-20260509:
+            - 좌: 날짜 라벨 + 끝 시각 (한 줄 통합)
+            - 우: focus dropdown (zoom +/- 박음 폐기)
             - 폰트 크기 통일 (text-sm font-medium) · 컬러 각각 그대로 (muted/ink) */}
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-baseline gap-2">
@@ -141,38 +143,18 @@ export function DailyTimeline({
             <span className="text-sm font-medium text-ink font-mono">{finalEndLabel}</span>
           )}
         </div>
-        <div className="flex items-center gap-1">
-          <select
-            value={String(focusViewMin)}
-            onChange={e => handleFocusChange(e.target.value)}
-            className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono"
-            aria-label={t('nav.focusLabel')}
-          >
-            {FOCUS_OPTIONS.map(opt => (
-              <option key={opt.key} value={String(opt.value)}>
-                {t(`nav.${opt.key}` as 'nav.focus4h')}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            onClick={() => handleZoom(-ZOOM_STEP)}
-            disabled={atZoomMin}
-            aria-label={t('nav.zoomOut')}
-            className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono leading-none disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            −
-          </button>
-          <button
-            type="button"
-            onClick={() => handleZoom(ZOOM_STEP)}
-            disabled={atZoomMax}
-            aria-label={t('nav.zoomIn')}
-            className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono leading-none disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            +
-          </button>
-        </div>
+        <select
+          value={String(focusViewMin)}
+          onChange={e => handleFocusChange(e.target.value)}
+          className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono"
+          aria-label={t('nav.focusLabel')}
+        >
+          {FOCUS_OPTIONS.map(opt => (
+            <option key={opt.key} value={String(opt.value)}>
+              {t(`nav.${opt.key}` as 'nav.focus4h')}
+            </option>
+          ))}
+        </select>
       </div>
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
@@ -182,7 +164,8 @@ export function DailyTimeline({
         locale={fcLocale(locale)}
         slotMinTime={slotMinTime}
         slotMaxTime={slotMaxTime}
-        slotDuration={slotDuration}
+        slotDuration="00:30:00"
+        slotLabelContent={slotLabelContent}
         nowIndicator
         allDaySlot={false}
         height="auto"

@@ -51,7 +51,6 @@
         "removeCategory": "remover categoria",
         "setFocus": "definir visualização de foco",
         "setTheme": "definir tema",
-        "setZoom": "definir zoom",
         "startScheduleNow": "iniciar agendamento agora"
     },
     "nav": {
@@ -69,9 +68,7 @@
         "themeDark": "escuro",
         "themeLight": "claro",
         "themeSystem": "auto",
-        "workingHours": "horas",
-        "zoomIn": "aumentar zoom",
-        "zoomOut": "reduzir zoom"
+        "workingHours": "horas"
     },
     "onboarding": {
         "addFirst": "adicionar primeiro agendamento",

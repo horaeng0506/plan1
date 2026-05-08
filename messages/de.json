@@ -51,7 +51,6 @@
         "removeCategory": "Kategorie entfernen",
         "setFocus": "Fokusansicht einstellen",
         "setTheme": "Design festlegen",
-        "setZoom": "Zoom einstellen",
         "startScheduleNow": "Zeitplan jetzt starten"
     },
     "nav": {
@@ -69,9 +68,7 @@
         "themeDark": "dunkel",
         "themeLight": "hell",
         "themeSystem": "auto",
-        "workingHours": "Stunden",
-        "zoomIn": "vergrößern",
-        "zoomOut": "verkleinern"
+        "workingHours": "Stunden"
     },
     "onboarding": {
         "addFirst": "ersten Zeitplan hinzufügen",

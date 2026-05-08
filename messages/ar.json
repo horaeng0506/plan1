@@ -51,7 +51,6 @@
         "removeCategory": "إزالة الفئة",
         "setFocus": "ضبط عرض التركيز",
         "setTheme": "تعيين المظهر",
-        "setZoom": "ضبط التكبير",
         "startScheduleNow": "ابدأ الجدول الآن"
     },
     "nav": {
@@ -69,9 +68,7 @@
         "themeDark": "داكن",
         "themeLight": "فاتح",
         "themeSystem": "تلقائي",
-        "workingHours": "ساعات",
-        "zoomIn": "تكبير",
-        "zoomOut": "تصغير"
+        "workingHours": "ساعات"
     },
     "onboarding": {
         "addFirst": "إضافة أول جدول",

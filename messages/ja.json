@@ -51,7 +51,6 @@
         "removeCategory": "カテゴリを削除",
         "setFocus": "集中ビューを設定",
         "setTheme": "テーマを設定",
-        "setZoom": "ズームを設定",
         "startScheduleNow": "今すぐスケジュールを開始"
     },
     "nav": {
@@ -69,9 +68,7 @@
         "themeDark": "ダーク",
         "themeLight": "ライト",
         "themeSystem": "自動",
-        "workingHours": "時間",
-        "zoomIn": "ズームイン",
-        "zoomOut": "ズームアウト"
+        "workingHours": "時間"
     },
     "onboarding": {
         "addFirst": "最初のスケジュールを追加",

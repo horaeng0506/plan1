@@ -51,7 +51,6 @@
         "removeCategory": "eliminar categoría",
         "setFocus": "establecer vista de enfoque",
         "setTheme": "establecer tema",
-        "setZoom": "establecer zoom",
         "startScheduleNow": "iniciar horario ahora"
     },
     "nav": {
@@ -69,9 +68,7 @@
         "themeDark": "oscuro",
         "themeLight": "claro",
         "themeSystem": "auto",
-        "workingHours": "horas",
-        "zoomIn": "acercar",
-        "zoomOut": "alejar"
+        "workingHours": "horas"
     },
     "onboarding": {
         "addFirst": "añadir primer horario",

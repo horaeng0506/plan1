@@ -28,11 +28,11 @@ import {unwrapServerActionResult as unwrap, ServerActionError} from './server-ac
 import {armUndo} from './undo-store';
 
 // PLAN1-FOCUS-VIEW-REDESIGN-20260506: weekViewSpan / weeklyPanelHidden 폐기. focusViewMin 720 default.
-// PLAN1-ZOOM-PX-PER-HOUR-20260509: zoomPxPerHour 50 default (FullCalendar v6 default 추정).
+// PLAN1-ZOOM-DEFAULT-90-20260509: 50 → 90. UI +/- 버튼 폐기 (사용자 변경 영역 X).
 export const DEFAULT_SETTINGS: AppSettings = {
   theme: 'system',
   focusViewMin: 720,
-  zoomPxPerHour: 50
+  zoomPxPerHour: 90
 };
 
 // Stage 5 i18n: name='default' 영어 base. 표시 시 useCategoryDisplay() 가 name 매칭으로

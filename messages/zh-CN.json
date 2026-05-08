@@ -51,7 +51,6 @@
         "removeCategory": "删除类别",
         "setFocus": "设置专注视图",
         "setTheme": "设置主题",
-        "setZoom": "设置缩放",
         "startScheduleNow": "立即开始日程"
     },
     "nav": {
@@ -69,9 +68,7 @@
         "themeDark": "深色",
         "themeLight": "浅色",
         "themeSystem": "自动",
-        "workingHours": "小时",
-        "zoomIn": "放大",
-        "zoomOut": "缩小"
+        "workingHours": "小时"
     },
     "onboarding": {
         "addFirst": "添加第一个日程",

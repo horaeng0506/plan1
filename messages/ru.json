@@ -51,7 +51,6 @@
         "removeCategory": "удалить категорию",
         "setFocus": "установить режим фокуса",
         "setTheme": "установить тему",
-        "setZoom": "установить масштаб",
         "startScheduleNow": "начать расписание сейчас"
     },
     "nav": {
@@ -69,9 +68,7 @@
         "themeDark": "тёмная",
         "themeLight": "свет",
         "themeSystem": "авто",
-        "workingHours": "часы",
-        "zoomIn": "увеличить",
-        "zoomOut": "уменьшить"
+        "workingHours": "часы"
     },
     "onboarding": {
         "addFirst": "добавить первое расписание",
