@@ -3,27 +3,28 @@
 /**
  * PLAN1-LOGIN-START-OPT-20260504 #5 — 로그인 안 된 상태 UX.
  * PLAN1-SIGNIN-URL-FIX-20260505 — CTA URL 정정 (`/project/sign-in` 404 → `/project` 홈)
+ * PLAN1-SIGNIN-DIRECT-OAUTH-20260508 — "로그인하기" 클릭 → 직접 Google OAuth (정공 fix · 결함 2)
  *
- * 진입 흐름:
+ * 진입 흐름 (정공 · 대장 to-be 그림 정합):
  *   1. plan1 GET /project/plan1 (no cookie · no session)
- *   2. middleware fire X 또는 store.init() server action → unauthorized throw
- *   3. PlanApp 가 store.errorKey === 'serverError.unauthorized' 분기 → 본 컴포넌트 노출
- *   4. 사용자 "로그인하기" 클릭 → portal `/project` 홈 (SignInButton + Google OAuth)
+ *   2. server-side 인증 검증 (app/page.tsx) → 미인증 → 본 컴포넌트 즉시 렌더 (PlanApp import 차단)
+ *   3. 사용자 "로그인하기" 클릭 → portal /api/auth/sign-in/social 직접 호출 → Google OAuth 화면
+ *   4. Google 인증 → callback → callbackURL = plan1 URL → 자동 plan1 redirect (한 단계 단축)
+ *
+ * 옛 chain (결함 2):
+ *   - "로그인하기" → portal /project 홈 (Sign in with Google 버튼 표시) → 사용자 또 클릭 → Google OAuth
+ *   - 한 단계 더 — UX 결함
  *
  * UX:
  *   - "로그인이 필요합니다" + 설명 + CTA "로그인하기" 버튼
- *   - CTA → portal 홈 (`/project`) — return param 은 현 portal sign-in 흐름 (Better Auth Google OAuth)
- *     이 callbackURL='/project' 으로 hard-coded → return 보존 후속 PR 영역 (portal SignInButton 변경)
- *
- * 사용자 후속 흐름:
- *   - portal 홈 SignInButton 클릭 → Google OAuth → callback `/project` → 수동 plan1 다시 진입
- *   - return param 자동 redirect 는 portal SignInButton 변경 별 PR (`PLAN1-SIGNIN-RETURN-PARAM`)
+ *   - CTA → Better Auth /api/auth/sign-in/social POST → 응답의 url 으로 window.location.href 직접 redirect
  *
  * portal_base 결정:
  *   - production: `https://cofounder.co.kr`
  *   - dev/preview: `process.env.NEXT_PUBLIC_PORTAL_ORIGIN` 환경변수 (없으면 cofounder.co.kr)
  */
 
+import {useState} from 'react';
 import {useTranslations} from 'next-intl';
 
 const PORTAL_ORIGIN =
@@ -31,17 +32,50 @@ const PORTAL_ORIGIN =
 
 export function SignInPrompt() {
   const t = useTranslations('signIn');
+  const [busy, setBusy] = useState(false);
 
-  function handleSignIn() {
+  async function handleSignIn() {
     if (typeof window === 'undefined') return;
-    // PLAN1-SIGNIN-URL-FIX-20260505: portal 홈 (`/project`) 으로 redirect.
-    // 기존 `/project/sign-in` 페이지는 portal 에 미존재 → 404. portal 홈에 SignInButton 컴포넌트 +
-    // Better Auth Google OAuth 가 sign-in entry point.
-    // return param 보존은 별 PR (portal SignInButton 변경 영역).
+    if (busy) return;
+    setBusy(true);
+
+    // PLAN1-SIGNIN-DIRECT-OAUTH-20260508 (정공 fix · 결함 2):
+    // Better Auth /api/auth/sign-in/social POST → 응답의 url 으로 직접 navigate
+    // → portal /project 거쳐서 Sign in with Google 또 클릭하는 한 단계 단축
+    // callbackURL = current plan1 URL (Better Auth 가 OAuth callback 후 그 URL 으로 redirect)
     const currentUrl = window.location.href;
-    const portalHome = new URL(`${PORTAL_ORIGIN}/project`);
-    portalHome.searchParams.set('return', currentUrl);
-    window.location.href = portalHome.toString();
+    try {
+      const resp = await fetch(`${PORTAL_ORIGIN}/project/api/auth/sign-in/social`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({provider: 'google', callbackURL: currentUrl})
+      });
+      if (!resp.ok) {
+        // sign-in/social 자체 fail (Better Auth provider config 영역) → portal 홈 fallback
+        const portalHome = new URL(`${PORTAL_ORIGIN}/project`);
+        portalHome.searchParams.set('return', currentUrl);
+        window.location.href = portalHome.toString();
+        return;
+      }
+      const data: {redirect?: boolean; url?: string} = await resp.json().catch(() => ({}));
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      // 응답에 url 영역 없음 (예상 외 응답) → portal 홈 fallback
+      const portalHome = new URL(`${PORTAL_ORIGIN}/project`);
+      portalHome.searchParams.set('return', currentUrl);
+      window.location.href = portalHome.toString();
+    } catch {
+      // network 실패 등 — portal 홈 fallback (옛 chain · UX 결함이지만 안전)
+      const portalHome = new URL(`${PORTAL_ORIGIN}/project`);
+      portalHome.searchParams.set('return', currentUrl);
+      window.location.href = portalHome.toString();
+    } finally {
+      // window.location.href 후엔 page navigate — busy reset 영역 안 도달
+      setBusy(false);
+    }
   }
 
   return (
@@ -57,7 +91,8 @@ export function SignInPrompt() {
       <button
         type="button"
         onClick={handleSignIn}
-        className="rounded-none border border-ink bg-ink px-6 py-2 text-sm text-bg font-mono hover:opacity-90"
+        disabled={busy}
+        className="rounded-none border border-ink bg-ink px-6 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:opacity-60"
       >
         {t('cta')}
       </button>
