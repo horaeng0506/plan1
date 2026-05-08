@@ -24,5 +24,9 @@ export interface AppSettings {
   // 옵션 [4·6·8·10·12·16·20·24h] · null 폐기 · DailyTimeline view = HOUR floor [(h-1)*60, ...].
   // S12 portal repo schema migration 후 NOT NULL DEFAULT 720. 그 전에는 store ?? 720 fallback.
   focusViewMin: number;
+  // PLAN1-ZOOM-PX-PER-HOUR-20260509 — DailyTimeline 시간 간격 줌 (1시간 height px). default 50.
+  // 사용자 +/- 버튼으로 ±20 조정. min 50 (default · - 비활성) · max 200 (10분 슬롯 가독성).
+  // pxPerHour ≥ 120 시 slotDuration 30분 → 10분 자동 변환.
+  zoomPxPerHour: number;
   // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q23): pinnedActiveId 폐기 (MAX_OVERLAP=2 정책 후 사용 영역 거의 없음 · S12 column drop).
 }

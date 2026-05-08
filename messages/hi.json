@@ -48,7 +48,8 @@
     "removeCategory": "श्रेणी हटाएं",
     "setFocus": "फोकस व्यू सेट करें",
     "setTheme": "थीम सेट करें",
-    "startScheduleNow": "start schedule now"
+    "startScheduleNow": "start schedule now",
+    "setZoom": "ज़ूम सेट करें"
   },
   "nav": {
     "categories": "श्रेणियां",
@@ -65,7 +66,9 @@
     "themeDark": "डार्क",
     "themeLight": "हल्का",
     "themeSystem": "ऑटो",
-    "workingHours": "घंटे"
+    "workingHours": "घंटे",
+    "zoomIn": "ज़ूम इन",
+    "zoomOut": "ज़ूम आउट"
   },
   "onboarding": {
     "addFirst": "पहला शेड्यूल जोड़ें",

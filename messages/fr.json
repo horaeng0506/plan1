@@ -48,7 +48,8 @@
     "removeCategory": "supprimer la catégorie",
     "setFocus": "définir la vue focus",
     "setTheme": "définir le thème",
-    "startScheduleNow": "start schedule now"
+    "startScheduleNow": "start schedule now",
+    "setZoom": "définir le zoom"
   },
   "nav": {
     "categories": "catégories",
@@ -65,7 +66,9 @@
     "themeDark": "sombre",
     "themeLight": "clair",
     "themeSystem": "auto",
-    "workingHours": "heures"
+    "workingHours": "heures",
+    "zoomIn": "zoomer",
+    "zoomOut": "dézoomer"
   },
   "onboarding": {
     "addFirst": "ajouter le premier horaire",

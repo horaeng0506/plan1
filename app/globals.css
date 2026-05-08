@@ -150,3 +150,10 @@ body::before {
 .clock-center-inner {
   fill: var(--bg);
 }
+
+/* PLAN1-ZOOM-PX-PER-HOUR-20260509 — DailyTimeline 시간 간격 줌.
+ * .fc-timegrid-slot height 를 CSS variable 로 박음. DailyTimeline wrapping div 가 inline
+ * style 으로 `--plan1-fc-slot-height` 박음. var 미박힘 시 unset → FullCalendar default. */
+.fc .fc-timegrid-slot {
+  height: var(--plan1-fc-slot-height, unset);
+}
