@@ -26,7 +26,9 @@
     "focus12h": "12시간",
     "focus16h": "16시간",
     "focus20h": "20시간",
-    "focus24h": "24시간"
+    "focus24h": "24시간",
+    "zoomIn": "확대",
+    "zoomOut": "축소"
   },
   "common": {
     "cancel": "취소",
@@ -59,6 +61,7 @@
     "changeTimerType": "타이머 타입 변경",
     "setTheme": "테마 설정",
     "setFocus": "집중 보기 설정",
+    "setZoom": "줌 설정",
     "startScheduleNow": "스케줄 즉시 시작"
   },
   "onboarding": {

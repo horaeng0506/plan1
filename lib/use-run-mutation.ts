@@ -44,6 +44,7 @@ export type MutationContextKey =
   | 'changeTimerType'
   | 'setTheme'
   | 'setFocus'
+  | 'setZoom'
   | 'startScheduleNow';
 
 export function useRunMutation() {

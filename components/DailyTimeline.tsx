@@ -11,6 +11,14 @@ import {focusBounds} from '@/lib/focus-bounds';
 import {formatDateRangeLabel} from '@/lib/date-format';
 import {useNow} from '@/lib/now';
 import {useRunMutation} from '@/lib/use-run-mutation';
+import {
+  ZOOM_MIN,
+  ZOOM_MAX,
+  ZOOM_STEP,
+  clampZoomPxPerHour,
+  zoomDenseSlotDuration,
+  zoomSlotHeightPx
+} from '@/lib/zoom-helpers';
 import {renderEventContent} from './event-renderer';
 
 // next-intl `zh-CN` → FullCalendar `zh-cn`.
@@ -30,6 +38,8 @@ const FOCUS_OPTIONS: Array<{value: number; key: string}> = [
   {value: 1440, key: 'focus24h'}
 ];
 
+// PLAN1-ZOOM-PX-PER-HOUR-20260509 — DailyTimeline 시간 간격 줌. 상수·헬퍼는 lib/zoom-helpers.ts.
+
 export function DailyTimeline({
   onEventClick,
   onDateClick
@@ -46,6 +56,8 @@ export function DailyTimeline({
   // PLAN1-FOCUS-VIEW-REDESIGN-20260506: null 폐기. 옛 row null 받을 수 있어 fallback 720.
   // S12 portal repo schema migration 후 NOT NULL DEFAULT 720 박힐 때까지 안전망.
   const focusViewMin = useAppStore(s => s.settings.focusViewMin ?? 720);
+  // PLAN1-ZOOM-PX-PER-HOUR-20260509: 옛 row 부재 fallback 50 (NOT NULL DEFAULT 50 적용 직후 안전망).
+  const zoomPxPerHour = useAppStore(s => s.settings.zoomPxPerHour ?? ZOOM_MIN);
   const updateSettings = useAppStore(s => s.updateSettings);
   const runMutation = useRunMutation();
 
@@ -100,30 +112,67 @@ export function DailyTimeline({
     runMutation(updateSettings({focusViewMin: Number(value)}), 'setFocus');
   };
 
+  // PLAN1-ZOOM-PX-PER-HOUR-20260509 — 줌 +/- handler. clamp 후 변경.
+  const handleZoom = (delta: number) => {
+    const next = clampZoomPxPerHour(zoomPxPerHour + delta);
+    if (next === zoomPxPerHour) return; // no-op (min/max 도달)
+    runMutation(updateSettings({zoomPxPerHour: next}), 'setZoom');
+  };
+
+  const slotDuration = zoomDenseSlotDuration(zoomPxPerHour);
+  const slotHeightPx = zoomSlotHeightPx(zoomPxPerHour);
+
+  const atZoomMin = zoomPxPerHour <= ZOOM_MIN;
+  const atZoomMax = zoomPxPerHour >= ZOOM_MAX;
+
   return (
-    <div className="[&_.fc-event-title]:whitespace-normal [&_.fc-event-title]:break-words">
-      {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #1·#2·#3:
-            - headerToolbar=false (< > today 폐기)
-            - dayHeaders=false (빈칸|요일 row 폐기)
-            - 자체 헤더: focus dropdown (좌) + 날짜 라벨 (우) · "집중" 라벨 폐기 */}
+    <div
+      className="[&_.fc-event-title]:whitespace-normal [&_.fc-event-title]:break-words"
+      style={{['--plan1-fc-slot-height' as string]: `${slotHeightPx}px`}}
+    >
+      {/* PLAN1-ZOOM-PX-PER-HOUR-20260509 (대장 이미지 정합):
+            - 좌: 날짜 라벨 + 끝 시각 (한 줄 통합 · 폰트 크기 finalEndLabel 과 동일)
+            - 우: focus dropdown + zoom − + 버튼
+            - 폰트 크기 통일 (text-sm font-medium) · 컬러 각각 그대로 (muted/ink) */}
       <div className="mb-2 flex items-center justify-between">
-        <select
-          value={String(focusViewMin)}
-          onChange={e => handleFocusChange(e.target.value)}
-          className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono"
-          aria-label={t('nav.focusLabel')}
-        >
-          {FOCUS_OPTIONS.map(opt => (
-            <option key={opt.key} value={String(opt.value)}>
-              {t(`nav.${opt.key}` as 'nav.focus4h')}
-            </option>
-          ))}
-        </select>
-        {/* 2026-05-06 (대장 명시 · 위치 swap) — 가운데 날짜 · 우측 끝 시각. */}
-        <span className="text-xs text-muted font-mono">{dateLabel}</span>
-        {finalEndLabel && (
-          <span className="text-sm font-medium text-ink font-mono">{finalEndLabel}</span>
-        )}
+        <div className="flex items-baseline gap-2">
+          <span className="text-sm font-medium text-muted font-mono">{dateLabel}</span>
+          {finalEndLabel && (
+            <span className="text-sm font-medium text-ink font-mono">{finalEndLabel}</span>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          <select
+            value={String(focusViewMin)}
+            onChange={e => handleFocusChange(e.target.value)}
+            className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono"
+            aria-label={t('nav.focusLabel')}
+          >
+            {FOCUS_OPTIONS.map(opt => (
+              <option key={opt.key} value={String(opt.value)}>
+                {t(`nav.${opt.key}` as 'nav.focus4h')}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={() => handleZoom(-ZOOM_STEP)}
+            disabled={atZoomMin}
+            aria-label={t('nav.zoomOut')}
+            className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono leading-none disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            −
+          </button>
+          <button
+            type="button"
+            onClick={() => handleZoom(ZOOM_STEP)}
+            disabled={atZoomMax}
+            aria-label={t('nav.zoomIn')}
+            className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt font-mono leading-none disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            +
+          </button>
+        </div>
       </div>
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
@@ -133,7 +182,7 @@ export function DailyTimeline({
         locale={fcLocale(locale)}
         slotMinTime={slotMinTime}
         slotMaxTime={slotMaxTime}
-        slotDuration="00:30:00"
+        slotDuration={slotDuration}
         nowIndicator
         allDaySlot={false}
         height="auto"
