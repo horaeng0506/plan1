@@ -1,22 +1,22 @@
 {
     "app": {
         "tagline": "日程管理器",
-        "title": "计划1"
+        "title": "plan1"
     },
     "auth": {
         "signIn": "使用 Google 登录",
         "signInDescription": "plan1 是一个支持跨设备同步的个人日程工具。使用 Google 登录即可开始使用。",
-        "signInRequired": "登录以使用计划1"
+        "signInRequired": "登录以使用 plan1"
     },
     "category": {
         "confirmRemoveLabel": "确认删除 ({count})",
-        "confirmRemoveText": "{count} 个日程将随之删除。再次点击以确认。",
+        "confirmRemoveText": "这将删除 {count} 个日程。再次点击以确认。",
         "defaultName": "默认",
-        "empty": "无分类。",
+        "empty": "无类别。",
         "fieldColor": "颜色",
         "fieldName": "名称",
-        "header": "分类",
-        "removeButton": "移除",
+        "header": "类别",
+        "removeButton": "删除",
         "scheduleCountSuffix": "{count} 个日程"
     },
     "common": {
@@ -35,8 +35,8 @@
     },
     "error": {
         "featureUnavailable": "此功能尚未可用 ({feature})。",
-        "loadFailedLabel": "加载失败:",
-        "mutationFailed": "操作失败 {action}: {error}",
+        "loadFailedLabel": "加载失败：",
+        "mutationFailed": "操作 {action} 失败：{error}",
         "unknown": "发生意外错误。请重试。",
         "workingHoursInvalid": "工作时间输入无效 ({reason})。"
     },
@@ -48,13 +48,13 @@
         "changeTimerType": "更改计时器类型",
         "completeSchedule": "完成日程",
         "extendTimer": "延长计时器",
-        "removeCategory": "删除类别",
+        "removeCategory": "移除类别",
         "setFocus": "设置专注视图",
         "setTheme": "设置主题",
         "startScheduleNow": "立即开始日程"
     },
     "nav": {
-        "categories": "分类",
+        "categories": "类别",
         "focus10h": "10小时",
         "focus12h": "12小时",
         "focus16h": "16小时",
@@ -86,9 +86,9 @@
         "categoryAddOption": "+ 添加分类",
         "chainedCheckbox": "链接到上一个日程",
         "endLabelV2": "结束时间",
-        "endPlaceholder": "选择持续时间",
+        "endPlaceholder": "选择时长",
         "fieldCategory": "分类",
-        "fieldDuration": "持续时间（分钟）",
+        "fieldDuration": "时长 (分钟)",
         "fieldName": "名称",
         "fieldStartHour": "开始小时",
         "fieldStartMinute": "开始分钟",
@@ -97,15 +97,15 @@
         "hourSuffix": "小时",
         "hourTodaySuffix": "(今天)",
         "hourTomorrowSuffix": "(明天)",
-        "minuteSuffix": "m",
+        "minuteSuffix": "分钟",
         "prevChainLabel": "已连接上一个日程",
         "titleDefault": "新建日程",
-        "warningOverlapLimit": "最多可以同时重叠 {limit} 个日程。请调整开始时间/持续时间或删除现有日程。"
+        "warningOverlapLimit": "最多 {limit} 个日程可以同时重叠。调整开始时间/时长或移除现有日程。"
     },
     "serverError": {
         "categoryHasSchedules": "分类有 {scheduleCount} 个日程。确认级联删除以移除。",
-        "categoryNotFound": "未找到分类或不属于您。",
-        "scheduleNotFound": "未找到日程。",
+        "categoryNotFound": "找不到分类或非所有者。",
+        "scheduleNotFound": "找不到日程。",
         "unauthorized": "需要登录。"
     },
     "signIn": {
@@ -118,21 +118,21 @@
         "buttonFocus": "专注",
         "buttonIdle": "空闲",
         "buttonStartNow": "立即开始",
-        "categoryFallback": "?",
+        "categoryFallback": "？",
         "idleEmpty": "空闲 · 无活动日程",
-        "labelElapsed": "已过",
+        "labelElapsed": "已用时",
         "labelEndAt": "结束于",
         "labelRemaining": "剩余",
         "labelTarget": "目标",
-        "labelUntilUpcoming": "直到即将到来",
+        "labelUntilUpcoming": "距离即将到来",
         "labelUpcoming": "下一个日程",
         "overlapLabel": "重叠 {count}",
-        "simultaneousLabel": "同时进行 · {count}",
+        "simultaneousLabel": "同时 · {count}",
         "tooltipClickToFocus": "点击切换到专注",
         "tooltipClickToIdle": "点击切换到空闲",
         "typeCountdown": "倒计时",
         "typeCountup": "正计时",
-        "typeTimer1": "计时器1"
+        "typeTimer1": "timer1"
     },
     "topbar": {
         "back": "返回门户",
@@ -140,7 +140,7 @@
         "creditsPlaceholder": "—",
         "guest": "访客",
         "languageLabel": "语言",
-        "logout": "登出"
+        "logout": "退出登录"
     },
     "undo": {
         "actionLabel": "可撤销",
@@ -161,8 +161,8 @@
     ],
     "workingHours": {
         "checkboxAlsoDefault": "同时保存为默认",
-        "checkboxWeekdaysOnly": "仅工作日 (周一至周五)",
-        "errorEndAfterStart": "结束时间必须在开始时间之后。",
+        "checkboxWeekdaysOnly": "仅工作日(周一至周五)",
+        "errorEndAfterStart": "结束时间必须晚于开始时间。",
         "errorToAfterFrom": "结束日期必须在开始日期当天或之后。",
         "fieldDate": "日期",
         "fieldEndTime": "结束时间",
@@ -171,8 +171,8 @@
         "fieldToDate": "到",
         "header": "工作时间",
         "tabRange": "范围",
-        "tabSingle": "单次",
-        "warningNoDates": "范围内没有可应用的日期。(开始>结束 或 仅工作日冲突)",
+        "tabSingle": "单个",
+        "warningNoDates": "范围内没有可应用的日期。(开始 > 结束或仅工作日冲突)",
         "warningTruncated": "范围超过 {max} 天,仅处理部分。请尝试更窄的范围。"
     }
 }

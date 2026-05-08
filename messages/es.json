@@ -5,22 +5,22 @@
     },
     "auth": {
         "signIn": "Iniciar sesión con Google",
-        "signInDescription": "plan1 es una herramienta de horarios personal con sincronización entre dispositivos. Inicia sesión con Google para comenzar.",
-        "signInRequired": "Iniciar sesión para usar plan1"
+        "signInDescription": "plan1 es una herramienta de planificación personal con sincronización entre dispositivos. Inicia sesión con Google para comenzar.",
+        "signInRequired": "Inicia sesión para usar plan1"
     },
     "category": {
-        "confirmRemoveLabel": "confirmar eliminación ({count})",
-        "confirmRemoveText": "{count} horario(s) serán eliminados con esto. Haz clic de nuevo para confirmar.",
+        "confirmRemoveLabel": "confirmar rm ({count})",
+        "confirmRemoveText": "{count} horario(s) se eliminarán con esto. Haz clic de nuevo para confirmar.",
         "defaultName": "predeterminado",
         "empty": "Sin categorías.",
         "fieldColor": "color",
         "fieldName": "nombre",
         "header": "categorías",
-        "removeButton": "eliminar",
+        "removeButton": "rm",
         "scheduleCountSuffix": "{count} horarios"
     },
     "common": {
-        "add": "añadir",
+        "add": "agregar",
         "cancel": "cancelar",
         "close": "cerrar",
         "confirmDelete": "confirmar eliminación",
@@ -34,11 +34,11 @@
         "scheduleAdded": "Horario añadido"
     },
     "error": {
-        "featureUnavailable": "Esta funcionalidad aún no está disponible ({feature}).",
+        "featureUnavailable": "Esta función aún no está disponible ({feature}).",
         "loadFailedLabel": "carga fallida:",
-        "mutationFailed": "Fallo al {action}: {error}",
+        "mutationFailed": "Error al {action}: {error}",
         "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
-        "workingHoursInvalid": "Entrada de horas de trabajo inválida ({reason})."
+        "workingHoursInvalid": "Entrada de horas laborales inválida ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fin"
@@ -46,7 +46,7 @@
     "loading": "cargando...",
     "mutation": {
         "changeTimerType": "cambiar tipo de temporizador",
-        "completeSchedule": "horario completo",
+        "completeSchedule": "completar horario",
         "extendTimer": "extender temporizador",
         "removeCategory": "eliminar categoría",
         "setFocus": "establecer vista de enfoque",
@@ -72,7 +72,7 @@
     },
     "onboarding": {
         "addFirst": "añadir primer horario",
-        "firstSchedule": "Añade tu primer horario para verlo en la cuadrícula semanal, la línea de tiempo de hoy y el reloj analógico.",
+        "firstSchedule": "Agrega tu primer horario para verlo en la cuadrícula semanal, la línea de tiempo de hoy y el reloj analógico.",
         "welcome": "Aún no hay horarios"
     },
     "schedule": {
@@ -83,9 +83,9 @@
         "buttonPlus10": "+10m",
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
-        "categoryAddOption": "+ añadir categoría",
-        "chainedCheckbox": "encadenar con horario anterior",
-        "endLabelV2": "hora de fin",
+        "categoryAddOption": "+ agregar categoría",
+        "chainedCheckbox": "encadenar al horario anterior",
+        "endLabelV2": "hora de finalización",
         "endPlaceholder": "seleccionar duración",
         "fieldCategory": "categoría",
         "fieldDuration": "duración (min)",
@@ -100,39 +100,39 @@
         "minuteSuffix": "m",
         "prevChainLabel": "horario anterior conectado",
         "titleDefault": "Nuevo horario",
-        "warningOverlapLimit": "Como máximo {limit} horarios pueden superponerse al mismo tiempo. Ajusta inicio/duración o elimina uno existente."
+        "warningOverlapLimit": "Como máximo {limit} horarios pueden solaparse al mismo tiempo. Ajusta inicio/duración o elimina uno existente."
     },
     "serverError": {
-        "categoryHasSchedules": "La categoría tiene {scheduleCount} horarios. Confirmar eliminación en cascada para remover.",
+        "categoryHasSchedules": "La categoría tiene {scheduleCount} horarios. Confirma eliminación en cascada para eliminar.",
         "categoryNotFound": "Categoría no encontrada o no es de tu propiedad.",
         "scheduleNotFound": "Horario no encontrado.",
         "unauthorized": "Inicio de sesión requerido."
     },
     "signIn": {
         "cta": "Iniciar sesión",
-        "description": "Inicia sesión en tu cuenta de cofundador para ver y gestionar tus horarios.",
+        "description": "Inicia sesión en tu cuenta de cofounder para ver y gestionar tus horarios.",
         "title": "Inicio de sesión requerido"
     },
     "timer": {
         "buttonComplete": "completar",
         "buttonFocus": "enfoque",
         "buttonIdle": "inactivo",
-        "buttonStartNow": "comenzar ahora",
+        "buttonStartNow": "iniciar ahora",
         "categoryFallback": "?",
         "idleEmpty": "inactivo · sin horario activo",
         "labelElapsed": "transcurrido",
-        "labelEndAt": "terminar-a",
+        "labelEndAt": "finaliza-a-las",
         "labelRemaining": "restante",
         "labelTarget": "objetivo",
         "labelUntilUpcoming": "hasta próximo",
-        "labelUpcoming": "siguiente horario",
-        "overlapLabel": "superposición {count}",
-        "simultaneousLabel": "simultáneo · {count}",
-        "tooltipClickToFocus": "haz clic para cambiar a enfoque",
-        "tooltipClickToIdle": "haz clic para cambiar a inactivo",
+        "labelUpcoming": "próximo horario",
+        "overlapLabel": "solapamiento {count}",
+        "simultaneousLabel": "simultáneos · {count}",
+        "tooltipClickToFocus": "clic para cambiar a enfoque",
+        "tooltipClickToIdle": "clic para cambiar a inactivo",
         "typeCountdown": "cuenta regresiva",
         "typeCountup": "cuenta progresiva",
-        "typeTimer1": "temporizador1"
+        "typeTimer1": "timer1"
     },
     "topbar": {
         "back": "volver al portal",
@@ -160,16 +160,16 @@
         "sáb"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "guardar también como predeterminado",
+        "checkboxAlsoDefault": "también guardar como predeterminado",
         "checkboxWeekdaysOnly": "solo días laborables (lun–vie)",
         "errorEndAfterStart": "La hora de finalización debe ser posterior a la hora de inicio.",
         "errorToAfterFrom": "La fecha de finalización debe ser igual o posterior a la fecha de inicio.",
         "fieldDate": "fecha",
-        "fieldEndTime": "hora de fin",
+        "fieldEndTime": "hora de finalización",
         "fieldFromDate": "desde",
         "fieldStartTime": "hora de inicio",
-        "fieldToDate": "hasta",
-        "header": "horas de trabajo",
+        "fieldToDate": "a",
+        "header": "horas laborales",
         "tabRange": "rango",
         "tabSingle": "único",
         "warningNoDates": "No hay fechas para aplicar en el rango. (inicio > fin o conflicto de solo días laborables)",

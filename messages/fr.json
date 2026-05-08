@@ -1,23 +1,23 @@
 {
     "app": {
-        "tagline": "gestionnaire d'horaires",
+        "tagline": "gestionnaire de planification",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Se connecter avec Google",
-        "signInDescription": "plan1 est un outil d'horaire personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
         "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "category": {
-        "confirmRemoveLabel": "confirmer suppr ({count})",
-        "confirmRemoveText": "{count} horaire(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
+        "confirmRemoveLabel": "confirmer sup ({count})",
+        "confirmRemoveText": "{count} planification(s) sera/seront supprimée(s) avec ceci. Cliquez à nouveau pour confirmer.",
         "defaultName": "par défaut",
         "empty": "Aucune catégorie.",
         "fieldColor": "couleur",
         "fieldName": "nom",
         "header": "catégories",
-        "removeButton": "suppr",
-        "scheduleCountSuffix": "{count} horaires"
+        "removeButton": "sup",
+        "scheduleCountSuffix": "{count} planifications"
     },
     "common": {
         "add": "ajouter",
@@ -31,14 +31,14 @@
         "save": "enregistrer"
     },
     "confirmation": {
-        "scheduleAdded": "Horaire ajouté"
+        "scheduleAdded": "Planification ajoutée"
     },
     "error": {
         "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
         "loadFailedLabel": "échec du chargement :",
-        "mutationFailed": "Échec de {action}: {error}",
+        "mutationFailed": "Échec de {action} : {error}",
         "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-        "workingHoursInvalid": "Saisie des heures de travail invalide ({reason})."
+        "workingHoursInvalid": "Entrée d'heures de travail invalide ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fin"
@@ -46,12 +46,12 @@
     "loading": "chargement...",
     "mutation": {
         "changeTimerType": "changer le type de minuteur",
-        "completeSchedule": "terminer l'horaire",
+        "completeSchedule": "terminer la planification",
         "extendTimer": "prolonger le minuteur",
         "removeCategory": "supprimer la catégorie",
         "setFocus": "définir la vue concentration",
         "setTheme": "définir le thème",
-        "startScheduleNow": "démarrer l'horaire maintenant"
+        "startScheduleNow": "démarrer la planification maintenant"
     },
     "nav": {
         "categories": "catégories",
@@ -71,20 +71,20 @@
         "workingHours": "heures"
     },
     "onboarding": {
-        "addFirst": "ajouter le premier horaire",
-        "firstSchedule": "Ajoutez votre premier horaire pour le voir sur la grille hebdomadaire, la chronologie d'aujourd'hui et l'horloge analogique.",
-        "welcome": "Aucun horaire pour l'instant"
+        "addFirst": "ajouter la première planification",
+        "firstSchedule": "Ajoutez votre première planification pour la voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
+        "welcome": "Aucune planification pour le moment"
     },
     "schedule": {
-        "afterLastNoneHint": "aucun horaire à venir",
-        "buttonAfterLast": "suivant après le dernier horaire",
+        "afterLastNoneHint": "aucune planification à venir",
+        "buttonAfterLast": "suivant après la dernière planification",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
         "buttonPlus10": "+10m",
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ ajouter une catégorie",
-        "chainedCheckbox": "chaîner à l'horaire précédent",
+        "chainedCheckbox": "enchaîner à la planification précédente",
         "endLabelV2": "heure de fin",
         "endPlaceholder": "sélectionner la durée",
         "fieldCategory": "catégorie",
@@ -92,47 +92,47 @@
         "fieldName": "nom",
         "fieldStartHour": "heure de début",
         "fieldStartMinute": "minute de début",
-        "headerEdit": "modifier l'horaire",
-        "headerNew": "nouvel horaire",
+        "headerEdit": "modifier la planification",
+        "headerNew": "nouvelle planification",
         "hourSuffix": "h",
         "hourTodaySuffix": "(aujourd'hui)",
         "hourTomorrowSuffix": "(demain)",
         "minuteSuffix": "m",
-        "prevChainLabel": "horaire précédent connecté",
-        "titleDefault": "Nouvel horaire",
-        "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
+        "prevChainLabel": "planification précédente connectée",
+        "titleDefault": "Nouvelle planification",
+        "warningOverlapLimit": "Au maximum {limit} planifications peuvent se chevaucher en même temps. Ajustez le début/durée ou supprimez-en une existante."
     },
     "serverError": {
-        "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour retirer.",
+        "categoryHasSchedules": "La catégorie a {scheduleCount} planifications. Confirmez la suppression en cascade pour retirer.",
         "categoryNotFound": "Catégorie introuvable ou non possédée.",
-        "scheduleNotFound": "Horaire introuvable.",
+        "scheduleNotFound": "Planification introuvable.",
         "unauthorized": "Connexion requise."
     },
     "signIn": {
         "cta": "Se connecter",
-        "description": "Connectez-vous à votre compte cofondateur pour voir et gérer vos horaires.",
+        "description": "Connectez-vous à votre compte cofondateur pour voir et gérer vos planifications.",
         "title": "Connexion requise"
     },
     "timer": {
-        "buttonComplete": "terminé",
+        "buttonComplete": "terminer",
         "buttonFocus": "concentration",
         "buttonIdle": "inactif",
-        "buttonStartNow": "commencer maintenant",
+        "buttonStartNow": "démarrer maintenant",
         "categoryFallback": "?",
-        "idleEmpty": "inactif · aucun horaire actif",
+        "idleEmpty": "inactif · aucune planification active",
         "labelElapsed": "écoulé",
-        "labelEndAt": "fin-à",
+        "labelEndAt": "se-termine-à",
         "labelRemaining": "restant",
         "labelTarget": "cible",
         "labelUntilUpcoming": "jusqu'au prochain",
-        "labelUpcoming": "horaire suivant",
+        "labelUpcoming": "planification suivante",
         "overlapLabel": "chevauchement {count}",
         "simultaneousLabel": "simultané · {count}",
         "tooltipClickToFocus": "cliquer pour passer en concentration",
         "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
         "typeCountup": "compte à rebours croissant",
-        "typeTimer1": "minuteur1"
+        "typeTimer1": "timer1"
     },
     "topbar": {
         "back": "retour au portail",
@@ -172,7 +172,7 @@
         "header": "heures de travail",
         "tabRange": "plage",
         "tabSingle": "unique",
-        "warningNoDates": "Aucune date à appliquer dans la plage. (début > fin ou conflit jours ouvrables uniquement)",
-        "warningTruncated": "La plage dépasse {max} jours, seulement partiellement traité. Essayez une plage plus étroite."
+        "warningNoDates": "Aucune date à appliquer dans la plage. (début > fin ou conflit jours de semaine uniquement)",
+        "warningTruncated": "La plage dépasse {max} jours, traitement partiel uniquement. Essayez une plage plus étroite."
     }
 }
