@@ -187,14 +187,22 @@ export function NewScheduleModal({
   // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #12 (Q-NEW6 d·Q-NEW11 d):
   // 시작 분 자동 갱신. 사용자 명시 변경 = lock (선택값 ≠ 직전 자동값).
   // 사용자 입력값이 시간 흐름 후 자연 일치 (= 직전 자동값) 시 자동 모드 자연 복원.
+  // PLAN1-PREFILL-RACE-FIX-20260509: baseline 영역 = currentSelected → floorToHourMs(live) 정정.
+  // 옛 영역 결함: prefillStartAt 박힌 영역 (시간 클릭) 도 baseline = currentSelected (사용자 클릭 시간)
+  // 박아서, 1초 tick 후 자연 일치로 자동 갱신 → 사용자 클릭 시간이 현재시간으로 덮어쓰임.
+  // 정공: baseline = floorToHourMs(live) (자동 모드 baseline). 사용자 클릭 시간 또는 명시 변경
+  // 영역은 currentSelected ≠ baseline 으로 자연 lock.
   const prevAutoMsRef = useRef<number>(0);
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!nowReady || isEdit) return;
     const currentSelected = selectedHourMs + minute * 60_000;
-    // 첫 mount 시 prevAutoMs 초기화 (사용자 변경 비교 baseline)
+    // 첫 mount 시 baseline = 자동 모드 baseline (live floor).
+    // 사용자 클릭 시간 (prefillStartAt) 박혔으면 currentSelected ≠ baseline → 자연 lock.
+    // 일반 진입 (prefillStartAt 없음 · nowSnapshot 박힘) → currentSelected = baseline → 자동 모드 자연 시작.
     if (prevAutoMsRef.current === 0) {
-      prevAutoMsRef.current = currentSelected;
+      const {hourMs: liveHourMs0, remainderMin: liveMin0} = floorToHourMs(live);
+      prevAutoMsRef.current = liveHourMs0 + liveMin0 * 60_000;
       return;
     }
     // 사용자 명시 변경 → lock (자동 갱신 안 함)
