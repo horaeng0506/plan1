@@ -39,20 +39,40 @@ export function SignInPrompt() {
     if (busy) return;
     setBusy(true);
 
-    // PLAN1-SIGNIN-DIRECT-OAUTH-20260508 (정공 fix · 결함 2):
-    // Better Auth /api/auth/sign-in/social POST → 응답의 url 으로 직접 navigate
-    // → portal /project 거쳐서 Sign in with Google 또 클릭하는 한 단계 단축
-    // callbackURL = current plan1 URL (Better Auth 가 OAuth callback 후 그 URL 으로 redirect)
+    // PLAN1-SIGNIN-DIRECT-OAUTH-20260508 — Fix B (직접 Google OAuth · 결함 2 해결)
+    // PLAN1-SIGNIN-CALLBACK-VIA-REFRESH-JWT-20260508 — Fix C (callback chain · 결함 3 해결)
+    //
+    // 결함 3 (영상 002.mov 2026-05-08 catch):
+    //   - Google OAuth 인증 통과 후 callbackURL=plan1URL 으로 redirect → plan1 도착 시 cofounder_jwt 부재
+    //   - plan1 page.tsx server component 가 cofounder_jwt 만 검증 (Better Auth session_token 별 영역)
+    //   - middleware self-heal redirect chain 영역 결손 또는 timing race
+    //   - 결과: 사용자 영상 plan1 도착해도 "로그인이 필요합니다" 잔존 (Better Auth session 발급됐는데 cofounder_jwt 부재)
+    //
+    // 정공 fix (Fix C):
+    //   - callbackURL = portal /api/cofounder/refresh-jwt?return=<plan1URL>
+    //   - Better Auth callback 후 portal refresh-jwt 진입
+    //   - portal refresh-jwt 가 Better Auth session 검증 (cookie 동반) → cofounder_jwt 발급 + redirect to plan1
+    //   - plan1 도착 시 cofounder_jwt 동반 → page.tsx getCurrentSessionUser 통과 → PlanApp 정상
+    //
+    // chain 정합:
+    //   1. SignInPrompt 클릭 → POST /api/auth/sign-in/social {provider:'google', callbackURL: refreshJwtUrl}
+    //   2. Better Auth 응답 → Google OAuth URL (callbackURL 박힘 in state cookie)
+    //   3. Google 인증 → callback to portal /api/auth/callback/google
+    //   4. callback handler → setSessionCookie + redirect to refreshJwtUrl
+    //   5. portal refresh-jwt → Better Auth session 검증 → cofounder_jwt 발급 + redirect to plan1
+    //   6. plan1 도착 → cofounder_jwt 동반 → page.tsx 통과 → PlanApp 렌더 ✅
     const currentUrl = window.location.href;
+    const refreshJwtUrl = `${PORTAL_ORIGIN}/project/api/cofounder/refresh-jwt?return=${encodeURIComponent(currentUrl)}`;
+
     try {
       const resp = await fetch(`${PORTAL_ORIGIN}/project/api/auth/sign-in/social`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
-        body: JSON.stringify({provider: 'google', callbackURL: currentUrl})
+        body: JSON.stringify({provider: 'google', callbackURL: refreshJwtUrl})
       });
       if (!resp.ok) {
-        // sign-in/social 자체 fail (Better Auth provider config 영역) → portal 홈 fallback
+        // sign-in/social 자체 fail → portal 홈 fallback (옛 chain)
         const portalHome = new URL(`${PORTAL_ORIGIN}/project`);
         portalHome.searchParams.set('return', currentUrl);
         window.location.href = portalHome.toString();
@@ -63,17 +83,14 @@ export function SignInPrompt() {
         window.location.href = data.url;
         return;
       }
-      // 응답에 url 영역 없음 (예상 외 응답) → portal 홈 fallback
       const portalHome = new URL(`${PORTAL_ORIGIN}/project`);
       portalHome.searchParams.set('return', currentUrl);
       window.location.href = portalHome.toString();
     } catch {
-      // network 실패 등 — portal 홈 fallback (옛 chain · UX 결함이지만 안전)
       const portalHome = new URL(`${PORTAL_ORIGIN}/project`);
       portalHome.searchParams.set('return', currentUrl);
       window.location.href = portalHome.toString();
     } finally {
-      // window.location.href 후엔 page navigate — busy reset 영역 안 도달
       setBusy(false);
     }
   }
