@@ -1,16 +1,16 @@
 {
     "app": {
-        "tagline": "Zeitplanmanager",
-        "title": "Plan1"
+        "tagline": "Zeitplanverwaltung",
+        "title": "plan1"
     },
     "auth": {
         "signIn": "Mit Google anmelden",
-        "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisierung. Melden Sie sich mit Google an, um loszulegen.",
-        "signInRequired": "Melden Sie sich an, um plan1 zu verwenden"
+        "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisierung. Melden Sie sich mit Google an, um zu beginnen.",
+        "signInRequired": "Anmelden, um plan1 zu verwenden"
     },
     "category": {
-        "confirmRemoveLabel": "Entfernen bestätigen ({count})",
-        "confirmRemoveText": "{count} Zeitplan/Zeitpläne werden hiermit gelöscht. Klicken Sie erneut zur Bestätigung.",
+        "confirmRemoveLabel": "Entf. bestät. ({count})",
+        "confirmRemoveText": "{count} Zeitplan/Zeitpläne wird/werden damit gelöscht. Klicken Sie erneut zur Bestätigung.",
         "defaultName": "Standard",
         "empty": "Keine Kategorien.",
         "fieldColor": "Farbe",
@@ -25,7 +25,7 @@
         "close": "schließen",
         "confirmDelete": "Löschen bestätigen",
         "delete": "löschen",
-        "dismiss": "verwerfen",
+        "dismiss": "schließen",
         "now": "jetzt",
         "retry": "wiederholen",
         "save": "speichern"
@@ -49,7 +49,7 @@
         "completeSchedule": "Zeitplan abschließen",
         "extendTimer": "Timer verlängern",
         "removeCategory": "Kategorie entfernen",
-        "setFocus": "Fokusansicht festlegen",
+        "setFocus": "Fokusansicht einstellen",
         "setTheme": "Design festlegen",
         "setZoom": "Zoom einstellen",
         "startScheduleNow": "Zeitplan jetzt starten"
@@ -68,10 +68,10 @@
         "newSchedule": "neu",
         "themeDark": "dunkel",
         "themeLight": "hell",
-        "themeSystem": "automatisch",
+        "themeSystem": "auto",
         "workingHours": "Stunden",
-        "zoomIn": "hineinzoomen",
-        "zoomOut": "herauszoomen"
+        "zoomIn": "vergrößern",
+        "zoomOut": "verkleinern"
     },
     "onboarding": {
         "addFirst": "ersten Zeitplan hinzufügen",
@@ -79,7 +79,7 @@
         "welcome": "Noch keine Zeitpläne"
     },
     "schedule": {
-        "afterLastNoneHint": "kein anstehender Zeitplan",
+        "afterLastNoneHint": "kein bevorstehender Zeitplan",
         "buttonAfterLast": "nächster nach letztem Zeitplan",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
@@ -87,7 +87,7 @@
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ Kategorie hinzufügen",
-        "chainedCheckbox": "mit vorigem Zeitplan verketten",
+        "chainedCheckbox": "an vorherigen Zeitplan ketten",
         "endLabelV2": "Endzeit",
         "endPlaceholder": "Dauer auswählen",
         "fieldCategory": "Kategorie",
@@ -101,40 +101,40 @@
         "hourTodaySuffix": "(heute)",
         "hourTomorrowSuffix": "(morgen)",
         "minuteSuffix": "m",
-        "prevChainLabel": "verbundener voriger Zeitplan",
+        "prevChainLabel": "verbundener vorheriger Zeitplan",
         "titleDefault": "Neuer Zeitplan",
         "warningOverlapLimit": "Maximal {limit} Zeitpläne können gleichzeitig überlappen. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
     },
     "serverError": {
-        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Bestätigen Sie das kaskadierende Löschen zum Entfernen.",
+        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitplan/Zeitpläne. Bestätigen Sie die Kaskadenlöschung zum Entfernen.",
         "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
         "scheduleNotFound": "Zeitplan nicht gefunden.",
         "unauthorized": "Anmeldung erforderlich."
     },
     "signIn": {
         "cta": "Anmelden",
-        "description": "Melden Sie sich bei Ihrem Mitgründer-Konto an, um Ihre Zeitpläne anzuzeigen und zu verwalten.",
+        "description": "Melden Sie sich bei Ihrem Cofounder-Konto an, um Ihre Zeitpläne anzuzeigen und zu verwalten.",
         "title": "Anmeldung erforderlich"
     },
     "timer": {
         "buttonComplete": "abgeschlossen",
         "buttonFocus": "Fokus",
-        "buttonIdle": "inaktiv",
+        "buttonIdle": "untätig",
         "buttonStartNow": "jetzt starten",
         "categoryFallback": "?",
-        "idleEmpty": "inaktiv · kein aktiver Zeitplan",
+        "idleEmpty": "untätig · kein aktiver Zeitplan",
         "labelElapsed": "vergangen",
-        "labelEndAt": "endet um",
+        "labelEndAt": "endet-um",
         "labelRemaining": "verbleibend",
         "labelTarget": "Ziel",
         "labelUntilUpcoming": "bis bevorstehend",
         "labelUpcoming": "nächster Zeitplan",
-        "overlapLabel": "Überlappung {count}",
+        "overlapLabel": "Überschneidung {count}",
         "simultaneousLabel": "gleichzeitig · {count}",
-        "tooltipClickToFocus": "klicken um zu fokussiert zu wechseln",
-        "tooltipClickToIdle": "klicken um zu inaktiv zu wechseln",
+        "tooltipClickToFocus": "klicken, um zu Fokus zu wechseln",
+        "tooltipClickToIdle": "klicken, um zu untätig zu wechseln",
         "typeCountdown": "Countdown",
-        "typeCountup": "hochzählen",
+        "typeCountup": "Hochzählen",
         "typeTimer1": "Timer1"
     },
     "topbar": {
@@ -150,7 +150,7 @@
         "button": "rückgängig"
     },
     "wallTime": {
-        "am": "vm",
+        "am": "am",
         "pm": "pm"
     },
     "weekdays": [
@@ -164,8 +164,8 @@
     ],
     "workingHours": {
         "checkboxAlsoDefault": "auch als Standard speichern",
-        "checkboxWeekdaysOnly": "nur Wochentage (Mo–Fr)",
-        "errorEndAfterStart": "Endzeit muss nach der Startzeit liegen.",
+        "checkboxWeekdaysOnly": "nur Wochentags (Mo–Fr)",
+        "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
         "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
         "fieldDate": "Datum",
         "fieldEndTime": "Endzeit",
@@ -175,7 +175,7 @@
         "header": "Arbeitszeiten",
         "tabRange": "Bereich",
         "tabSingle": "einzeln",
-        "warningNoDates": "Keine Daten im Bereich anwendbar. (Start > Ende oder Wochentags-Konflikt)",
+        "warningNoDates": "Keine Daten zum Anwenden im Bereich. (Start > Ende oder Wochentags-Konflikt)",
         "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen kleineren Bereich."
     }
 }

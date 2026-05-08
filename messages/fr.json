@@ -5,12 +5,12 @@
     },
     "auth": {
         "signIn": "Se connecter avec Google",
-        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInDescription": "plan1 est un outil d'horaire personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
         "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "category": {
         "confirmRemoveLabel": "confirmer suppr ({count})",
-        "confirmRemoveText": "{count} horaire(s) seront supprimés avec ceci. Cliquez à nouveau pour confirmer.",
+        "confirmRemoveText": "{count} horaire(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
         "defaultName": "par défaut",
         "empty": "Aucune catégorie.",
         "fieldColor": "couleur",
@@ -36,9 +36,9 @@
     "error": {
         "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
         "loadFailedLabel": "échec du chargement :",
-        "mutationFailed": "Échec de {action} : {error}",
+        "mutationFailed": "Échec de {action}: {error}",
         "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-        "workingHoursInvalid": "Saisie d'heures de travail invalide ({reason})."
+        "workingHoursInvalid": "Saisie des heures de travail invalide ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fin"
@@ -49,7 +49,7 @@
         "completeSchedule": "terminer l'horaire",
         "extendTimer": "prolonger le minuteur",
         "removeCategory": "supprimer la catégorie",
-        "setFocus": "définir la vue focus",
+        "setFocus": "définir la vue concentration",
         "setTheme": "définir le thème",
         "setZoom": "définir le zoom",
         "startScheduleNow": "démarrer l'horaire maintenant"
@@ -64,7 +64,7 @@
         "focus4h": "4h",
         "focus6h": "6h",
         "focus8h": "8h",
-        "focusLabel": "focus",
+        "focusLabel": "concentration",
         "newSchedule": "nouveau",
         "themeDark": "sombre",
         "themeLight": "clair",
@@ -75,8 +75,8 @@
     },
     "onboarding": {
         "addFirst": "ajouter le premier horaire",
-        "firstSchedule": "Ajoutez votre premier horaire pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
-        "welcome": "Aucun horaire pour le moment"
+        "firstSchedule": "Ajoutez votre premier horaire pour le voir sur la grille hebdomadaire, la chronologie d'aujourd'hui et l'horloge analogique.",
+        "welcome": "Aucun horaire pour l'instant"
     },
     "schedule": {
         "afterLastNoneHint": "aucun horaire à venir",
@@ -87,7 +87,7 @@
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ ajouter une catégorie",
-        "chainedCheckbox": "enchaîner à l'horaire précédent",
+        "chainedCheckbox": "chaîner à l'horaire précédent",
         "endLabelV2": "heure de fin",
         "endPlaceholder": "sélectionner la durée",
         "fieldCategory": "catégorie",
@@ -103,7 +103,7 @@
         "minuteSuffix": "m",
         "prevChainLabel": "horaire précédent connecté",
         "titleDefault": "Nouvel horaire",
-        "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez le début/durée ou supprimez-en un existant."
+        "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
     },
     "serverError": {
         "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour retirer.",
@@ -118,7 +118,7 @@
     },
     "timer": {
         "buttonComplete": "terminé",
-        "buttonFocus": "focus",
+        "buttonFocus": "concentration",
         "buttonIdle": "inactif",
         "buttonStartNow": "commencer maintenant",
         "categoryFallback": "?",
@@ -131,10 +131,10 @@
         "labelUpcoming": "horaire suivant",
         "overlapLabel": "chevauchement {count}",
         "simultaneousLabel": "simultané · {count}",
-        "tooltipClickToFocus": "cliquer pour passer en focus",
+        "tooltipClickToFocus": "cliquer pour passer en concentration",
         "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
-        "typeCountup": "compteur",
+        "typeCountup": "compte à rebours croissant",
         "typeTimer1": "minuteur1"
     },
     "topbar": {
@@ -164,7 +164,7 @@
     ],
     "workingHours": {
         "checkboxAlsoDefault": "enregistrer aussi par défaut",
-        "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
+        "checkboxWeekdaysOnly": "jours ouvrables uniquement (lun–ven)",
         "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
         "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
         "fieldDate": "date",
@@ -175,7 +175,7 @@
         "header": "heures de travail",
         "tabRange": "plage",
         "tabSingle": "unique",
-        "warningNoDates": "Aucune date à appliquer dans la plage. (début > fin ou conflit jours de semaine uniquement)",
+        "warningNoDates": "Aucune date à appliquer dans la plage. (début > fin ou conflit jours ouvrables uniquement)",
         "warningTruncated": "La plage dépasse {max} jours, seulement partiellement traité. Essayez une plage plus étroite."
     }
 }
