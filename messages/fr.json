@@ -5,18 +5,18 @@
     },
     "auth": {
         "signIn": "Se connecter avec Google",
-        "signInDescription": "plan1 est un outil d'horaires personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
         "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "category": {
         "confirmRemoveLabel": "confirmer suppr ({count})",
-        "confirmRemoveText": "{count} horaire(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
+        "confirmRemoveText": "{count} horaire(s) seront supprimés avec ceci. Cliquez à nouveau pour confirmer.",
         "defaultName": "par défaut",
         "empty": "Aucune catégorie.",
         "fieldColor": "couleur",
         "fieldName": "nom",
         "header": "catégories",
-        "removeButton": "rm",
+        "removeButton": "suppr",
         "scheduleCountSuffix": "{count} horaires"
     },
     "common": {
@@ -38,7 +38,7 @@
         "loadFailedLabel": "échec du chargement :",
         "mutationFailed": "Échec de {action} : {error}",
         "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-        "workingHoursInvalid": "Entrée d'heures de travail invalide ({reason})."
+        "workingHoursInvalid": "Saisie d'heures de travail invalide ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fin"
@@ -48,8 +48,8 @@
         "changeTimerType": "changer le type de minuteur",
         "completeSchedule": "terminer l'horaire",
         "extendTimer": "prolonger le minuteur",
-        "removeCategory": "retirer la catégorie",
-        "setFocus": "définir la vue de focus",
+        "removeCategory": "supprimer la catégorie",
+        "setFocus": "définir la vue focus",
         "setTheme": "définir le thème",
         "setZoom": "définir le zoom",
         "startScheduleNow": "démarrer l'horaire maintenant"
@@ -64,10 +64,10 @@
         "focus4h": "4h",
         "focus6h": "6h",
         "focus8h": "8h",
-        "focusLabel": "concentration",
+        "focusLabel": "focus",
         "newSchedule": "nouveau",
         "themeDark": "sombre",
-        "themeLight": "léger",
+        "themeLight": "clair",
         "themeSystem": "auto",
         "workingHours": "heures",
         "zoomIn": "zoomer",
@@ -103,7 +103,7 @@
         "minuteSuffix": "m",
         "prevChainLabel": "horaire précédent connecté",
         "titleDefault": "Nouvel horaire",
-        "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
+        "warningOverlapLimit": "Au maximum {limit} horaires peuvent se chevaucher en même temps. Ajustez le début/durée ou supprimez-en un existant."
     },
     "serverError": {
         "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour retirer.",
@@ -118,9 +118,9 @@
     },
     "timer": {
         "buttonComplete": "terminé",
-        "buttonFocus": "concentration",
+        "buttonFocus": "focus",
         "buttonIdle": "inactif",
-        "buttonStartNow": "démarrer maintenant",
+        "buttonStartNow": "commencer maintenant",
         "categoryFallback": "?",
         "idleEmpty": "inactif · aucun horaire actif",
         "labelElapsed": "écoulé",
@@ -131,10 +131,10 @@
         "labelUpcoming": "horaire suivant",
         "overlapLabel": "chevauchement {count}",
         "simultaneousLabel": "simultané · {count}",
-        "tooltipClickToFocus": "cliquer pour basculer en concentration",
-        "tooltipClickToIdle": "cliquer pour basculer en inactif",
+        "tooltipClickToFocus": "cliquer pour passer en focus",
+        "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
-        "typeCountup": "compte à rebours",
+        "typeCountup": "compteur",
         "typeTimer1": "minuteur1"
     },
     "topbar": {
@@ -166,7 +166,7 @@
         "checkboxAlsoDefault": "enregistrer aussi par défaut",
         "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
         "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
-        "errorToAfterFrom": "La date de fin doit être le jour de la date de début ou après.",
+        "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
         "fieldDate": "date",
         "fieldEndTime": "heure de fin",
         "fieldFromDate": "de",

@@ -1,21 +1,21 @@
 {
     "app": {
         "tagline": "शेड्यूल प्रबंधक",
-        "title": "प्लान1"
+        "title": "योजना1"
     },
     "auth": {
         "signIn": "Google के साथ साइन इन करें",
         "signInDescription": "plan1 एक व्यक्तिगत शेड्यूल टूल है जिसमें क्रॉस-डिवाइस सिंक है। शुरू करने के लिए Google के साथ साइन इन करें।",
-        "signInRequired": "plan1 उपयोग करने के लिए साइन इन करें"
+        "signInRequired": "योजना1 का उपयोग करने के लिए साइन इन करें"
     },
     "category": {
         "confirmRemoveLabel": "हटाने की पुष्टि करें ({count})",
-        "confirmRemoveText": "इसके साथ {count} शेड्यूल डिलीट हो जाएंगे। पुष्टि करने के लिए फिर से क्लिक करें।",
+        "confirmRemoveText": "{count} शेड्यूल इसके साथ हटा दिए जाएंगे। पुष्टि करने के लिए फिर से क्लिक करें।",
         "defaultName": "डिफ़ॉल्ट",
         "empty": "कोई श्रेणी नहीं।",
         "fieldColor": "रंग",
         "fieldName": "नाम",
-        "header": "श्रेणियां",
+        "header": "श्रेणियाँ",
         "removeButton": "हटाएं",
         "scheduleCountSuffix": "{count} शेड्यूल"
     },
@@ -23,8 +23,8 @@
         "add": "जोड़ें",
         "cancel": "रद्द करें",
         "close": "बंद करें",
-        "confirmDelete": "डिलीट की पुष्टि करें",
-        "delete": "डिलीट करें",
+        "confirmDelete": "हटाना पुष्टि करें",
+        "delete": "हटाएं",
         "dismiss": "खारिज करें",
         "now": "अभी",
         "retry": "पुनः प्रयास करें",
@@ -36,12 +36,12 @@
     "error": {
         "featureUnavailable": "यह सुविधा अभी उपलब्ध नहीं है ({feature})।",
         "loadFailedLabel": "लोड विफल:",
-        "mutationFailed": "{action} विफल रहा: {error}",
+        "mutationFailed": "{action} विफल: {error}",
         "unknown": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें।",
         "workingHoursInvalid": "अमान्य कार्य घंटे इनपुट ({reason})।"
     },
     "header": {
-        "finalEndAtSuffix": "समाप्त"
+        "finalEndAtSuffix": "समाप्ति"
     },
     "loading": "लोड हो रहा है...",
     "mutation": {
@@ -49,13 +49,13 @@
         "completeSchedule": "शेड्यूल पूर्ण करें",
         "extendTimer": "टाइमर बढ़ाएं",
         "removeCategory": "श्रेणी हटाएं",
-        "setFocus": "फोकस व्यू सेट करें",
+        "setFocus": "फ़ोकस व्यू सेट करें",
         "setTheme": "थीम सेट करें",
         "setZoom": "ज़ूम सेट करें",
         "startScheduleNow": "शेड्यूल अभी शुरू करें"
     },
     "nav": {
-        "categories": "श्रेणियां",
+        "categories": "श्रेणियाँ",
         "focus10h": "10घं",
         "focus12h": "12घं",
         "focus16h": "16घं",
@@ -66,16 +66,16 @@
         "focus8h": "8घं",
         "focusLabel": "फ़ोकस",
         "newSchedule": "नया",
-        "themeDark": "डार्क",
-        "themeLight": "लाइट",
-        "themeSystem": "ऑटो",
+        "themeDark": "गहरा",
+        "themeLight": "हल्का",
+        "themeSystem": "स्वतः",
         "workingHours": "घंटे",
         "zoomIn": "ज़ूम इन",
         "zoomOut": "ज़ूम आउट"
     },
     "onboarding": {
         "addFirst": "पहला शेड्यूल जोड़ें",
-        "firstSchedule": "साप्ताहिक ग्रिड, आज की टाइमलाइन और एनालॉग घड़ी पर देखने के लिए अपना पहला शेड्यूल जोड़ें।",
+        "firstSchedule": "साप्ताहिक ग्रिड, आज की समयरेखा और एनालॉग घड़ी पर देखने के लिए अपना पहला शेड्यूल जोड़ें।",
         "welcome": "अभी तक कोई शेड्यूल नहीं"
     },
     "schedule": {
@@ -93,17 +93,17 @@
         "fieldCategory": "श्रेणी",
         "fieldDuration": "अवधि (मिनट)",
         "fieldName": "नाम",
-        "fieldStartHour": "शुरुआती घंटा",
-        "fieldStartMinute": "शुरुआत मिनट",
+        "fieldStartHour": "प्रारंभ घंटा",
+        "fieldStartMinute": "प्रारंभ मिनट",
         "headerEdit": "शेड्यूल संपादित करें",
         "headerNew": "नया शेड्यूल",
         "hourSuffix": "घं",
         "hourTodaySuffix": "(आज)",
         "hourTomorrowSuffix": "(कल)",
         "minuteSuffix": "मि",
-        "prevChainLabel": "पिछला शेड्यूल जुड़ा हुआ",
+        "prevChainLabel": "जुड़ा हुआ पिछला शेड्यूल",
         "titleDefault": "नया शेड्यूल",
-        "warningOverlapLimit": "अधिकतम {limit} शेड्यूल एक ही समय पर ओवरलैप हो सकते हैं। शुरुआत/अवधि समायोजित करें या मौजूदा को हटाएं।"
+        "warningOverlapLimit": "एक ही समय में अधिकतम {limit} शेड्यूल ओवरलैप हो सकते हैं। प्रारंभ/अवधि समायोजित करें या मौजूदा को हटाएं।"
     },
     "serverError": {
         "categoryHasSchedules": "श्रेणी में {scheduleCount} शेड्यूल हैं। हटाने के लिए कैस्केड डिलीट की पुष्टि करें।",
@@ -130,8 +130,8 @@
         "labelUntilUpcoming": "आगामी तक",
         "labelUpcoming": "अगला शेड्यूल",
         "overlapLabel": "ओवरलैप {count}",
-        "simultaneousLabel": "एक साथ · {count}",
-        "tooltipClickToFocus": "फ़ोकस पर स्विच करने के लिए क्लिक करें",
+        "simultaneousLabel": "समकालिक · {count}",
+        "tooltipClickToFocus": "फोकस पर स्विच करने के लिए क्लिक करें",
         "tooltipClickToIdle": "निष्क्रिय पर स्विच करने के लिए क्लिक करें",
         "typeCountdown": "काउंटडाउन",
         "typeCountup": "काउंटअप",
@@ -151,7 +151,7 @@
     },
     "wallTime": {
         "am": "पूर्वाह्न",
-        "pm": "pm"
+        "pm": "अपराह्न"
     },
     "weekdays": [
         "रवि",
@@ -165,17 +165,17 @@
     "workingHours": {
         "checkboxAlsoDefault": "डिफ़ॉल्ट के रूप में भी सहेजें",
         "checkboxWeekdaysOnly": "केवल सप्ताह के दिन (सोम–शुक्र)",
-        "errorEndAfterStart": "समाप्ति समय शुरुआती समय के बाद होना चाहिए।",
-        "errorToAfterFrom": "समाप्ति तिथि शुरुआती तिथि को या उसके बाद होनी चाहिए।",
-        "fieldDate": "तारीख",
+        "errorEndAfterStart": "समाप्ति समय प्रारंभ समय के बाद होना चाहिए।",
+        "errorToAfterFrom": "समाप्ति तिथि प्रारंभ तिथि के बराबर या बाद में होनी चाहिए।",
+        "fieldDate": "तिथि",
         "fieldEndTime": "समाप्ति समय",
         "fieldFromDate": "से",
-        "fieldStartTime": "शुरुआत का समय",
-        "fieldToDate": "तक",
+        "fieldStartTime": "प्रारंभ समय",
+        "fieldToDate": "से",
         "header": "कार्य घंटे",
-        "tabRange": "रेंज",
+        "tabRange": "सीमा",
         "tabSingle": "एकल",
-        "warningNoDates": "रेंज में लागू करने के लिए कोई तिथियां नहीं। (शुरुआत > अंत या सप्ताह के दिनों-केवल विरोध)",
-        "warningTruncated": "रेंज {max} दिनों से अधिक है, केवल आंशिक प्रोसेस किया गया। एक संकीर्ण रेंज का प्रयास करें।"
+        "warningNoDates": "सीमा में लागू करने के लिए कोई तिथियां नहीं। (प्रारंभ > समाप्ति या सप्ताह के दिनों का टकराव)",
+        "warningTruncated": "सीमा {max} दिनों से अधिक है, केवल आंशिक प्रोसेस किया गया। संकीर्ण सीमा आज़माएं।"
     }
 }

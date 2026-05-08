@@ -1,23 +1,23 @@
 {
     "app": {
-        "tagline": "Zeitfenster-Manager",
-        "title": "plan1"
+        "tagline": "Zeitplanmanager",
+        "title": "Plan1"
     },
     "auth": {
         "signIn": "Mit Google anmelden",
-        "signInDescription": "plan1 ist ein persönliches Zeitplan-Tool mit geräteübergreifender Synchronisation. Melden Sie sich mit Google an, um loszulegen.",
-        "signInRequired": "Anmelden um plan1 zu verwenden"
+        "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisierung. Melden Sie sich mit Google an, um loszulegen.",
+        "signInRequired": "Melden Sie sich an, um plan1 zu verwenden"
     },
     "category": {
         "confirmRemoveLabel": "Entfernen bestätigen ({count})",
-        "confirmRemoveText": "{count} Zeitfenster werden hiermit gelöscht. Klicken Sie erneut zur Bestätigung.",
+        "confirmRemoveText": "{count} Zeitplan/Zeitpläne werden hiermit gelöscht. Klicken Sie erneut zur Bestätigung.",
         "defaultName": "Standard",
         "empty": "Keine Kategorien.",
         "fieldColor": "Farbe",
         "fieldName": "Name",
         "header": "Kategorien",
         "removeButton": "entf",
-        "scheduleCountSuffix": "{count} Zeitfenster"
+        "scheduleCountSuffix": "{count} Zeitpläne"
     },
     "common": {
         "add": "hinzufügen",
@@ -25,34 +25,34 @@
         "close": "schließen",
         "confirmDelete": "Löschen bestätigen",
         "delete": "löschen",
-        "dismiss": "schließen",
+        "dismiss": "verwerfen",
         "now": "jetzt",
         "retry": "wiederholen",
         "save": "speichern"
     },
     "confirmation": {
-        "scheduleAdded": "Zeitfenster hinzugefügt"
+        "scheduleAdded": "Zeitplan hinzugefügt"
     },
     "error": {
         "featureUnavailable": "Diese Funktion ist noch nicht verfügbar ({feature}).",
         "loadFailedLabel": "Laden fehlgeschlagen:",
-        "mutationFailed": "{action} fehlgeschlagen: {error}",
+        "mutationFailed": "Fehler bei {action}: {error}",
         "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
         "workingHoursInvalid": "Ungültige Arbeitszeiteneingabe ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "Ende"
     },
-    "loading": "Lädt...",
+    "loading": "lädt...",
     "mutation": {
         "changeTimerType": "Timer-Typ ändern",
-        "completeSchedule": "Zeitfenster abschließen",
+        "completeSchedule": "Zeitplan abschließen",
         "extendTimer": "Timer verlängern",
         "removeCategory": "Kategorie entfernen",
-        "setFocus": "Fokusansicht einstellen",
+        "setFocus": "Fokusansicht festlegen",
         "setTheme": "Design festlegen",
         "setZoom": "Zoom einstellen",
-        "startScheduleNow": "Zeitfenster jetzt starten"
+        "startScheduleNow": "Zeitplan jetzt starten"
     },
     "nav": {
         "categories": "Kategorien",
@@ -68,26 +68,26 @@
         "newSchedule": "neu",
         "themeDark": "dunkel",
         "themeLight": "hell",
-        "themeSystem": "auto",
+        "themeSystem": "automatisch",
         "workingHours": "Stunden",
-        "zoomIn": "vergrößern",
-        "zoomOut": "verkleinern"
+        "zoomIn": "hineinzoomen",
+        "zoomOut": "herauszoomen"
     },
     "onboarding": {
-        "addFirst": "erstes Zeitfenster hinzufügen",
-        "firstSchedule": "Fügen Sie Ihr erstes Zeitfenster hinzu, um es im Wochenraster, der heutigen Zeitleiste und der analogen Uhr zu sehen.",
-        "welcome": "Noch keine Zeitfenster"
+        "addFirst": "ersten Zeitplan hinzufügen",
+        "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, der heutigen Zeitleiste und der analogen Uhr zu sehen.",
+        "welcome": "Noch keine Zeitpläne"
     },
     "schedule": {
-        "afterLastNoneHint": "kein anstehendes Zeitfenster",
-        "buttonAfterLast": "Nächstes nach letztem Zeitfenster",
+        "afterLastNoneHint": "kein anstehender Zeitplan",
+        "buttonAfterLast": "nächster nach letztem Zeitplan",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
         "buttonPlus10": "+10m",
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ Kategorie hinzufügen",
-        "chainedCheckbox": "mit vorherigem Zeitfenster verketten",
+        "chainedCheckbox": "mit vorigem Zeitplan verketten",
         "endLabelV2": "Endzeit",
         "endPlaceholder": "Dauer auswählen",
         "fieldCategory": "Kategorie",
@@ -95,62 +95,62 @@
         "fieldName": "Name",
         "fieldStartHour": "Startstunde",
         "fieldStartMinute": "Startminute",
-        "headerEdit": "Zeitfenster bearbeiten",
-        "headerNew": "Neues Zeitfenster",
+        "headerEdit": "Zeitplan bearbeiten",
+        "headerNew": "neuer Zeitplan",
         "hourSuffix": "h",
         "hourTodaySuffix": "(heute)",
         "hourTomorrowSuffix": "(morgen)",
         "minuteSuffix": "m",
-        "prevChainLabel": "verbundenes vorheriges Zeitfenster",
-        "titleDefault": "Neues Zeitfenster",
-        "warningOverlapLimit": "Es können maximal {limit} Zeitfenster gleichzeitig überlappen. Passen Sie Start/Dauer an oder entfernen Sie ein bestehendes."
+        "prevChainLabel": "verbundener voriger Zeitplan",
+        "titleDefault": "Neuer Zeitplan",
+        "warningOverlapLimit": "Maximal {limit} Zeitpläne können gleichzeitig überlappen. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
     },
     "serverError": {
-        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitfenster. Bestätigen Sie Kaskadenlöschung zum Entfernen.",
+        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Bestätigen Sie das kaskadierende Löschen zum Entfernen.",
         "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
-        "scheduleNotFound": "Zeitfenster nicht gefunden.",
+        "scheduleNotFound": "Zeitplan nicht gefunden.",
         "unauthorized": "Anmeldung erforderlich."
     },
     "signIn": {
         "cta": "Anmelden",
-        "description": "Melden Sie sich bei Ihrem Cofounder-Konto an, um Ihre Zeitfenster anzuzeigen und zu verwalten.",
+        "description": "Melden Sie sich bei Ihrem Mitgründer-Konto an, um Ihre Zeitpläne anzuzeigen und zu verwalten.",
         "title": "Anmeldung erforderlich"
     },
     "timer": {
         "buttonComplete": "abgeschlossen",
         "buttonFocus": "Fokus",
-        "buttonIdle": "Pause",
+        "buttonIdle": "inaktiv",
         "buttonStartNow": "jetzt starten",
         "categoryFallback": "?",
-        "idleEmpty": "Pause · kein aktives Zeitfenster",
+        "idleEmpty": "inaktiv · kein aktiver Zeitplan",
         "labelElapsed": "vergangen",
-        "labelEndAt": "Ende-um",
+        "labelEndAt": "endet um",
         "labelRemaining": "verbleibend",
         "labelTarget": "Ziel",
-        "labelUntilUpcoming": "bis anstehend",
-        "labelUpcoming": "Nächstes Zeitfenster",
-        "overlapLabel": "Überschneidung {count}",
+        "labelUntilUpcoming": "bis bevorstehend",
+        "labelUpcoming": "nächster Zeitplan",
+        "overlapLabel": "Überlappung {count}",
         "simultaneousLabel": "gleichzeitig · {count}",
-        "tooltipClickToFocus": "klicken um zu Fokus zu wechseln",
-        "tooltipClickToIdle": "klicken um zu Pause zu wechseln",
+        "tooltipClickToFocus": "klicken um zu fokussiert zu wechseln",
+        "tooltipClickToIdle": "klicken um zu inaktiv zu wechseln",
         "typeCountdown": "Countdown",
-        "typeCountup": "Hochzählen",
-        "typeTimer1": "timer1"
+        "typeCountup": "hochzählen",
+        "typeTimer1": "Timer1"
     },
     "topbar": {
         "back": "zurück zum Portal",
-        "creditsLabel": "Danksagungen",
+        "creditsLabel": "Credits",
         "creditsPlaceholder": "—",
         "guest": "Gast",
         "languageLabel": "Sprache",
-        "logout": "Abmelden"
+        "logout": "abmelden"
     },
     "undo": {
         "actionLabel": "Rückgängig verfügbar",
         "button": "rückgängig"
     },
     "wallTime": {
-        "am": "am",
+        "am": "vm",
         "pm": "pm"
     },
     "weekdays": [
@@ -165,17 +165,17 @@
     "workingHours": {
         "checkboxAlsoDefault": "auch als Standard speichern",
         "checkboxWeekdaysOnly": "nur Wochentage (Mo–Fr)",
-        "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
+        "errorEndAfterStart": "Endzeit muss nach der Startzeit liegen.",
         "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
         "fieldDate": "Datum",
         "fieldEndTime": "Endzeit",
         "fieldFromDate": "von",
         "fieldStartTime": "Startzeit",
         "fieldToDate": "bis",
-        "header": "Arbeitszeit",
+        "header": "Arbeitszeiten",
         "tabRange": "Bereich",
         "tabSingle": "einzeln",
-        "warningNoDates": "Keine Daten im Bereich zum Anwenden. (Start > Ende oder Konflikt nur-Wochentage)",
+        "warningNoDates": "Keine Daten im Bereich anwendbar. (Start > Ende oder Wochentags-Konflikt)",
         "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen kleineren Bereich."
     }
 }

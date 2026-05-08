@@ -5,19 +5,19 @@
     },
     "auth": {
         "signIn": "Googleでサインイン",
-        "signInDescription": "plan1はデバイス間同期機能を備えた個人用スケジュールツールです。Googleでサインインして始めましょう。",
+        "signInDescription": "plan1はクロスデバイス同期機能付きの個人用スケジュールツールです。Googleでサインインして開始してください。",
         "signInRequired": "plan1を使用するにはサインインしてください"
     },
     "category": {
-        "confirmRemoveLabel": "削除を確認 ({count})",
-        "confirmRemoveText": "{count} 件のスケジュールがこれと共に削除されます。もう一度クリックして確認してください。",
+        "confirmRemoveLabel": "削除確認 ({count})",
+        "confirmRemoveText": "これにより{count}個のスケジュールが削除されます。確認するにはもう一度クリックしてください。",
         "defaultName": "デフォルト",
         "empty": "カテゴリがありません。",
         "fieldColor": "色",
         "fieldName": "名前",
         "header": "カテゴリ",
         "removeButton": "削除",
-        "scheduleCountSuffix": "{count} 件のスケジュール"
+        "scheduleCountSuffix": "{count}個のスケジュール"
     },
     "common": {
         "add": "追加",
@@ -36,9 +36,9 @@
     "error": {
         "featureUnavailable": "この機能はまだ利用できません ({feature})。",
         "loadFailedLabel": "読み込み失敗:",
-        "mutationFailed": "{action} に失敗しました: {error}",
+        "mutationFailed": "{action}に失敗しました: {error}",
         "unknown": "予期しないエラーが発生しました。もう一度お試しください。",
-        "workingHoursInvalid": "無効な稼働時間の入力 ({reason})。"
+        "workingHoursInvalid": "無効な作業時間の入力です ({reason})。"
     },
     "header": {
         "finalEndAtSuffix": "終了"
@@ -64,7 +64,7 @@
         "focus4h": "4時間",
         "focus6h": "6時間",
         "focus8h": "8時間",
-        "focusLabel": "フォーカス",
+        "focusLabel": "集中",
         "newSchedule": "新規",
         "themeDark": "ダーク",
         "themeLight": "ライト",
@@ -76,11 +76,11 @@
     "onboarding": {
         "addFirst": "最初のスケジュールを追加",
         "firstSchedule": "最初のスケジュールを追加すると、週間グリッド、今日のタイムライン、アナログ時計に表示されます。",
-        "welcome": "スケジュールはまだありません"
+        "welcome": "スケジュールがまだありません"
     },
     "schedule": {
-        "afterLastNoneHint": "今後の予定はありません",
-        "buttonAfterLast": "最後のスケジュールの後",
+        "afterLastNoneHint": "今後のスケジュールなし",
+        "buttonAfterLast": "最後のスケジュールの次",
         "buttonMinus10": "-10分",
         "buttonMinus30": "-30分",
         "buttonPlus10": "+10分",
@@ -90,7 +90,7 @@
         "chainedCheckbox": "前のスケジュールに連結",
         "endLabelV2": "終了時刻",
         "endPlaceholder": "期間を選択",
-        "fieldCategory": "カテゴリ",
+        "fieldCategory": "カテゴリー",
         "fieldDuration": "期間 (分)",
         "fieldName": "名前",
         "fieldStartHour": "開始時",
@@ -101,13 +101,13 @@
         "hourTodaySuffix": "(今日)",
         "hourTomorrowSuffix": "(明日)",
         "minuteSuffix": "分",
-        "prevChainLabel": "前のスケジュールに接続しました",
+        "prevChainLabel": "前のスケジュールに接続済み",
         "titleDefault": "新しいスケジュール",
-        "warningOverlapLimit": "同時に重複できるスケジュールは最大 {limit} 件です。開始時刻/期間を調整するか、既存のものを削除してください。"
+        "warningOverlapLimit": "最大{limit}個のスケジュールが同時に重複できます。開始時刻/期間を調整するか、既存のものを削除してください。"
     },
     "serverError": {
-        "categoryHasSchedules": "カテゴリには {scheduleCount} 件のスケジュールがあります。削除するには連鎖削除を確認してください。",
-        "categoryNotFound": "カテゴリが見つからないか、所有されていません。",
+        "categoryHasSchedules": "カテゴリには{scheduleCount}個のスケジュールがあります。削除するにはカスケード削除を確認してください。",
+        "categoryNotFound": "カテゴリーが見つからないか、所有していません。",
         "scheduleNotFound": "スケジュールが見つかりません。",
         "unauthorized": "サインインが必要です。"
     },
@@ -118,7 +118,7 @@
     },
     "timer": {
         "buttonComplete": "完了",
-        "buttonFocus": "フォーカス",
+        "buttonFocus": "集中",
         "buttonIdle": "待機中",
         "buttonStartNow": "今すぐ開始",
         "categoryFallback": "?",
@@ -129,13 +129,13 @@
         "labelTarget": "目標",
         "labelUntilUpcoming": "次の予定まで",
         "labelUpcoming": "次のスケジュール",
-        "overlapLabel": "重複 {count}",
-        "simultaneousLabel": "同時進行 · {count} 件",
+        "overlapLabel": "{count}個重複",
+        "simultaneousLabel": "同時 · {count}",
         "tooltipClickToFocus": "クリックしてフォーカスに切り替え",
         "tooltipClickToIdle": "クリックして待機中に切り替え",
         "typeCountdown": "カウントダウン",
         "typeCountup": "カウントアップ",
-        "typeTimer1": "タイマー1"
+        "typeTimer1": "timer1"
     },
     "topbar": {
         "back": "ポータルに戻る",
@@ -146,7 +146,7 @@
         "logout": "ログアウト"
     },
     "undo": {
-        "actionLabel": "元に戻すが可能です",
+        "actionLabel": "元に戻すことができます",
         "button": "元に戻す"
     },
     "wallTime": {
@@ -169,13 +169,13 @@
         "errorToAfterFrom": "終了日は開始日以降である必要があります。",
         "fieldDate": "日付",
         "fieldEndTime": "終了時刻",
-        "fieldFromDate": "から",
+        "fieldFromDate": "開始",
         "fieldStartTime": "開始時刻",
-        "fieldToDate": "まで",
+        "fieldToDate": "終了",
         "header": "稼働時間",
         "tabRange": "範囲",
         "tabSingle": "単一",
-        "warningNoDates": "範囲内に適用する日付がありません。(開始 > 終了、または平日のみの競合)",
-        "warningTruncated": "範囲が {max} 日を超えています。一部のみ処理されました。範囲を狭めてください。"
+        "warningNoDates": "範囲内に適用する日付がありません。(開始 > 終了 または 平日のみの競合)",
+        "warningTruncated": "範囲が{max}日を超えているため、一部のみ処理されました。より狭い範囲を試してください。"
     }
 }

@@ -1,12 +1,12 @@
 {
     "app": {
         "tagline": "مدير الجداول",
-        "title": "خطة1"
+        "title": "plan1"
     },
     "auth": {
         "signIn": "تسجيل الدخول باستخدام Google",
-        "signInDescription": "plan1 هي أداة جدولة شخصية مع مزامنة عبر الأجهزة. سجّل الدخول بحساب Google للبدء.",
-        "signInRequired": "سجل الدخول لاستخدام خطة1"
+        "signInDescription": "plan1 هي أداة جدولة شخصية مع مزامنة عبر الأجهزة. سجل الدخول باستخدام Google للبدء.",
+        "signInRequired": "سجل الدخول لاستخدام plan1"
     },
     "category": {
         "confirmRemoveLabel": "تأكيد الحذف ({count})",
@@ -36,7 +36,7 @@
     "error": {
         "featureUnavailable": "هذه الميزة غير متاحة بعد ({feature}).",
         "loadFailedLabel": "فشل التحميل:",
-        "mutationFailed": "فشل في {action}: {error}",
+        "mutationFailed": "فشل {action}: {error}",
         "unknown": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
         "workingHoursInvalid": "إدخال ساعات العمل غير صالح ({reason})."
     },
@@ -52,7 +52,7 @@
         "setFocus": "تعيين عرض التركيز",
         "setTheme": "تعيين المظهر",
         "setZoom": "تعيين التكبير",
-        "startScheduleNow": "بدء الجدول الآن"
+        "startScheduleNow": "ابدأ الجدول الآن"
     },
     "nav": {
         "categories": "الفئات",
@@ -74,8 +74,8 @@
         "zoomOut": "تصغير"
     },
     "onboarding": {
-        "addFirst": "إضافة أول جدول",
-        "firstSchedule": "أضف جدولك الأول لرؤيته على الشبكة الأسبوعية والجدول الزمني اليوم والساعة التناظرية.",
+        "addFirst": "أضف أول جدول",
+        "firstSchedule": "أضف أول جدول لك لرؤيته على الشبكة الأسبوعية، والجدول الزمني لليوم، والساعة التناظرية.",
         "welcome": "لا توجد جداول بعد"
     },
     "schedule": {
@@ -88,7 +88,7 @@
         "buttonPlusHour": "+1س",
         "categoryAddOption": "+ إضافة فئة",
         "chainedCheckbox": "ربط بالجدول السابق",
-        "endLabelV2": "وقت النهاية",
+        "endLabelV2": "وقت الانتهاء",
         "endPlaceholder": "اختر المدة",
         "fieldCategory": "الفئة",
         "fieldDuration": "المدة (دقيقة)",
@@ -103,17 +103,17 @@
         "minuteSuffix": "د",
         "prevChainLabel": "الجدول السابق المتصل",
         "titleDefault": "جدول جديد",
-        "warningOverlapLimit": "يمكن أن يتداخل {limit} جداول كحد أقصى في نفس الوقت. اضبط البداية/المدة أو احذف جدولاً موجوداً."
+        "warningOverlapLimit": "يمكن أن تتداخل {limit} جداول كحد أقصى في نفس الوقت. اضبط البداية/المدة أو احذف جدولاً موجوداً."
     },
     "serverError": {
-        "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتسلسل للإزالة.",
+        "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتتالي للإزالة.",
         "categoryNotFound": "الفئة غير موجودة أو غير مملوكة.",
         "scheduleNotFound": "الجدول غير موجود.",
         "unauthorized": "تسجيل الدخول مطلوب."
     },
     "signIn": {
         "cta": "تسجيل الدخول",
-        "description": "سجل الدخول إلى حساب المؤسس المشارك الخاص بك لعرض وإدارة جداولك.",
+        "description": "سجل الدخول إلى حساب cofounder الخاص بك لعرض وإدارة جداولك.",
         "title": "تسجيل الدخول مطلوب"
     },
     "timer": {
@@ -123,10 +123,10 @@
         "buttonStartNow": "ابدأ الآن",
         "categoryFallback": "؟",
         "idleEmpty": "خامل · لا يوجد جدول نشط",
-        "labelElapsed": "منقضي",
+        "labelElapsed": "المنقضي",
         "labelEndAt": "ينتهي-في",
-        "labelRemaining": "متبقي",
-        "labelTarget": "هدف",
+        "labelRemaining": "المتبقي",
+        "labelTarget": "الهدف",
         "labelUntilUpcoming": "حتى القادم",
         "labelUpcoming": "الجدول التالي",
         "overlapLabel": "تداخل {count}",
@@ -135,7 +135,7 @@
         "tooltipClickToIdle": "انقر للتبديل إلى الخمول",
         "typeCountdown": "العد التنازلي",
         "typeCountup": "العد التصاعدي",
-        "typeTimer1": "مؤقت1"
+        "typeTimer1": "timer1"
     },
     "topbar": {
         "back": "العودة إلى البوابة",
@@ -150,8 +150,8 @@
         "button": "تراجع"
     },
     "wallTime": {
-        "am": "ص",
-        "pm": "م"
+        "am": "صباحاً",
+        "pm": "مساءً"
     },
     "weekdays": [
         "الأحد",
@@ -163,19 +163,19 @@
         "السبت"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "حفظ أيضاً كافتراضي",
+        "checkboxAlsoDefault": "احفظ أيضاً كافتراضي",
         "checkboxWeekdaysOnly": "أيام الأسبوع فقط (الإثنين–الجمعة)",
         "errorEndAfterStart": "يجب أن يكون وقت النهاية بعد وقت البداية.",
         "errorToAfterFrom": "يجب أن يكون تاريخ النهاية في أو بعد تاريخ البداية.",
         "fieldDate": "التاريخ",
-        "fieldEndTime": "وقت النهاية",
+        "fieldEndTime": "وقت الانتهاء",
         "fieldFromDate": "من",
         "fieldStartTime": "وقت البداية",
         "fieldToDate": "إلى",
         "header": "ساعات العمل",
         "tabRange": "النطاق",
-        "tabSingle": "مفرد",
+        "tabSingle": "فردي",
         "warningNoDates": "لا توجد تواريخ للتطبيق في النطاق. (البداية > النهاية أو تعارض أيام الأسبوع فقط)",
-        "warningTruncated": "النطاق يتجاوز {max} أيام، تمت معالجة جزئية فقط. جرب نطاقاً أضيق."
+        "warningTruncated": "النطاق يتجاوز {max} يوم، تمت معالجة جزء فقط. جرب نطاقاً أضيق."
     }
 }
