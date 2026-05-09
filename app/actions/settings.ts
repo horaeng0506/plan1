@@ -23,7 +23,6 @@ import {plan1Settings} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
 import {runAction, type ServerActionResult} from '@/lib/server-action';
 import type {AppSettings} from '@/lib/domain/types';
-import {clampZoomPxPerHour} from '@/lib/zoom-helpers';
 
 // PLAN1-FOCUS-VIEW-REDESIGN-20260506:
 //   - focusViewMin default 720 (12h)
@@ -33,7 +32,7 @@ const DEFAULT_SETTINGS = {
   weekViewSpan: 1 as const,         // S12 column drop 까지 INSERT 호환 유지
   weeklyPanelHidden: false,          // S12 column drop 까지 INSERT 호환 유지
   focusViewMin: 720 as number,
-  zoomPxPerHour: 50 as number,       // PLAN1-ZOOM-PX-PER-HOUR-20260509
+  zoomPxPerHour: 90 as number,       // PLAN1-ZOOM-DEFAULT-90-20260509 (UI +/- 폐기)
   pinnedActiveId: null as string | null  // S12 column drop 까지 INSERT 호환 유지
 };
 
@@ -42,8 +41,8 @@ function rowToDomain(row: typeof plan1Settings.$inferSelect): AppSettings {
     theme: row.theme,
     // 옛 row null fallback (S12 backfill 전까지 안전망 · NOT NULL DEFAULT 720 박힌 후엔 무관)
     focusViewMin: row.focusViewMin ?? 720,
-    // PLAN1-ZOOM-PX-PER-HOUR-20260509: 옛 row 부재 fallback (NOT NULL DEFAULT 50 적용 직후 안전망)
-    zoomPxPerHour: row.zoomPxPerHour ?? 50
+    // PLAN1-ZOOM-DEFAULT-90-20260509: 옛 row 부재 fallback (NOT NULL DEFAULT 90)
+    zoomPxPerHour: row.zoomPxPerHour ?? 90
   };
 }
 
@@ -80,10 +79,8 @@ export async function updateSettings(
     const dbPatch: Partial<typeof plan1Settings.$inferInsert> = {updatedAt: new Date()};
     if (patch.theme !== undefined) dbPatch.theme = patch.theme;
     if (patch.focusViewMin !== undefined) dbPatch.focusViewMin = patch.focusViewMin;
-    if (patch.zoomPxPerHour !== undefined) {
-      // 서버 사이드 clamp — 클라이언트 변조 차단. lib/zoom-helpers.ts 단일 원천.
-      dbPatch.zoomPxPerHour = clampZoomPxPerHour(patch.zoomPxPerHour);
-    }
+    // PLAN1-ZOOM-DEFAULT-90-20260509: zoomPxPerHour patch handler 폐기 (UI +/- 박음 폐기 · 사용자 변경 영역 X).
+    // column 보존 — 향후 재도입 시 박음.
 
     const [updated] = await db
       .update(plan1Settings)

@@ -5,18 +5,18 @@
     },
     "auth": {
         "signIn": "تسجيل الدخول بواسطة Google",
-        "signInDescription": "plan1 هي أداة جدولة شخصية مع مزامنة عبر الأجهزة. سجّل الدخول باستخدام Google للبدء.",
-        "signInRequired": "سجّل الدخول لاستخدام plan1"
+        "signInDescription": "plan1 هي أداة جدولة شخصية مع مزامنة عبر الأجهزة. سجل الدخول باستخدام Google للبدء.",
+        "signInRequired": "سجل الدخول لاستخدام plan1"
     },
     "category": {
-        "confirmRemoveLabel": "تأكيد الحذف ({count})",
-        "confirmRemoveText": "{count} جدول/جداول سيتم حذفها مع هذا. انقر مرة أخرى للتأكيد.",
+        "confirmRemoveLabel": "تأكيد الإزالة ({count})",
+        "confirmRemoveText": "سيتم حذف {count} جدول (جداول) مع هذا. انقر مرة أخرى للتأكيد.",
         "defaultName": "افتراضي",
         "empty": "لا توجد فئات.",
         "fieldColor": "اللون",
         "fieldName": "الاسم",
         "header": "الفئات",
-        "removeButton": "ح",
+        "removeButton": "حذف",
         "scheduleCountSuffix": "{count} جداول"
     },
     "common": {
@@ -49,46 +49,43 @@
         "completeSchedule": "إكمال الجدول",
         "extendTimer": "تمديد المؤقت",
         "removeCategory": "إزالة الفئة",
-        "setFocus": "ضبط عرض التركيز",
-        "setTheme": "تعيين المظهر",
-        "setZoom": "ضبط التكبير",
-        "startScheduleNow": "ابدأ الجدول الآن"
+        "setFocus": "تعيين عرض التركيز",
+        "setTheme": "تعيين السمة",
+        "startScheduleNow": "بدء الجدول الآن"
     },
     "nav": {
         "categories": "الفئات",
-        "focus10h": "10س",
-        "focus12h": "12س",
-        "focus16h": "16س",
-        "focus20h": "20س",
-        "focus24h": "24س",
-        "focus4h": "4س",
-        "focus6h": "6س",
+        "focus10h": "10 ساعات",
+        "focus12h": "12 ساعة",
+        "focus16h": "16 ساعة",
+        "focus20h": "20 ساعة",
+        "focus24h": "24 ساعة",
+        "focus4h": "4 ساعات",
+        "focus6h": "6 ساعات",
         "focus8h": "8 ساعات",
-        "focusLabel": "تركيز",
+        "focusLabel": "التركيز",
         "newSchedule": "جديد",
         "themeDark": "داكن",
         "themeLight": "فاتح",
         "themeSystem": "تلقائي",
-        "workingHours": "ساعات",
-        "zoomIn": "تكبير",
-        "zoomOut": "تصغير"
+        "workingHours": "ساعات"
     },
     "onboarding": {
-        "addFirst": "إضافة أول جدول",
-        "firstSchedule": "أضف جدولك الأول لرؤيته على الشبكة الأسبوعية، والجدول الزمني اليومي، والساعة التناظرية.",
+        "addFirst": "إضافة الجدول الأول",
+        "firstSchedule": "أضف جدولك الأول لرؤيته على الشبكة الأسبوعية، والجدول الزمني لليوم، والساعة التناظرية.",
         "welcome": "لا توجد جداول بعد"
     },
     "schedule": {
         "afterLastNoneHint": "لا يوجد جدول قادم",
         "buttonAfterLast": "التالي بعد آخر جدول",
-        "buttonMinus10": "-10د",
-        "buttonMinus30": "-30د",
-        "buttonPlus10": "+10د",
-        "buttonPlus30": "+30د",
-        "buttonPlusHour": "+1س",
+        "buttonMinus10": "-10 دقائق",
+        "buttonMinus30": "-30 دقيقة",
+        "buttonPlus10": "+10 دقائق",
+        "buttonPlus30": "+30 دقيقة",
+        "buttonPlusHour": "+1 ساعة",
         "categoryAddOption": "+ إضافة فئة",
         "chainedCheckbox": "ربط بالجدول السابق",
-        "endLabelV2": "وقت الانتهاء",
+        "endLabelV2": "وقت النهاية",
         "endPlaceholder": "اختر المدة",
         "fieldCategory": "الفئة",
         "fieldDuration": "المدة (دقيقة)",
@@ -103,7 +100,7 @@
         "minuteSuffix": "د",
         "prevChainLabel": "الجدول السابق متصل",
         "titleDefault": "جدول جديد",
-        "warningOverlapLimit": "يمكن أن يتداخل {limit} جدول كحد أقصى في نفس الوقت. اضبط البداية/المدة أو احذف جدولاً موجوداً."
+        "warningOverlapLimit": "يمكن أن يتداخل {limit} جداول كحد أقصى في نفس الوقت. اضبط البداية/المدة أو أزل جدولاً موجوداً."
     },
     "serverError": {
         "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتتالي للإزالة.",
@@ -113,17 +110,17 @@
     },
     "signIn": {
         "cta": "تسجيل الدخول",
-        "description": "سجّل الدخول إلى حساب المؤسس المشارك لعرض وإدارة جداولك.",
+        "description": "سجل الدخول إلى حساب المؤسس المشارك الخاص بك لعرض وإدارة جداولك.",
         "title": "تسجيل الدخول مطلوب"
     },
     "timer": {
         "buttonComplete": "مكتمل",
-        "buttonFocus": "تركيز",
+        "buttonFocus": "التركيز",
         "buttonIdle": "خامل",
         "buttonStartNow": "ابدأ الآن",
         "categoryFallback": "؟",
         "idleEmpty": "خامل · لا يوجد جدول نشط",
-        "labelElapsed": "المنقضي",
+        "labelElapsed": "منقضي",
         "labelEndAt": "ينتهي في",
         "labelRemaining": "متبقي",
         "labelTarget": "الهدف",
@@ -133,9 +130,9 @@
         "simultaneousLabel": "متزامن · {count}",
         "tooltipClickToFocus": "انقر للتبديل إلى التركيز",
         "tooltipClickToIdle": "انقر للتبديل إلى الخمول",
-        "typeCountdown": "عد تنازلي",
+        "typeCountdown": "العد التنازلي",
         "typeCountup": "عد تصاعدي",
-        "typeTimer1": "timer1"
+        "typeTimer1": "المؤقت 1"
     },
     "topbar": {
         "back": "العودة إلى البوابة",
@@ -150,7 +147,7 @@
         "button": "تراجع"
     },
     "wallTime": {
-        "am": "ص",
+        "am": "صباحاً",
         "pm": "م"
     },
     "weekdays": [
@@ -163,12 +160,12 @@
         "السبت"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "احفظ أيضاً كإعداد افتراضي",
-        "checkboxWeekdaysOnly": "أيام الأسبوع فقط (الإثنين–الجمعة)",
-        "errorEndAfterStart": "يجب أن يكون وقت الانتهاء بعد وقت البداية.",
+        "checkboxAlsoDefault": "حفظ أيضاً كإعداد افتراضي",
+        "checkboxWeekdaysOnly": "أيام الأسبوع فقط (الاثنين–الجمعة)",
+        "errorEndAfterStart": "يجب أن يكون وقت النهاية بعد وقت البداية.",
         "errorToAfterFrom": "يجب أن يكون تاريخ النهاية في أو بعد تاريخ البداية.",
         "fieldDate": "التاريخ",
-        "fieldEndTime": "وقت الانتهاء",
+        "fieldEndTime": "وقت النهاية",
         "fieldFromDate": "من",
         "fieldStartTime": "وقت البداية",
         "fieldToDate": "إلى",
