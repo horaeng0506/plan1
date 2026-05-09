@@ -172,3 +172,12 @@ body::before {
   /* default inline-block 박음 영역 → block 박음 영역 (full width 가운데 정렬) */
   display: block;
 }
+
+/* PLAN1-ZOOM-LABEL-COLUMN-MERGE-20260509 — 시간 라벨 column 박은 영역 1시간 단위 박음.
+ * 대장 명시 — 왼쪽 column 박은 영역 (시간 라벨) = 30분 점선 영역 박지 X (1시간 영역 칸 병합 효과).
+ * 오른쪽 column 박은 영역 (스케줄 lane) = 30분 점선 보존.
+ * 해결 = label column 박은 영역 의 minor td (30분 시작) 박은 영역 의 border-top 박은 영역 transparent 박음.
+ * lane column 박은 영역 (`.fc-timegrid-slot-lane`) 의 minor border 영역 보존. */
+.fc .fc-timegrid-slot-label.fc-timegrid-slot-minor {
+  border-top-color: transparent;
+}
