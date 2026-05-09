@@ -158,19 +158,26 @@ body::before {
   height: var(--plan1-fc-slot-height, unset);
 }
 
-/* PLAN1-ZOOM-DEFAULT-90-20260509 — 시간 라벨 가운데 정렬 + 칸 병합 효과.
- * FullCalendar 박은 영역 = 30분 td 박은 영역 2개 (label td · minor td 점선). label td height = 30분
- * 영역 (45px @ 90px/h). 단 시각적 1시간 영역 가운데 박음 의무 = label 영역 박음 = 30분 td 박은 영역
- * 아래쪽 (vertical-align: bottom · 30분 영역 끝 = 1시간 영역 가운데 시점).
- * text-align: center 박음 = 가로 가운데 정렬. */
+/* PLAN1-TIMELINE-LABEL-VCENTER-20260509 — 시간 라벨 1시간 영역 정 가운데 박음.
+ * 옛 vertical-align: bottom 박은 영역 박음 = label cushion padding 박음 영역에서 가운데보다
+ * 약간 위 박음 영역 박음. 정공 = label frame 박은 영역 absolute · height 1시간 영역 박음
+ * (slot height × 2) · flex 가운데 박음. cushion 박은 영역 박음 = 1시간 영역의 정 가운데 (30분
+ * 시점) 박음. pointer-events: none 박음 = 다음 30분 td (minor) 박음 영역의 클릭 영역 보존. */
 .fc .fc-timegrid-slot-label {
-  vertical-align: bottom;
+  position: relative;
   text-align: center;
 }
 .fc .fc-timegrid-slot-label-frame {
-  text-align: center;
-  /* default inline-block 박음 영역 → block 박음 영역 (full width 가운데 정렬) */
-  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* slot 30분 height × 2 = 1시간 영역 (--plan1-fc-slot-height 박음 영역 = pxPerHour/2 = 45px @ 90) */
+  height: calc(var(--plan1-fc-slot-height, 45px) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 /* PLAN1-ZOOM-LABEL-COLUMN-MERGE-20260509 — 시간 라벨 column 박은 영역 1시간 단위 박음.
