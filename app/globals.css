@@ -188,3 +188,19 @@ body::before {
 .fc .fc-timegrid-slot-label.fc-timegrid-slot-minor {
   border-top-color: transparent;
 }
+
+/* PLAN1-NOW-INDICATOR-LABEL-COLUMN-20260509 — 현재 시간 빨간 줄 박음 영역 = 왼쪽 라벨 column 박음.
+ * 대장 명시 — default FullCalendar 박은 영역 = `.fc-timegrid-now-indicator-line` 박음 영역 박음
+ * 박음 영역 = lane container (`.fc-timegrid-col-frame`) 박음 박음 (label column 박지 X).
+ * 해결 = parent overflow visible 박음 + line 박음 영역 박음 left 음수 박음 = label column 박음
+ * 영역 박음 박은 영역 박음. */
+.fc-timegrid-cols .fc-timegrid-now-indicator-container,
+.fc-timegrid-col-frame {
+  overflow: visible !important;
+}
+.fc .fc-timegrid-now-indicator-line {
+  /* 박음 영역 박은 영역 박음 박음 영역 박음 = label column 박은 영역 박음 (axis width 박음 정도 박음).
+   * label column 박은 영역의 박은 영역 박음 박음 박음 (FullCalendar default ~56-60px) — 박음 영역
+   * 박음 박음 박음 박음 박음 영역 박음 = -200px 박음 박음 (label width 박은 영역 박은 영역 박음). */
+  left: -200px !important;
+}
