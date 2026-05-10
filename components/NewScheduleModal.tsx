@@ -11,6 +11,7 @@ import {isServerActionError} from '@/lib/server-action';
 import {logClientError} from '@/lib/log';
 import {findOverlapping, MAX_OVERLAP} from '@/lib/domain/overlap';
 import {buildHourOptions, floorToHourMs} from '@/lib/hour-options';
+import {focusBounds} from '@/lib/focus-bounds';
 import type {Schedule} from '@/lib/domain/types';
 import {CategoryManager} from './CategoryManager';
 import {Spinner} from './Spinner';
@@ -77,6 +78,8 @@ export function NewScheduleModal({
   const addSchedule = useAppStore(s => s.addSchedule);
   const updateSchedule = useAppStore(s => s.updateSchedule);
   const removeSchedule = useAppStore(s => s.removeSchedule);
+  // PLAN1-CHAIN-FOCUS-GUARD-20260510 (C 옵션): focus view 안 prior schedule check 용.
+  const focusViewMin = useAppStore(s => s.settings.focusViewMin);
 
   const editingId = propEditingId ?? null;
   const editing = editingId ? schedules.find(s => s.id === editingId) ?? null : null;
@@ -293,6 +296,19 @@ export function NewScheduleModal({
     const finalDuration = durationMin === 0 ? 30 : durationMin;
     // #10: title 디폴트 "새 스케줄" 그대로 등록 가능.
     const finalTitle = title.trim() || titleDefault;
+    // PLAN1-CHAIN-FOCUS-GUARD-20260510 (C 옵션): 새 schedule 등록 시점 focus view 안
+    // prior schedule 0개면 chainedToPrev 강제 false (사용자 check 박은 영역 silent 무시).
+    // 편집 모드는 영향 X (대장 명시 "새로운 스케줄 등록할 때" 만).
+    let effectiveChainedToPrev = chainedToPrev;
+    if (!isEdit && chainedToPrev) {
+      const focus = focusBounds(focusViewMin, live);
+      const priorInFocus = schedules.filter(
+        s => s.startAt < startAt && s.startAt >= focus.startMs && s.startAt < focus.endMs
+      );
+      if (priorInFocus.length === 0) {
+        effectiveChainedToPrev = false;
+      }
+    }
     try {
       if (isEdit && editing) {
         await updateSchedule(editing.id, {
@@ -300,7 +316,7 @@ export function NewScheduleModal({
           categoryId,
           startAt,
           durationMin: finalDuration,
-          chainedToPrev
+          chainedToPrev: effectiveChainedToPrev
         });
       } else {
         await addSchedule({
@@ -309,7 +325,7 @@ export function NewScheduleModal({
           startAt,
           durationMin: finalDuration,
           timerType: 'countup',
-          chainedToPrev
+          chainedToPrev: effectiveChainedToPrev
         });
       }
       onClose();
