@@ -14,12 +14,14 @@
  */
 
 import {useSyncExternalStore} from 'react';
-import type {Schedule} from './domain/types';
+import type {Schedule, Task} from './domain/types';
 
+// PLAN1-TASKS-FEATURE-20260509 — task-delete type 추가 (즉시 삭제 + 5초 undo bar).
 export type UndoEntry =
   | {type: 'add'; scheduleId: string; ts: number}
   | {type: 'edit'; scheduleId: string; prev: Schedule; ts: number}
-  | {type: 'delete'; schedule: Schedule; ts: number};
+  | {type: 'delete'; schedule: Schedule; ts: number}
+  | {type: 'task-delete'; task: Task; ts: number};
 
 const TTL_MS = 5000;
 

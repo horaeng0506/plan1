@@ -17,6 +17,17 @@ export interface Schedule {
   createdAt: number;
   updatedAt: number;
 }
+// PLAN1-TASKS-FEATURE-20260509 — task domain type (client-side · createdAt: number ms).
+// schema.ts 의 plan1Tasks row type (Date) → store rowToDomain 영영 변환 박음 정합.
+export type TaskId = string;
+export interface Task {
+  id: TaskId;
+  title: string | null;
+  durationMin: number | null;
+  categoryId: CategoryId | null;
+  createdAt: number;
+}
+
 export type Theme = 'light' | 'dark' | 'system';
 export interface AppSettings {
   theme: Theme;

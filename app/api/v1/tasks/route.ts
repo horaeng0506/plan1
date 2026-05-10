@@ -1,0 +1,126 @@
+import {randomUUID} from 'node:crypto';
+import {NextResponse} from 'next/server';
+import {z} from 'zod';
+import {desc, eq} from 'drizzle-orm';
+import {db} from '@/lib/db';
+import {plan1Tasks, plan1Categories} from '@/lib/db/schema';
+import {authenticateApiKey, buildSuccessHeaders, buildOptionsResponse} from '@/lib/api-auth';
+
+const createTaskSchema = z.object({
+  title: z.string().min(1).max(500).nullable().optional(),
+  durationMin: z.number().int().min(0).max(10080).nullable().optional(),
+  categoryId: z.string().min(1).max(100).nullable().optional()
+});
+
+interface TaskApiRow {
+  id: string;
+  title: string | null;
+  durationMin: number | null;
+  categoryId: string | null;
+  createdAt: number;
+}
+
+function rowToApi(row: typeof plan1Tasks.$inferSelect): TaskApiRow {
+  return {
+    id: row.id,
+    title: row.title,
+    durationMin: row.durationMin,
+    categoryId: row.categoryId,
+    createdAt: row.createdAt.getTime()
+  };
+}
+
+export async function GET(request: Request): Promise<NextResponse> {
+  const auth = await authenticateApiKey(request);
+  if (!auth.ok) return auth.response;
+  const rows = await db
+    .select()
+    .from(plan1Tasks)
+    .where(eq(plan1Tasks.userId, auth.apiKey.userId))
+    .orderBy(desc(plan1Tasks.createdAt));
+  return NextResponse.json(
+    {data: rows.map(rowToApi), error: null},
+    {status: 200, headers: buildSuccessHeaders(auth.remaining, auth.resetUnix)}
+  );
+}
+
+export async function POST(request: Request): Promise<NextResponse> {
+  const auth = await authenticateApiKey(request);
+  if (!auth.ok) return auth.response;
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      {data: null, error: {code: 'invalid_json', message: 'Request body must be valid JSON'}},
+      {status: 400, headers: buildSuccessHeaders(auth.remaining, auth.resetUnix)}
+    );
+  }
+  const parsed = createTaskSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        data: null,
+        error: {
+          code: 'invalid_input',
+          message: parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ')
+        }
+      },
+      {status: 400, headers: buildSuccessHeaders(auth.remaining, auth.resetUnix)}
+    );
+  }
+  const input = parsed.data;
+  if (input.categoryId !== null && input.categoryId !== undefined) {
+    const ownerRows = await db
+      .select({id: plan1Categories.id})
+      .from(plan1Categories)
+      .where(eq(plan1Categories.id, input.categoryId))
+      .limit(1);
+    const owner = ownerRows[0];
+    if (!owner) {
+      return NextResponse.json(
+        {data: null, error: {code: 'category_not_found', message: 'Category not found or not owned'}},
+        {status: 404, headers: buildSuccessHeaders(auth.remaining, auth.resetUnix)}
+      );
+    }
+    const ownershipCheck = await db
+      .select({userId: plan1Categories.userId})
+      .from(plan1Categories)
+      .where(eq(plan1Categories.id, input.categoryId))
+      .limit(1);
+    if (ownershipCheck[0]?.userId !== auth.apiKey.userId) {
+      return NextResponse.json(
+        {data: null, error: {code: 'category_not_found', message: 'Category not found or not owned'}},
+        {status: 404, headers: buildSuccessHeaders(auth.remaining, auth.resetUnix)}
+      );
+    }
+  }
+  const id = `task-${randomUUID()}`;
+  await db.insert(plan1Tasks).values({
+    id,
+    userId: auth.apiKey.userId,
+    title: input.title ?? null,
+    durationMin: input.durationMin ?? null,
+    categoryId: input.categoryId ?? null
+  });
+  const rows = await db
+    .select()
+    .from(plan1Tasks)
+    .where(eq(plan1Tasks.id, id))
+    .limit(1);
+  const created = rows[0];
+  if (!created) {
+    return NextResponse.json(
+      {data: null, error: {code: 'create_failed', message: 'Task creation succeeded but row not found'}},
+      {status: 500, headers: buildSuccessHeaders(auth.remaining, auth.resetUnix)}
+    );
+  }
+  return NextResponse.json(
+    {data: rowToApi(created), error: null},
+    {status: 201, headers: buildSuccessHeaders(auth.remaining, auth.resetUnix)}
+  );
+}
+
+export async function OPTIONS(): Promise<NextResponse> {
+  return buildOptionsResponse();
+}

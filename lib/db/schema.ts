@@ -128,6 +128,70 @@ export const plan1Settings = plan1Schema.table('settings', {
     .notNull()
 });
 
+// PLAN1-TASKS-FEATURE-20260509 — task 영역 (할일 → 스케줄 변환 chain).
+// 사양 단일 원천: cofounder-portal/lib/db/schema.ts plan1Tasks (Stage 5.1 정합).
+// task → schedule 변환은 server action 안 db.batch atomic chain (logic-critic C3 정합).
+export const plan1Tasks = plan1Schema.table(
+  'tasks',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, {onDelete: 'cascade'}),
+    title: text('title'),
+    durationMin: integer('duration_min'),
+    categoryId: text('category_id').references(() => plan1Categories.id, {
+      onDelete: 'set null'
+    }),
+    createdAt: timestamp('created_at', {withTimezone: true})
+      .$defaultFn(() => new Date())
+      .notNull()
+  },
+  table => ({
+    userIdx: index('plan1_tasks_user_idx').on(table.userId)
+  })
+);
+
+// PLAN1-TASKS-FEATURE-20260509 — 외부 AI agent REST API 영역 API key.
+// 사양 단일 원천: cofounder-portal/lib/db/schema.ts plan1ApiKeys.
+// 형식: `plan1_api_<40-char-base62>` (Stripe 패턴) · hash: HMAC-SHA256.
+// rate limit: token bucket (Q24 b · sliding window X · cleanup chain 불요).
+export const plan1ApiKeys = plan1Schema.table(
+  'api_keys',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, {onDelete: 'cascade'}),
+    name: text('name').notNull(),
+    keyHash: text('key_hash').notNull(),
+    keyPrefix: text('key_prefix').notNull(),
+    createdAt: timestamp('created_at', {withTimezone: true})
+      .$defaultFn(() => new Date())
+      .notNull(),
+    expiresAt: timestamp('expires_at', {withTimezone: true}),
+    lastUsedAt: timestamp('last_used_at', {withTimezone: true}),
+    revokedAt: timestamp('revoked_at', {withTimezone: true}),
+    rateLimitTokens: integer('rate_limit_tokens').default(60).notNull(),
+    rateLimitLastRefillAt: timestamp('rate_limit_last_refill_at', {
+      withTimezone: true
+    })
+      .$defaultFn(() => new Date())
+      .notNull()
+  },
+  table => ({
+    keyHashIdx: uniqueIndex('plan1_api_keys_key_hash_idx').on(table.keyHash),
+    userActiveIdx: index('plan1_api_keys_user_active_idx').on(
+      table.userId,
+      table.revokedAt
+    ),
+    userPrefixIdx: uniqueIndex('plan1_api_keys_user_prefix_idx').on(
+      table.userId,
+      table.keyPrefix
+    )
+  })
+);
+
 // 편의 type export (server actions·components 에서 사용)
 export type Schedule = typeof plan1Schedules.$inferSelect;
 export type ScheduleInsert = typeof plan1Schedules.$inferInsert;
@@ -135,3 +199,7 @@ export type Category = typeof plan1Categories.$inferSelect;
 export type CategoryInsert = typeof plan1Categories.$inferInsert;
 export type Settings = typeof plan1Settings.$inferSelect;
 export type SettingsInsert = typeof plan1Settings.$inferInsert;
+export type Task = typeof plan1Tasks.$inferSelect;
+export type TaskInsert = typeof plan1Tasks.$inferInsert;
+export type ApiKey = typeof plan1ApiKeys.$inferSelect;
+export type ApiKeyInsert = typeof plan1ApiKeys.$inferInsert;

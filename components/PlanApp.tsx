@@ -13,6 +13,7 @@ import {SignInPrompt} from './SignInPrompt';
 import {ModalSkeleton} from './ModalSkeleton';
 import {UndoBar} from './UndoBar';
 import {ScheduleAddedModal} from './ScheduleAddedModal';
+import {TaskList} from './TaskList';
 import type {Theme} from '@/lib/domain/types';
 
 // Stage 4d-B: 모달 lazy import (사용자 trigger 전 로드 안 됨 → bundle 절약).
@@ -24,6 +25,10 @@ const NewScheduleModal = dynamic(
 );
 const CategoryManager = dynamic(
   () => import('./CategoryManager').then(m => m.CategoryManager),
+  {ssr: false, loading: ModalSkeleton}
+);
+const TaskModal = dynamic(
+  () => import('./TaskModal').then(m => m.TaskModal),
   {ssr: false, loading: ModalSkeleton}
 );
 
@@ -61,6 +66,8 @@ export function PlanApp() {
   const [newPrefill, setNewPrefill] = useState<number | undefined>(undefined);
   const [catOpen, setCatOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  // PLAN1-TASKS-FEATURE-20260509 — task 추가 modal toggle.
+  const [taskOpen, setTaskOpen] = useState(false);
 
   // Stage 3e env-critic Critical: store.init() 트리거. layout/page 단일 진입점에서 1회 호출.
   // Stage 3f Playwright 회귀 fix: error 발생 시에도 재진입 방지.
@@ -227,10 +234,15 @@ export function PlanApp() {
             <DailyTimeline onEventClick={handleEventClick} onDateClick={handleDateClick} />
           </section>
           <aside className="order-1 lg:order-2 flex flex-col gap-6">
-            <section className="order-2 lg:order-1 rounded-none border border-line bg-panel p-4">
+            {/* PLAN1-TASKS-FEATURE-20260509 (Q26 a) — sidebar 안 AnalogClock 위 영역 박음.
+                mobile 영영 ActiveTimer 우선 그대로 (2026-05-06 대장 명시) · TaskList 후순위. */}
+            <section className="order-3 lg:order-1 rounded-none border border-line bg-panel p-4">
+              <TaskList onNewTask={() => setTaskOpen(true)} />
+            </section>
+            <section className="order-2 lg:order-2 rounded-none border border-line bg-panel p-4">
               <AnalogClock />
             </section>
-            <section className="order-1 lg:order-2">
+            <section className="order-1 lg:order-3">
               <ActiveTimer />
             </section>
           </aside>
@@ -248,6 +260,7 @@ export function PlanApp() {
         />
       )}
       {catOpen && <CategoryManager onClose={() => setCatOpen(false)} />}
+      {taskOpen && <TaskModal onClose={() => setTaskOpen(false)} />}
       <ToastContainer />
       <UndoBar />
       <ScheduleAddedModal />

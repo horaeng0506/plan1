@@ -59,7 +59,13 @@
     "changeTimerType": "타이머 타입 변경",
     "setTheme": "테마 설정",
     "setFocus": "집중 보기 설정",
-    "startScheduleNow": "스케줄 즉시 시작"
+    "startScheduleNow": "스케줄 즉시 시작",
+    "addTask": "할일 추가",
+    "removeTask": "할일 삭제",
+    "convertTaskToSchedule": "할일을 스케줄로 변환",
+    "createApiKey": "API 키 발급",
+    "revokeApiKey": "API 키 폐기",
+    "rotateApiKey": "API 키 교체"
   },
   "onboarding": {
     "welcome": "스케줄이 아직 없습니다",
@@ -163,16 +169,77 @@
     "unauthorized": "로그인이 필요합니다.",
     "scheduleNotFound": "스케줄을 찾을 수 없습니다.",
     "categoryNotFound": "카테고리를 찾을 수 없거나 권한이 없습니다.",
-    "categoryHasSchedules": "카테고리에 스케줄 {scheduleCount}개가 있습니다. cascade 삭제를 확인하면 함께 제거됩니다."
+    "categoryHasSchedules": "카테고리에 스케줄 {scheduleCount}개가 있습니다. cascade 삭제를 확인하면 함께 제거됩니다.",
+    "taskNotFound": "할일을 찾을 수 없습니다.",
+    "taskNoCategoryId": "할일에 카테고리 없음 · 할일 모달 열어서 설정.",
+    "taskNoDuration": "할일에 소요 시간 없음 · 할일 모달 열어서 설정.",
+    "taskDurationInvalid": "할일 소요는 0 이상.",
+    "apiKeyNotFound": "API 키를 찾을 수 없습니다.",
+    "apiKeyAlreadyRevoked": "API 키가 이미 폐기되었습니다.",
+    "apiKeyCreateFailed": "API 키 발급 실패.",
+    "apiKeyNameInvalid": "API 키 이름 필수 (최대 100자).",
+    "apiKeyExpiresInvalid": "API 키 만료는 1-3650일 또는 영구."
   },
   "undo": {
     "actionLabel": "실행 취소 가능",
-    "button": "실행 취소"
+    "button": "실행 취소",
+    "taskActionLabel": "할일 삭제됨"
   },
   "confirmation": {
     "scheduleAdded": "스케줄이 등록되었습니다"
   },
   "header": {
     "finalEndAtSuffix": "끝"
+  },
+  "task": {
+    "heading": "할일",
+    "empty": "할일 없음",
+    "newTask": "+ 할일",
+    "modalHeading": "새 할일",
+    "modalEditHeading": "할일 편집",
+    "fieldTitle": "제목",
+    "fieldDuration": "소요 (분)",
+    "fieldCategory": "카테고리",
+    "actionAdd": "추가",
+    "actionCancel": "취소",
+    "convertToSchedule": "+ 스케줄",
+    "convertNow": "지금",
+    "convertAfterLast": "마지막 다음",
+    "convertCancel": "취소",
+    "delete": "삭제"
+  },
+  "settings": {
+    "heading": "설정",
+    "apiKeysSection": "API 키"
+  },
+  "apiKey": {
+    "empty": "키 없음",
+    "create": "+ 키",
+    "modalCreateHeading": "새 API 키",
+    "modalRotateHeading": "API 키 교체",
+    "fieldName": "이름",
+    "fieldExpires": "만료",
+    "expiresNever": "영구",
+    "expires30": "30일",
+    "expires90": "90일",
+    "expires365": "1년",
+    "actionCreate": "발급",
+    "actionRotate": "교체",
+    "actionRevoke": "폐기",
+    "actionCancel": "취소",
+    "actionClose": "닫기",
+    "copyButton": "복사",
+    "copiedConfirm": "이 키를 저장했습니다",
+    "warningOneTime": "이 키는 한 번만 표시됩니다. 지금 안전하게 보관하세요.",
+    "tableName": "이름",
+    "tablePrefix": "prefix",
+    "tableCreated": "발급일",
+    "tableLastUsed": "최근 사용",
+    "tableExpires": "만료",
+    "tableActions": "작업",
+    "statusRevoked": "폐기됨",
+    "statusActive": "활성",
+    "statusExpired": "만료됨",
+    "rotateGraceWarning": "옛 키는 24시간 후 폐기됩니다. 그 안에 외부 agent 갱신하세요."
   }
 }

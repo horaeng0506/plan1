@@ -1,23 +1,53 @@
 {
+    "apiKey": {
+        "actionCancel": "annuler",
+        "actionClose": "fermer",
+        "actionCreate": "créer",
+        "actionRevoke": "révoquer",
+        "actionRotate": "rotation",
+        "copiedConfirm": "J'ai sauvegardé cette clé",
+        "copyButton": "copier",
+        "create": "+ clé",
+        "empty": "aucune clé",
+        "expires30": "30 jours",
+        "expires365": "1 an",
+        "expires90": "90 jours",
+        "expiresNever": "jamais",
+        "fieldExpires": "expire",
+        "fieldName": "nom",
+        "modalCreateHeading": "nouvelle clé API",
+        "modalRotateHeading": "rotation de la clé API",
+        "rotateGraceWarning": "Ancienne clé révoquée dans 24h. Mettez à jour les agents pendant la période de grâce.",
+        "statusActive": "actif",
+        "statusExpired": "expiré",
+        "statusRevoked": "révoqué",
+        "tableActions": "actions",
+        "tableCreated": "créé",
+        "tableExpires": "expire",
+        "tableLastUsed": "dernière utilisation",
+        "tableName": "nom",
+        "tablePrefix": "préfixe",
+        "warningOneTime": "Cette clé est affichée UNE SEULE FOIS. Sauvegardez-la en lieu sûr maintenant."
+    },
     "app": {
-        "tagline": "gestionnaire de planification",
+        "tagline": "gestionnaire d'emplois du temps",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Se connecter avec Google",
-        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation entre appareils. Connectez-vous avec Google pour commencer.",
         "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "category": {
-        "confirmRemoveLabel": "confirmer sup ({count})",
-        "confirmRemoveText": "{count} planification(s) sera/seront supprimée(s) avec ceci. Cliquez à nouveau pour confirmer.",
+        "confirmRemoveLabel": "confirmer suppr ({count})",
+        "confirmRemoveText": "{count} emploi(s) du temps sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
         "defaultName": "par défaut",
         "empty": "Aucune catégorie.",
         "fieldColor": "couleur",
         "fieldName": "nom",
         "header": "catégories",
-        "removeButton": "sup",
-        "scheduleCountSuffix": "{count} planifications"
+        "removeButton": "suppr",
+        "scheduleCountSuffix": "{count} emplois du temps"
     },
     "common": {
         "add": "ajouter",
@@ -31,27 +61,33 @@
         "save": "enregistrer"
     },
     "confirmation": {
-        "scheduleAdded": "Planification ajoutée"
+        "scheduleAdded": "Emploi du temps ajouté"
     },
     "error": {
         "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
         "loadFailedLabel": "échec du chargement :",
         "mutationFailed": "Échec de {action} : {error}",
         "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-        "workingHoursInvalid": "Entrée d'heures de travail invalide ({reason})."
+        "workingHoursInvalid": "Saisie d'heures de travail invalide ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fin"
     },
     "loading": "chargement...",
     "mutation": {
+        "addTask": "ajouter une tâche",
         "changeTimerType": "changer le type de minuteur",
-        "completeSchedule": "terminer la planification",
+        "completeSchedule": "terminer l'emploi du temps",
+        "convertTaskToSchedule": "convertir la tâche en emploi du temps",
+        "createApiKey": "créer une clé API",
         "extendTimer": "prolonger le minuteur",
         "removeCategory": "supprimer la catégorie",
-        "setFocus": "définir la vue concentration",
+        "removeTask": "supprimer la tâche",
+        "revokeApiKey": "révoquer la clé API",
+        "rotateApiKey": "rotation de la clé API",
+        "setFocus": "définir la vue focus",
         "setTheme": "définir le thème",
-        "startScheduleNow": "démarrer la planification maintenant"
+        "startScheduleNow": "démarrer l'emploi du temps maintenant"
     },
     "nav": {
         "categories": "catégories",
@@ -71,20 +107,20 @@
         "workingHours": "heures"
     },
     "onboarding": {
-        "addFirst": "ajouter la première planification",
-        "firstSchedule": "Ajoutez votre première planification pour la voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
-        "welcome": "Aucune planification pour le moment"
+        "addFirst": "ajouter le premier emploi du temps",
+        "firstSchedule": "Ajoutez votre premier emploi du temps pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
+        "welcome": "Aucun emploi du temps pour le moment"
     },
     "schedule": {
-        "afterLastNoneHint": "aucune planification à venir",
-        "buttonAfterLast": "suivant après la dernière planification",
+        "afterLastNoneHint": "aucun emploi du temps à venir",
+        "buttonAfterLast": "suivant après le dernier emploi du temps",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
         "buttonPlus10": "+10m",
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ ajouter une catégorie",
-        "chainedCheckbox": "enchaîner à la planification précédente",
+        "chainedCheckbox": "enchaîner à l'emploi du temps précédent",
         "endLabelV2": "heure de fin",
         "endPlaceholder": "sélectionner la durée",
         "fieldCategory": "catégorie",
@@ -92,47 +128,77 @@
         "fieldName": "nom",
         "fieldStartHour": "heure de début",
         "fieldStartMinute": "minute de début",
-        "headerEdit": "modifier la planification",
-        "headerNew": "nouvelle planification",
+        "headerEdit": "modifier l'emploi du temps",
+        "headerNew": "nouvel emploi du temps",
         "hourSuffix": "h",
         "hourTodaySuffix": "(aujourd'hui)",
         "hourTomorrowSuffix": "(demain)",
         "minuteSuffix": "m",
-        "prevChainLabel": "planification précédente connectée",
-        "titleDefault": "Nouvelle planification",
-        "warningOverlapLimit": "Au maximum {limit} planifications peuvent se chevaucher en même temps. Ajustez le début/durée ou supprimez-en une existante."
+        "prevChainLabel": "emploi du temps précédent connecté",
+        "titleDefault": "Nouvel emploi du temps",
+        "warningOverlapLimit": "Au maximum {limit} emplois du temps peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
     },
     "serverError": {
-        "categoryHasSchedules": "La catégorie a {scheduleCount} planifications. Confirmez la suppression en cascade pour retirer.",
+        "apiKeyAlreadyRevoked": "Clé API déjà révoquée.",
+        "apiKeyCreateFailed": "Échec de la création de la clé API.",
+        "apiKeyExpiresInvalid": "L'expiration de la clé API doit être de 1 à 3650 jours ou nulle.",
+        "apiKeyNameInvalid": "Le nom de la clé API est requis (max 100 caractères).",
+        "apiKeyNotFound": "Clé API non trouvée.",
+        "categoryHasSchedules": "La catégorie a {scheduleCount} emploi(s) du temps. Confirmez la suppression en cascade pour supprimer.",
         "categoryNotFound": "Catégorie introuvable ou non possédée.",
-        "scheduleNotFound": "Planification introuvable.",
+        "scheduleNotFound": "Emploi du temps introuvable.",
+        "taskDurationInvalid": "La durée de la tâche doit être 0 ou supérieure.",
+        "taskNoCategoryId": "La tâche n'a pas de catégorie — ouvrir le modal de tâche pour la définir.",
+        "taskNoDuration": "La tâche n'a pas de durée — ouvrir le modal de tâche pour la définir.",
+        "taskNotFound": "Tâche non trouvée.",
         "unauthorized": "Connexion requise."
+    },
+    "settings": {
+        "apiKeysSection": "clés API",
+        "heading": "paramètres"
     },
     "signIn": {
         "cta": "Se connecter",
-        "description": "Connectez-vous à votre compte cofondateur pour voir et gérer vos planifications.",
+        "description": "Connectez-vous à votre compte cofondateur pour voir et gérer vos emplois du temps.",
         "title": "Connexion requise"
     },
+    "task": {
+        "actionAdd": "ajouter",
+        "actionCancel": "annuler",
+        "convertAfterLast": "après le dernier",
+        "convertCancel": "annuler",
+        "convertNow": "maintenant",
+        "convertToSchedule": "+ emploi du temps",
+        "delete": "supprimer",
+        "empty": "aucune tâche",
+        "fieldCategory": "catégorie",
+        "fieldDuration": "durée (min)",
+        "fieldTitle": "titre",
+        "heading": "tâches",
+        "modalEditHeading": "modifier la tâche",
+        "modalHeading": "nouvelle tâche",
+        "newTask": "+ tâche"
+    },
     "timer": {
-        "buttonComplete": "terminer",
+        "buttonComplete": "terminé",
         "buttonFocus": "concentration",
         "buttonIdle": "inactif",
         "buttonStartNow": "démarrer maintenant",
         "categoryFallback": "?",
-        "idleEmpty": "inactif · aucune planification active",
+        "idleEmpty": "inactif · aucun emploi du temps actif",
         "labelElapsed": "écoulé",
-        "labelEndAt": "se-termine-à",
+        "labelEndAt": "se termine à",
         "labelRemaining": "restant",
         "labelTarget": "cible",
         "labelUntilUpcoming": "jusqu'au prochain",
-        "labelUpcoming": "planification suivante",
+        "labelUpcoming": "prochain emploi du temps",
         "overlapLabel": "chevauchement {count}",
         "simultaneousLabel": "simultané · {count}",
         "tooltipClickToFocus": "cliquer pour passer en concentration",
         "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
-        "typeCountup": "compte à rebours croissant",
-        "typeTimer1": "timer1"
+        "typeCountup": "compte progressif",
+        "typeTimer1": "minuteur1"
     },
     "topbar": {
         "back": "retour au portail",
@@ -144,7 +210,8 @@
     },
     "undo": {
         "actionLabel": "annulation disponible",
-        "button": "annuler"
+        "button": "annuler",
+        "taskActionLabel": "tâche supprimée"
     },
     "wallTime": {
         "am": "am",
@@ -160,8 +227,8 @@
         "sam"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "enregistrer aussi par défaut",
-        "checkboxWeekdaysOnly": "jours ouvrables uniquement (lun–ven)",
+        "checkboxAlsoDefault": "enregistrer également par défaut",
+        "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
         "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
         "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
         "fieldDate": "date",
@@ -173,6 +240,6 @@
         "tabRange": "plage",
         "tabSingle": "unique",
         "warningNoDates": "Aucune date à appliquer dans la plage. (début > fin ou conflit jours de semaine uniquement)",
-        "warningTruncated": "La plage dépasse {max} jours, traitement partiel uniquement. Essayez une plage plus étroite."
+        "warningTruncated": "La plage dépasse {max} jours, seulement partiellement traité. Essayez une plage plus étroite."
     }
 }

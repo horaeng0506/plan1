@@ -1,0 +1,17 @@
+# PLAN1-TASKS-FEATURE-20260509 — REST API auth chain PICT model
+# 변수 4개 · 3-way pairwise (보안 민감 영역 · RPN ≥ 80 정합 · test-case-design-principles.md § 6.2)
+# 영역: authState × httpMethod × payloadShape × rateLimitState
+
+authState: valid, invalid, missing, expired, revoked
+httpMethod: GET, POST, DELETE, OPTIONS
+payloadShape: empty, valid, oversized, malformed
+rateLimitState: available, throttled
+
+# constraint — OPTIONS 영영 = preflight CORS 영영 (auth chain 영영 X · payload 영영 X · rate limit 영영 X)
+IF [httpMethod] = "OPTIONS" THEN [authState] = "missing";
+IF [httpMethod] = "OPTIONS" THEN [payloadShape] = "empty";
+IF [httpMethod] = "OPTIONS" THEN [rateLimitState] = "available";
+# constraint — GET·DELETE 영영 = body 영영 X (payload 영영 영영)
+IF [httpMethod] IN {"GET", "DELETE"} THEN [payloadShape] = "empty";
+# constraint — invalid·missing·expired·revoked 영영 = 401 영영 (rate limit 영영 X · auth chain 안 throttled 영영 X)
+IF [authState] IN {"invalid", "missing", "expired", "revoked"} THEN [rateLimitState] = "available";
