@@ -143,12 +143,15 @@ export const plan1Tasks = plan1Schema.table(
     categoryId: text('category_id').references(() => plan1Categories.id, {
       onDelete: 'set null'
     }),
+    // PLAN1-TASKS-PRIORITY-20260510 — 우선순위 (1 = 최우선 · 1~N · default 1).
+    priority: integer('priority').notNull().default(1),
     createdAt: timestamp('created_at', {withTimezone: true})
       .$defaultFn(() => new Date())
       .notNull()
   },
   table => ({
-    userIdx: index('plan1_tasks_user_idx').on(table.userId)
+    userIdx: index('plan1_tasks_user_idx').on(table.userId),
+    userPriorityIdx: index('plan1_tasks_user_priority_idx').on(table.userId, table.priority)
   })
 );
 

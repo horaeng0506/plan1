@@ -25,6 +25,8 @@ export interface Task {
   title: string | null;
   durationMin: number | null;
   categoryId: CategoryId | null;
+  // PLAN1-TASKS-PRIORITY-20260510 — 우선순위 (1 = 최우선 · 1~N).
+  priority: number;
   createdAt: number;
 }
 

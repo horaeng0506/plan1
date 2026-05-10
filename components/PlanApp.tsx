@@ -14,7 +14,7 @@ import {ModalSkeleton} from './ModalSkeleton';
 import {UndoBar} from './UndoBar';
 import {ScheduleAddedModal} from './ScheduleAddedModal';
 import {TaskList} from './TaskList';
-import type {Theme} from '@/lib/domain/types';
+import type {Theme, Task} from '@/lib/domain/types';
 
 // Stage 4d-B: 모달 lazy import (사용자 trigger 전 로드 안 됨 → bundle 절약).
 // Stage 4e: ModalSkeleton 추가로 50-200ms chunk fetch 깜빡임 차단.
@@ -68,6 +68,8 @@ export function PlanApp() {
   const [editingId, setEditingId] = useState<string | null>(null);
   // PLAN1-TASKS-FEATURE-20260509 — task 추가 modal toggle.
   const [taskOpen, setTaskOpen] = useState(false);
+  // PLAN1-TASKS-PRIORITY-20260510 (사양 4) — task 편집 modal.
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   // Stage 3e env-critic Critical: store.init() 트리거. layout/page 단일 진입점에서 1회 호출.
   // Stage 3f Playwright 회귀 fix: error 발생 시에도 재진입 방지.
@@ -237,7 +239,10 @@ export function PlanApp() {
             {/* PLAN1-TASKS-FEATURE-20260509 (Q26 a) — sidebar 안 AnalogClock 위 영역 박음.
                 mobile 영영 ActiveTimer 우선 그대로 (2026-05-06 대장 명시) · TaskList 후순위. */}
             <section className="order-3 lg:order-1 rounded-none border border-line bg-panel p-4">
-              <TaskList onNewTask={() => setTaskOpen(true)} />
+              <TaskList
+                onNewTask={() => setTaskOpen(true)}
+                onEditTask={task => setEditingTask(task)}
+              />
             </section>
             <section className="order-2 lg:order-2 rounded-none border border-line bg-panel p-4">
               <AnalogClock />
@@ -260,7 +265,14 @@ export function PlanApp() {
         />
       )}
       {catOpen && <CategoryManager onClose={() => setCatOpen(false)} />}
-      {taskOpen && <TaskModal onClose={() => setTaskOpen(false)} />}
+      {taskOpen && <TaskModal mode="create" onClose={() => setTaskOpen(false)} />}
+      {editingTask && (
+        <TaskModal
+          mode="edit"
+          task={editingTask}
+          onClose={() => setEditingTask(null)}
+        />
+      )}
       <ToastContainer />
       <UndoBar />
       <ScheduleAddedModal />

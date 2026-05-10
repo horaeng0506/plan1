@@ -65,7 +65,8 @@
     "convertTaskToSchedule": "할일을 스케줄로 변환",
     "createApiKey": "API 키 발급",
     "revokeApiKey": "API 키 폐기",
-    "rotateApiKey": "API 키 교체"
+    "rotateApiKey": "API 키 교체",
+    "updateTask": "할일 수정 중"
   },
   "onboarding": {
     "welcome": "스케줄이 아직 없습니다",
@@ -206,7 +207,9 @@
     "convertNow": "지금",
     "convertAfterLast": "마지막 다음",
     "convertCancel": "취소",
-    "delete": "삭제"
+    "delete": "삭제",
+    "fieldPriority": "우선순위",
+    "actionSave": "저장"
   },
   "settings": {
     "heading": "설정",
@@ -241,5 +244,6 @@
     "statusActive": "활성",
     "statusExpired": "만료됨",
     "rotateGraceWarning": "옛 키는 24시간 후 폐기됩니다. 그 안에 외부 agent 갱신하세요."
-  }
+  },
+  "settingsLink": "설정"
 }

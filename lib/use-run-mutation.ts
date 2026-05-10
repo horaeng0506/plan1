@@ -47,6 +47,7 @@ export type MutationContextKey =
   | 'startScheduleNow'
   // PLAN1-TASKS-FEATURE-20260509 — task 영역 mutation 키.
   | 'addTask'
+  | 'updateTask'
   | 'removeTask'
   | 'convertTaskToSchedule'
   // PLAN1-TASKS-FEATURE-20260509 (S6) — API key 영역 mutation 키.

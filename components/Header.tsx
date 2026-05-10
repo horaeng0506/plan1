@@ -15,6 +15,7 @@
  * (미인증 시 null 받아 `guest` 표시).
  */
 
+import Link from 'next/link';
 import {getTranslations} from 'next-intl/server';
 import {getCurrentSessionUser} from '@/lib/auth-helpers';
 import {LocaleSwitcher} from './LocaleSwitcher';
@@ -70,9 +71,16 @@ export async function Header() {
               <span className="text-muted" aria-hidden>
                 #{' '}
               </span>
-              <span className="text-txt truncate max-w-[140px]" title={user.email ?? user.id}>
+              {/* PLAN1-TASKS-PRIORITY-20260510 (사양 8) — 사용자 이름 클릭 → settings 진입.
+                  basePath `/project/plan1` 박힘 영역 next/link `/settings` 박음 (Next.js auto prefix). */}
+              <Link
+                href="/settings"
+                className="text-txt truncate max-w-[140px] hover:text-ink underline-offset-2 hover:underline"
+                title={t('settingsLink')}
+                aria-label={t('settingsLink')}
+              >
                 {user.name || user.email || user.id}
-              </span>
+              </Link>
               {/* ship-gate security Medium (2026-04-28): GET 링크 → POST form.
                   Better Auth sign-out 는 POST 만 처리 → GET 클릭 시 cookie 삭제 안 됨.
                   prefetch/email scanner 의 GET 으로 의도치 않은 로그아웃 (CSRF 표면) 도 동시 차단. */}

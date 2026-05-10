@@ -65,7 +65,8 @@
     "convertTaskToSchedule": "convert task to schedule",
     "createApiKey": "create api key",
     "revokeApiKey": "revoke api key",
-    "rotateApiKey": "rotate api key"
+    "rotateApiKey": "rotate api key",
+    "updateTask": "updating task"
   },
   "onboarding": {
     "welcome": "No schedules yet",
@@ -206,7 +207,9 @@
     "convertNow": "now",
     "convertAfterLast": "after last",
     "convertCancel": "cancel",
-    "delete": "delete"
+    "delete": "delete",
+    "fieldPriority": "priority",
+    "actionSave": "save"
   },
   "settings": {
     "heading": "settings",
@@ -241,5 +244,6 @@
     "statusActive": "active",
     "statusExpired": "expired",
     "rotateGraceWarning": "Old key revoked in 24h. Update agents within grace period."
-  }
+  },
+  "settingsLink": "settings"
 }
