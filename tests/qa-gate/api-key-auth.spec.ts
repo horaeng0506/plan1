@@ -21,12 +21,12 @@ test.describe('API key 발급 + bearer auth chain', () => {
   test('settings page 박힘 + "new API key" 버튼 박힘', async ({page}) => {
     await page.goto('/project/plan1/settings');
     await expect(page.getByText(/api key|API 키/i)).toBeVisible({timeout: 10000});
-    await expect(page.getByRole('button', {name: /new api key|새 API key/i})).toBeVisible();
+    await expect(page.getByRole('button', {name: /^\+ key$|^\+ 키$/i})).toBeVisible();
   });
 
   test('API key 발급 modal — 1회 노출 + "I have saved" checkbox + close 버튼 disabled', async ({page}) => {
     await page.goto('/project/plan1/settings');
-    await page.getByRole('button', {name: /new api key|새 API key/i}).click();
+    await page.getByRole('button', {name: /^\+ key$|^\+ 키$/i}).click();
 
     // modal 박힘
     const modal = page.getByTestId('api-key-modal').or(page.getByRole('dialog'));

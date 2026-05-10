@@ -22,13 +22,13 @@ test.describe('task 직접 작성 chain', () => {
     // 본 사이클 task UI 박힘 catch — TaskList sidebar AnalogClock 위
     const taskList = page.getByTestId('task-list');
     await expect(taskList).toBeVisible({timeout: 10000});
-    const newTaskButton = page.getByRole('button', {name: /new task|새 task/i});
+    const newTaskButton = page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i});
     await expect(newTaskButton).toBeVisible();
   });
 
   test('new task 클릭 → TaskModal 박힘 (Terminal 톤 단순 form · 시간 영역 X)', async ({page}) => {
     await page.goto('/project/plan1/');
-    await page.getByRole('button', {name: /new task|새 task/i}).click();
+    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
     // TaskModal 박힘 — 제목·소요·카테고리 3 필드만 (시간 영역 X 정합)
     await expect(page.getByLabel(/title|제목/i)).toBeVisible();
     await expect(page.getByLabel(/duration|소요/i)).toBeVisible();
@@ -40,7 +40,7 @@ test.describe('task 직접 작성 chain', () => {
   test('빈 task 박음 OK (모든 필드 nullable · b 영역 정합)', async ({page}) => {
     await page.goto('/project/plan1/');
     const startMs = Date.now();
-    await page.getByRole('button', {name: /new task|새 task/i}).click();
+    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
     // 모든 필드 비움 + submit
     await page.getByRole('button', {name: /add|추가|submit/i}).click();
     // task list 안 새 task 박힘 영영 (디폴트 "새 스케줄" title 박음 영영 정합)
@@ -52,7 +52,7 @@ test.describe('task 직접 작성 chain', () => {
 
   test('valid task 박음 (제목·소요·카테고리 모두 박음)', async ({page}) => {
     await page.goto('/project/plan1/');
-    await page.getByRole('button', {name: /new task|새 task/i}).click();
+    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
     await page.getByLabel(/title|제목/i).fill('test task spec');
     await page.getByLabel(/duration|소요/i).fill('30');
     // 카테고리 영영 = 첫 옵션 박음 영영 (디폴트 categories[0] 영영)
@@ -66,7 +66,7 @@ test.describe('task 직접 작성 chain', () => {
   test('task 삭제 → 즉시 삭제 + undo bar 박음 (Q19 정합)', async ({page}) => {
     await page.goto('/project/plan1/');
     // 사전 task 박음 박음
-    await page.getByRole('button', {name: /new task|새 task/i}).click();
+    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
     await page.getByLabel(/title|제목/i).fill('to-delete spec');
     await page.getByRole('button', {name: /add|추가|submit/i}).click();
     await expect(page.getByText('to-delete spec')).toBeVisible({timeout: 5000});
@@ -83,7 +83,7 @@ test.describe('task 직접 작성 chain', () => {
   test('"스케줄로 추가" 버튼 → 변형 chain (지금 시작 / 마지막 직후 / 취소)', async ({page}) => {
     await page.goto('/project/plan1/');
     // 사전 task 박음 (분기 1 영영 — 모든 필드 valid)
-    await page.getByRole('button', {name: /new task|새 task/i}).click();
+    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
     await page.getByLabel(/title|제목/i).fill('to-schedule spec');
     await page.getByLabel(/duration|소요/i).fill('30');
     await page.getByLabel(/category|카테고리/i).selectOption({index: 0});
@@ -91,7 +91,7 @@ test.describe('task 직접 작성 chain', () => {
     await expect(page.getByText('to-schedule spec')).toBeVisible({timeout: 5000});
     // "스케줄로 추가" 클릭 → 변형 chain
     const taskItem = page.getByText('to-schedule spec').locator('..');
-    await taskItem.getByRole('button', {name: /to schedule|스케줄로/i}).click();
+    await taskItem.getByRole('button', {name: /^\+ schedule$|^\+ 스케줄$/i}).click();
     // 변형 chain — 지금 시작 / 마지막 직후 / 취소 3 버튼 박힘
     await expect(taskItem.getByRole('button', {name: /now|지금/i})).toBeVisible();
     await expect(taskItem.getByRole('button', {name: /after last|마지막/i})).toBeVisible();
