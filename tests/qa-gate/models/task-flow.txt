@@ -1,0 +1,16 @@
+# PLAN1-TASKS-FEATURE-20260509 — task → schedule decideFlow PICT model
+# 변수 4개 · 2-way pairwise (UI 폼 영역 · test-case-design-principles.md § 6.2 정합)
+# 영역: title × durationMin × categoryId × expectedFlow
+# decideFlow 정합 영역 — null·undefined·"" / null·<=0 / null·stale → modal · 정상 → atomic
+
+title: null, empty, valid
+durationMin: null, zero, positive
+categoryId: null, valid, stale
+expectedFlow: modal, atomic
+
+# constraint — atomic 영영 의무 영역 (모든 필드 valid · 정상 영역만)
+IF [title] = "valid" AND [durationMin] = "positive" AND [categoryId] = "valid" THEN [expectedFlow] = "atomic";
+# 그 외 영역 = modal (분기 2 trigger)
+IF [title] IN {"null", "empty"} THEN [expectedFlow] = "modal";
+IF [durationMin] IN {"null", "zero"} THEN [expectedFlow] = "modal";
+IF [categoryId] IN {"null", "stale"} THEN [expectedFlow] = "modal";
