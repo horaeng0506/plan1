@@ -54,7 +54,10 @@
     "startScheduleNow": "بدء الجدول الآن",
     "addTask": "add task",
     "removeTask": "remove task",
-    "convertTaskToSchedule": "convert task to schedule"
+    "convertTaskToSchedule": "convert task to schedule",
+    "createApiKey": "create api key",
+    "revokeApiKey": "revoke api key",
+    "rotateApiKey": "rotate api key"
   },
   "nav": {
     "categories": "الفئات",
@@ -113,7 +116,12 @@
     "taskNotFound": "Task not found.",
     "taskNoCategoryId": "Task has no category — open task modal to set.",
     "taskNoDuration": "Task has no duration — open task modal to set.",
-    "taskDurationInvalid": "Task duration must be 0 or greater."
+    "taskDurationInvalid": "Task duration must be 0 or greater.",
+    "apiKeyNotFound": "API key not found.",
+    "apiKeyAlreadyRevoked": "API key already revoked.",
+    "apiKeyCreateFailed": "API key creation failed.",
+    "apiKeyNameInvalid": "API key name is required (max 100 chars).",
+    "apiKeyExpiresInvalid": "API key expires must be 1-3650 days or null."
   },
   "signIn": {
     "cta": "تسجيل الدخول",
@@ -199,5 +207,39 @@
     "convertAfterLast": "after last",
     "convertCancel": "cancel",
     "delete": "delete"
+  },
+  "settings": {
+    "heading": "settings",
+    "apiKeysSection": "api keys"
+  },
+  "apiKey": {
+    "empty": "no keys",
+    "create": "+ key",
+    "modalCreateHeading": "new api key",
+    "modalRotateHeading": "rotate api key",
+    "fieldName": "name",
+    "fieldExpires": "expires",
+    "expiresNever": "never",
+    "expires30": "30 days",
+    "expires90": "90 days",
+    "expires365": "1 year",
+    "actionCreate": "create",
+    "actionRotate": "rotate",
+    "actionRevoke": "revoke",
+    "actionCancel": "cancel",
+    "actionClose": "close",
+    "copyButton": "copy",
+    "copiedConfirm": "I have saved this key",
+    "warningOneTime": "This key shown ONCE. Save securely now.",
+    "tableName": "name",
+    "tablePrefix": "prefix",
+    "tableCreated": "created",
+    "tableLastUsed": "last used",
+    "tableExpires": "expires",
+    "tableActions": "actions",
+    "statusRevoked": "revoked",
+    "statusActive": "active",
+    "statusExpired": "expired",
+    "rotateGraceWarning": "Old key revoked in 24h. Update agents within grace period."
   }
 }
