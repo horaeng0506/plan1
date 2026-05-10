@@ -60,16 +60,23 @@ function rateLimited(request: NextRequest): boolean {
   return false;
 }
 
-// PLAN1-AUTH-FLAKE-EXEC (2026-05-04): public URL 재구성.
-// router (cofounder-router/src/index.js:143-144) 가 x-forwarded-host / x-forwarded-proto 를 set.
-// request.nextUrl.host 는 Vercel internal host 라 그대로 return 에 넣으면 portal 이 화이트리스트
-// 검증에서 reject (cofounder.co.kr 아님). 사용자 실제 요청 URL 재구성 후 return param 사용.
+// PLAN1-SETTINGS-404-FIX (2026-05-10): public URL 재구성 정공 처리.
+// Vercel platform 안 도달 시 `x-forwarded-host` 를 plan1 deploy host (예: `plan1-puce.vercel.app`)
+// 로 overwrite (dev-process.md § "preview-only 검증 한계 + prod-like 검증 환경 의무" 영역 박힌 패턴).
+// 결과: portal refresh-jwt return URL 안 host 잘못 박힘 + basePath strip 박혀 path 도 누락
+// → portal cookie 발급 후 redirect 시 사용자가 Vercel preview/default URL 안 도달 → 404.
+// catch: settings 신설 시점 본 결함 노출 (root path `/project/plan1` 은 middleware matcher 박지 X
+// 라 영향 X · sub-page 만 영향).
+//
+// 정공 fix:
+//   - host: PORTAL_ISSUER env 의 host 박음 (production = cofounder.co.kr)
+//   - path: request.nextUrl.basePath 박음 (Next.js 안 basePath strip 박힌 후 상태) + pathname prefix 박음
 function getPublicRequestUrl(request: NextRequest): string {
-  const host =
-    request.headers.get('x-forwarded-host') ?? request.headers.get('host') ?? request.nextUrl.host;
-  const proto =
-    request.headers.get('x-forwarded-proto') ?? request.nextUrl.protocol.replace(':', '');
-  return `${proto}://${host}${request.nextUrl.pathname}${request.nextUrl.search}`;
+  const portalUrl = new URL(process.env.PORTAL_ISSUER ?? 'https://cofounder.co.kr');
+  const host = portalUrl.host;
+  const proto = portalUrl.protocol.replace(':', '');
+  const basePath = request.nextUrl.basePath || '/project/plan1';
+  return `${proto}://${host}${basePath}${request.nextUrl.pathname}${request.nextUrl.search}`;
 }
 
 // PLAN1-AUTH-FLAKE-EXEC (2026-05-04): cofounder_jwt cookie 부재 시 self-heal redirect.
