@@ -19,11 +19,14 @@ import type {
   CategoryId,
   Schedule,
   ScheduleId,
-  ScheduleStatus
+  ScheduleStatus,
+  Task,
+  TaskId
 } from './domain/types';
 import * as categoriesApi from '@/app/actions/categories';
 import * as schedulesApi from '@/app/actions/schedules';
 import * as settingsApi from '@/app/actions/settings';
+import * as tasksApi from '@/app/actions/tasks';
 import {unwrapServerActionResult as unwrap, ServerActionError} from './server-action';
 import {armUndo} from './undo-store';
 
@@ -53,6 +56,8 @@ interface AppState {
   schedules: Schedule[];
   categories: Category[];
   settings: AppSettings;
+  // PLAN1-TASKS-FEATURE-20260509 — task 영역 (할일 → 스케줄 변환 chain).
+  tasks: Task[];
   loaded: boolean;
   loading: boolean;
   error: string | null;
@@ -66,6 +71,11 @@ interface AppState {
   init(): Promise<void>;
   refreshSchedules(): Promise<void>;
   clearLastAddedSchedule(): void;
+
+  // PLAN1-TASKS-FEATURE-20260509 — task actions.
+  addTask(input: {title: string | null; durationMin: number | null; categoryId: string | null}): Promise<void>;
+  removeTask(id: TaskId): Promise<void>;
+  convertTaskToSchedule(taskId: TaskId, startAt: number, chainedToPrev?: boolean): Promise<string>;
 
   addSchedule(input: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Promise<void>;
   updateSchedule(
@@ -94,6 +104,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   schedules: [],
   categories: DEFAULT_CATEGORIES,
   settings: DEFAULT_SETTINGS,
+  tasks: [],
   loaded: false,
   loading: false,
   error: null,
@@ -110,18 +121,21 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({loading: true, error: null, errorKey: null});
     initInflight = (async () => {
       try {
-        const [schedulesR, categoriesR, settingsR] = await Promise.all([
+        const [schedulesR, categoriesR, settingsR, tasksR] = await Promise.all([
           schedulesApi.listSchedules(),
           categoriesApi.listCategories(),
-          settingsApi.getSettings()
+          settingsApi.getSettings(),
+          tasksApi.listTasks()
         ]);
         const schedules = unwrap(schedulesR);
         const categories = unwrap(categoriesR);
         const settings = unwrap(settingsR);
+        const tasks = unwrap(tasksR);
         set({
           schedules,
           categories: categories.length > 0 ? categories : DEFAULT_CATEGORIES,
           settings,
+          tasks,
           loaded: true,
           loading: false
         });
@@ -219,5 +233,28 @@ export const useAppStore = create<AppState>((set, get) => ({
   async updateSettings(patch) {
     const updated = unwrap(await settingsApi.updateSettings(patch));
     set({settings: updated});
+  },
+
+  // PLAN1-TASKS-FEATURE-20260509 — task actions.
+  async addTask(input) {
+    const tasks = unwrap(await tasksApi.createTask(input));
+    set({tasks});
+  },
+
+  async removeTask(id) {
+    const deleted = get().tasks.find(t => t.id === id);
+    const tasks = unwrap(await tasksApi.deleteTask(id));
+    set({tasks});
+    if (deleted) {
+      armUndo({type: 'task-delete', task: deleted, ts: Date.now()});
+    }
+  },
+
+  async convertTaskToSchedule(taskId, startAt, chainedToPrev) {
+    const result = unwrap(await tasksApi.convertTaskToSchedule({taskId, startAt, chainedToPrev}));
+    // tasks 영영 server return · schedules 영영 별 영영 refreshSchedules 박음 (atomic chain 영영 schedule INSERT 영영 server side 박힘).
+    set({tasks: result.tasks});
+    await get().refreshSchedules();
+    return result.scheduleId;
   }
 }));

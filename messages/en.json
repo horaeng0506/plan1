@@ -59,7 +59,10 @@
     "changeTimerType": "change timer type",
     "setTheme": "set theme",
     "setFocus": "set focus view",
-    "startScheduleNow": "start schedule now"
+    "startScheduleNow": "start schedule now",
+    "addTask": "add task",
+    "removeTask": "remove task",
+    "convertTaskToSchedule": "convert task to schedule"
   },
   "onboarding": {
     "welcome": "No schedules yet",
@@ -163,16 +166,38 @@
     "unauthorized": "Sign in required.",
     "scheduleNotFound": "Schedule not found.",
     "categoryNotFound": "Category not found or not owned.",
-    "categoryHasSchedules": "Category has {scheduleCount} schedules. Confirm cascade delete to remove."
+    "categoryHasSchedules": "Category has {scheduleCount} schedules. Confirm cascade delete to remove.",
+    "taskNotFound": "Task not found.",
+    "taskNoCategoryId": "Task has no category — open task modal to set.",
+    "taskNoDuration": "Task has no duration — open task modal to set.",
+    "taskDurationInvalid": "Task duration must be 0 or greater."
   },
   "undo": {
     "actionLabel": "undo available",
-    "button": "undo"
+    "button": "undo",
+    "taskActionLabel": "task deleted"
   },
   "confirmation": {
     "scheduleAdded": "Schedule added"
   },
   "header": {
     "finalEndAtSuffix": "end"
+  },
+  "task": {
+    "heading": "tasks",
+    "empty": "no tasks",
+    "newTask": "+ task",
+    "modalHeading": "new task",
+    "modalEditHeading": "edit task",
+    "fieldTitle": "title",
+    "fieldDuration": "duration (min)",
+    "fieldCategory": "category",
+    "actionAdd": "add",
+    "actionCancel": "cancel",
+    "convertToSchedule": "+ schedule",
+    "convertNow": "now",
+    "convertAfterLast": "after last",
+    "convertCancel": "cancel",
+    "delete": "delete"
   }
 }

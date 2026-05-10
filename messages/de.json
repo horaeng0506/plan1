@@ -1,178 +1,203 @@
 {
-    "app": {
-        "tagline": "Zeitplanverwaltung",
-        "title": "Plan1"
-    },
-    "auth": {
-        "signIn": "Mit Google anmelden",
-        "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisierung. Melden Sie sich mit Google an, um zu beginnen.",
-        "signInRequired": "Melden Sie sich an, um plan1 zu verwenden"
-    },
-    "category": {
-        "confirmRemoveLabel": "Löschen bestätigen ({count})",
-        "confirmRemoveText": "{count} Zeitplan/Zeitpläne werden damit gelöscht. Klicken Sie erneut zur Bestätigung.",
-        "defaultName": "Standard",
-        "empty": "Keine Kategorien.",
-        "fieldColor": "Farbe",
-        "fieldName": "Name",
-        "header": "Kategorien",
-        "removeButton": "Entf.",
-        "scheduleCountSuffix": "{count} Zeitpläne"
-    },
-    "common": {
-        "add": "Hinzufügen",
-        "cancel": "Abbrechen",
-        "close": "Schließen",
-        "confirmDelete": "Löschen bestätigen",
-        "delete": "Löschen",
-        "dismiss": "Verwerfen",
-        "now": "Jetzt",
-        "retry": "Erneut versuchen",
-        "save": "Speichern"
-    },
-    "confirmation": {
-        "scheduleAdded": "Zeitplan hinzugefügt"
-    },
-    "error": {
-        "featureUnavailable": "Diese Funktion ist noch nicht verfügbar ({feature}).",
-        "loadFailedLabel": "Laden fehlgeschlagen:",
-        "mutationFailed": "{action} fehlgeschlagen: {error}",
-        "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-        "workingHoursInvalid": "Ungültige Arbeitszeiteneingabe ({reason})."
-    },
-    "header": {
-        "finalEndAtSuffix": "Ende"
-    },
-    "loading": "Lädt...",
-    "mutation": {
-        "changeTimerType": "Timertyp ändern",
-        "completeSchedule": "Zeitplan abschließen",
-        "extendTimer": "Timer verlängern",
-        "removeCategory": "Kategorie entfernen",
-        "setFocus": "Fokusansicht festlegen",
-        "setTheme": "Design festlegen",
-        "startScheduleNow": "Zeitplan jetzt starten"
-    },
-    "nav": {
-        "categories": "Kategorien",
-        "focus10h": "10h",
-        "focus12h": "12h",
-        "focus16h": "16h",
-        "focus20h": "20h",
-        "focus24h": "24h",
-        "focus4h": "4h",
-        "focus6h": "6h",
-        "focus8h": "8h",
-        "focusLabel": "Fokus",
-        "newSchedule": "Neu",
-        "themeDark": "Dunkel",
-        "themeLight": "Hell",
-        "themeSystem": "Auto",
-        "workingHours": "Stunden"
-    },
-    "onboarding": {
-        "addFirst": "Ersten Zeitplan hinzufügen",
-        "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, in der heutigen Zeitleiste und auf der analogen Uhr zu sehen.",
-        "welcome": "Noch keine Zeitpläne"
-    },
-    "schedule": {
-        "afterLastNoneHint": "Kein bevorstehender Zeitplan",
-        "buttonAfterLast": "Nächster nach letztem Zeitplan",
-        "buttonMinus10": "-10m",
-        "buttonMinus30": "-30m",
-        "buttonPlus10": "+10m",
-        "buttonPlus30": "+30m",
-        "buttonPlusHour": "+1h",
-        "categoryAddOption": "+ Kategorie hinzufügen",
-        "chainedCheckbox": "Mit vorherigem Zeitplan verketten",
-        "endLabelV2": "Endzeit",
-        "endPlaceholder": "Dauer auswählen",
-        "fieldCategory": "Kategorie",
-        "fieldDuration": "Dauer (Min)",
-        "fieldName": "Name",
-        "fieldStartHour": "Startstunde",
-        "fieldStartMinute": "Startminute",
-        "headerEdit": "Zeitplan bearbeiten",
-        "headerNew": "Neuer Zeitplan",
-        "hourSuffix": "h",
-        "hourTodaySuffix": "(heute)",
-        "hourTomorrowSuffix": "(morgen)",
-        "minuteSuffix": "m",
-        "prevChainLabel": "Verbundener vorheriger Zeitplan",
-        "titleDefault": "Neuer Zeitplan",
-        "warningOverlapLimit": "Maximal {limit} Zeitpläne können gleichzeitig überlappen. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
-    },
-    "serverError": {
-        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitplan/Zeitpläne. Bestätigen Sie kaskadierende Löschung zum Entfernen.",
-        "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
-        "scheduleNotFound": "Zeitplan nicht gefunden.",
-        "unauthorized": "Anmeldung erforderlich."
-    },
-    "signIn": {
-        "cta": "Anmelden",
-        "description": "Melden Sie sich bei Ihrem Mitgründer-Konto an, um Ihre Zeitpläne anzuzeigen und zu verwalten.",
-        "title": "Anmeldung erforderlich"
-    },
-    "timer": {
-        "buttonComplete": "Abgeschlossen",
-        "buttonFocus": "Fokus",
-        "buttonIdle": "Inaktiv",
-        "buttonStartNow": "Jetzt starten",
-        "categoryFallback": "?",
-        "idleEmpty": "Leerlauf · kein aktiver Zeitplan",
-        "labelElapsed": "Verstrichen",
-        "labelEndAt": "Endet um",
-        "labelRemaining": "Verbleibend",
-        "labelTarget": "Ziel",
-        "labelUntilUpcoming": "Bis bevorstehend",
-        "labelUpcoming": "Nächster Zeitplan",
-        "overlapLabel": "{count} Überschneidung(en)",
-        "simultaneousLabel": "Gleichzeitig · {count}",
-        "tooltipClickToFocus": "Klicken, um zu Fokus zu wechseln",
-        "tooltipClickToIdle": "Klicken, um zu Leerlauf zu wechseln",
-        "typeCountdown": "Countdown",
-        "typeCountup": "Hochzählen",
-        "typeTimer1": "Timer1"
-    },
-    "topbar": {
-        "back": "Zurück zum Portal",
-        "creditsLabel": "Credits",
-        "creditsPlaceholder": "—",
-        "guest": "Gast",
-        "languageLabel": "Sprache",
-        "logout": "Abmelden"
-    },
-    "undo": {
-        "actionLabel": "Rückgängig verfügbar",
-        "button": "Rückgängig"
-    },
-    "wallTime": {
-        "am": "Vorm.",
-        "pm": "Nachm."
-    },
-    "weekdays": [
-        "Sonne",
-        "Mo",
-        "Di",
-        "Mi",
-        "Do",
-        "Fr",
-        "Sa"
-    ],
-    "workingHours": {
-        "checkboxAlsoDefault": "Auch als Standard speichern",
-        "checkboxWeekdaysOnly": "Nur Werktage (Mo–Fr)",
-        "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
-        "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
-        "fieldDate": "Datum",
-        "fieldEndTime": "Endzeit",
-        "fieldFromDate": "von",
-        "fieldStartTime": "Startzeit",
-        "fieldToDate": "bis",
-        "header": "Arbeitszeiten",
-        "tabRange": "Bereich",
-        "tabSingle": "Einzeln",
-        "warningNoDates": "Keine Daten im Bereich anzuwenden. (Start > Ende oder Konflikt nur Werktage)",
-        "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen engeren Bereich."
-    }
+  "app": {
+    "tagline": "Zeitplanverwaltung",
+    "title": "Plan1"
+  },
+  "auth": {
+    "signIn": "Mit Google anmelden",
+    "signInDescription": "plan1 ist ein persönliches Planungstool mit geräteübergreifender Synchronisierung. Melden Sie sich mit Google an, um zu beginnen.",
+    "signInRequired": "Melden Sie sich an, um plan1 zu verwenden"
+  },
+  "category": {
+    "confirmRemoveLabel": "Löschen bestätigen ({count})",
+    "confirmRemoveText": "{count} Zeitplan/Zeitpläne werden damit gelöscht. Klicken Sie erneut zur Bestätigung.",
+    "defaultName": "Standard",
+    "empty": "Keine Kategorien.",
+    "fieldColor": "Farbe",
+    "fieldName": "Name",
+    "header": "Kategorien",
+    "removeButton": "Entf.",
+    "scheduleCountSuffix": "{count} Zeitpläne"
+  },
+  "common": {
+    "add": "Hinzufügen",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirmDelete": "Löschen bestätigen",
+    "delete": "Löschen",
+    "dismiss": "Verwerfen",
+    "now": "Jetzt",
+    "retry": "Erneut versuchen",
+    "save": "Speichern"
+  },
+  "confirmation": {
+    "scheduleAdded": "Zeitplan hinzugefügt"
+  },
+  "error": {
+    "featureUnavailable": "Diese Funktion ist noch nicht verfügbar ({feature}).",
+    "loadFailedLabel": "Laden fehlgeschlagen:",
+    "mutationFailed": "{action} fehlgeschlagen: {error}",
+    "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "workingHoursInvalid": "Ungültige Arbeitszeiteneingabe ({reason})."
+  },
+  "header": {
+    "finalEndAtSuffix": "Ende"
+  },
+  "loading": "Lädt...",
+  "mutation": {
+    "changeTimerType": "Timertyp ändern",
+    "completeSchedule": "Zeitplan abschließen",
+    "extendTimer": "Timer verlängern",
+    "removeCategory": "Kategorie entfernen",
+    "setFocus": "Fokusansicht festlegen",
+    "setTheme": "Design festlegen",
+    "startScheduleNow": "Zeitplan jetzt starten",
+    "addTask": "add task",
+    "removeTask": "remove task",
+    "convertTaskToSchedule": "convert task to schedule"
+  },
+  "nav": {
+    "categories": "Kategorien",
+    "focus10h": "10h",
+    "focus12h": "12h",
+    "focus16h": "16h",
+    "focus20h": "20h",
+    "focus24h": "24h",
+    "focus4h": "4h",
+    "focus6h": "6h",
+    "focus8h": "8h",
+    "focusLabel": "Fokus",
+    "newSchedule": "Neu",
+    "themeDark": "Dunkel",
+    "themeLight": "Hell",
+    "themeSystem": "Auto",
+    "workingHours": "Stunden"
+  },
+  "onboarding": {
+    "addFirst": "Ersten Zeitplan hinzufügen",
+    "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, in der heutigen Zeitleiste und auf der analogen Uhr zu sehen.",
+    "welcome": "Noch keine Zeitpläne"
+  },
+  "schedule": {
+    "afterLastNoneHint": "Kein bevorstehender Zeitplan",
+    "buttonAfterLast": "Nächster nach letztem Zeitplan",
+    "buttonMinus10": "-10m",
+    "buttonMinus30": "-30m",
+    "buttonPlus10": "+10m",
+    "buttonPlus30": "+30m",
+    "buttonPlusHour": "+1h",
+    "categoryAddOption": "+ Kategorie hinzufügen",
+    "chainedCheckbox": "Mit vorherigem Zeitplan verketten",
+    "endLabelV2": "Endzeit",
+    "endPlaceholder": "Dauer auswählen",
+    "fieldCategory": "Kategorie",
+    "fieldDuration": "Dauer (Min)",
+    "fieldName": "Name",
+    "fieldStartHour": "Startstunde",
+    "fieldStartMinute": "Startminute",
+    "headerEdit": "Zeitplan bearbeiten",
+    "headerNew": "Neuer Zeitplan",
+    "hourSuffix": "h",
+    "hourTodaySuffix": "(heute)",
+    "hourTomorrowSuffix": "(morgen)",
+    "minuteSuffix": "m",
+    "prevChainLabel": "Verbundener vorheriger Zeitplan",
+    "titleDefault": "Neuer Zeitplan",
+    "warningOverlapLimit": "Maximal {limit} Zeitpläne können gleichzeitig überlappen. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
+  },
+  "serverError": {
+    "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitplan/Zeitpläne. Bestätigen Sie kaskadierende Löschung zum Entfernen.",
+    "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
+    "scheduleNotFound": "Zeitplan nicht gefunden.",
+    "unauthorized": "Anmeldung erforderlich.",
+    "taskNotFound": "Task not found.",
+    "taskNoCategoryId": "Task has no category — open task modal to set.",
+    "taskNoDuration": "Task has no duration — open task modal to set.",
+    "taskDurationInvalid": "Task duration must be 0 or greater."
+  },
+  "signIn": {
+    "cta": "Anmelden",
+    "description": "Melden Sie sich bei Ihrem Mitgründer-Konto an, um Ihre Zeitpläne anzuzeigen und zu verwalten.",
+    "title": "Anmeldung erforderlich"
+  },
+  "timer": {
+    "buttonComplete": "Abgeschlossen",
+    "buttonFocus": "Fokus",
+    "buttonIdle": "Inaktiv",
+    "buttonStartNow": "Jetzt starten",
+    "categoryFallback": "?",
+    "idleEmpty": "Leerlauf · kein aktiver Zeitplan",
+    "labelElapsed": "Verstrichen",
+    "labelEndAt": "Endet um",
+    "labelRemaining": "Verbleibend",
+    "labelTarget": "Ziel",
+    "labelUntilUpcoming": "Bis bevorstehend",
+    "labelUpcoming": "Nächster Zeitplan",
+    "overlapLabel": "{count} Überschneidung(en)",
+    "simultaneousLabel": "Gleichzeitig · {count}",
+    "tooltipClickToFocus": "Klicken, um zu Fokus zu wechseln",
+    "tooltipClickToIdle": "Klicken, um zu Leerlauf zu wechseln",
+    "typeCountdown": "Countdown",
+    "typeCountup": "Hochzählen",
+    "typeTimer1": "Timer1"
+  },
+  "topbar": {
+    "back": "Zurück zum Portal",
+    "creditsLabel": "Credits",
+    "creditsPlaceholder": "—",
+    "guest": "Gast",
+    "languageLabel": "Sprache",
+    "logout": "Abmelden"
+  },
+  "undo": {
+    "actionLabel": "Rückgängig verfügbar",
+    "button": "Rückgängig",
+    "taskActionLabel": "task deleted"
+  },
+  "wallTime": {
+    "am": "Vorm.",
+    "pm": "Nachm."
+  },
+  "weekdays": [
+    "Sonne",
+    "Mo",
+    "Di",
+    "Mi",
+    "Do",
+    "Fr",
+    "Sa"
+  ],
+  "workingHours": {
+    "checkboxAlsoDefault": "Auch als Standard speichern",
+    "checkboxWeekdaysOnly": "Nur Werktage (Mo–Fr)",
+    "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
+    "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
+    "fieldDate": "Datum",
+    "fieldEndTime": "Endzeit",
+    "fieldFromDate": "von",
+    "fieldStartTime": "Startzeit",
+    "fieldToDate": "bis",
+    "header": "Arbeitszeiten",
+    "tabRange": "Bereich",
+    "tabSingle": "Einzeln",
+    "warningNoDates": "Keine Daten im Bereich anzuwenden. (Start > Ende oder Konflikt nur Werktage)",
+    "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen engeren Bereich."
+  },
+  "task": {
+    "heading": "tasks",
+    "empty": "no tasks",
+    "newTask": "+ task",
+    "modalHeading": "new task",
+    "modalEditHeading": "edit task",
+    "fieldTitle": "title",
+    "fieldDuration": "duration (min)",
+    "fieldCategory": "category",
+    "actionAdd": "add",
+    "actionCancel": "cancel",
+    "convertToSchedule": "+ schedule",
+    "convertNow": "now",
+    "convertAfterLast": "after last",
+    "convertCancel": "cancel",
+    "delete": "delete"
+  }
 }

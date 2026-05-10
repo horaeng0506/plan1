@@ -44,7 +44,11 @@ export type MutationContextKey =
   | 'changeTimerType'
   | 'setTheme'
   | 'setFocus'
-  | 'startScheduleNow';
+  | 'startScheduleNow'
+  // PLAN1-TASKS-FEATURE-20260509 — task 영역 mutation 키.
+  | 'addTask'
+  | 'removeTask'
+  | 'convertTaskToSchedule';
 
 export function useRunMutation() {
   const t = useTranslations();
