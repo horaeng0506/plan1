@@ -74,7 +74,8 @@ describe('assertCategoryOwnership IDOR 가드', () => {
     const {db, spies} = makeDbStub([{id: 'x'}]);
     await assertCategoryOwnership('u', 'c', db);
     // select 인자 검증: {id: column} 형태인지
-    const selectArg = spies.selectFn.mock.calls[0]?.[0];
+    const calls = spies.selectFn.mock.calls as unknown as Array<[Record<string, unknown>]>;
+    const selectArg = calls[0]?.[0];
     expect(selectArg).toBeTypeOf('object');
     expect(Object.keys(selectArg ?? {})).toEqual(['id']);
   });

@@ -73,7 +73,20 @@ interface AppState {
   clearLastAddedSchedule(): void;
 
   // PLAN1-TASKS-FEATURE-20260509 — task actions.
-  addTask(input: {title: string | null; durationMin: number | null; categoryId: string | null}): Promise<void>;
+  addTask(input: {
+    title: string | null;
+    durationMin: number | null;
+    categoryId: string | null;
+    priority?: number;
+  }): Promise<void>;
+  // PLAN1-TASKS-PRIORITY-20260510 — task 편집 (사양 4번).
+  updateTaskAction(input: {
+    id: TaskId;
+    title: string | null;
+    durationMin: number | null;
+    categoryId: string | null;
+    priority: number;
+  }): Promise<void>;
   removeTask(id: TaskId): Promise<void>;
   convertTaskToSchedule(taskId: TaskId, startAt: number, chainedToPrev?: boolean): Promise<string>;
 
@@ -238,6 +251,12 @@ export const useAppStore = create<AppState>((set, get) => ({
   // PLAN1-TASKS-FEATURE-20260509 — task actions.
   async addTask(input) {
     const tasks = unwrap(await tasksApi.createTask(input));
+    set({tasks});
+  },
+
+  // PLAN1-TASKS-PRIORITY-20260510 — task 편집 (사양 4번).
+  async updateTaskAction(input) {
+    const tasks = unwrap(await tasksApi.updateTask(input));
     set({tasks});
   },
 

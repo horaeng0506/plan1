@@ -5,21 +5,25 @@ import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useRunMutation} from '@/lib/use-run-mutation';
 import {decideFlow} from '@/lib/decideFlow';
+import {nowMs} from '@/lib/now';
 import type {Task} from '@/lib/domain/types';
 
 /**
  * PLAN1-TASKS-FEATURE-20260509 — sidebar 안 task list + 변형 chain.
- *
- * 본 사이클 단순화 (편집 모드 X · 다음 사이클 영역):
- *   - decideFlow.type === 'modal' → toast 영영 무시 (사용자 직접 task 삭제 후 재추가 박음)
- *   - decideFlow.type === 'atomic' → 변형 chain 박음 (지금 / 마지막 다음 / 취소 3 버튼)
+ * PLAN1-TASKS-PRIORITY-20260510 — 사양 1·2·3·4·7번:
+ *   1. 변형 chain 위치 = 기존 + 스케줄 / 삭제 자리 영역 (한 row 안 toggle 박음)
+ *   2. schedule 0개 시 "마지막 다음" 박지 X
+ *   3. + 할일 → + 단순 박음 (정사각형 box · `+ 할일` 본문 X)
+ *   4. task row 클릭 → onEditTask 호출 (편집 모달 PlanApp 안 박음)
+ *   7. + 스케줄 → ✓ · 삭제 → ×
  */
 
 interface TaskListProps {
   onNewTask: () => void;
+  onEditTask: (task: Task) => void;
 }
 
-export function TaskList({onNewTask}: TaskListProps) {
+export function TaskList({onNewTask, onEditTask}: TaskListProps) {
   const t = useTranslations();
   const runMutation = useRunMutation();
   const tasks = useAppStore(s => s.tasks);
@@ -30,8 +34,12 @@ export function TaskList({onNewTask}: TaskListProps) {
 
   const [armedTaskId, setArmedTaskId] = useState<string | null>(null);
 
+  // 사양 2번 — 오늘 스케줄 0개 시 "마지막 다음" 박지 X.
+  // 본 영영 = pending/active 박음 (done 박지 X · 종결 schedule 박지 X 영역).
+  const hasActiveSchedule = schedules.some(s => s.status !== 'done');
+
   const findLastEndAt = (): number => {
-    const now = Date.now();
+    const now = nowMs();
     let maxEnd = now;
     schedules.forEach(s => {
       if (s.status === 'done') return;
@@ -41,24 +49,28 @@ export function TaskList({onNewTask}: TaskListProps) {
     return maxEnd === now ? now : maxEnd + 1;
   };
 
-  const handleConvertClick = (task: Task) => {
+  const handleConvertClick = (e: React.MouseEvent, task: Task) => {
+    e.stopPropagation();
     const flow = decideFlow(
       {categoryId: task.categoryId, durationMin: task.durationMin},
       categories
     );
     if (flow.type === 'modal') {
-      // 본 사이클 단순화 — 편집 모드 다음 사이클 영역. 자, armed 영역 박지 X.
+      // 본 사이클 단순화 — modal 분기 박지 X (편집 모달 박음).
+      onEditTask(task);
       return;
     }
     setArmedTaskId(task.id);
   };
 
-  const handleConvertNow = async (task: Task) => {
+  const handleConvertNow = async (e: React.MouseEvent, task: Task) => {
+    e.stopPropagation();
     setArmedTaskId(null);
-    await runMutation(convertTaskToSchedule(task.id, Date.now(), true), 'convertTaskToSchedule');
+    await runMutation(convertTaskToSchedule(task.id, nowMs(), true), 'convertTaskToSchedule');
   };
 
-  const handleConvertAfterLast = async (task: Task) => {
+  const handleConvertAfterLast = async (e: React.MouseEvent, task: Task) => {
+    e.stopPropagation();
     setArmedTaskId(null);
     await runMutation(
       convertTaskToSchedule(task.id, findLastEndAt(), true),
@@ -66,8 +78,19 @@ export function TaskList({onNewTask}: TaskListProps) {
     );
   };
 
-  const handleDelete = async (task: Task) => {
+  const handleConvertCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setArmedTaskId(null);
+  };
+
+  const handleDelete = async (e: React.MouseEvent, task: Task) => {
+    e.stopPropagation();
     await runMutation(removeTask(task.id), 'removeTask');
+  };
+
+  const handleRowClick = (task: Task) => {
+    if (armedTaskId === task.id) return;
+    onEditTask(task);
   };
 
   const categoryColor = (id: string | null): string => {
@@ -75,16 +98,25 @@ export function TaskList({onNewTask}: TaskListProps) {
     return categories.find(c => c.id === id)?.color ?? 'transparent';
   };
 
+  const actionBtn =
+    'rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] text-txt hover:bg-bg';
+  const armedBtn =
+    'rounded-none border border-ink bg-ink px-2 py-0.5 text-[10px] text-bg hover:opacity-90';
+  const armedCancelBtn =
+    'rounded-none border border-line bg-panel px-2 py-0.5 text-[10px] text-txt hover:bg-bg';
+
   return (
     <div className="font-mono">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-xs text-muted">{t('task.heading')}</span>
+        {/* 사양 3번 — + 정사각형 박스 (지금 행 높이 박힘 영영). */}
         <button
           type="button"
           onClick={onNewTask}
-          className="rounded-none border border-line bg-panel px-2 py-1 text-xs text-txt hover:bg-bg"
+          aria-label={t('task.newTask')}
+          className="flex h-7 w-7 items-center justify-center rounded-none border border-line bg-panel text-base text-txt hover:bg-bg"
         >
-          {t('task.newTask')}
+          +
         </button>
       </div>
       {tasks.length === 0 && (
@@ -96,7 +128,8 @@ export function TaskList({onNewTask}: TaskListProps) {
           return (
             <li
               key={task.id}
-              className="border-l-4 bg-bg px-2 py-1 text-xs text-txt"
+              onClick={() => handleRowClick(task)}
+              className="cursor-pointer border-l-4 bg-bg px-2 py-1 text-xs text-txt hover:bg-panel"
               style={{borderLeftColor: categoryColor(task.categoryId)}}
             >
               <div className="flex items-center justify-between gap-2">
@@ -106,50 +139,57 @@ export function TaskList({onNewTask}: TaskListProps) {
                     <span className="ml-2 text-muted">{task.durationMin}m</span>
                   )}
                 </span>
-                {!armed && (
+                {/* 사양 1번 — 변형 chain 박힌 영영 + 스케줄/삭제 자리 영역 박음 (한 row 안 toggle). */}
+                {!armed ? (
+                  <div className="flex gap-1">
+                    {/* 사양 7번 — + 스케줄 → ✓ */}
+                    <button
+                      type="button"
+                      onClick={e => handleConvertClick(e, task)}
+                      aria-label={t('task.convertToSchedule')}
+                      className={actionBtn}
+                    >
+                      ✓
+                    </button>
+                    {/* 사양 7번 — 삭제 → × */}
+                    <button
+                      type="button"
+                      onClick={e => handleDelete(e, task)}
+                      aria-label={t('task.delete')}
+                      className={`${actionBtn} text-danger`}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
                   <div className="flex gap-1">
                     <button
                       type="button"
-                      onClick={() => handleConvertClick(task)}
-                      className="rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] text-txt hover:bg-bg"
+                      onClick={e => handleConvertNow(e, task)}
+                      className={armedBtn}
                     >
-                      {t('task.convertToSchedule')}
+                      {t('task.convertNow')}
                     </button>
+                    {/* 사양 2번 — schedule 0개 시 "마지막 다음" 박지 X. */}
+                    {hasActiveSchedule && (
+                      <button
+                        type="button"
+                        onClick={e => handleConvertAfterLast(e, task)}
+                        className={armedBtn}
+                      >
+                        {t('task.convertAfterLast')}
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => handleDelete(task)}
-                      className="rounded-none border border-line bg-panel px-1 py-0.5 text-[10px] text-danger hover:bg-bg"
+                      onClick={handleConvertCancel}
+                      className={armedCancelBtn}
                     >
-                      {t('task.delete')}
+                      {t('task.convertCancel')}
                     </button>
                   </div>
                 )}
               </div>
-              {armed && (
-                <div className="mt-1 flex gap-1">
-                  <button
-                    type="button"
-                    onClick={() => handleConvertNow(task)}
-                    className="rounded-none border border-ink bg-ink px-2 py-0.5 text-[10px] text-bg hover:opacity-90"
-                  >
-                    {t('task.convertNow')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleConvertAfterLast(task)}
-                    className="rounded-none border border-ink bg-ink px-2 py-0.5 text-[10px] text-bg hover:opacity-90"
-                  >
-                    {t('task.convertAfterLast')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setArmedTaskId(null)}
-                    className="rounded-none border border-line bg-panel px-2 py-0.5 text-[10px] text-txt hover:bg-bg"
-                  >
-                    {t('task.convertCancel')}
-                  </button>
-                </div>
-              )}
             </li>
           );
         })}

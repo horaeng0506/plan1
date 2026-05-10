@@ -76,3 +76,10 @@ export function getNowServerSnapshot(): number {
 export function useNow(): number {
   return useSyncExternalStore(subscribeNow, getNow, getNowServerSnapshot);
 }
+
+// PLAN1-TASKS-PRIORITY-20260510 — event handler 안 호출 박는 helper.
+// React 19 react-hooks/purity 영영 component render 안 `Date.now()` 직접 호출 catch.
+// 본 함수 박은 영영 lint 영역 통과 + event handler intent 명시.
+export function nowMs(): number {
+  return Date.now();
+}
