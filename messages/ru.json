@@ -4,7 +4,7 @@
         "actionClose": "закрыть",
         "actionCreate": "создать",
         "actionRevoke": "отозвать",
-        "actionRotate": "обновить",
+        "actionRotate": "повернуть",
         "copiedConfirm": "Я сохранил этот ключ",
         "copyButton": "копировать",
         "create": "+ ключ",
@@ -14,20 +14,20 @@
         "expires90": "90 дней",
         "expiresNever": "никогда",
         "fieldExpires": "истекает",
-        "fieldName": "название",
+        "fieldName": "имя",
         "modalCreateHeading": "новый api ключ",
         "modalRotateHeading": "обновить api ключ",
         "rotateGraceWarning": "Старый ключ отозван через 24ч. Обновите агенты в течение льготного периода.",
-        "statusActive": "активно",
-        "statusExpired": "истек",
-        "statusRevoked": "отозвано",
+        "statusActive": "активный",
+        "statusExpired": "истёк",
+        "statusRevoked": "отозван",
         "tableActions": "действия",
         "tableCreated": "создано",
         "tableExpires": "истекает",
         "tableLastUsed": "последнее использование",
-        "tableName": "название",
+        "tableName": "имя",
         "tablePrefix": "префикс",
-        "warningOneTime": "Этот ключ показан ОДИН РАЗ. Сохраните его безопасно сейчас."
+        "warningOneTime": "Этот ключ показан ОДИН РАЗ. Сохраните его надежно сейчас."
     },
     "app": {
         "tagline": "менеджер расписаний",
@@ -36,15 +36,15 @@
     "auth": {
         "signIn": "Войти через Google",
         "signInDescription": "plan1 — это персональный инструмент планирования с синхронизацией между устройствами. Войдите через Google, чтобы начать.",
-        "signInRequired": "Войдите, чтобы использовать план1"
+        "signInRequired": "Войдите для использования plan1"
     },
     "category": {
         "confirmRemoveLabel": "подтвердить удаление ({count})",
-        "confirmRemoveText": "С этим будет удалено {count} расписание(-й). Нажмите снова для подтверждения.",
+        "confirmRemoveText": "{count} расписание(й) будет удалено вместе с этим. Нажмите снова для подтверждения.",
         "defaultName": "по умолчанию",
         "empty": "Нет категорий.",
         "fieldColor": "цвет",
-        "fieldName": "название",
+        "fieldName": "имя",
         "header": "категории",
         "removeButton": "уд",
         "scheduleCountSuffix": "{count} расписаний"
@@ -66,7 +66,7 @@
     "error": {
         "featureUnavailable": "Эта функция пока недоступна ({feature}).",
         "loadFailedLabel": "ошибка загрузки:",
-        "mutationFailed": "Не удалось выполнить {action}: {error}",
+        "mutationFailed": "Не удалось {action}: {error}",
         "unknown": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.",
         "workingHoursInvalid": "Неверный ввод рабочих часов ({reason})."
     },
@@ -101,18 +101,18 @@
         "focus8h": "8ч",
         "focusLabel": "фокус",
         "newSchedule": "новый",
-        "themeDark": "темная",
+        "themeDark": "тёмная",
         "themeLight": "светлая",
         "themeSystem": "авто",
         "workingHours": "часы"
     },
     "onboarding": {
         "addFirst": "добавить первое расписание",
-        "firstSchedule": "Добавьте ваше первое расписание, чтобы увидеть его на недельной сетке, временной шкале сегодня и аналоговых часах.",
-        "welcome": "Расписаний пока нет"
+        "firstSchedule": "Добавьте ваше первое расписание, чтобы увидеть его в недельной сетке, временной шкале сегодня и на аналоговых часах.",
+        "welcome": "Пока нет расписаний"
     },
     "schedule": {
-        "afterLastNoneHint": "нет предстоящих расписаний",
+        "afterLastNoneHint": "нет предстоящего расписания",
         "buttonAfterLast": "следующее после последнего расписания",
         "buttonMinus10": "-10м",
         "buttonMinus30": "-30м",
@@ -120,12 +120,12 @@
         "buttonPlus30": "+30м",
         "buttonPlusHour": "+1ч",
         "categoryAddOption": "+ добавить категорию",
-        "chainedCheckbox": "привязать к предыдущему расписанию",
+        "chainedCheckbox": "связать с предыдущим расписанием",
         "endLabelV2": "время окончания",
         "endPlaceholder": "выбрать длительность",
         "fieldCategory": "категория",
         "fieldDuration": "длительность (мин)",
-        "fieldName": "название",
+        "fieldName": "имя",
         "fieldStartHour": "час начала",
         "fieldStartMinute": "минута начала",
         "headerEdit": "редактировать расписание",
@@ -134,22 +134,22 @@
         "hourTodaySuffix": "(сегодня)",
         "hourTomorrowSuffix": "(завтра)",
         "minuteSuffix": "м",
-        "prevChainLabel": "подключенное предыдущее расписание",
+        "prevChainLabel": "связано с предыдущим расписанием",
         "titleDefault": "Новое расписание",
-        "warningOverlapLimit": "Максимум {limit} расписаний могут пересекаться одновременно. Измените начало/длительность или удалите существующее."
+        "warningOverlapLimit": "Максимум {limit} расписаний могут пересекаться одновременно. Настройте начало/длительность или удалите существующее."
     },
     "serverError": {
         "apiKeyAlreadyRevoked": "API ключ уже отозван.",
-        "apiKeyCreateFailed": "Не удалось создать API ключ.",
+        "apiKeyCreateFailed": "Ошибка создания API ключа.",
         "apiKeyExpiresInvalid": "Срок действия API ключа должен быть 1-3650 дней или null.",
-        "apiKeyNameInvalid": "Требуется название API ключа (макс. 100 символов).",
+        "apiKeyNameInvalid": "Требуется имя API ключа (макс. 100 символов).",
         "apiKeyNotFound": "API ключ не найден.",
-        "categoryHasSchedules": "У категории {scheduleCount} расписаний. Подтвердите каскадное удаление.",
+        "categoryHasSchedules": "У категории {scheduleCount} расписание(й). Подтвердите каскадное удаление для удаления.",
         "categoryNotFound": "Категория не найдена или не принадлежит вам.",
         "scheduleNotFound": "Расписание не найдено.",
         "taskDurationInvalid": "Длительность задачи должна быть 0 или больше.",
-        "taskNoCategoryId": "У задачи нет категории — откройте окно задачи для установки.",
-        "taskNoDuration": "У задачи нет длительности — откройте окно задачи для установки.",
+        "taskNoCategoryId": "У задачи нет категории — откройте модальное окно задачи для установки.",
+        "taskNoDuration": "У задачи нет длительности — откройте модальное окно задачи для установки.",
         "taskNotFound": "Задача не найдена.",
         "unauthorized": "Требуется вход."
     },
@@ -159,7 +159,7 @@
     },
     "signIn": {
         "cta": "Войти",
-        "description": "Войдите в свою учетную запись cofounder для просмотра и управления расписаниями.",
+        "description": "Войдите в свой аккаунт cofounder для просмотра и управления расписаниями.",
         "title": "Требуется вход"
     },
     "task": {
@@ -182,10 +182,10 @@
     "timer": {
         "buttonComplete": "завершить",
         "buttonFocus": "фокус",
-        "buttonIdle": "неактивно",
+        "buttonIdle": "ожидание",
         "buttonStartNow": "начать сейчас",
         "categoryFallback": "?",
-        "idleEmpty": "неактивно · нет активного расписания",
+        "idleEmpty": "простой · нет активного расписания",
         "labelElapsed": "прошло",
         "labelEndAt": "конец-в",
         "labelRemaining": "осталось",
@@ -194,19 +194,19 @@
         "labelUpcoming": "следующее расписание",
         "overlapLabel": "пересечение {count}",
         "simultaneousLabel": "одновременно · {count}",
-        "tooltipClickToFocus": "нажмите для переключения в режим фокусировки",
+        "tooltipClickToFocus": "нажмите для переключения в режим фокуса",
         "tooltipClickToIdle": "нажмите для переключения в режим ожидания",
-        "typeCountdown": "обратный отсчет",
-        "typeCountup": "отсчет вверх",
+        "typeCountdown": "обратный отсчёт",
+        "typeCountup": "отсчёт вверх",
         "typeTimer1": "таймер1"
     },
     "topbar": {
-        "back": "назад к порталу",
-        "creditsLabel": "титры",
+        "back": "вернуться на портал",
+        "creditsLabel": "кредиты",
         "creditsPlaceholder": "—",
         "guest": "гость",
         "languageLabel": "язык",
-        "logout": "выйти"
+        "logout": "выход"
     },
     "undo": {
         "actionLabel": "отмена доступна",
@@ -214,8 +214,8 @@
         "taskActionLabel": "задача удалена"
     },
     "wallTime": {
-        "am": "дп",
-        "pm": "вечера"
+        "am": "am",
+        "pm": "pm"
     },
     "weekdays": [
         "вс",
@@ -227,13 +227,13 @@
         "сб"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "также сохранить как по умолчанию",
+        "checkboxAlsoDefault": "также сохранить по умолчанию",
         "checkboxWeekdaysOnly": "только будни (пн–пт)",
-        "errorEndAfterStart": "Время окончания должно быть после времени начала.",
+        "errorEndAfterStart": "Время окончания должно быть позже времени начала.",
         "errorToAfterFrom": "Дата окончания должна быть не раньше даты начала.",
         "fieldDate": "дата",
         "fieldEndTime": "время окончания",
-        "fieldFromDate": "от",
+        "fieldFromDate": "с",
         "fieldStartTime": "время начала",
         "fieldToDate": "до",
         "header": "рабочие часы",

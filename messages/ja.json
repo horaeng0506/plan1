@@ -8,46 +8,46 @@
         "copiedConfirm": "このキーを保存しました",
         "copyButton": "コピー",
         "create": "+ キー",
-        "empty": "キーがありません",
+        "empty": "キーなし",
         "expires30": "30日間",
         "expires365": "1年",
         "expires90": "90日間",
         "expiresNever": "なし",
-        "fieldExpires": "expires",
+        "fieldExpires": "有効期限",
         "fieldName": "名前",
         "modalCreateHeading": "新しいAPIキー",
         "modalRotateHeading": "APIキーをローテーション",
         "rotateGraceWarning": "古いキーは24時間後に無効化されます。猶予期間内にエージェントを更新してください。",
         "statusActive": "アクティブ",
-        "statusExpired": "expired",
+        "statusExpired": "期限切れ",
         "statusRevoked": "無効化済み",
         "tableActions": "アクション",
-        "tableCreated": "作成済み",
-        "tableExpires": "expires",
+        "tableCreated": "作成日時",
+        "tableExpires": "有効期限",
         "tableLastUsed": "最終使用",
         "tableName": "名前",
-        "tablePrefix": "prefix",
+        "tablePrefix": "プレフィックス",
         "warningOneTime": "このキーは一度だけ表示されます。今すぐ安全に保存してください。"
     },
     "app": {
-        "tagline": "スケジュールマネージャー",
-        "title": "plan1"
+        "tagline": "スケジュール管理",
+        "title": "プラン1"
     },
     "auth": {
-        "signIn": "Googleでサインイン",
-        "signInDescription": "plan1はクロスデバイス同期機能を備えた個人用スケジュールツールです。Googleでサインインして始めましょう。",
+        "signIn": "Googleでログイン",
+        "signInDescription": "plan1はデバイス間で同期できる個人用スケジュールツールです。Googleでサインインして始めましょう。",
         "signInRequired": "plan1を使用するにはサインインしてください"
     },
     "category": {
         "confirmRemoveLabel": "削除確認 ({count})",
-        "confirmRemoveText": "{count}個のスケジュールがこれと一緒に削除されます。確認するにはもう一度クリックしてください。",
+        "confirmRemoveText": "{count}件のスケジュールがこれと一緒に削除されます。確認するにはもう一度クリックしてください。",
         "defaultName": "デフォルト",
-        "empty": "カテゴリがありません。",
+        "empty": "カテゴリーがありません。",
         "fieldColor": "色",
         "fieldName": "名前",
-        "header": "カテゴリ",
-        "removeButton": "rm",
-        "scheduleCountSuffix": "{count} 個のスケジュール"
+        "header": "カテゴリー",
+        "removeButton": "削除",
+        "scheduleCountSuffix": "{count}件のスケジュール"
     },
     "common": {
         "add": "追加",
@@ -61,14 +61,14 @@
         "save": "保存"
     },
     "confirmation": {
-        "scheduleAdded": "スケジュールが追加されました"
+        "scheduleAdded": "スケジュールを追加しました"
     },
     "error": {
-        "featureUnavailable": "この機能はまだ利用できません ({feature})。",
+        "featureUnavailable": "この機能はまだ利用できません（{feature}）。",
         "loadFailedLabel": "読み込み失敗:",
         "mutationFailed": "{action}に失敗しました: {error}",
         "unknown": "予期しないエラーが発生しました。もう一度お試しください。",
-        "workingHoursInvalid": "作業時間の入力が無効です({reason})。"
+        "workingHoursInvalid": "作業時間の入力が無効です（{reason}）。"
     },
     "header": {
         "finalEndAtSuffix": "終了"
@@ -81,29 +81,29 @@
         "convertTaskToSchedule": "タスクをスケジュールに変換",
         "createApiKey": "APIキーを作成",
         "extendTimer": "タイマーを延長",
-        "removeCategory": "カテゴリを削除",
+        "removeCategory": "カテゴリーを削除",
         "removeTask": "タスクを削除",
-        "revokeApiKey": "APIキーを無効化",
+        "revokeApiKey": "APIキーを取り消す",
         "rotateApiKey": "APIキーをローテーション",
-        "setFocus": "フォーカスビューを設定",
+        "setFocus": "集中ビューを設定",
         "setTheme": "テーマを設定",
         "startScheduleNow": "今すぐスケジュールを開始"
     },
     "nav": {
-        "categories": "カテゴリ",
-        "focus10h": "10h",
-        "focus12h": "12h",
-        "focus16h": "16h",
-        "focus20h": "20h",
-        "focus24h": "24h",
-        "focus4h": "4h",
-        "focus6h": "6h",
-        "focus8h": "8h",
-        "focusLabel": "フォーカス",
+        "categories": "カテゴリー",
+        "focus10h": "10時間",
+        "focus12h": "12時間",
+        "focus16h": "16時間",
+        "focus20h": "20時間",
+        "focus24h": "24時間",
+        "focus4h": "4時間",
+        "focus6h": "6時間",
+        "focus8h": "8時間",
+        "focusLabel": "集中",
         "newSchedule": "新規",
         "themeDark": "ダーク",
         "themeLight": "ライト",
-        "themeSystem": "auto",
+        "themeSystem": "自動",
         "workingHours": "時間"
     },
     "onboarding": {
@@ -112,46 +112,46 @@
         "welcome": "スケジュールはまだありません"
     },
     "schedule": {
-        "afterLastNoneHint": "次の予定なし",
-        "buttonAfterLast": "最後のスケジュールの後の次",
-        "buttonMinus10": "-10m",
-        "buttonMinus30": "-30m",
-        "buttonPlus10": "+10m",
-        "buttonPlus30": "+30m",
-        "buttonPlusHour": "+1h",
-        "categoryAddOption": "+ カテゴリを追加",
+        "afterLastNoneHint": "今後のスケジュールはありません",
+        "buttonAfterLast": "最後のスケジュールの次",
+        "buttonMinus10": "-10分",
+        "buttonMinus30": "-30分",
+        "buttonPlus10": "+10分",
+        "buttonPlus30": "+30分",
+        "buttonPlusHour": "+1時間",
+        "categoryAddOption": "+ カテゴリーを追加",
         "chainedCheckbox": "前のスケジュールに連結",
         "endLabelV2": "終了時刻",
         "endPlaceholder": "期間を選択",
-        "fieldCategory": "カテゴリ",
-        "fieldDuration": "期間 (分)",
+        "fieldCategory": "カテゴリー",
+        "fieldDuration": "期間（分）",
         "fieldName": "名前",
         "fieldStartHour": "開始時刻",
         "fieldStartMinute": "開始分",
         "headerEdit": "スケジュールを編集",
         "headerNew": "新しいスケジュール",
-        "hourSuffix": "h",
+        "hourSuffix": "時間",
         "hourTodaySuffix": "(今日)",
         "hourTomorrowSuffix": "(明日)",
-        "minuteSuffix": "m",
-        "prevChainLabel": "接続された前のスケジュール",
+        "minuteSuffix": "分",
+        "prevChainLabel": "前のスケジュールに接続済み",
         "titleDefault": "新しいスケジュール",
-        "warningOverlapLimit": "同時に重複できるスケジュールは最大{limit}個です。開始時刻/期間を調整するか、既存のものを削除してください。"
+        "warningOverlapLimit": "同時に重複できるスケジュールは最大{limit}件です。開始時刻/期間を調整するか、既存のものを削除してください。"
     },
     "serverError": {
-        "apiKeyAlreadyRevoked": "APIキーは既に無効化されています。",
+        "apiKeyAlreadyRevoked": "APIキーは既に取り消されています。",
         "apiKeyCreateFailed": "APIキーの作成に失敗しました。",
         "apiKeyExpiresInvalid": "APIキーの有効期限は1〜3650日またはnullである必要があります。",
-        "apiKeyNameInvalid": "APIキー名は必須です(最大100文字)。",
+        "apiKeyNameInvalid": "APIキー名は必須です（最大100文字）。",
         "apiKeyNotFound": "APIキーが見つかりません。",
-        "categoryHasSchedules": "カテゴリには{scheduleCount}個のスケジュールがあります。削除するにはカスケード削除を確認してください。",
-        "categoryNotFound": "カテゴリが見つからないか、所有していません。",
+        "categoryHasSchedules": "カテゴリには{scheduleCount}件のスケジュールがあります。削除するには連鎖削除を確認してください。",
+        "categoryNotFound": "カテゴリーが見つからないか、所有していません。",
         "scheduleNotFound": "スケジュールが見つかりません。",
-        "taskDurationInvalid": "タスクの期間は0以上でなければなりません。",
-        "taskNoCategoryId": "タスクにカテゴリがありません — タスクモーダルを開いて設定してください。",
+        "taskDurationInvalid": "タスクの期間は0以上である必要があります。",
+        "taskNoCategoryId": "タスクにカテゴリーがありません — タスクモーダルを開いて設定してください。",
         "taskNoDuration": "タスクに期間がありません — タスクモーダルを開いて設定してください。",
         "taskNotFound": "タスクが見つかりません。",
-        "unauthorized": "サインインが必要です。"
+        "unauthorized": "ログインが必要です。"
     },
     "settings": {
         "apiKeysSection": "APIキー",
@@ -160,7 +160,7 @@
     "signIn": {
         "cta": "サインイン",
         "description": "スケジュールを表示・管理するには、cofounderアカウントにサインインしてください。",
-        "title": "サインインが必要です"
+        "title": "ログインが必要です"
     },
     "task": {
         "actionAdd": "追加",
@@ -170,35 +170,35 @@
         "convertNow": "現在",
         "convertToSchedule": "+ スケジュール",
         "delete": "削除",
-        "empty": "タスクがありません",
-        "fieldCategory": "カテゴリ",
-        "fieldDuration": "期間 (分)",
+        "empty": "タスクなし",
+        "fieldCategory": "カテゴリー",
+        "fieldDuration": "期間（分）",
         "fieldTitle": "タイトル",
         "heading": "タスク",
         "modalEditHeading": "タスクを編集",
-        "modalHeading": "新しいタスク",
+        "modalHeading": "新規タスク",
         "newTask": "+ タスク"
     },
     "timer": {
         "buttonComplete": "完了",
-        "buttonFocus": "フォーカス",
+        "buttonFocus": "集中",
         "buttonIdle": "アイドル",
         "buttonStartNow": "今すぐ開始",
         "categoryFallback": "?",
-        "idleEmpty": "待機中 · アクティブなスケジュールなし",
-        "labelElapsed": "経過時間",
-        "labelEndAt": "end-at",
+        "idleEmpty": "アイドル · アクティブなスケジュールなし",
+        "labelElapsed": "経過",
+        "labelEndAt": "終了時刻",
         "labelRemaining": "残り",
         "labelTarget": "目標",
         "labelUntilUpcoming": "次の予定まで",
         "labelUpcoming": "次のスケジュール",
-        "overlapLabel": "重複 {count}",
-        "simultaneousLabel": "同時実行中 · {count}",
+        "overlapLabel": "{count}件重複",
+        "simultaneousLabel": "同時進行 · {count}",
         "tooltipClickToFocus": "クリックして集中に切り替え",
         "tooltipClickToIdle": "クリックしてアイドルに切り替え",
         "typeCountdown": "カウントダウン",
         "typeCountup": "カウントアップ",
-        "typeTimer1": "timer1"
+        "typeTimer1": "タイマー1"
     },
     "topbar": {
         "back": "ポータルに戻る",
@@ -209,7 +209,7 @@
         "logout": "ログアウト"
     },
     "undo": {
-        "actionLabel": "元に戻せます",
+        "actionLabel": "元に戻すが利用可能",
         "button": "元に戻す",
         "taskActionLabel": "タスクを削除しました"
     },
@@ -228,7 +228,7 @@
     ],
     "workingHours": {
         "checkboxAlsoDefault": "デフォルトとしても保存",
-        "checkboxWeekdaysOnly": "平日のみ (月–金)",
+        "checkboxWeekdaysOnly": "平日のみ（月〜金）",
         "errorEndAfterStart": "終了時刻は開始時刻より後である必要があります。",
         "errorToAfterFrom": "終了日は開始日以降である必要があります。",
         "fieldDate": "日付",
@@ -236,10 +236,10 @@
         "fieldFromDate": "開始",
         "fieldStartTime": "開始時刻",
         "fieldToDate": "まで",
-        "header": "勤務時間",
+        "header": "作業時間",
         "tabRange": "範囲",
         "tabSingle": "単一",
         "warningNoDates": "範囲内に適用する日付がありません。(開始 > 終了 または 平日のみの競合)",
-        "warningTruncated": "範囲が{max}日を超えているため、一部のみ処理されました。より狭い範囲をお試しください。"
+        "warningTruncated": "範囲が{max}日を超えているため、一部のみ処理されました。範囲を狭めてください。"
     }
 }
