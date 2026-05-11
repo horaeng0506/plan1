@@ -179,7 +179,8 @@
     "apiKeyAlreadyRevoked": "API key already revoked.",
     "apiKeyCreateFailed": "API key creation failed.",
     "apiKeyNameInvalid": "API key name is required (max 100 chars).",
-    "apiKeyExpiresInvalid": "API key expires must be 1-3650 days or null."
+    "apiKeyExpiresInvalid": "API key expires must be 1-3650 days or null.",
+    "taskBucketInvalid": "Invalid bucket value."
   },
   "undo": {
     "actionLabel": "undo available",
@@ -209,7 +210,10 @@
     "convertCancel": "cancel",
     "delete": "delete",
     "fieldPriority": "priority",
-    "actionSave": "save"
+    "actionSave": "save",
+    "fieldBucket": "List",
+    "bucketNow": "Now",
+    "bucketLater": "Later"
   },
   "settings": {
     "heading": "settings",

@@ -18,15 +18,18 @@ export interface Schedule {
   updatedAt: number;
 }
 // PLAN1-TASKS-FEATURE-20260509 — task domain type (client-side · createdAt: number ms).
-// schema.ts 의 plan1Tasks row type (Date) → store rowToDomain 영영 변환 박음 정합.
+// schema.ts 의 plan1Tasks row type (Date) → store rowToDomain 변환 정합.
 export type TaskId = string;
+export type TaskBucket = 'now' | 'later';
 export interface Task {
   id: TaskId;
   title: string | null;
   durationMin: number | null;
   categoryId: CategoryId | null;
   // PLAN1-TASKS-PRIORITY-20260510 — 우선순위 (1 = 최우선 · 1~N).
+  // PLAN1-TASKS-BUCKET-20260511 — 두 bucket priority namespace 독립.
   priority: number;
+  bucket: TaskBucket;
   createdAt: number;
 }
 

@@ -5,19 +5,21 @@ import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useRunMutation} from '@/lib/use-run-mutation';
 import {useEscapeKey} from '@/lib/use-escape-key';
-import type {Task} from '@/lib/domain/types';
+import type {Task, TaskBucket} from '@/lib/domain/types';
 
 /**
  * PLAN1-TASKS-FEATURE-20260509 (S3) — 새 task 박음 modal.
  * PLAN1-TASKS-PRIORITY-20260510 (사양 4·5·6번) — 편집 모드 + 우선순위 박스 버튼 + 소요시간 +/- 버튼.
+ * PLAN1-TASKS-BUCKET-20260511 — bucket 드롭다운 (title 위 · default 'now') + priorityMax 동적 + clip.
  *
- * mode:
- *   - 'create': 새 task 박음. priority default 1 (최우선) · max = (현재 task 개수)+1
- *   - 'edit':   기존 task 편집. priority default 박음 = task.priority · max = 현재 task 개수
+ * priorityMax 동적 (logic-critic M1 정합):
+ *   - create: bucketTaskCount + 1
+ *   - edit + same bucket: bucketTaskCount
+ *   - edit + different bucket: bucketTaskCount + 1 (자기 신규 insert 와 동치)
  *
- * 사양:
- *   - 5번 priority — 카테고리 다음 행 박음. 박스 버튼 1~max. 디폴트 = create 1 / edit task.priority
- *   - 6번 duration — NewScheduleModal 같은 +10/+30/+60 버튼 chain. -10/-30 박지 X (task 영역 단순화)
+ * bucket 드롭다운 변경 시 priority clip (M1 race 차단):
+ *   - 현재 priority 가 새 max 초과 시 자동 max 로 clip
+ *   - setBucket + setPriority 같은 commit phase (React 18 batching)
  */
 
 interface TaskModalProps {
@@ -35,21 +37,33 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
   const updateTaskAction = useAppStore(s => s.updateTaskAction);
 
   const isEdit = mode === 'edit' && task !== undefined;
-
-  // priority max: edit = 현재 task 개수 · create = (현재 + 1)
-  const priorityMax = isEdit ? tasks.length : tasks.length + 1;
-  // priority default: edit = task.priority · create = 1 (최우선)
-  const initialPriority = isEdit ? (task!.priority ?? 1) : 1;
+  const initialBucket: TaskBucket = isEdit ? (task!.bucket ?? 'now') : 'now';
 
   const [title, setTitle] = useState(task?.title ?? '');
   const [durationMin, setDurationMin] = useState<number>(task?.durationMin ?? 0);
   const [categoryId, setCategoryId] = useState<string>(
     task?.categoryId ?? categories[0]?.id ?? ''
   );
+  const [bucket, setBucket] = useState<TaskBucket>(initialBucket);
+  // priorityMax 계산 (현재 bucket 기준 · 동적 재계산)
+  const computeMax = (b: TaskBucket): number => {
+    const count = tasks.filter(t => t.bucket === b).length;
+    if (!isEdit) return count + 1;
+    return b === initialBucket ? count : count + 1;
+  };
+  const priorityMax = computeMax(bucket);
+  const initialPriority = isEdit ? (task!.priority ?? 1) : 1;
   const [priority, setPriority] = useState<number>(initialPriority);
   const [busy, setBusy] = useState(false);
 
   useEscapeKey(onClose, !busy);
+
+  const handleBucketChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newBucket = e.target.value as TaskBucket;
+    setBucket(newBucket);
+    const newMax = computeMax(newBucket);
+    if (priority > newMax) setPriority(newMax);
+  };
 
   const bumpDuration = (delta: number) => {
     setDurationMin(d => Math.max(0, d + delta));
@@ -70,7 +84,8 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             title: finalTitle,
             durationMin: finalDuration,
             categoryId: finalCategoryId,
-            priority
+            priority,
+            bucket
           }),
           'updateTask'
         );
@@ -80,7 +95,8 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             title: finalTitle,
             durationMin: finalDuration,
             categoryId: finalCategoryId,
-            priority
+            priority,
+            bucket
           }),
           'addTask'
         );
@@ -108,6 +124,22 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
         <h2 className="mb-4 text-sm font-medium text-ink">
           {isEdit ? t('task.modalEditHeading') : t('task.modalHeading')}
         </h2>
+        {/* PLAN1-TASKS-BUCKET-20260511 — bucket 드롭다운 (title 위 · 1행). 사양 5번. */}
+        <div className="mb-3">
+          <label className="mb-1 block text-xs text-muted" htmlFor="task-bucket">
+            {t('task.fieldBucket')}
+          </label>
+          <select
+            id="task-bucket"
+            value={bucket}
+            onChange={handleBucketChange}
+            disabled={busy}
+            className={fieldCls}
+          >
+            <option value="now">{t('task.bucketNow')}</option>
+            <option value="later">{t('task.bucketLater')}</option>
+          </select>
+        </div>
         <div className="mb-3">
           <label className="mb-1 block text-xs text-muted" htmlFor="task-title">
             {t('task.fieldTitle')}
@@ -130,7 +162,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             type="number"
             min={0}
             value={durationMin}
-            onChange={e => setDurationMin(Math.max(0, Number(e.target.value) || 0))}
+            onChange={e => setDurationMin(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
             disabled={busy}
             className={fieldCls}
           />
