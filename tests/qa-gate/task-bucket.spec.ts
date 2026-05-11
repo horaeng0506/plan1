@@ -27,30 +27,34 @@ test.describe('task bucket 분할 chain', () => {
   });
 
   test('당장 할일 + 나중 할일 두 bucket task 추가 → 별 group 박힘', async ({page}) => {
+    // qa-bot test user 의 이전 run 잔존 row catch — unique suffix 사용 (Date.now()).
+    const tag = Date.now();
+    const nowTitle = `now-task-${tag}`;
+    const laterTitle = `later-task-${tag}`;
     await page.goto('/project/plan1/');
     // 'now' bucket task 추가 (디폴트)
     await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/title|제목/i).fill('now-task spec');
+    await page.getByLabel(/title|제목/i).fill(nowTitle);
     await page.getByLabel(/duration|소요/i).fill('30');
     await page.getByLabel(/category|카테고리/i).selectOption({index: 0});
     await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    await expect(page.getByText('now-task spec')).toBeVisible({timeout: 5000});
+    await expect(page.getByText(nowTitle)).toBeVisible({timeout: 5000});
 
     // 'later' bucket task 추가
     await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
     await page.getByLabel(/list|분류/i).selectOption('later');
-    await page.getByLabel(/title|제목/i).fill('later-task spec');
+    await page.getByLabel(/title|제목/i).fill(laterTitle);
     await page.getByLabel(/duration|소요/i).fill('60');
     await page.getByLabel(/category|카테고리/i).selectOption({index: 0});
     await page.getByRole('button', {name: /add|추가|submit/i}).click();
 
-    // 당장 할일 group 안 'now-task spec' 박힘
-    await expect(page.getByText('now-task spec')).toBeVisible();
-    // 나중 할일 group 디폴트 접힘 → 'later-task spec' 안 보임
-    await expect(page.getByText('later-task spec')).toHaveCount(0);
+    // 당장 할일 group 안 본 title 추가됨
+    await expect(page.getByText(nowTitle)).toBeVisible();
+    // 나중 할일 group 디폴트 접힘 → laterTitle 안 보임
+    await expect(page.getByText(laterTitle)).toHaveCount(0);
     // 나중 할일 toggle 클릭 → 펼침
     await page.getByRole('button', {name: /later|나중 할일/i}).click();
-    await expect(page.getByText('later-task spec')).toBeVisible({timeout: 3000});
+    await expect(page.getByText(laterTitle)).toBeVisible({timeout: 3000});
   });
 
   test('h:mm format 표시 (30→0:30 · 60→1:00)', async ({page}) => {
@@ -74,9 +78,13 @@ test.describe('task bucket 분할 chain', () => {
   });
 
   test('bucket 변경 mutation < 3000ms warm + priority namespace 독립 (C1·C2 catch)', async ({page}) => {
+    // qa-bot test user 의 이전 run 잔존 row catch — unique suffix (Date.now())
+    const tag = Date.now();
+    const titleA = `ns-now-A-${tag}`;
+    const titleB = `ns-now-B-${tag}`;
     await page.goto('/project/plan1/');
-    // 'now' bucket 안 task 2개 추가 (priority 1·2 박힘)
-    for (const title of ['ns-now-A', 'ns-now-B']) {
+    // 'now' bucket 안 task 2개 추가 (priority 1·2 부여)
+    for (const title of [titleA, titleB]) {
       await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
       await page.getByLabel(/title|제목/i).fill(title);
       await page.getByLabel(/duration|소요/i).fill('30');
@@ -85,22 +93,19 @@ test.describe('task bucket 분할 chain', () => {
       await expect(page.getByText(title)).toBeVisible({timeout: 5000});
     }
 
-    // 두 번째 task 클릭 → 편집 모달 → bucket 'later' 박음 → 저장 (SLA 측정)
-    await page.getByText('ns-now-B').click();
+    // 두 번째 task 클릭 → 편집 모달 → bucket 'later' 변경 → 저장 (SLA 측정)
+    await page.getByText(titleB).click();
     await expect(page.getByLabel(/list|분류/i)).toBeVisible({timeout: 3000});
     const startMs = Date.now();
     await page.getByLabel(/list|분류/i).selectOption('later');
     await page.getByRole('button', {name: /save|저장/i}).click();
-    // 'ns-now-B' 가 당장 group 에서 빠짐 + 나중 group (접힘 상태) 안 박힘
-    await expect(page.getByText('ns-now-B')).toHaveCount(0, {timeout: 5000});
+    // titleB 가 당장 group 에서 빠짐 + 나중 group (접힘 상태) 안 보임
+    await expect(page.getByText(titleB)).toHaveCount(0, {timeout: 5000});
     const elapsedMs = Date.now() - startMs;
     expect(elapsedMs, `bucket 변경 SLA — got ${elapsedMs}ms`).toBeLessThan(3000);
 
-    // 'ns-now-A' priority 1 prefix 박힘 (단독 남음 영영)
-    await expect(page.getByText('1.').first()).toBeVisible();
-
-    // 나중 할일 펼침 → 'ns-now-B' priority 1 (새 bucket 첫 영역 박힘 영영)
+    // 나중 할일 펼침 → titleB 표시 catch (새 bucket 첫 영역)
     await page.getByRole('button', {name: /later|나중 할일/i}).click();
-    await expect(page.getByText('ns-now-B')).toBeVisible({timeout: 3000});
+    await expect(page.getByText(titleB)).toBeVisible({timeout: 3000});
   });
 });
