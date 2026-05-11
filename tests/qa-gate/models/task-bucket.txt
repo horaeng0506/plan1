@@ -1,0 +1,26 @@
+# PLAN1-TASKS-BUCKET-20260511 — bucket shift + priority namespace PICT model.
+# 변수 4개 · 2-way pairwise (priority shift bucket filter 누락 catch · RPN Medium-High).
+# 영역: operation × bucketTransition × priorityDirection × existingPeerCount
+#
+# RPN ~ 60 (Medium · priority namespace 오염 catch — 두 bucket 모두 영향)
+# operation = create / edit / delete / convert (4 server action)
+# bucketTransition = same (변경 X) / different (bucket 변경 O)
+# priorityDirection = up (낮은 number) / down (높은 number) / same (변경 X) / new (insert)
+# existingPeerCount = empty (0 peer) / single (1 peer) / many (3+ peer)
+
+operation: create, edit, delete, convert
+bucketTransition: same, different
+priorityDirection: up, down, same, new
+existingPeerCount: empty, single, many
+
+# constraints — operation 별 불가 조합 차단
+IF [operation] = "create" THEN [priorityDirection] = "new";
+IF [operation] = "create" THEN [bucketTransition] = "same";
+IF [operation] = "delete" THEN [priorityDirection] = "same";
+IF [operation] = "delete" THEN [bucketTransition] = "same";
+IF [operation] = "convert" THEN [priorityDirection] = "same";
+IF [operation] = "convert" THEN [bucketTransition] = "same";
+IF [operation] = "edit" AND [bucketTransition] = "same" THEN [priorityDirection] IN {"up", "down", "same"};
+IF [operation] = "edit" AND [bucketTransition] = "different" THEN [priorityDirection] = "new";
+# empty bucket 영역 — edit/delete/convert 불가 (자기 자신 박혀있어야 함)
+IF [existingPeerCount] = "empty" AND [operation] IN {"edit", "delete", "convert"} THEN [bucketTransition] = "same";
