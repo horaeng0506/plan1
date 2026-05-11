@@ -149,6 +149,7 @@ export function TaskList({onNewTask, onEditTask}: TaskListProps) {
       <li
         key={task.id}
         onClick={() => handleRowClick(task)}
+        data-testid={`task-item-${task.id}`}
         className="cursor-pointer border-l-4 bg-bg px-2 py-1 text-xs text-txt hover:bg-panel"
         style={{borderLeftColor: categoryColor(task.categoryId)}}
       >
@@ -217,13 +218,14 @@ export function TaskList({onNewTask, onEditTask}: TaskListProps) {
   const laterTasks = tasks.filter(task => task.bucket === 'later');
 
   return (
-    <div className="font-mono">
+    <div className="font-mono" data-testid="task-list">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-xs text-muted">{t('task.heading')}</span>
         <button
           type="button"
           onClick={onNewTask}
           aria-label={t('task.newTask')}
+          data-testid="task-new-button"
           className="flex h-7 w-7 items-center justify-center rounded-none border border-line bg-panel text-base text-txt hover:bg-bg"
         >
           +
