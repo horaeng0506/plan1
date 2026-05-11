@@ -5,7 +5,7 @@
         "actionCreate": "créer",
         "actionRevoke": "révoquer",
         "actionRotate": "rotation",
-        "copiedConfirm": "J'ai enregistré cette clé",
+        "copiedConfirm": "J'ai sauvegardé cette clé",
         "copyButton": "copier",
         "create": "+ clé",
         "empty": "aucune clé",
@@ -16,38 +16,38 @@
         "fieldExpires": "expire",
         "fieldName": "nom",
         "modalCreateHeading": "nouvelle clé api",
-        "modalRotateHeading": "rotation de la clé API",
-        "rotateGraceWarning": "Ancienne clé révoquée dans 24h. Mettez à jour les agents durant la période de grâce.",
+        "modalRotateHeading": "rotation de la clé api",
+        "rotateGraceWarning": "Ancienne clé révoquée dans 24h. Mettez à jour les agents pendant la période de grâce.",
         "statusActive": "actif",
         "statusExpired": "expiré",
-        "statusRevoked": "révoquée",
+        "statusRevoked": "révoqué",
         "tableActions": "actions",
         "tableCreated": "créé",
         "tableExpires": "expire",
         "tableLastUsed": "dernière utilisation",
         "tableName": "nom",
         "tablePrefix": "préfixe",
-        "warningOneTime": "Cette clé est affichée UNE SEULE FOIS. Sauvegardez-la en toute sécurité maintenant."
+        "warningOneTime": "Cette clé est affichée UNE SEULE FOIS. Sauvegardez-la maintenant en toute sécurité."
     },
     "app": {
-        "tagline": "gestionnaire de calendrier",
+        "tagline": "gestionnaire de planification",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Se connecter avec Google",
         "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
-        "signInRequired": "Se connecter pour utiliser plan1"
+        "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "category": {
         "confirmRemoveLabel": "confirmer suppr ({count})",
-        "confirmRemoveText": "{count} calendrier(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
+        "confirmRemoveText": "{count} planification(s) seront supprimées avec ceci. Cliquez à nouveau pour confirmer.",
         "defaultName": "par défaut",
         "empty": "Aucune catégorie.",
         "fieldColor": "couleur",
         "fieldName": "nom",
         "header": "catégories",
-        "removeButton": "suppr",
-        "scheduleCountSuffix": "{count} calendriers"
+        "removeButton": "rm",
+        "scheduleCountSuffix": "{count} planifications"
     },
     "common": {
         "add": "ajouter",
@@ -61,14 +61,14 @@
         "save": "enregistrer"
     },
     "confirmation": {
-        "scheduleAdded": "Calendrier ajouté"
+        "scheduleAdded": "Planification ajoutée"
     },
     "error": {
         "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
         "loadFailedLabel": "échec du chargement :",
         "mutationFailed": "Échec de {action} : {error}",
         "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-        "workingHoursInvalid": "Saisie d'heures de travail invalide ({reason})."
+        "workingHoursInvalid": "Entrée d'heures de travail invalide ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fin"
@@ -76,18 +76,18 @@
     "loading": "chargement...",
     "mutation": {
         "addTask": "ajouter une tâche",
-        "changeTimerType": "changer le type de minuterie",
-        "completeSchedule": "terminer le calendrier",
-        "convertTaskToSchedule": "convertir la tâche en calendrier",
-        "createApiKey": "créer une clé API",
-        "extendTimer": "prolonger la minuterie",
-        "removeCategory": "supprimer la catégorie",
-        "removeTask": "supprimer la tâche",
-        "revokeApiKey": "révoquer la clé API",
-        "rotateApiKey": "rotation de la clé API",
+        "changeTimerType": "changer le type de minuteur",
+        "completeSchedule": "compléter la planification",
+        "convertTaskToSchedule": "convertir la tâche en planification",
+        "createApiKey": "créer une clé api",
+        "extendTimer": "prolonger le minuteur",
+        "removeCategory": "retirer la catégorie",
+        "removeTask": "retirer la tâche",
+        "revokeApiKey": "révoquer la clé api",
+        "rotateApiKey": "rotation de la clé api",
         "setFocus": "définir la vue focus",
         "setTheme": "définir le thème",
-        "startScheduleNow": "démarrer le calendrier maintenant",
+        "startScheduleNow": "commencer la planification maintenant",
         "updateTask": "mise à jour de la tâche"
     },
     "nav": {
@@ -108,20 +108,20 @@
         "workingHours": "heures"
     },
     "onboarding": {
-        "addFirst": "ajouter le premier calendrier",
-        "firstSchedule": "Ajoutez votre premier calendrier pour le voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
-        "welcome": "Aucun calendrier pour le moment"
+        "addFirst": "ajouter la première planification",
+        "firstSchedule": "Ajoutez votre première planification pour la voir sur la grille hebdomadaire, la chronologie du jour et l'horloge analogique.",
+        "welcome": "Aucune planification pour le moment"
     },
     "schedule": {
-        "afterLastNoneHint": "aucun calendrier à venir",
-        "buttonAfterLast": "suivant après le dernier calendrier",
+        "afterLastNoneHint": "aucune planification à venir",
+        "buttonAfterLast": "suivant après la dernière planification",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
         "buttonPlus10": "+10m",
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ ajouter une catégorie",
-        "chainedCheckbox": "enchaîner au calendrier précédent",
+        "chainedCheckbox": "enchaîner à la planification précédente",
         "endLabelV2": "heure de fin",
         "endPlaceholder": "sélectionner la durée",
         "fieldCategory": "catégorie",
@@ -129,15 +129,15 @@
         "fieldName": "nom",
         "fieldStartHour": "heure de début",
         "fieldStartMinute": "minute de début",
-        "headerEdit": "modifier le calendrier",
-        "headerNew": "nouveau calendrier",
+        "headerEdit": "modifier la planification",
+        "headerNew": "nouvelle planification",
         "hourSuffix": "h",
         "hourTodaySuffix": "(aujourd'hui)",
         "hourTomorrowSuffix": "(demain)",
         "minuteSuffix": "m",
-        "prevChainLabel": "calendrier précédent connecté",
-        "titleDefault": "Nouveau calendrier",
-        "warningOverlapLimit": "Au maximum {limit} calendriers peuvent se chevaucher en même temps. Ajustez le début/la durée ou supprimez-en un existant."
+        "prevChainLabel": "planification précédente connectée",
+        "titleDefault": "Nouvelle planification",
+        "warningOverlapLimit": "Au maximum {limit} planifications peuvent se chevaucher en même temps. Ajustez le début/durée ou supprimez-en une existante."
     },
     "serverError": {
         "apiKeyAlreadyRevoked": "Clé API déjà révoquée.",
@@ -145,13 +145,13 @@
         "apiKeyExpiresInvalid": "L'expiration de la clé API doit être de 1 à 3650 jours ou nulle.",
         "apiKeyNameInvalid": "Le nom de la clé API est requis (max 100 caractères).",
         "apiKeyNotFound": "Clé API introuvable.",
-        "categoryHasSchedules": "La catégorie a {scheduleCount} calendriers. Confirmez la suppression en cascade pour retirer.",
-        "categoryNotFound": "Catégorie introuvable ou non possédée.",
-        "scheduleNotFound": "Calendrier introuvable.",
+        "categoryHasSchedules": "La catégorie a {scheduleCount} planifications. Confirmer la suppression en cascade pour retirer.",
+        "categoryNotFound": "Catégorie introuvable ou non détenue.",
+        "scheduleNotFound": "Planification introuvable.",
         "taskBucketInvalid": "Valeur de compartiment invalide.",
         "taskDurationInvalid": "La durée de la tâche doit être 0 ou plus.",
-        "taskNoCategoryId": "La tâche n'a pas de catégorie — ouvrez le modal de tâche pour définir.",
-        "taskNoDuration": "La tâche n'a pas de durée — ouvrez le modal de tâche pour définir.",
+        "taskNoCategoryId": "La tâche n'a pas de catégorie — ouvrir le modal de tâche pour définir.",
+        "taskNoDuration": "La tâche n'a pas de durée — ouvrir le modal de tâche pour définir.",
         "taskNotFound": "Tâche introuvable.",
         "unauthorized": "Connexion requise."
     },
@@ -162,7 +162,7 @@
     "settingsLink": "paramètres",
     "signIn": {
         "cta": "Se connecter",
-        "description": "Connectez-vous à votre compte cofondateur pour voir et gérer vos calendriers.",
+        "description": "Connectez-vous à votre compte cofounder pour voir et gérer vos planifications.",
         "title": "Connexion requise"
     },
     "task": {
@@ -171,10 +171,10 @@
         "actionSave": "enregistrer",
         "bucketLater": "Plus tard",
         "bucketNow": "Maintenant",
-        "convertAfterLast": "après le dernier",
+        "convertAfterLast": "après la dernière",
         "convertCancel": "annuler",
         "convertNow": "maintenant",
-        "convertToSchedule": "+ calendrier",
+        "convertToSchedule": "+ planification",
         "delete": "supprimer",
         "empty": "aucune tâche",
         "fieldBucket": "Liste",
@@ -188,25 +188,25 @@
         "newTask": "+ tâche"
     },
     "timer": {
-        "buttonComplete": "terminer",
+        "buttonComplete": "terminé",
         "buttonFocus": "focus",
         "buttonIdle": "inactif",
-        "buttonStartNow": "démarrer maintenant",
+        "buttonStartNow": "commencer maintenant",
         "categoryFallback": "?",
-        "idleEmpty": "inactif · aucun calendrier actif",
+        "idleEmpty": "inactif · aucune planification active",
         "labelElapsed": "écoulé",
-        "labelEndAt": "fin-à",
+        "labelEndAt": "se termine à",
         "labelRemaining": "restant",
         "labelTarget": "cible",
-        "labelUntilUpcoming": "jusqu'à venir",
-        "labelUpcoming": "prochain calendrier",
+        "labelUntilUpcoming": "jusqu'au prochain",
+        "labelUpcoming": "planification suivante",
         "overlapLabel": "chevauchement {count}",
         "simultaneousLabel": "simultané · {count}",
-        "tooltipClickToFocus": "cliquer pour passer en focus",
+        "tooltipClickToFocus": "cliquer pour passer en concentration",
         "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
-        "typeCountup": "compteur",
-        "typeTimer1": "timer1"
+        "typeCountup": "compte à rebours inversé",
+        "typeTimer1": "minuteur1"
     },
     "topbar": {
         "back": "retour au portail",

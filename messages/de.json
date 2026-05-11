@@ -4,7 +4,7 @@
         "actionClose": "schließen",
         "actionCreate": "erstellen",
         "actionRevoke": "widerrufen",
-        "actionRotate": "drehen",
+        "actionRotate": "rotieren",
         "copiedConfirm": "Ich habe diesen Schlüssel gespeichert",
         "copyButton": "kopieren",
         "create": "+ Schlüssel",
@@ -17,7 +17,7 @@
         "fieldName": "Name",
         "modalCreateHeading": "neuer API-Schlüssel",
         "modalRotateHeading": "API-Schlüssel rotieren",
-        "rotateGraceWarning": "Alter Schlüssel in 24h widerrufen. Aktualisieren Sie Agenten innerhalb der Schonfrist.",
+        "rotateGraceWarning": "Alter Schlüssel in 24h widerrufen. Aktualisiere Agents innerhalb der Gnadenfrist.",
         "statusActive": "aktiv",
         "statusExpired": "abgelaufen",
         "statusRevoked": "widerrufen",
@@ -26,22 +26,22 @@
         "tableExpires": "läuft ab",
         "tableLastUsed": "zuletzt verwendet",
         "tableName": "Name",
-        "tablePrefix": "präfix",
+        "tablePrefix": "Präfix",
         "warningOneTime": "Dieser Schlüssel wird EINMAL angezeigt. Jetzt sicher speichern."
     },
     "app": {
-        "tagline": "Zeitplanverwaltung",
+        "tagline": "Zeitplanmanager",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Mit Google anmelden",
-        "signInDescription": "plan1 ist ein persönliches Zeitplanungs-Tool mit geräteübergreifender Synchronisierung. Melden Sie sich mit Google an, um loszulegen.",
-        "signInRequired": "Melden Sie sich an, um plan1 zu verwenden"
+        "signInDescription": "plan1 ist ein persönliches Zeitplan-Tool mit geräteübergreifender Synchronisation. Melde dich mit Google an, um loszulegen.",
+        "signInRequired": "Anmelden, um plan1 zu verwenden"
     },
     "category": {
         "confirmRemoveLabel": "Entfernen bestätigen ({count})",
-        "confirmRemoveText": "{count} Zeitplan/Zeitpläne werden damit gelöscht. Klicken Sie erneut zur Bestätigung.",
-        "defaultName": "standard",
+        "confirmRemoveText": "{count} Zeitplan/Zeitpläne wird/werden damit gelöscht. Erneut klicken zum Bestätigen.",
+        "defaultName": "Standard",
         "empty": "Keine Kategorien.",
         "fieldColor": "Farbe",
         "fieldName": "Name",
@@ -67,16 +67,16 @@
         "featureUnavailable": "Diese Funktion ist noch nicht verfügbar ({feature}).",
         "loadFailedLabel": "Laden fehlgeschlagen:",
         "mutationFailed": "{action} fehlgeschlagen: {error}",
-        "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+        "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
         "workingHoursInvalid": "Ungültige Arbeitszeiteneingabe ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "Ende"
     },
-    "loading": "laden...",
+    "loading": "lädt...",
     "mutation": {
         "addTask": "Aufgabe hinzufügen",
-        "changeTimerType": "Timertyp ändern",
+        "changeTimerType": "Timer-Typ ändern",
         "completeSchedule": "Zeitplan abschließen",
         "convertTaskToSchedule": "Aufgabe in Zeitplan umwandeln",
         "createApiKey": "API-Schlüssel erstellen",
@@ -85,8 +85,8 @@
         "removeTask": "Aufgabe entfernen",
         "revokeApiKey": "API-Schlüssel widerrufen",
         "rotateApiKey": "API-Schlüssel rotieren",
-        "setFocus": "Fokusansicht einstellen",
-        "setTheme": "Design einstellen",
+        "setFocus": "Fokusansicht festlegen",
+        "setTheme": "Design festlegen",
         "startScheduleNow": "Zeitplan jetzt starten",
         "updateTask": "Aufgabe wird aktualisiert"
     },
@@ -104,16 +104,16 @@
         "newSchedule": "neu",
         "themeDark": "dunkel",
         "themeLight": "hell",
-        "themeSystem": "automatisch",
+        "themeSystem": "auto",
         "workingHours": "Stunden"
     },
     "onboarding": {
         "addFirst": "ersten Zeitplan hinzufügen",
-        "firstSchedule": "Fügen Sie Ihren ersten Zeitplan hinzu, um ihn im Wochenraster, der heutigen Zeitleiste und der Analoguhr zu sehen.",
+        "firstSchedule": "Füge deinen ersten Zeitplan hinzu, um ihn im Wochenraster, der heutigen Zeitleiste und der analogen Uhr zu sehen.",
         "welcome": "Noch keine Zeitpläne"
     },
     "schedule": {
-        "afterLastNoneHint": "kein bevorstehender Zeitplan",
+        "afterLastNoneHint": "kein anstehender Zeitplan",
         "buttonAfterLast": "nächster nach letztem Zeitplan",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
@@ -121,7 +121,7 @@
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ Kategorie hinzufügen",
-        "chainedCheckbox": "mit vorherigem Zeitplan verketten",
+        "chainedCheckbox": "mit vorigem Zeitplan verketten",
         "endLabelV2": "Endzeit",
         "endPlaceholder": "Dauer auswählen",
         "fieldCategory": "Kategorie",
@@ -135,23 +135,23 @@
         "hourTodaySuffix": "(heute)",
         "hourTomorrowSuffix": "(morgen)",
         "minuteSuffix": "m",
-        "prevChainLabel": "verbundener vorheriger Zeitplan",
+        "prevChainLabel": "voriger Zeitplan verbunden",
         "titleDefault": "Neuer Zeitplan",
-        "warningOverlapLimit": "Maximal {limit} Zeitpläne können gleichzeitig überlappen. Passen Sie Start/Dauer an oder entfernen Sie einen vorhandenen."
+        "warningOverlapLimit": "Maximal {limit} Zeitpläne können gleichzeitig überlappen. Passe Start/Dauer an oder entferne einen vorhandenen."
     },
     "serverError": {
         "apiKeyAlreadyRevoked": "API-Schlüssel bereits widerrufen.",
         "apiKeyCreateFailed": "API-Schlüsselerstellung fehlgeschlagen.",
         "apiKeyExpiresInvalid": "API-Schlüssel-Ablauf muss 1-3650 Tage oder null sein.",
-        "apiKeyNameInvalid": "API-Schlüsselname ist erforderlich (max. 100 Zeichen).",
+        "apiKeyNameInvalid": "API-Schlüssel-Name ist erforderlich (max. 100 Zeichen).",
         "apiKeyNotFound": "API-Schlüssel nicht gefunden.",
-        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Bestätigen Sie Kaskadenlöschung zum Entfernen.",
+        "categoryHasSchedules": "Kategorie hat {scheduleCount} Zeitpläne. Bestätige Kaskadenlöschung zum Entfernen.",
         "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
         "scheduleNotFound": "Zeitplan nicht gefunden.",
         "taskBucketInvalid": "Ungültiger Bucket-Wert.",
         "taskDurationInvalid": "Aufgabendauer muss 0 oder größer sein.",
-        "taskNoCategoryId": "Aufgabe hat keine Kategorie – öffnen Sie das Aufgabenmodul zum Einstellen.",
-        "taskNoDuration": "Aufgabe hat keine Dauer – öffnen Sie das Aufgabenmodul zum Einstellen.",
+        "taskNoCategoryId": "Aufgabe hat keine Kategorie — öffne Aufgabenmodal zum Festlegen.",
+        "taskNoDuration": "Aufgabe hat keine Dauer — öffne Aufgabenmodal zum Festlegen.",
         "taskNotFound": "Aufgabe nicht gefunden.",
         "unauthorized": "Anmeldung erforderlich."
     },
@@ -162,7 +162,7 @@
     "settingsLink": "Einstellungen",
     "signIn": {
         "cta": "Anmelden",
-        "description": "Melden Sie sich bei Ihrem Mitgründer-Konto an, um Ihre Zeitpläne anzuzeigen und zu verwalten.",
+        "description": "Melde dich bei deinem Cofounder-Konto an, um deine Zeitpläne anzusehen und zu verwalten.",
         "title": "Anmeldung erforderlich"
     },
     "task": {
@@ -171,7 +171,7 @@
         "actionSave": "speichern",
         "bucketLater": "Später",
         "bucketNow": "Jetzt",
-        "convertAfterLast": "nach letztem",
+        "convertAfterLast": "nach letzter",
         "convertCancel": "abbrechen",
         "convertNow": "jetzt",
         "convertToSchedule": "+ Zeitplan",
@@ -188,7 +188,7 @@
         "newTask": "+ Aufgabe"
     },
     "timer": {
-        "buttonComplete": "abschließen",
+        "buttonComplete": "abgeschlossen",
         "buttonFocus": "Fokus",
         "buttonIdle": "inaktiv",
         "buttonStartNow": "jetzt starten",
@@ -197,24 +197,24 @@
         "labelElapsed": "vergangen",
         "labelEndAt": "endet-um",
         "labelRemaining": "verbleibend",
-        "labelTarget": "ziel",
-        "labelUntilUpcoming": "bis bevorstehend",
+        "labelTarget": "Ziel",
+        "labelUntilUpcoming": "bis anstehend",
         "labelUpcoming": "nächster Zeitplan",
-        "overlapLabel": "Überlappung {count}",
+        "overlapLabel": "Überschneidung {count}",
         "simultaneousLabel": "gleichzeitig · {count}",
         "tooltipClickToFocus": "klicken, um zu Fokus zu wechseln",
         "tooltipClickToIdle": "klicken, um zu inaktiv zu wechseln",
-        "typeCountdown": "countdown",
-        "typeCountup": "countup",
+        "typeCountdown": "Countdown",
+        "typeCountup": "Hochzählen",
         "typeTimer1": "Timer1"
     },
     "topbar": {
         "back": "zurück zum Portal",
-        "creditsLabel": "credits",
+        "creditsLabel": "Danksagungen",
         "creditsPlaceholder": "—",
         "guest": "Gast",
         "languageLabel": "Sprache",
-        "logout": "abmelden"
+        "logout": "Abmelden"
     },
     "undo": {
         "actionLabel": "Rückgängig verfügbar",
@@ -228,17 +228,17 @@
     "weekdays": [
         "So",
         "Mo",
-        "di",
-        "mi",
-        "do",
-        "fr",
-        "sa"
+        "Di",
+        "Mi",
+        "Do",
+        "Fr",
+        "Sa"
     ],
     "workingHours": {
         "checkboxAlsoDefault": "auch als Standard speichern",
         "checkboxWeekdaysOnly": "nur Wochentage (Mo–Fr)",
         "errorEndAfterStart": "Endzeit muss nach Startzeit liegen.",
-        "errorToAfterFrom": "Enddatum muss am oder nach dem Startdatum liegen.",
+        "errorToAfterFrom": "Enddatum muss am oder nach Startdatum liegen.",
         "fieldDate": "Datum",
         "fieldEndTime": "Endzeit",
         "fieldFromDate": "von",
@@ -247,7 +247,7 @@
         "header": "Arbeitszeiten",
         "tabRange": "Bereich",
         "tabSingle": "einzeln",
-        "warningNoDates": "Keine Daten im Bereich anzuwenden. (Start > Ende oder Nur-Wochentage-Konflikt)",
-        "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuchen Sie einen engeren Bereich."
+        "warningNoDates": "Keine anzuwendenden Daten im Bereich. (Start > Ende oder Konflikt nur Wochentage)",
+        "warningTruncated": "Bereich überschreitet {max} Tage, nur teilweise verarbeitet. Versuche einen engeren Bereich."
     }
 }
