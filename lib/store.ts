@@ -21,6 +21,7 @@ import type {
   ScheduleId,
   ScheduleStatus,
   Task,
+  TaskBucket,
   TaskId
 } from './domain/types';
 import * as categoriesApi from '@/app/actions/categories';
@@ -73,19 +74,22 @@ interface AppState {
   clearLastAddedSchedule(): void;
 
   // PLAN1-TASKS-FEATURE-20260509 — task actions.
+  // PLAN1-TASKS-BUCKET-20260511 — bucket parameter 추가.
   addTask(input: {
     title: string | null;
     durationMin: number | null;
     categoryId: string | null;
     priority?: number;
+    bucket?: TaskBucket;
   }): Promise<void>;
-  // PLAN1-TASKS-PRIORITY-20260510 — task 편집 (사양 4번).
+  // PLAN1-TASKS-PRIORITY-20260510 — task 편집.
   updateTaskAction(input: {
     id: TaskId;
     title: string | null;
     durationMin: number | null;
     categoryId: string | null;
     priority: number;
+    bucket: TaskBucket;
   }): Promise<void>;
   removeTask(id: TaskId): Promise<void>;
   convertTaskToSchedule(taskId: TaskId, startAt: number, chainedToPrev?: boolean): Promise<string>;

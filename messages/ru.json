@@ -4,7 +4,7 @@
         "actionClose": "закрыть",
         "actionCreate": "создать",
         "actionRevoke": "отозвать",
-        "actionRotate": "повернуть",
+        "actionRotate": "сменить",
         "copiedConfirm": "Я сохранил этот ключ",
         "copyButton": "копировать",
         "create": "+ ключ",
@@ -17,8 +17,8 @@
         "fieldName": "название",
         "modalCreateHeading": "новый api ключ",
         "modalRotateHeading": "сменить api ключ",
-        "rotateGraceWarning": "Старый ключ отозван через 24ч. Обновите агентов в течение льготного периода.",
-        "statusActive": "активен",
+        "rotateGraceWarning": "Старый ключ отозван через 24ч. Обновите агенты в течение льготного периода.",
+        "statusActive": "активна",
         "statusExpired": "истёк",
         "statusRevoked": "отозван",
         "tableActions": "действия",
@@ -27,7 +27,7 @@
         "tableLastUsed": "последнее использование",
         "tableName": "название",
         "tablePrefix": "префикс",
-        "warningOneTime": "Этот ключ показан ОДНОКРАТНО. Сохраните его сейчас."
+        "warningOneTime": "Этот ключ показан ОДИН РАЗ. Сохраните надежно сейчас."
     },
     "app": {
         "tagline": "менеджер расписаний",
@@ -35,19 +35,19 @@
     },
     "auth": {
         "signIn": "Войти через Google",
-        "signInDescription": "plan1 - это инструмент для персонального планирования с синхронизацией между устройствами. Войдите через Google, чтобы начать.",
-        "signInRequired": "Войдите для использования plan1"
+        "signInDescription": "plan1 — это персональный инструмент планирования с синхронизацией между устройствами. Войдите через Google, чтобы начать.",
+        "signInRequired": "Войдите, чтобы использовать plan1"
     },
     "category": {
         "confirmRemoveLabel": "подтвердить удаление ({count})",
-        "confirmRemoveText": "Вместе с этим будет удалено расписаний: {count}. Нажмите ещё раз для подтверждения.",
+        "confirmRemoveText": "{count} расписание(й) будет удалено вместе с этим. Нажмите снова для подтверждения.",
         "defaultName": "по умолчанию",
         "empty": "Нет категорий.",
         "fieldColor": "цвет",
         "fieldName": "название",
         "header": "категории",
-        "removeButton": "удалить",
-        "scheduleCountSuffix": "Расписаний: {count}"
+        "removeButton": "rm",
+        "scheduleCountSuffix": "{count} расписаний"
     },
     "common": {
         "add": "добавить",
@@ -65,10 +65,10 @@
     },
     "error": {
         "featureUnavailable": "Эта функция пока недоступна ({feature}).",
-        "loadFailedLabel": "не удалось загрузить:",
+        "loadFailedLabel": "ошибка загрузки:",
         "mutationFailed": "Не удалось {action}: {error}",
         "unknown": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.",
-        "workingHoursInvalid": "Некорректный ввод рабочих часов ({reason})."
+        "workingHoursInvalid": "Неверный ввод рабочих часов ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "конец"
@@ -85,9 +85,9 @@
         "removeTask": "удалить задачу",
         "revokeApiKey": "отозвать api ключ",
         "rotateApiKey": "сменить api ключ",
-        "setFocus": "установить режим фокусировки",
+        "setFocus": "установить фокусный вид",
         "setTheme": "установить тему",
-        "startScheduleNow": "начать расписание сейчас",
+        "startScheduleNow": "запустить расписание сейчас",
         "updateTask": "обновление задачи"
     },
     "nav": {
@@ -100,8 +100,8 @@
         "focus4h": "4ч",
         "focus6h": "6ч",
         "focus8h": "8ч",
-        "focusLabel": "фокусировка",
-        "newSchedule": "новый",
+        "focusLabel": "фокус",
+        "newSchedule": "новая",
         "themeDark": "тёмная",
         "themeLight": "светлая",
         "themeSystem": "авто",
@@ -109,12 +109,12 @@
     },
     "onboarding": {
         "addFirst": "добавить первое расписание",
-        "firstSchedule": "Добавьте своё первое расписание, чтобы увидеть его в недельной сетке, временной шкале дня и аналоговых часах.",
+        "firstSchedule": "Добавьте ваше первое расписание, чтобы увидеть его на недельной сетке, временной шкале дня и аналоговых часах.",
         "welcome": "Пока нет расписаний"
     },
     "schedule": {
         "afterLastNoneHint": "нет предстоящего расписания",
-        "buttonAfterLast": "следующий после последнего расписания",
+        "buttonAfterLast": "следующее после последнего расписания",
         "buttonMinus10": "-10м",
         "buttonMinus30": "-30м",
         "buttonPlus10": "+10м",
@@ -125,34 +125,35 @@
         "endLabelV2": "время окончания",
         "endPlaceholder": "выберите продолжительность",
         "fieldCategory": "категория",
-        "fieldDuration": "продолжительность (мин)",
+        "fieldDuration": "длительность (мин)",
         "fieldName": "название",
-        "fieldStartHour": "час начала",
-        "fieldStartMinute": "минута начала",
+        "fieldStartHour": "начальный час",
+        "fieldStartMinute": "начальная минута",
         "headerEdit": "редактировать расписание",
         "headerNew": "новое расписание",
         "hourSuffix": "ч",
         "hourTodaySuffix": "(сегодня)",
         "hourTomorrowSuffix": "(завтра)",
         "minuteSuffix": "м",
-        "prevChainLabel": "связанное предыдущее расписание",
+        "prevChainLabel": "связано предыдущее расписание",
         "titleDefault": "Новое расписание",
-        "warningOverlapLimit": "Максимум {limit} расписаний могут пересекаться одновременно. Измените начало/продолжительность или удалите существующее."
+        "warningOverlapLimit": "Максимум {limit} расписаний могут пересекаться одновременно. Измените начало/длительность или удалите существующее."
     },
     "serverError": {
         "apiKeyAlreadyRevoked": "API ключ уже отозван.",
         "apiKeyCreateFailed": "Не удалось создать API ключ.",
         "apiKeyExpiresInvalid": "Срок действия API ключа должен быть 1-3650 дней или null.",
-        "apiKeyNameInvalid": "Требуется название API ключа (макс. 100 символов).",
+        "apiKeyNameInvalid": "Требуется имя API ключа (максимум 100 символов).",
         "apiKeyNotFound": "API ключ не найден.",
-        "categoryHasSchedules": "Категория содержит расписаний: {scheduleCount}. Подтвердите каскадное удаление.",
+        "categoryHasSchedules": "Категория имеет {scheduleCount} расписание(й). Подтвердите каскадное удаление.",
         "categoryNotFound": "Категория не найдена или не принадлежит вам.",
         "scheduleNotFound": "Расписание не найдено.",
-        "taskDurationInvalid": "Продолжительность задачи должна быть 0 или больше.",
+        "taskBucketInvalid": "Неверное значение bucket.",
+        "taskDurationInvalid": "Длительность задачи должна быть 0 или больше.",
         "taskNoCategoryId": "У задачи нет категории — откройте модальное окно задачи для установки.",
-        "taskNoDuration": "У задачи нет продолжительности — откройте модальное окно задачи для установки.",
+        "taskNoDuration": "У задачи нет длительности — откройте модальное окно задачи для установки.",
         "taskNotFound": "Задача не найдена.",
-        "unauthorized": "Требуется вход в систему."
+        "unauthorized": "Требуется вход."
     },
     "settings": {
         "apiKeysSection": "api ключи",
@@ -161,21 +162,24 @@
     "settingsLink": "настройки",
     "signIn": {
         "cta": "Войти",
-        "description": "Войдите в свой аккаунт cofounder, чтобы просматривать расписания и управлять ими.",
-        "title": "Требуется вход в систему"
+        "description": "Войдите в свой аккаунт cofounder для просмотра и управления расписаниями.",
+        "title": "Требуется вход"
     },
     "task": {
         "actionAdd": "добавить",
         "actionCancel": "отмена",
         "actionSave": "сохранить",
+        "bucketLater": "Позже",
+        "bucketNow": "Сейчас",
         "convertAfterLast": "после последнего",
         "convertCancel": "отмена",
         "convertNow": "сейчас",
         "convertToSchedule": "+ расписание",
         "delete": "удалить",
         "empty": "нет задач",
+        "fieldBucket": "Список",
         "fieldCategory": "категория",
-        "fieldDuration": "продолжительность (мин)",
+        "fieldDuration": "длительность (мин)",
         "fieldPriority": "приоритет",
         "fieldTitle": "название",
         "heading": "задачи",
@@ -184,24 +188,24 @@
         "newTask": "+ задача"
     },
     "timer": {
-        "buttonComplete": "завершено",
-        "buttonFocus": "фокусировка",
+        "buttonComplete": "завершена",
+        "buttonFocus": "фокус",
         "buttonIdle": "ожидание",
         "buttonStartNow": "начать сейчас",
         "categoryFallback": "?",
         "idleEmpty": "ожидание · нет активного расписания",
         "labelElapsed": "прошло",
-        "labelEndAt": "закончить в",
+        "labelEndAt": "окончание-в",
         "labelRemaining": "осталось",
         "labelTarget": "цель",
         "labelUntilUpcoming": "до предстоящего",
         "labelUpcoming": "следующее расписание",
-        "overlapLabel": "пересечение {count}",
+        "overlapLabel": "перекрытие {count}",
         "simultaneousLabel": "одновременно · {count}",
-        "tooltipClickToFocus": "нажмите для переключения в режим фокусировки",
-        "tooltipClickToIdle": "нажмите для переключения в режим ожидания",
-        "typeCountdown": "обратный отсчёт",
-        "typeCountup": "счётчик",
+        "tooltipClickToFocus": "нажмите для переключения в фокус",
+        "tooltipClickToIdle": "нажмите для переключения в ожидание",
+        "typeCountdown": "отсчёт вниз",
+        "typeCountup": "отсчёт вверх",
         "typeTimer1": "таймер1"
     },
     "topbar": {
@@ -219,31 +223,31 @@
     },
     "wallTime": {
         "am": "дп",
-        "pm": "пп"
+        "pm": "pm"
     },
     "weekdays": [
-        "вск",
-        "пнд",
+        "вс",
+        "пн",
         "вт",
-        "срд",
-        "чтв",
-        "птн",
-        "суб"
+        "ср",
+        "чт",
+        "пт",
+        "сб"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "также сохранить как по умолчанию",
+        "checkboxAlsoDefault": "также сохранить по умолчанию",
         "checkboxWeekdaysOnly": "только будни (пн–пт)",
         "errorEndAfterStart": "Время окончания должно быть после времени начала.",
         "errorToAfterFrom": "Дата окончания должна быть не раньше даты начала.",
         "fieldDate": "дата",
         "fieldEndTime": "время окончания",
-        "fieldFromDate": "с",
+        "fieldFromDate": "от",
         "fieldStartTime": "время начала",
         "fieldToDate": "до",
         "header": "рабочие часы",
         "tabRange": "диапазон",
-        "tabSingle": "одиночный",
-        "warningNoDates": "Нет дат для применения в диапазоне. (начало > конца или конфликт только будних дней)",
-        "warningTruncated": "Диапазон превышает {max} дней, обработано только частично. Попробуйте более узкий диапазон."
+        "tabSingle": "одиночная",
+        "warningNoDates": "Нет дат для применения в диапазоне. (начало > конца или конфликт только по будням)",
+        "warningTruncated": "Диапазон превышает {max} дней, обработана только часть. Попробуйте более узкий диапазон."
     }
 }

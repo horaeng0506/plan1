@@ -179,7 +179,8 @@
     "apiKeyAlreadyRevoked": "API 키가 이미 폐기되었습니다.",
     "apiKeyCreateFailed": "API 키 발급 실패.",
     "apiKeyNameInvalid": "API 키 이름 필수 (최대 100자).",
-    "apiKeyExpiresInvalid": "API 키 만료는 1-3650일 또는 영구."
+    "apiKeyExpiresInvalid": "API 키 만료는 1-3650일 또는 영구.",
+    "taskBucketInvalid": "잘못된 분류 값입니다."
   },
   "undo": {
     "actionLabel": "실행 취소 가능",
@@ -209,7 +210,10 @@
     "convertCancel": "취소",
     "delete": "삭제",
     "fieldPriority": "우선순위",
-    "actionSave": "저장"
+    "actionSave": "저장",
+    "fieldBucket": "분류",
+    "bucketNow": "당장 할일",
+    "bucketLater": "나중 할일"
   },
   "settings": {
     "heading": "설정",

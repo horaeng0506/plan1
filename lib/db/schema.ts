@@ -145,13 +145,20 @@ export const plan1Tasks = plan1Schema.table(
     }),
     // PLAN1-TASKS-PRIORITY-20260510 — 우선순위 (1 = 최우선 · 1~N · default 1).
     priority: integer('priority').notNull().default(1),
+    // PLAN1-TASKS-BUCKET-20260511 — bucket 분할 ('now' / 'later'). 두 bucket priority namespace 독립.
+    bucket: text('bucket').$type<'now' | 'later'>().notNull().default('now'),
     createdAt: timestamp('created_at', {withTimezone: true})
       .$defaultFn(() => new Date())
       .notNull()
   },
   table => ({
     userIdx: index('plan1_tasks_user_idx').on(table.userId),
-    userPriorityIdx: index('plan1_tasks_user_priority_idx').on(table.userId, table.priority)
+    userPriorityIdx: index('plan1_tasks_user_priority_idx').on(table.userId, table.priority),
+    userBucketPriorityIdx: index('plan1_tasks_user_bucket_priority_idx').on(
+      table.userId,
+      table.bucket,
+      table.priority
+    )
   })
 );
 
