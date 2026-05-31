@@ -67,7 +67,8 @@ test.describe('task bucket 커스터마이징 + 횟수차감', () => {
     await modal.getByLabel(/title|제목/i).fill(taskTitle);
     await modal.getByLabel(/count|횟수/i).fill('3');
     await modal.getByLabel(/duration|소요/i).fill('30');
-    await modal.getByLabel(/category|카테고리/i).selectOption({index: 0});
+    // 횟수차감형은 category 필수 → index 1 (index 0 은 "—" 빈 옵션이라 제출 disabled).
+    await modal.getByLabel(/category|카테고리/i).selectOption({index: 1});
     await modal.getByRole('button', {name: /add|추가|submit/i}).click();
 
     // 목록에 [3] 표시
