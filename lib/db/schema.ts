@@ -128,6 +128,34 @@ export const plan1Settings = plan1Schema.table('settings', {
     .notNull()
 });
 
+// PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 사용자 정의 할일 카테고리(버킷). 색 없음.
+// 사양 단일 원천: cofounder-portal/lib/db/schema.ts plan1TaskBuckets.
+// defaultKind 'now'|'later' = 시드된 기본 버킷 표식 (편집 전 i18n 렌더 · 편집 후 DB name).
+// uniqueIndex(userId, defaultKind) 가 default 버킷 이중 시드 race 차단 (NULL 은 distinct).
+export const plan1TaskBuckets = plan1Schema.table(
+  'task_buckets',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, {onDelete: 'cascade'}),
+    name: text('name').notNull().default(''),
+    isCountBased: boolean('is_count_based').notNull().default(false),
+    sortOrder: integer('sort_order').notNull().default(0),
+    defaultKind: text('default_kind').$type<'now' | 'later'>(),
+    createdAt: timestamp('created_at', {withTimezone: true})
+      .$defaultFn(() => new Date())
+      .notNull()
+  },
+  table => ({
+    userSortIdx: index('plan1_task_buckets_user_sort_idx').on(table.userId, table.sortOrder),
+    userDefaultKindIdx: uniqueIndex('plan1_task_buckets_user_default_kind_idx').on(
+      table.userId,
+      table.defaultKind
+    )
+  })
+);
+
 // PLAN1-TASKS-FEATURE-20260509 — task 영역 (할일 → 스케줄 변환 chain).
 // 사양 단일 원천: cofounder-portal/lib/db/schema.ts plan1Tasks (Stage 5.1 정합).
 // task → schedule 변환은 server action 안 db.batch atomic chain (logic-critic C3 정합).
@@ -147,6 +175,11 @@ export const plan1Tasks = plan1Schema.table(
     priority: integer('priority').notNull().default(1),
     // PLAN1-TASKS-BUCKET-20260511 — bucket 분할 ('now' / 'later'). 두 bucket priority namespace 독립.
     bucket: text('bucket').$type<'now' | 'later'>().notNull().default('now'),
+    // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 사용자 정의 버킷 FK (nullable · lazy backfill).
+    // 버킷 삭제 시 소속 task cascade 삭제. 기존 bucket enum 컬럼은 유지(롤백 안전망).
+    bucketId: text('bucket_id').references(() => plan1TaskBuckets.id, {onDelete: 'cascade'}),
+    // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 횟수차감형 잔여 횟수. null = 일반 task.
+    count: integer('count'),
     createdAt: timestamp('created_at', {withTimezone: true})
       .$defaultFn(() => new Date())
       .notNull()
@@ -157,6 +190,12 @@ export const plan1Tasks = plan1Schema.table(
     userBucketPriorityIdx: index('plan1_tasks_user_bucket_priority_idx').on(
       table.userId,
       table.bucket,
+      table.priority
+    ),
+    // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — bucketId 기준 priority namespace (신규 단일 원천).
+    userBucketIdPriorityIdx: index('plan1_tasks_user_bucket_id_priority_idx').on(
+      table.userId,
+      table.bucketId,
       table.priority
     )
   })
@@ -211,5 +250,7 @@ export type Settings = typeof plan1Settings.$inferSelect;
 export type SettingsInsert = typeof plan1Settings.$inferInsert;
 export type Task = typeof plan1Tasks.$inferSelect;
 export type TaskInsert = typeof plan1Tasks.$inferInsert;
+export type TaskBucketRow = typeof plan1TaskBuckets.$inferSelect;
+export type TaskBucketInsert = typeof plan1TaskBuckets.$inferInsert;
 export type ApiKey = typeof plan1ApiKeys.$inferSelect;
 export type ApiKeyInsert = typeof plan1ApiKeys.$inferInsert;
