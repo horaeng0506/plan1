@@ -52,6 +52,20 @@ const DailyTimeline = dynamic(
   {ssr: false, loading: DailyTimelineSkeleton}
 );
 
+// PLAN1-CALENDAR-RETROSPECT-20260531 — 달력 탭 + 되돌아보기 모달 (FullCalendar ssr:false).
+const MonthCalendar = dynamic(
+  () => import('./MonthCalendar').then(m => m.MonthCalendar),
+  {ssr: false, loading: () => (
+    <div className="h-64 border border-dashed border-line p-4 text-xs font-mono text-muted">
+      calendar · loading...
+    </div>
+  )}
+);
+const RetrospectModal = dynamic(
+  () => import('./RetrospectModal').then(m => m.RetrospectModal),
+  {ssr: false, loading: ModalSkeleton}
+);
+
 export function PlanApp() {
   const t = useTranslations();
   const runMutation = useRunMutation();
@@ -76,6 +90,9 @@ export function PlanApp() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 할일 카테고리(버킷) 관리 modal.
   const [bucketMgrOpen, setBucketMgrOpen] = useState(false);
+  // PLAN1-CALENDAR-RETROSPECT-20260531 — aside 시계/달력 탭 + 되돌아보기 날짜.
+  const [asideTab, setAsideTab] = useState<'clock' | 'calendar'>('clock');
+  const [retrospectMs, setRetrospectMs] = useState<number | null>(null);
 
   // Stage 3e env-critic Critical: store.init() 트리거. layout/page 단일 진입점에서 1회 호출.
   // Stage 3f Playwright 회귀 fix: error 발생 시에도 재진입 방지.
@@ -252,7 +269,42 @@ export function PlanApp() {
               />
             </section>
             <section className="order-2 lg:order-2 rounded-none border border-line bg-panel p-4">
-              <AnalogClock />
+              {/* PLAN1-CALENDAR-RETROSPECT-20260531 — [시계 | 달력] 탭 (탭이 곧 show/hide). */}
+              <div className="mb-3 flex gap-1" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={asideTab === 'clock'}
+                  onClick={() => setAsideTab('clock')}
+                  data-testid="aside-tab-clock"
+                  className={
+                    asideTab === 'clock'
+                      ? 'px-3 py-1 text-xs rounded-none border border-ink bg-ink text-bg font-mono'
+                      : 'px-3 py-1 text-xs rounded-none border border-line bg-panel text-txt font-mono hover:bg-bg'
+                  }
+                >
+                  {t('nav.tabClock')}
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={asideTab === 'calendar'}
+                  onClick={() => setAsideTab('calendar')}
+                  data-testid="aside-tab-calendar"
+                  className={
+                    asideTab === 'calendar'
+                      ? 'px-3 py-1 text-xs rounded-none border border-ink bg-ink text-bg font-mono'
+                      : 'px-3 py-1 text-xs rounded-none border border-line bg-panel text-txt font-mono hover:bg-bg'
+                  }
+                >
+                  {t('nav.tabCalendar')}
+                </button>
+              </div>
+              {asideTab === 'clock' ? (
+                <AnalogClock />
+              ) : (
+                <MonthCalendar onDateClick={ms => setRetrospectMs(ms)} />
+              )}
             </section>
             <section className="order-1 lg:order-3">
               <ActiveTimer />
@@ -281,6 +333,9 @@ export function PlanApp() {
         />
       )}
       {bucketMgrOpen && <TaskBucketManager onClose={() => setBucketMgrOpen(false)} />}
+      {retrospectMs !== null && (
+        <RetrospectModal dateMs={retrospectMs} onClose={() => setRetrospectMs(null)} />
+      )}
       <ToastContainer />
       <UndoBar />
       <ScheduleAddedModal />

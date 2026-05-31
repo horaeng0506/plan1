@@ -105,7 +105,9 @@
     "themeDark": "गहरा",
     "themeLight": "हल्का",
     "themeSystem": "स्वचालित",
-    "workingHours": "घंटे"
+    "workingHours": "घंटे",
+    "tabClock": "clock",
+    "tabCalendar": "calendar"
   },
   "onboarding": {
     "addFirst": "पहली अनुसूची जोड़ें",
@@ -268,5 +270,13 @@
     "remove": "remove",
     "confirmRemove": "remove? ({count} tasks)",
     "taskCountSuffix": "{count} tasks"
+  },
+  "calendar": {
+    "prevMonth": "previous month",
+    "nextMonth": "next month"
+  },
+  "retrospect": {
+    "title": "look back",
+    "empty": "no records for this day"
   }
 }

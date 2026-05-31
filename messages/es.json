@@ -105,7 +105,9 @@
     "themeDark": "oscuro",
     "themeLight": "claro",
     "themeSystem": "auto",
-    "workingHours": "horas"
+    "workingHours": "horas",
+    "tabClock": "clock",
+    "tabCalendar": "calendar"
   },
   "onboarding": {
     "addFirst": "agregar primer horario",
@@ -268,5 +270,13 @@
     "remove": "remove",
     "confirmRemove": "remove? ({count} tasks)",
     "taskCountSuffix": "{count} tasks"
+  },
+  "calendar": {
+    "prevMonth": "previous month",
+    "nextMonth": "next month"
+  },
+  "retrospect": {
+    "title": "look back",
+    "empty": "no records for this day"
   }
 }

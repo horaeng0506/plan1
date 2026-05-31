@@ -26,7 +26,9 @@
     "focus12h": "12h",
     "focus16h": "16h",
     "focus20h": "20h",
-    "focus24h": "24h"
+    "focus24h": "24h",
+    "tabClock": "clock",
+    "tabCalendar": "calendar"
   },
   "common": {
     "cancel": "cancel",
@@ -268,5 +270,13 @@
     "remove": "remove",
     "confirmRemove": "remove? ({count} tasks)",
     "taskCountSuffix": "{count} tasks"
+  },
+  "calendar": {
+    "prevMonth": "previous month",
+    "nextMonth": "next month"
+  },
+  "retrospect": {
+    "title": "look back",
+    "empty": "no records for this day"
   }
 }

@@ -105,7 +105,9 @@
     "themeDark": "dunkel",
     "themeLight": "hell",
     "themeSystem": "auto",
-    "workingHours": "Stunden"
+    "workingHours": "Stunden",
+    "tabClock": "clock",
+    "tabCalendar": "calendar"
   },
   "onboarding": {
     "addFirst": "ersten Zeitplan hinzufügen",
@@ -268,5 +270,13 @@
     "remove": "remove",
     "confirmRemove": "remove? ({count} tasks)",
     "taskCountSuffix": "{count} tasks"
+  },
+  "calendar": {
+    "prevMonth": "previous month",
+    "nextMonth": "next month"
+  },
+  "retrospect": {
+    "title": "look back",
+    "empty": "no records for this day"
   }
 }

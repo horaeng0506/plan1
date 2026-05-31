@@ -105,7 +105,9 @@
     "themeDark": "sombre",
     "themeLight": "clair",
     "themeSystem": "auto",
-    "workingHours": "heures"
+    "workingHours": "heures",
+    "tabClock": "clock",
+    "tabCalendar": "calendar"
   },
   "onboarding": {
     "addFirst": "ajouter la première planification",
@@ -268,5 +270,13 @@
     "remove": "remove",
     "confirmRemove": "remove? ({count} tasks)",
     "taskCountSuffix": "{count} tasks"
+  },
+  "calendar": {
+    "prevMonth": "previous month",
+    "nextMonth": "next month"
+  },
+  "retrospect": {
+    "title": "look back",
+    "empty": "no records for this day"
   }
 }

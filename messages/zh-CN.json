@@ -105,7 +105,9 @@
     "themeDark": "深色",
     "themeLight": "浅色",
     "themeSystem": "自动",
-    "workingHours": "小时"
+    "workingHours": "小时",
+    "tabClock": "clock",
+    "tabCalendar": "calendar"
   },
   "onboarding": {
     "addFirst": "添加第一个日程",
@@ -268,5 +270,13 @@
     "remove": "remove",
     "confirmRemove": "remove? ({count} tasks)",
     "taskCountSuffix": "{count} tasks"
+  },
+  "calendar": {
+    "prevMonth": "previous month",
+    "nextMonth": "next month"
+  },
+  "retrospect": {
+    "title": "look back",
+    "empty": "no records for this day"
   }
 }

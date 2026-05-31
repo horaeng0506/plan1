@@ -26,7 +26,9 @@
     "focus12h": "12시간",
     "focus16h": "16시간",
     "focus20h": "20시간",
-    "focus24h": "24시간"
+    "focus24h": "24시간",
+    "tabClock": "시계",
+    "tabCalendar": "달력"
   },
   "common": {
     "cancel": "취소",
@@ -268,5 +270,13 @@
     "remove": "삭제",
     "confirmRemove": "삭제할까요? (할일 {count}개)",
     "taskCountSuffix": "할일 {count}개"
+  },
+  "calendar": {
+    "prevMonth": "이전 달",
+    "nextMonth": "다음 달"
+  },
+  "retrospect": {
+    "title": "되돌아보기",
+    "empty": "이 날의 기록이 없어요"
   }
 }
