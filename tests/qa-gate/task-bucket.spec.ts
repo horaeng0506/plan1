@@ -23,7 +23,8 @@ test.describe('task bucket 분할 chain', () => {
     await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
     const bucketSelect = page.getByLabel(/list|분류/i);
     await expect(bucketSelect).toBeVisible({timeout: 5000});
-    await expect(bucketSelect).toHaveValue('now');
+    // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — option value 는 bucket id. 첫 옵션 = 'now' default.
+    await expect(bucketSelect.locator('option').first()).toHaveText(/now|당장/i);
   });
 
   test('당장 할일 + 나중 할일 두 bucket task 추가 → 별 group 박힘', async ({page}) => {
@@ -40,9 +41,9 @@ test.describe('task bucket 분할 chain', () => {
     await page.getByRole('button', {name: /add|추가|submit/i}).click();
     await expect(page.getByText(nowTitle)).toBeVisible({timeout: 5000});
 
-    // 'later' bucket task 추가
+    // 'later' bucket task 추가 (index 1 = 'later' default · value 는 bucket id)
     await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/list|분류/i).selectOption('later');
+    await page.getByLabel(/list|분류/i).selectOption({index: 1});
     await page.getByLabel(/title|제목/i).fill(laterTitle);
     await page.getByLabel(/duration|소요/i).fill('60');
     await page.getByLabel(/category|카테고리/i).selectOption({index: 0});
@@ -97,7 +98,7 @@ test.describe('task bucket 분할 chain', () => {
     await page.getByText(titleB).click();
     await expect(page.getByLabel(/list|분류/i)).toBeVisible({timeout: 3000});
     const startMs = Date.now();
-    await page.getByLabel(/list|분류/i).selectOption('later');
+    await page.getByLabel(/list|분류/i).selectOption({index: 1});
     await page.getByRole('button', {name: /save|저장/i}).click();
     // titleB 가 당장 group 에서 빠짐 + 나중 group (접힘 상태) 안 보임
     await expect(page.getByText(titleB)).toHaveCount(0, {timeout: 5000});
