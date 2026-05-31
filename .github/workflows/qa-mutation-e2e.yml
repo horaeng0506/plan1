@@ -36,40 +36,23 @@ jobs:
     name: Mutation E2E (PR · main)
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
-    # 20분 (2026-05-31) — playwright browser install 의 CDN stall retry 여유 (기존 15 → 20).
+    # 2026-05-31 — Playwright 공식 컨테이너 사용. browser 가 이미지에 사전 설치되어 있어
+    # cdn.playwright.dev 다운로드 자체를 제거 (지속적 CDN stall 우회 · 5 run install hang 종결).
+    # 버전은 package-lock @playwright/test (1.59.1) 와 일치 강제 (browser 호환).
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
     timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '24'
-          cache: 'npm'
-
+      # setup-node 폐기 (2026-05-31) — Playwright 컨테이너 node(22+) 사용. 컨테이너 안
+      # setup-node tool-cache 마운트 이슈 회피. next build·vercel·playwright 모두 node 22 호환.
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright (chromium only)
-        # 2026-05-31 — Playwright CDN stall 대응. browser zip 다운로드 100% 후 후속 아티팩트
-        # (headless-shell·ffmpeg) 연결이 멈춰 15분 job timeout (3회 재현 · --with-deps 무관 · OS 무관).
-        # 같은 1.59.1 버전이 2026-05-11 성공 → 코드 아닌 외부 CDN stall. timeout 으로 hung 시도를
-        # 끊고 fresh 연결로 재시도 (대개 다른 CDN edge 로 성공). 3회 실패 시 step fail (job hang X).
-        run: |
-          for i in 1 2 3; do
-            echo "::group::playwright install attempt $i"
-            if timeout 240 npx playwright install chromium; then
-              echo "::endgroup::"
-              echo "playwright install ok (attempt $i)"
-              exit 0
-            fi
-            echo "::endgroup::"
-            echo "attempt $i stalled/failed; retrying after 5s..."
-            sleep 5
-          done
-          echo "playwright install failed after 3 attempts" >&2
-          exit 1
+      # Playwright browser install 스텝 폐기 (2026-05-31) — 컨테이너 이미지에 사전 설치됨.
+      # cdn.playwright.dev 지속 stall 우회. 버전 skew 시 browser-not-found 로 fail-fast.
 
       # ── PR: ephemeral Neon branch + Vercel preview deploy ────────────────
       - name: Neon — create ephemeral branch
