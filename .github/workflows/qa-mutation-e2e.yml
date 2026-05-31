@@ -35,7 +35,11 @@ jobs:
   setup-and-test:
     name: Mutation E2E (PR · main)
     if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
+    # ubuntu-22.04 pin (2026-05-31) — ubuntu-latest 가 24.04 로 이동하며 `playwright install
+    # --with-deps` 의 apt 단계가 needrestart interactive prompt 로 hang → 15분 job timeout.
+    # 2026-05-11 마지막 성공 당시 환경(22.04) 복원. 24.04 정공 마이그레이션은 후속 (needrestart
+    # config noninteractive 적용 후 ubuntu-latest 복귀).
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     steps:
       - name: Checkout
