@@ -15,9 +15,9 @@
         "expiresNever": "أبداً",
         "fieldExpires": "ينتهي",
         "fieldName": "الاسم",
-        "modalCreateHeading": "مفتاح api جديد",
+        "modalCreateHeading": "مفتاح API جديد",
         "modalRotateHeading": "تدوير مفتاح API",
-        "rotateGraceWarning": "تم إلغاء المفتاح القديم خلال 24 ساعة. حدّث الوكلاء خلال الفترة المسموحة.",
+        "rotateGraceWarning": "المفتاح القديم تم إلغاؤه في 24 ساعة. قم بتحديث الوكلاء خلال فترة السماح.",
         "statusActive": "نشط",
         "statusExpired": "منتهي الصلاحية",
         "statusRevoked": "ملغى",
@@ -27,11 +27,11 @@
         "tableLastUsed": "آخر استخدام",
         "tableName": "الاسم",
         "tablePrefix": "بادئة",
-        "warningOneTime": "يظهر هذا المفتاح مرة واحدة فقط. احفظه بشكل آمن الآن."
+        "warningOneTime": "يظهر هذا المفتاح مرة واحدة. احفظه بشكل آمن الآن."
     },
     "app": {
-        "tagline": "مدير الجدولة",
-        "title": "الخطة 1"
+        "tagline": "مدير الجدول",
+        "title": "خطة1"
     },
     "auth": {
         "signIn": "تسجيل الدخول بواسطة Google",
@@ -44,13 +44,13 @@
     },
     "category": {
         "confirmRemoveLabel": "تأكيد الحذف ({count})",
-        "confirmRemoveText": "سيتم حذف {count} جدول (جداول) مع هذا. انقر مرة أخرى للتأكيد.",
+        "confirmRemoveText": "{count} جدول (جداول) سيتم حذفها مع هذا. انقر مرة أخرى للتأكيد.",
         "defaultName": "افتراضي",
         "empty": "لا توجد فئات.",
         "fieldColor": "اللون",
         "fieldName": "الاسم",
         "header": "الفئات",
-        "removeButton": "حذف",
+        "removeButton": "إزالة",
         "scheduleCountSuffix": "{count} جداول"
     },
     "common": {
@@ -75,7 +75,7 @@
         "workingHoursInvalid": "إدخال ساعات العمل غير صالح ({reason})."
     },
     "header": {
-        "finalEndAtSuffix": "النهاية"
+        "finalEndAtSuffix": "نهاية"
     },
     "loading": "جاري التحميل...",
     "mutation": {
@@ -90,19 +90,19 @@
         "revokeApiKey": "إلغاء مفتاح API",
         "rotateApiKey": "تدوير مفتاح API",
         "setFocus": "تعيين عرض التركيز",
-        "setTheme": "تعيين المظهر",
+        "setTheme": "تعيين السمة",
         "startScheduleNow": "بدء الجدول الآن",
         "updateTask": "تحديث المهمة"
     },
     "nav": {
         "categories": "الفئات",
-        "focus10h": "10 ساعات",
-        "focus12h": "12 ساعة",
+        "focus10h": "10س",
+        "focus12h": "12س",
         "focus16h": "16 ساعة",
         "focus20h": "20 ساعة",
         "focus24h": "24 ساعة",
         "focus4h": "4 ساعات",
-        "focus6h": "6 ساعات",
+        "focus6h": "6س",
         "focus8h": "8 ساعات",
         "focusLabel": "تركيز",
         "newSchedule": "جديد",
@@ -114,48 +114,48 @@
         "workingHours": "ساعات"
     },
     "onboarding": {
-        "addFirst": "إضافة الجدول الأول",
-        "firstSchedule": "أضف جدولك الأول لرؤيته على الشبكة الأسبوعية والجدول الزمني اليوم والساعة التناظرية.",
+        "addFirst": "إضافة أول جدول",
+        "firstSchedule": "أضف جدولك الأول لتراه على الشبكة الأسبوعية، والجدول الزمني لليوم، والساعة التناظرية.",
         "welcome": "لا توجد جداول بعد"
     },
     "retrospect": {
         "empty": "لا توجد سجلات لهذا اليوم",
-        "title": "النظر للخلف"
+        "title": "النظر إلى الوراء"
     },
     "schedule": {
         "afterLastNoneHint": "لا يوجد جدول قادم",
-        "buttonAfterLast": "last+10",
-        "buttonMinus10": "-10 دقائق",
-        "buttonMinus30": "-30 دقيقة",
-        "buttonPlus10": "+10 دقائق",
-        "buttonPlus30": "+30 دقيقة",
-        "buttonPlusHour": "+1 ساعة",
+        "buttonAfterLast": "الأخير+10",
+        "buttonMinus10": "10د-",
+        "buttonMinus30": "30د-",
+        "buttonPlus10": "10د+",
+        "buttonPlus30": "30د+",
+        "buttonPlusHour": "1 ساعة+",
         "categoryAddOption": "+ إضافة فئة",
         "chainedCheckbox": "ربط بالجدول السابق",
-        "endLabelV2": "وقت الانتهاء",
-        "endPlaceholder": "اختيار المدة",
+        "endLabelV2": "وقت النهاية",
+        "endPlaceholder": "اختر المدة",
         "fieldCategory": "الفئة",
         "fieldDuration": "المدة (دقيقة)",
         "fieldName": "الاسم",
-        "fieldStartHour": "ساعة البدء",
-        "fieldStartMinute": "دقيقة البدء",
+        "fieldStartHour": "ساعة البداية",
+        "fieldStartMinute": "دقيقة البداية",
         "headerEdit": "تعديل الجدول",
         "headerNew": "جدول جديد",
-        "hourSuffix": "ساعة",
+        "hourSuffix": "س",
         "hourTodaySuffix": "(اليوم)",
         "hourTomorrowSuffix": "(غداً)",
         "minuteSuffix": "د",
-        "prevChainLabel": "تم ربط الجدول السابق",
+        "prevChainLabel": "الجدول السابق متصل",
         "titleDefault": "جدول جديد",
-        "warningOverlapLimit": "يمكن أن يتداخل {limit} جداول كحد أقصى في نفس الوقت. اضبط البداية/المدة أو احذف جدولاً موجوداً."
+        "warningOverlapLimit": "يمكن أن يتداخل {limit} جداول كحد أقصى في نفس الوقت. اضبط البداية/المدة أو أزل جدولاً موجوداً."
     },
     "serverError": {
-        "apiKeyAlreadyRevoked": "مفتاح API تم إلغاؤه بالفعل.",
+        "apiKeyAlreadyRevoked": "تم إلغاء مفتاح API بالفعل.",
         "apiKeyCreateFailed": "فشل إنشاء مفتاح API.",
         "apiKeyExpiresInvalid": "يجب أن تكون صلاحية مفتاح API من 1-3650 يوماً أو فارغة.",
-        "apiKeyNameInvalid": "اسم مفتاح API مطلوب (بحد أقصى 100 حرف).",
+        "apiKeyNameInvalid": "اسم مفتاح API مطلوب (100 حرف كحد أقصى).",
         "apiKeyNotFound": "مفتاح API غير موجود.",
-        "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتتالي للإزالة.",
+        "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتسلسل للإزالة.",
         "categoryNotFound": "الفئة غير موجودة أو غير مملوكة.",
         "scheduleNotFound": "الجدول غير موجود.",
         "taskBucketInvalid": "قيمة الحاوية غير صالحة.",
@@ -163,8 +163,8 @@
         "taskBucketNameEmpty": "اسم الفئة مطلوب",
         "taskBucketNotFound": "فئة المهمة غير موجودة",
         "taskCountExhausted": "لا يوجد عدد متبقي",
-        "taskCountNeedsCategory": "المهام المستندة إلى العدد تحتاج إلى فئة",
-        "taskCountNeedsDuration": "المهام المستندة إلى العدد تحتاج إلى مدة",
+        "taskCountNeedsCategory": "المهام القائمة على العد تحتاج إلى فئة",
+        "taskCountNeedsDuration": "المهام القائمة على العد تحتاج إلى مدة",
         "taskDurationInvalid": "يجب أن تكون مدة المهمة 0 أو أكبر.",
         "taskNoCategoryId": "المهمة ليس لها فئة — افتح نافذة المهمة للتعيين.",
         "taskNoDuration": "المهمة ليس لها مدة — افتح نافذة المهمة للتعيين.",
@@ -179,7 +179,7 @@
     "settingsLink": "الإعدادات",
     "signIn": {
         "cta": "تسجيل الدخول",
-        "description": "سجل الدخول إلى حساب cofounder الخاص بك لعرض وإدارة جداولك.",
+        "description": "سجل الدخول إلى حساب المؤسس المشارك الخاص بك لعرض وإدارة جداولك.",
         "title": "تسجيل الدخول مطلوب"
     },
     "task": {
@@ -188,11 +188,11 @@
         "actionSave": "حفظ",
         "bucketLater": "لاحقاً",
         "bucketNow": "الآن",
-        "convertAfterLast": "last+10",
+        "convertAfterLast": "الأخير+10",
         "convertCancel": "إلغاء",
         "convertNow": "الآن",
         "convertToSchedule": "+ جدول",
-        "countNeedsFields": "المهام المعتمدة على العدد تحتاج إلى فئة ومدة",
+        "countNeedsFields": "المهام القائمة على العد تحتاج إلى فئة ومدة",
         "delete": "حذف",
         "empty": "لا توجد مهام",
         "fieldBucket": "قائمة",
@@ -209,8 +209,8 @@
     },
     "taskBucket": {
         "addHeading": "إضافة فئة",
-        "confirmRemove": "حذف؟ ({count} مهام)",
-        "countBased": "مهمة عد تنازلي",
+        "confirmRemove": "إزالة؟ ({count} مهام)",
+        "countBased": "مهمة العد التنازلي",
         "fieldName": "الاسم",
         "header": "إدارة فئات المهام",
         "remove": "إزالة",
@@ -223,23 +223,23 @@
         "buttonStartNow": "ابدأ الآن",
         "categoryFallback": "؟",
         "idleEmpty": "خامل · لا يوجد جدول نشط",
-        "labelElapsed": "منقضي",
-        "labelEndAt": "ينتهي في",
+        "labelElapsed": "المنقضي",
+        "labelEndAt": "ينتهي-في",
         "labelRemaining": "متبقي",
         "labelTarget": "الهدف",
         "labelUntilUpcoming": "حتى القادم",
         "labelUpcoming": "الجدول التالي",
         "overlapLabel": "تداخل {count}",
         "simultaneousLabel": "متزامن · {count}",
-        "tooltipClickToFocus": "انقر للتبديل إلى تركيز",
+        "tooltipClickToFocus": "انقر للتبديل إلى التركيز",
         "tooltipClickToIdle": "انقر للتبديل إلى خامل",
         "typeCountdown": "العد التنازلي",
         "typeCountup": "عد تصاعدي",
-        "typeTimer1": "timer1"
+        "typeTimer1": "مؤقت1"
     },
     "topbar": {
         "back": "العودة إلى البوابة",
-        "creditsLabel": "الأرصدة",
+        "creditsLabel": "الاعتمادات",
         "creditsPlaceholder": "—",
         "guest": "ضيف",
         "languageLabel": "اللغة",
@@ -251,7 +251,7 @@
         "taskActionLabel": "تم حذف المهمة"
     },
     "wallTime": {
-        "am": "ص",
+        "am": "صباحاً",
         "pm": "م"
     },
     "weekdays": [
@@ -265,18 +265,18 @@
     ],
     "workingHours": {
         "checkboxAlsoDefault": "حفظ أيضاً كافتراضي",
-        "checkboxWeekdaysOnly": "أيام الأسبوع فقط (الاثنين–الجمعة)",
-        "errorEndAfterStart": "يجب أن يكون وقت الانتهاء بعد وقت البدء.",
-        "errorToAfterFrom": "يجب أن يكون تاريخ الانتهاء في أو بعد تاريخ البدء.",
-        "fieldDate": "تاريخ",
-        "fieldEndTime": "وقت الانتهاء",
+        "checkboxWeekdaysOnly": "أيام الأسبوع فقط (الإثنين–الجمعة)",
+        "errorEndAfterStart": "يجب أن يكون وقت النهاية بعد وقت البداية.",
+        "errorToAfterFrom": "يجب أن يكون تاريخ النهاية في نفس تاريخ البداية أو بعده.",
+        "fieldDate": "التاريخ",
+        "fieldEndTime": "وقت النهاية",
         "fieldFromDate": "من",
-        "fieldStartTime": "وقت البدء",
+        "fieldStartTime": "وقت البداية",
         "fieldToDate": "إلى",
         "header": "ساعات العمل",
         "tabRange": "نطاق",
-        "tabSingle": "مفرد",
+        "tabSingle": "فردي",
         "warningNoDates": "لا توجد تواريخ للتطبيق في النطاق. (البداية > النهاية أو تعارض أيام الأسبوع فقط)",
-        "warningTruncated": "النطاق يتجاوز {max} يوم، تمت معالجة جزء فقط. جرب نطاقاً أضيق."
+        "warningTruncated": "النطاق يتجاوز {max} أيام، تمت معالجة جزء فقط. جرب نطاقاً أضيق."
     }
 }
