@@ -8,14 +8,14 @@
         "copiedConfirm": "我已保存此密钥",
         "copyButton": "复制",
         "create": "+ 密钥",
-        "empty": "无密钥",
+        "empty": "没有密钥",
         "expires30": "30 天",
         "expires365": "1 年",
         "expires90": "90 天",
         "expiresNever": "从不",
-        "fieldExpires": "过期时间",
+        "fieldExpires": "过期",
         "fieldName": "名称",
-        "modalCreateHeading": "新建 API 密钥",
+        "modalCreateHeading": "新 API 密钥",
         "modalRotateHeading": "轮换 API 密钥",
         "rotateGraceWarning": "旧密钥将在 24 小时后撤销。请在宽限期内更新代理。",
         "statusActive": "活跃",
@@ -23,8 +23,8 @@
         "statusRevoked": "已撤销",
         "tableActions": "操作",
         "tableCreated": "已创建",
-        "tableExpires": "过期时间",
-        "tableLastUsed": "上次使用",
+        "tableExpires": "过期",
+        "tableLastUsed": "最后使用",
         "tableName": "名称",
         "tablePrefix": "前缀",
         "warningOneTime": "此密钥仅显示一次。请立即安全保存。"
@@ -43,8 +43,8 @@
         "prevMonth": "上个月"
     },
     "category": {
-        "confirmRemoveLabel": "确认删除 ({count})",
-        "confirmRemoveText": "将删除 {count} 个日程。再次点击以确认。",
+        "confirmRemoveLabel": "确认删除（{count}）",
+        "confirmRemoveText": "将同时删除 {count} 个日程。再次点击以确认。",
         "defaultName": "默认",
         "empty": "无分类。",
         "fieldColor": "颜色",
@@ -68,11 +68,11 @@
         "scheduleAdded": "日程已添加"
     },
     "error": {
-        "featureUnavailable": "此功能尚未开放 ({feature})。",
+        "featureUnavailable": "此功能尚未开放（{feature}）。",
         "loadFailedLabel": "加载失败：",
-        "mutationFailed": "{action} 失败：{error}",
+        "mutationFailed": "执行 {action} 失败：{error}",
         "unknown": "发生意外错误。请重试。",
-        "workingHoursInvalid": "工作时间输入无效 ({reason})。"
+        "workingHoursInvalid": "无效的工作时间输入（{reason}）。"
     },
     "header": {
         "finalEndAtSuffix": "结束"
@@ -86,7 +86,7 @@
         "createApiKey": "创建 API 密钥",
         "extendTimer": "延长计时器",
         "removeCategory": "移除类别",
-        "removeTask": "删除任务",
+        "removeTask": "移除任务",
         "revokeApiKey": "撤销 API 密钥",
         "rotateApiKey": "轮换 API 密钥",
         "setFocus": "设置专注视图",
@@ -115,11 +115,11 @@
     },
     "onboarding": {
         "addFirst": "添加第一个日程",
-        "firstSchedule": "添加您的第一个日程以在周视图、今日时间线和模拟时钟上查看它。",
+        "firstSchedule": "添加您的第一个日程以在周视图、今日时间线和模拟时钟上查看。",
         "welcome": "暂无日程"
     },
     "retrospect": {
-        "empty": "此日期无记录",
+        "empty": "当天没有记录",
         "title": "回顾"
     },
     "schedule": {
@@ -131,44 +131,44 @@
         "buttonPlus30": "+30分钟",
         "buttonPlusHour": "+1小时",
         "categoryAddOption": "+ 添加类别",
-        "chainedCheckbox": "衔接到前一个日程",
+        "chainedCheckbox": "链接到上一个日程",
         "endLabelV2": "结束时间",
         "endPlaceholder": "选择时长",
-        "fieldCategory": "类别",
+        "fieldCategory": "分类",
         "fieldDuration": "时长（分钟）",
         "fieldName": "名称",
         "fieldStartHour": "开始小时",
         "fieldStartMinute": "开始分钟",
         "headerEdit": "编辑日程",
-        "headerNew": "新建日程",
-        "hourSuffix": "时",
+        "headerNew": "新日程",
+        "hourSuffix": "小时",
         "hourTodaySuffix": "（今天）",
         "hourTomorrowSuffix": "（明天）",
         "minuteSuffix": "分钟",
-        "prevChainLabel": "已连接前一个日程",
-        "titleDefault": "新建日程",
+        "prevChainLabel": "已连接上一个日程",
+        "titleDefault": "新日程",
         "warningOverlapLimit": "最多 {limit} 个日程可以同时重叠。请调整开始时间/时长或删除现有日程。"
     },
     "serverError": {
         "apiKeyAlreadyRevoked": "API 密钥已被撤销。",
         "apiKeyCreateFailed": "API 密钥创建失败。",
         "apiKeyExpiresInvalid": "API 密钥过期时间必须为 1-3650 天或为空。",
-        "apiKeyNameInvalid": "API 密钥名称为必填项（最多 100 字符）。",
+        "apiKeyNameInvalid": "API 密钥名称为必填项（最多 100 个字符）。",
         "apiKeyNotFound": "未找到 API 密钥。",
-        "categoryHasSchedules": "分类包含 {scheduleCount} 个日程。确认级联删除以移除。",
-        "categoryNotFound": "类别未找到或非本人所有。",
+        "categoryHasSchedules": "分类有 {scheduleCount} 个日程。确认级联删除以移除。",
+        "categoryNotFound": "未找到分类或无权访问。",
         "scheduleNotFound": "未找到日程。",
         "taskBucketInvalid": "无效的存储桶值。",
-        "taskBucketLastProtected": "至少必须保留一个类别",
-        "taskBucketNameEmpty": "类别名称为必填项",
+        "taskBucketLastProtected": "至少必须保留一个分类",
+        "taskBucketNameEmpty": "分类名称为必填项",
         "taskBucketNotFound": "未找到任务类别",
-        "taskCountExhausted": "无剩余次数",
-        "taskCountNeedsCategory": "计数型任务需要一个分类",
-        "taskCountNeedsDuration": "计数型任务需要一个时长",
-        "taskDurationInvalid": "任务时长必须为 0 或更大。",
-        "taskNoCategoryId": "任务没有类别 — 打开任务弹窗进行设置。",
+        "taskCountExhausted": "没有剩余计数",
+        "taskCountNeedsCategory": "基于计数的任务需要分类",
+        "taskCountNeedsDuration": "基于计数的任务需要时长",
+        "taskDurationInvalid": "任务时长必须大于或等于 0。",
+        "taskNoCategoryId": "任务没有分类 — 打开任务弹窗进行设置。",
         "taskNoDuration": "任务没有时长 — 打开任务弹窗进行设置。",
-        "taskNotFound": "任务未找到。",
+        "taskNotFound": "未找到任务。",
         "taskPriorityOutOfRange": "优先级超出范围",
         "unauthorized": "需要登录。"
     },
@@ -179,7 +179,7 @@
     "settingsLink": "设置",
     "signIn": {
         "cta": "登录",
-        "description": "登录您的联合创始人账户以查看和管理您的日程。",
+        "description": "登录到您的联合创始人账户以查看和管理您的日程。",
         "title": "需要登录"
     },
     "task": {
@@ -192,11 +192,11 @@
         "convertCancel": "取消",
         "convertNow": "现在",
         "convertToSchedule": "+ 日程",
-        "countNeedsFields": "基于次数的任务需要类别和时长",
+        "countNeedsFields": "基于计数的任务需要一个类别和一个持续时间",
         "delete": "删除",
-        "empty": "无任务",
+        "empty": "没有任务",
         "fieldBucket": "列表",
-        "fieldCategory": "类别",
+        "fieldCategory": "分类",
         "fieldCount": "计数",
         "fieldDuration": "时长（分钟）",
         "fieldPriority": "优先级",
@@ -204,7 +204,7 @@
         "heading": "任务",
         "manageBuckets": "管理",
         "modalEditHeading": "编辑任务",
-        "modalHeading": "新建任务",
+        "modalHeading": "新任务",
         "newTask": "+ 任务"
     },
     "taskBucket": {
@@ -212,7 +212,7 @@
         "confirmRemove": "移除？（{count} 个任务）",
         "countBased": "倒计时任务",
         "fieldName": "名称",
-        "header": "管理任务类别",
+        "header": "管理任务分类",
         "remove": "移除",
         "taskCountSuffix": "{count} 个任务"
     },
@@ -222,7 +222,7 @@
         "buttonIdle": "空闲",
         "buttonStartNow": "立即开始",
         "categoryFallback": "？",
-        "idleEmpty": "空闲 · 无活跃日程",
+        "idleEmpty": "空闲 · 无活动日程",
         "labelElapsed": "已用时",
         "labelEndAt": "结束于",
         "labelRemaining": "剩余",
@@ -230,7 +230,7 @@
         "labelUntilUpcoming": "直到即将到来",
         "labelUpcoming": "下一个日程",
         "overlapLabel": "重叠 {count}",
-        "simultaneousLabel": "同时 · {count}",
+        "simultaneousLabel": "同时进行 · {count}",
         "tooltipClickToFocus": "点击切换到专注",
         "tooltipClickToIdle": "点击切换到空闲",
         "typeCountdown": "倒计时",
@@ -239,7 +239,7 @@
     },
     "topbar": {
         "back": "返回门户",
-        "creditsLabel": "积分",
+        "creditsLabel": "致谢",
         "creditsPlaceholder": "—",
         "guest": "访客",
         "languageLabel": "语言",
@@ -264,10 +264,10 @@
         "周六"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "同时保存为默认值",
+        "checkboxAlsoDefault": "同时保存为默认",
         "checkboxWeekdaysOnly": "仅工作日（周一至周五）",
         "errorEndAfterStart": "结束时间必须晚于开始时间。",
-        "errorToAfterFrom": "结束日期必须在开始日期当天或之后。",
+        "errorToAfterFrom": "结束日期必须等于或晚于开始日期。",
         "fieldDate": "日期",
         "fieldEndTime": "结束时间",
         "fieldFromDate": "从",
@@ -275,8 +275,8 @@
         "fieldToDate": "至",
         "header": "工作时间",
         "tabRange": "范围",
-        "tabSingle": "单个",
+        "tabSingle": "单次",
         "warningNoDates": "范围内没有可应用的日期。（开始 > 结束或仅工作日冲突）",
-        "warningTruncated": "范围超过 {max} 天,仅处理部分。请尝试更窄的范围。"
+        "warningTruncated": "范围超过 {max} 天，仅处理部分。请尝试更窄的范围。"
     }
 }
