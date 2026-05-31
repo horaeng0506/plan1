@@ -106,8 +106,8 @@
     "themeLight": "فاتح",
     "themeSystem": "تلقائي",
     "workingHours": "ساعات",
-    "tabClock": "clock",
-    "tabCalendar": "calendar"
+    "tabClock": "ساعة",
+    "tabCalendar": "تقويم"
   },
   "onboarding": {
     "addFirst": "إضافة أول جدول",
@@ -116,7 +116,7 @@
   },
   "schedule": {
     "afterLastNoneHint": "لا يوجد جدول قادم",
-    "buttonAfterLast": "last+10",
+    "buttonAfterLast": "الأخير+10",
     "buttonMinus10": "10د-",
     "buttonMinus30": "30د-",
     "buttonPlus10": "10د+",
@@ -156,13 +156,13 @@
     "taskNoDuration": "المهمة ليس لها مدة — افتح نافذة المهمة للتعيين.",
     "taskNotFound": "المهمة غير موجودة.",
     "unauthorized": "تسجيل الدخول مطلوب.",
-    "taskBucketNotFound": "Task category not found",
-    "taskBucketNameEmpty": "Category name is required",
-    "taskBucketLastProtected": "At least one category must remain",
-    "taskCountNeedsCategory": "Count-based tasks need a category",
-    "taskCountNeedsDuration": "Count-based tasks need a duration",
-    "taskCountExhausted": "No remaining count",
-    "taskPriorityOutOfRange": "Priority is out of range"
+    "taskBucketNotFound": "فئة المهمة غير موجودة",
+    "taskBucketNameEmpty": "اسم الفئة مطلوب",
+    "taskBucketLastProtected": "يجب أن تبقى فئة واحدة على الأقل",
+    "taskCountNeedsCategory": "مهام العدّ تحتاج إلى فئة",
+    "taskCountNeedsDuration": "مهام العدّ تحتاج إلى مدة",
+    "taskCountExhausted": "لا يوجد عدد متبقٍ",
+    "taskPriorityOutOfRange": "الأولوية خارج النطاق"
   },
   "settings": {
     "apiKeysSection": "مفاتيح api",
@@ -180,7 +180,7 @@
     "actionSave": "حفظ",
     "bucketLater": "لاحقاً",
     "bucketNow": "الآن",
-    "convertAfterLast": "last+10",
+    "convertAfterLast": "الأخير+10",
     "convertCancel": "إلغاء",
     "convertNow": "الآن",
     "convertToSchedule": "+ جدول",
@@ -195,9 +195,9 @@
     "modalEditHeading": "تعديل المهمة",
     "modalHeading": "مهمة جديدة",
     "newTask": "+ مهمة",
-    "manageBuckets": "manage",
-    "fieldCount": "count",
-    "countNeedsFields": "count-based tasks need a category and a duration"
+    "manageBuckets": "إدارة",
+    "fieldCount": "العدد",
+    "countNeedsFields": "مهام العدّ تحتاج إلى فئة ومدة"
   },
   "timer": {
     "buttonComplete": "مكتمل",
@@ -263,20 +263,20 @@
     "warningTruncated": "النطاق يتجاوز {max} يوماً، تمت معالجة جزء فقط. جرب نطاقاً أضيق."
   },
   "taskBucket": {
-    "header": "manage task categories",
-    "fieldName": "name",
-    "countBased": "count-down task",
-    "addHeading": "add category",
-    "remove": "remove",
-    "confirmRemove": "remove? ({count} tasks)",
-    "taskCountSuffix": "{count} tasks"
+    "header": "إدارة فئات المهام",
+    "fieldName": "الاسم",
+    "countBased": "مهمة بعدّ تنازلي",
+    "addHeading": "إضافة فئة",
+    "remove": "حذف",
+    "confirmRemove": "حذف؟ ({count} مهام)",
+    "taskCountSuffix": "{count} مهام"
   },
   "calendar": {
-    "prevMonth": "previous month",
-    "nextMonth": "next month"
+    "prevMonth": "الشهر السابق",
+    "nextMonth": "الشهر التالي"
   },
   "retrospect": {
-    "title": "look back",
-    "empty": "no records for this day"
+    "title": "مراجعة",
+    "empty": "لا سجلات لهذا اليوم"
   }
 }

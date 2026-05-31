@@ -106,8 +106,8 @@
     "themeLight": "ライト",
     "themeSystem": "自動",
     "workingHours": "時間",
-    "tabClock": "clock",
-    "tabCalendar": "calendar"
+    "tabClock": "時計",
+    "tabCalendar": "カレンダー"
   },
   "onboarding": {
     "addFirst": "最初のスケジュールを追加",
@@ -116,7 +116,7 @@
   },
   "schedule": {
     "afterLastNoneHint": "今後のスケジュールはありません",
-    "buttonAfterLast": "last+10",
+    "buttonAfterLast": "最後+10",
     "buttonMinus10": "-10分",
     "buttonMinus30": "-30分",
     "buttonPlus10": "+10分",
@@ -156,13 +156,13 @@
     "taskNoDuration": "タスクに期間が設定されていません — タスクモーダルを開いて設定してください。",
     "taskNotFound": "タスクが見つかりません。",
     "unauthorized": "サインインが必要です。",
-    "taskBucketNotFound": "Task category not found",
-    "taskBucketNameEmpty": "Category name is required",
-    "taskBucketLastProtected": "At least one category must remain",
-    "taskCountNeedsCategory": "Count-based tasks need a category",
-    "taskCountNeedsDuration": "Count-based tasks need a duration",
-    "taskCountExhausted": "No remaining count",
-    "taskPriorityOutOfRange": "Priority is out of range"
+    "taskBucketNotFound": "タスクカテゴリが見つかりません",
+    "taskBucketNameEmpty": "カテゴリ名を入力してください",
+    "taskBucketLastProtected": "カテゴリは最低1つ必要です",
+    "taskCountNeedsCategory": "回数消化タスクにはカテゴリが必要です",
+    "taskCountNeedsDuration": "回数消化タスクには所要時間が必要です",
+    "taskCountExhausted": "残り回数がありません",
+    "taskPriorityOutOfRange": "優先度が範囲外です"
   },
   "settings": {
     "apiKeysSection": "APIキー",
@@ -180,7 +180,7 @@
     "actionSave": "保存",
     "bucketLater": "後で",
     "bucketNow": "今すぐ",
-    "convertAfterLast": "last+10",
+    "convertAfterLast": "最後+10",
     "convertCancel": "キャンセル",
     "convertNow": "現在",
     "convertToSchedule": "+ スケジュール",
@@ -195,9 +195,9 @@
     "modalEditHeading": "タスクを編集",
     "modalHeading": "新しいタスク",
     "newTask": "+ タスク",
-    "manageBuckets": "manage",
-    "fieldCount": "count",
-    "countNeedsFields": "count-based tasks need a category and a duration"
+    "manageBuckets": "管理",
+    "fieldCount": "回数",
+    "countNeedsFields": "回数消化タスクにはカテゴリと所要時間が必要です"
   },
   "timer": {
     "buttonComplete": "完了",
@@ -263,20 +263,20 @@
     "warningTruncated": "範囲が{max}日を超えています。一部のみ処理されました。より狭い範囲をお試しください。"
   },
   "taskBucket": {
-    "header": "manage task categories",
-    "fieldName": "name",
-    "countBased": "count-down task",
-    "addHeading": "add category",
-    "remove": "remove",
-    "confirmRemove": "remove? ({count} tasks)",
-    "taskCountSuffix": "{count} tasks"
+    "header": "タスクカテゴリの管理",
+    "fieldName": "名前",
+    "countBased": "回数消化タスク",
+    "addHeading": "カテゴリを追加",
+    "remove": "削除",
+    "confirmRemove": "削除しますか？（{count}件）",
+    "taskCountSuffix": "{count}件"
   },
   "calendar": {
-    "prevMonth": "previous month",
-    "nextMonth": "next month"
+    "prevMonth": "前の月",
+    "nextMonth": "次の月"
   },
   "retrospect": {
-    "title": "look back",
-    "empty": "no records for this day"
+    "title": "振り返り",
+    "empty": "この日の記録はありません"
   }
 }

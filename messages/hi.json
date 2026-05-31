@@ -106,8 +106,8 @@
     "themeLight": "हल्का",
     "themeSystem": "स्वचालित",
     "workingHours": "घंटे",
-    "tabClock": "clock",
-    "tabCalendar": "calendar"
+    "tabClock": "घड़ी",
+    "tabCalendar": "कैलेंडर"
   },
   "onboarding": {
     "addFirst": "पहली अनुसूची जोड़ें",
@@ -116,7 +116,7 @@
   },
   "schedule": {
     "afterLastNoneHint": "कोई आगामी अनुसूची नहीं",
-    "buttonAfterLast": "last+10",
+    "buttonAfterLast": "अंतिम+10",
     "buttonMinus10": "-10मि",
     "buttonMinus30": "-30मि",
     "buttonPlus10": "+10मि",
@@ -156,13 +156,13 @@
     "taskNoDuration": "कार्य में कोई अवधि नहीं है — सेट करने के लिए कार्य मोडल खोलें।",
     "taskNotFound": "कार्य नहीं मिला।",
     "unauthorized": "साइन इन आवश्यक।",
-    "taskBucketNotFound": "Task category not found",
-    "taskBucketNameEmpty": "Category name is required",
-    "taskBucketLastProtected": "At least one category must remain",
-    "taskCountNeedsCategory": "Count-based tasks need a category",
-    "taskCountNeedsDuration": "Count-based tasks need a duration",
-    "taskCountExhausted": "No remaining count",
-    "taskPriorityOutOfRange": "Priority is out of range"
+    "taskBucketNotFound": "कार्य श्रेणी नहीं मिली",
+    "taskBucketNameEmpty": "श्रेणी का नाम आवश्यक है",
+    "taskBucketLastProtected": "कम से कम एक श्रेणी रहनी चाहिए",
+    "taskCountNeedsCategory": "गिनती वाले कार्यों के लिए श्रेणी चाहिए",
+    "taskCountNeedsDuration": "गिनती वाले कार्यों के लिए अवधि चाहिए",
+    "taskCountExhausted": "कोई गिनती शेष नहीं",
+    "taskPriorityOutOfRange": "प्राथमिकता सीमा से बाहर"
   },
   "settings": {
     "apiKeysSection": "API कुंजियाँ",
@@ -180,7 +180,7 @@
     "actionSave": "सहेजें",
     "bucketLater": "बाद में",
     "bucketNow": "अभी",
-    "convertAfterLast": "last+10",
+    "convertAfterLast": "अंतिम+10",
     "convertCancel": "रद्द करें",
     "convertNow": "अभी",
     "convertToSchedule": "+ अनुसूची",
@@ -195,9 +195,9 @@
     "modalEditHeading": "कार्य संपादित करें",
     "modalHeading": "नया कार्य",
     "newTask": "+ कार्य",
-    "manageBuckets": "manage",
-    "fieldCount": "count",
-    "countNeedsFields": "count-based tasks need a category and a duration"
+    "manageBuckets": "प्रबंधन",
+    "fieldCount": "गिनती",
+    "countNeedsFields": "गिनती वाले कार्यों के लिए श्रेणी और अवधि चाहिए"
   },
   "timer": {
     "buttonComplete": "पूर्ण",
@@ -263,20 +263,20 @@
     "warningTruncated": "सीमा {max} दिनों से अधिक है, केवल आंशिक रूप से संसाधित। एक संकीर्ण सीमा का प्रयास करें।"
   },
   "taskBucket": {
-    "header": "manage task categories",
-    "fieldName": "name",
-    "countBased": "count-down task",
-    "addHeading": "add category",
-    "remove": "remove",
-    "confirmRemove": "remove? ({count} tasks)",
-    "taskCountSuffix": "{count} tasks"
+    "header": "कार्य श्रेणियाँ प्रबंधित करें",
+    "fieldName": "नाम",
+    "countBased": "गिनती घटाने वाला कार्य",
+    "addHeading": "श्रेणी जोड़ें",
+    "remove": "हटाएँ",
+    "confirmRemove": "हटाएँ? ({count} कार्य)",
+    "taskCountSuffix": "{count} कार्य"
   },
   "calendar": {
-    "prevMonth": "previous month",
-    "nextMonth": "next month"
+    "prevMonth": "पिछला माह",
+    "nextMonth": "अगला माह"
   },
   "retrospect": {
-    "title": "look back",
-    "empty": "no records for this day"
+    "title": "पुनरावलोकन",
+    "empty": "इस दिन का कोई रिकॉर्ड नहीं"
   }
 }

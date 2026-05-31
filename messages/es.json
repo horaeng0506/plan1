@@ -106,8 +106,8 @@
     "themeLight": "claro",
     "themeSystem": "auto",
     "workingHours": "horas",
-    "tabClock": "clock",
-    "tabCalendar": "calendar"
+    "tabClock": "reloj",
+    "tabCalendar": "calendario"
   },
   "onboarding": {
     "addFirst": "agregar primer horario",
@@ -116,7 +116,7 @@
   },
   "schedule": {
     "afterLastNoneHint": "sin próximo horario",
-    "buttonAfterLast": "last+10",
+    "buttonAfterLast": "último+10",
     "buttonMinus10": "-10m",
     "buttonMinus30": "-30m",
     "buttonPlus10": "+10m",
@@ -156,13 +156,13 @@
     "taskNoDuration": "La tarea no tiene duración — abre el modal de tarea para configurarla.",
     "taskNotFound": "Tarea no encontrada.",
     "unauthorized": "Inicio de sesión requerido.",
-    "taskBucketNotFound": "Task category not found",
-    "taskBucketNameEmpty": "Category name is required",
-    "taskBucketLastProtected": "At least one category must remain",
-    "taskCountNeedsCategory": "Count-based tasks need a category",
-    "taskCountNeedsDuration": "Count-based tasks need a duration",
-    "taskCountExhausted": "No remaining count",
-    "taskPriorityOutOfRange": "Priority is out of range"
+    "taskBucketNotFound": "Categoría de tarea no encontrada",
+    "taskBucketNameEmpty": "Se requiere el nombre de la categoría",
+    "taskBucketLastProtected": "Debe quedar al menos una categoría",
+    "taskCountNeedsCategory": "Las tareas con contador necesitan una categoría",
+    "taskCountNeedsDuration": "Las tareas con contador necesitan una duración",
+    "taskCountExhausted": "Sin recuento restante",
+    "taskPriorityOutOfRange": "Prioridad fuera de rango"
   },
   "settings": {
     "apiKeysSection": "claves api",
@@ -180,7 +180,7 @@
     "actionSave": "guardar",
     "bucketLater": "Más tarde",
     "bucketNow": "Ahora",
-    "convertAfterLast": "last+10",
+    "convertAfterLast": "último+10",
     "convertCancel": "cancelar",
     "convertNow": "ahora",
     "convertToSchedule": "+ horario",
@@ -195,9 +195,9 @@
     "modalEditHeading": "editar tarea",
     "modalHeading": "nueva tarea",
     "newTask": "+ tarea",
-    "manageBuckets": "manage",
-    "fieldCount": "count",
-    "countNeedsFields": "count-based tasks need a category and a duration"
+    "manageBuckets": "gestionar",
+    "fieldCount": "cantidad",
+    "countNeedsFields": "las tareas con contador necesitan categoría y duración"
   },
   "timer": {
     "buttonComplete": "completar",
@@ -263,20 +263,20 @@
     "warningTruncated": "El rango excede {max} días, solo se procesó parcialmente. Intenta un rango más estrecho."
   },
   "taskBucket": {
-    "header": "manage task categories",
-    "fieldName": "name",
-    "countBased": "count-down task",
-    "addHeading": "add category",
-    "remove": "remove",
-    "confirmRemove": "remove? ({count} tasks)",
-    "taskCountSuffix": "{count} tasks"
+    "header": "gestionar categorías de tareas",
+    "fieldName": "nombre",
+    "countBased": "tarea con contador",
+    "addHeading": "añadir categoría",
+    "remove": "eliminar",
+    "confirmRemove": "¿eliminar? ({count} tareas)",
+    "taskCountSuffix": "{count} tareas"
   },
   "calendar": {
-    "prevMonth": "previous month",
-    "nextMonth": "next month"
+    "prevMonth": "mes anterior",
+    "nextMonth": "mes siguiente"
   },
   "retrospect": {
-    "title": "look back",
-    "empty": "no records for this day"
+    "title": "repasar",
+    "empty": "no hay registros para este día"
   }
 }

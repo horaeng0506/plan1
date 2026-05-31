@@ -106,8 +106,8 @@
     "themeLight": "浅色",
     "themeSystem": "自动",
     "workingHours": "小时",
-    "tabClock": "clock",
-    "tabCalendar": "calendar"
+    "tabClock": "时钟",
+    "tabCalendar": "日历"
   },
   "onboarding": {
     "addFirst": "添加第一个日程",
@@ -116,7 +116,7 @@
   },
   "schedule": {
     "afterLastNoneHint": "无即将到来的日程",
-    "buttonAfterLast": "last+10",
+    "buttonAfterLast": "末尾+10",
     "buttonMinus10": "-10分钟",
     "buttonMinus30": "-30分钟",
     "buttonPlus10": "+10分钟",
@@ -156,13 +156,13 @@
     "taskNoDuration": "任务没有时长 — 打开任务模态框进行设置。",
     "taskNotFound": "未找到任务。",
     "unauthorized": "需要登录。",
-    "taskBucketNotFound": "Task category not found",
-    "taskBucketNameEmpty": "Category name is required",
-    "taskBucketLastProtected": "At least one category must remain",
-    "taskCountNeedsCategory": "Count-based tasks need a category",
-    "taskCountNeedsDuration": "Count-based tasks need a duration",
-    "taskCountExhausted": "No remaining count",
-    "taskPriorityOutOfRange": "Priority is out of range"
+    "taskBucketNotFound": "未找到任务分类",
+    "taskBucketNameEmpty": "请输入分类名称",
+    "taskBucketLastProtected": "至少保留一个分类",
+    "taskCountNeedsCategory": "计次任务需要分类",
+    "taskCountNeedsDuration": "计次任务需要时长",
+    "taskCountExhausted": "没有剩余次数",
+    "taskPriorityOutOfRange": "优先级超出范围"
   },
   "settings": {
     "apiKeysSection": "API 密钥",
@@ -180,7 +180,7 @@
     "actionSave": "保存",
     "bucketLater": "稍后",
     "bucketNow": "现在",
-    "convertAfterLast": "last+10",
+    "convertAfterLast": "末尾+10",
     "convertCancel": "取消",
     "convertNow": "现在",
     "convertToSchedule": "+ 日程",
@@ -195,9 +195,9 @@
     "modalEditHeading": "编辑任务",
     "modalHeading": "新任务",
     "newTask": "+ 任务",
-    "manageBuckets": "manage",
-    "fieldCount": "count",
-    "countNeedsFields": "count-based tasks need a category and a duration"
+    "manageBuckets": "管理",
+    "fieldCount": "次数",
+    "countNeedsFields": "计次任务需要分类和时长"
   },
   "timer": {
     "buttonComplete": "完成",
@@ -263,20 +263,20 @@
     "warningTruncated": "范围超过 {max} 天,仅处理部分。请尝试更窄的范围。"
   },
   "taskBucket": {
-    "header": "manage task categories",
-    "fieldName": "name",
-    "countBased": "count-down task",
-    "addHeading": "add category",
-    "remove": "remove",
-    "confirmRemove": "remove? ({count} tasks)",
-    "taskCountSuffix": "{count} tasks"
+    "header": "管理任务分类",
+    "fieldName": "名称",
+    "countBased": "计次任务",
+    "addHeading": "添加分类",
+    "remove": "删除",
+    "confirmRemove": "删除？（{count} 个任务）",
+    "taskCountSuffix": "{count} 个任务"
   },
   "calendar": {
-    "prevMonth": "previous month",
-    "nextMonth": "next month"
+    "prevMonth": "上个月",
+    "nextMonth": "下个月"
   },
   "retrospect": {
-    "title": "look back",
-    "empty": "no records for this day"
+    "title": "回顾",
+    "empty": "这一天没有记录"
   }
 }
