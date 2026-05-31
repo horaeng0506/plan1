@@ -13,30 +13,30 @@
         "expires365": "1 año",
         "expires90": "90 días",
         "expiresNever": "nunca",
-        "fieldExpires": "expira",
+        "fieldExpires": "caduca",
         "fieldName": "nombre",
         "modalCreateHeading": "nueva clave api",
         "modalRotateHeading": "rotar clave api",
-        "rotateGraceWarning": "Clave antigua revocada en 24h. Actualice agentes dentro del período de gracia.",
+        "rotateGraceWarning": "Clave antigua revocada en 24h. Actualiza los agentes dentro del período de gracia.",
         "statusActive": "activo",
-        "statusExpired": "expirada",
-        "statusRevoked": "revocada",
+        "statusExpired": "caducado",
+        "statusRevoked": "revocado",
         "tableActions": "acciones",
-        "tableCreated": "creada",
-        "tableExpires": "expira",
-        "tableLastUsed": "último uso",
+        "tableCreated": "creado",
+        "tableExpires": "caduca",
+        "tableLastUsed": "usado por última vez",
         "tableName": "nombre",
         "tablePrefix": "prefijo",
-        "warningOneTime": "Esta clave se muestra UNA VEZ. Guárdala de forma segura ahora."
+        "warningOneTime": "Esta clave se muestra UNA VEZ. Guárdela de forma segura ahora."
     },
     "app": {
-        "tagline": "gestor de programación",
+        "tagline": "administrador de horarios",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Iniciar sesión con Google",
-        "signInDescription": "plan1 es una herramienta de programación personal con sincronización entre dispositivos. Inicia sesión con Google para comenzar.",
-        "signInRequired": "Inicie sesión para usar plan1"
+        "signInDescription": "plan1 es una herramienta de horarios personales con sincronización entre dispositivos. Inicia sesión con Google para comenzar.",
+        "signInRequired": "Inicia sesión para usar plan1"
     },
     "calendar": {
         "nextMonth": "próximo mes",
@@ -44,14 +44,14 @@
     },
     "category": {
         "confirmRemoveLabel": "confirmar eliminar ({count})",
-        "confirmRemoveText": "{count} programación(es) se eliminará(n) con esto. Haz clic de nuevo para confirmar.",
+        "confirmRemoveText": "{count} horario(s) se eliminará(n) con esto. Haz clic de nuevo para confirmar.",
         "defaultName": "predeterminado",
         "empty": "Sin categorías.",
         "fieldColor": "color",
         "fieldName": "nombre",
         "header": "categorías",
-        "removeButton": "rm",
-        "scheduleCountSuffix": "{count} programaciones"
+        "removeButton": "elim",
+        "scheduleCountSuffix": "{count} horarios"
     },
     "common": {
         "add": "añadir",
@@ -65,14 +65,14 @@
         "save": "guardar"
     },
     "confirmation": {
-        "scheduleAdded": "Programación añadida"
+        "scheduleAdded": "Horario añadido"
     },
     "error": {
         "featureUnavailable": "Esta función aún no está disponible ({feature}).",
-        "loadFailedLabel": "carga fallida:",
+        "loadFailedLabel": "error al cargar:",
         "mutationFailed": "Error al {action}: {error}",
-        "unknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
-        "workingHoursInvalid": "Entrada de horas de trabajo inválida ({reason})."
+        "unknown": "Ocurrió un error inesperado. Por favor, inténtelo de nuevo.",
+        "workingHoursInvalid": "Entrada de horas laborables no válida ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fin"
@@ -81,8 +81,8 @@
     "mutation": {
         "addTask": "añadir tarea",
         "changeTimerType": "cambiar tipo de temporizador",
-        "completeSchedule": "completar programación",
-        "convertTaskToSchedule": "convertir tarea a programación",
+        "completeSchedule": "completar horario",
+        "convertTaskToSchedule": "convertir tarea a horario",
         "createApiKey": "crear clave api",
         "extendTimer": "extender temporizador",
         "removeCategory": "eliminar categoría",
@@ -91,7 +91,7 @@
         "rotateApiKey": "rotar clave api",
         "setFocus": "establecer vista de enfoque",
         "setTheme": "establecer tema",
-        "startScheduleNow": "comenzar programación ahora",
+        "startScheduleNow": "comenzar horario ahora",
         "updateTask": "actualizando tarea"
     },
     "nav": {
@@ -114,60 +114,60 @@
         "workingHours": "horas"
     },
     "onboarding": {
-        "addFirst": "añadir primera programación",
-        "firstSchedule": "Añade tu primera programación para verla en la cuadrícula semanal, la línea de tiempo de hoy y el reloj analógico.",
-        "welcome": "Aún no hay programaciones"
+        "addFirst": "añadir primer horario",
+        "firstSchedule": "Añade tu primer horario para verlo en la cuadrícula semanal, la línea de tiempo de hoy y el reloj analógico.",
+        "welcome": "Aún no hay horarios"
     },
     "retrospect": {
-        "empty": "sin registros para este día",
+        "empty": "no hay registros para este día",
         "title": "mirar atrás"
     },
     "schedule": {
-        "afterLastNoneHint": "sin programación próxima",
-        "buttonAfterLast": "últimos+10",
+        "afterLastNoneHint": "sin horario próximo",
+        "buttonAfterLast": "último+10",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
         "buttonPlus10": "+10m",
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ añadir categoría",
-        "chainedCheckbox": "encadenar a programación anterior",
-        "endLabelV2": "hora de fin",
+        "chainedCheckbox": "encadenar al horario anterior",
+        "endLabelV2": "hora de finalización",
         "endPlaceholder": "seleccionar duración",
         "fieldCategory": "categoría",
         "fieldDuration": "duración (min)",
         "fieldName": "nombre",
         "fieldStartHour": "hora de inicio",
         "fieldStartMinute": "minuto de inicio",
-        "headerEdit": "editar programación",
-        "headerNew": "nueva programación",
+        "headerEdit": "editar horario",
+        "headerNew": "nuevo horario",
         "hourSuffix": "h",
         "hourTodaySuffix": "(hoy)",
         "hourTomorrowSuffix": "(mañana)",
         "minuteSuffix": "m",
-        "prevChainLabel": "programación anterior conectada",
-        "titleDefault": "Nueva programación",
-        "warningOverlapLimit": "Como máximo {limit} programaciones pueden superponerse al mismo tiempo. Ajuste inicio/duración o elimine una existente."
+        "prevChainLabel": "horario anterior conectado",
+        "titleDefault": "Nuevo horario",
+        "warningOverlapLimit": "Como máximo {limit} horarios pueden superponerse al mismo tiempo. Ajuste inicio/duración o elimine uno existente."
     },
     "serverError": {
         "apiKeyAlreadyRevoked": "Clave API ya revocada.",
-        "apiKeyCreateFailed": "Error al crear clave API.",
-        "apiKeyExpiresInvalid": "La expiración de clave API debe ser 1-3650 días o nulo.",
-        "apiKeyNameInvalid": "Se requiere nombre de clave API (máx. 100 caracteres).",
+        "apiKeyCreateFailed": "Error al crear la clave API.",
+        "apiKeyExpiresInvalid": "La caducidad de la clave API debe ser 1-3650 días o nulo.",
+        "apiKeyNameInvalid": "El nombre de la clave API es obligatorio (máx. 100 caracteres).",
         "apiKeyNotFound": "Clave API no encontrada.",
-        "categoryHasSchedules": "La categoría tiene {scheduleCount} programaciones. Confirma eliminación en cascada para remover.",
-        "categoryNotFound": "Categoría no encontrada o no es tuya.",
-        "scheduleNotFound": "Programación no encontrada.",
+        "categoryHasSchedules": "La categoría tiene {scheduleCount} horarios. Confirma eliminación en cascada para remover.",
+        "categoryNotFound": "Categoría no encontrada o no es de su propiedad.",
+        "scheduleNotFound": "Horario no encontrado.",
         "taskBucketInvalid": "Valor de bucket inválido.",
         "taskBucketLastProtected": "Debe permanecer al menos una categoría",
-        "taskBucketNameEmpty": "El nombre de la categoría es obligatorio",
+        "taskBucketNameEmpty": "Se requiere el nombre de la categoría",
         "taskBucketNotFound": "Categoría de tarea no encontrada",
         "taskCountExhausted": "Sin conteo restante",
         "taskCountNeedsCategory": "Las tareas basadas en conteo necesitan una categoría",
         "taskCountNeedsDuration": "Las tareas basadas en conteo necesitan una duración",
         "taskDurationInvalid": "La duración de la tarea debe ser 0 o mayor.",
-        "taskNoCategoryId": "La tarea no tiene categoría — abre el modal de tarea para configurar.",
-        "taskNoDuration": "La tarea no tiene duración — abre el modal de tarea para configurar.",
+        "taskNoCategoryId": "La tarea no tiene categoría — abre el modal de tarea para establecerla.",
+        "taskNoDuration": "La tarea no tiene duración — abre el modal de tarea para establecerla.",
         "taskNotFound": "Tarea no encontrada.",
         "taskPriorityOutOfRange": "La prioridad está fuera de rango",
         "unauthorized": "Inicio de sesión requerido."
@@ -179,7 +179,7 @@
     "settingsLink": "configuración",
     "signIn": {
         "cta": "Iniciar sesión",
-        "description": "Inicia sesión en tu cuenta de cofounder para ver y gestionar tus programaciones.",
+        "description": "Inicia sesión en tu cuenta de cofundador para ver y gestionar tus horarios.",
         "title": "Inicio de sesión requerido"
     },
     "task": {
@@ -188,21 +188,21 @@
         "actionSave": "guardar",
         "bucketLater": "Más tarde",
         "bucketNow": "Ahora",
-        "convertAfterLast": "últimos+10",
+        "convertAfterLast": "último+10",
         "convertCancel": "cancelar",
         "convertNow": "ahora",
-        "convertToSchedule": "+ programación",
+        "convertToSchedule": "+ horario",
         "countNeedsFields": "las tareas basadas en conteo necesitan una categoría y una duración",
         "delete": "eliminar",
         "empty": "sin tareas",
         "fieldBucket": "Lista",
         "fieldCategory": "categoría",
-        "fieldCount": "cuenta",
+        "fieldCount": "conteo",
         "fieldDuration": "duración (min)",
         "fieldPriority": "prioridad",
         "fieldTitle": "título",
         "heading": "tareas",
-        "manageBuckets": "gestionar",
+        "manageBuckets": "administrar",
         "modalEditHeading": "editar tarea",
         "modalHeading": "nueva tarea",
         "newTask": "+ tarea"
@@ -222,20 +222,20 @@
         "buttonIdle": "inactivo",
         "buttonStartNow": "comenzar ahora",
         "categoryFallback": "?",
-        "idleEmpty": "inactivo · sin programación activa",
+        "idleEmpty": "inactivo · sin horario activo",
         "labelElapsed": "transcurrido",
-        "labelEndAt": "termina-en",
+        "labelEndAt": "finaliza-en",
         "labelRemaining": "restante",
         "labelTarget": "objetivo",
         "labelUntilUpcoming": "hasta próximo",
-        "labelUpcoming": "siguiente programación",
-        "overlapLabel": "solapamiento {count}",
-        "simultaneousLabel": "simultáneos · {count}",
+        "labelUpcoming": "siguiente horario",
+        "overlapLabel": "superposición {count}",
+        "simultaneousLabel": "simultáneo · {count}",
         "tooltipClickToFocus": "clic para cambiar a enfoque",
         "tooltipClickToIdle": "clic para cambiar a inactivo",
         "typeCountdown": "cuenta regresiva",
         "typeCountup": "cuenta progresiva",
-        "typeTimer1": "timer1"
+        "typeTimer1": "temporizador1"
     },
     "topbar": {
         "back": "volver al portal",
@@ -269,14 +269,14 @@
         "errorEndAfterStart": "La hora de fin debe ser posterior a la hora de inicio.",
         "errorToAfterFrom": "La fecha de fin debe ser igual o posterior a la fecha de inicio.",
         "fieldDate": "fecha",
-        "fieldEndTime": "hora de fin",
+        "fieldEndTime": "hora de finalización",
         "fieldFromDate": "desde",
         "fieldStartTime": "hora de inicio",
         "fieldToDate": "a",
-        "header": "horas de trabajo",
+        "header": "horas laborables",
         "tabRange": "rango",
-        "tabSingle": "individual",
-        "warningNoDates": "No hay fechas para aplicar en el rango. (inicio > fin o conflicto de solo días de semana)",
+        "tabSingle": "único",
+        "warningNoDates": "No hay fechas para aplicar en el rango. (inicio > fin o conflicto de solo días laborables)",
         "warningTruncated": "El rango excede {max} días, solo se procesó parcialmente. Intenta un rango más estrecho."
     }
 }

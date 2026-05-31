@@ -5,7 +5,7 @@
         "actionCreate": "बनाएं",
         "actionRevoke": "निरस्त करें",
         "actionRotate": "घुमाएं",
-        "copiedConfirm": "मैंने यह कुंजी सहेज ली है",
+        "copiedConfirm": "मैंने इस कुंजी को सहेज लिया है",
         "copyButton": "कॉपी करें",
         "create": "+ कुंजी",
         "empty": "कोई कुंजी नहीं",
@@ -16,41 +16,41 @@
         "fieldExpires": "समाप्त होता है",
         "fieldName": "नाम",
         "modalCreateHeading": "नई api कुंजी",
-        "modalRotateHeading": "एपीआई कुंजी घुमाएं",
-        "rotateGraceWarning": "पुरानी कुंजी 24घं में निरस्त। छूट अवधि के भीतर एजेंटों को अपडेट करें।",
+        "modalRotateHeading": "api कुंजी रोटेट करें",
+        "rotateGraceWarning": "पुरानी कुंजी 24 घंटे में निरस्त हो जाएगी। ग्रेस पीरियड के भीतर एजेंट अपडेट करें।",
         "statusActive": "सक्रिय",
         "statusExpired": "समाप्त हो गया",
-        "statusRevoked": "निरस्त",
+        "statusRevoked": "निरस्त किया गया",
         "tableActions": "क्रियाएं",
         "tableCreated": "बनाया गया",
         "tableExpires": "समाप्त होता है",
-        "tableLastUsed": "अंतिम उपयोग",
+        "tableLastUsed": "अंतिम बार उपयोग किया गया",
         "tableName": "नाम",
         "tablePrefix": "उपसर्ग",
-        "warningOneTime": "यह कुंजी केवल एक बार दिखाई गई। अभी सुरक्षित रूप से सहेजें।"
+        "warningOneTime": "यह कुंजी केवल एक बार दिखाई गई है। अभी सुरक्षित रूप से सहेजें।"
     },
     "app": {
         "tagline": "शेड्यूल प्रबंधक",
-        "title": "योजना1"
+        "title": "plan1"
     },
     "auth": {
-        "signIn": "Google के साथ साइन इन करें",
-        "signInDescription": "plan1 एक व्यक्तिगत शेड्यूल टूल है जिसमें क्रॉस-डिवाइस सिंक है। शुरू करने के लिए Google से साइन इन करें।",
+        "signIn": "Google से साइन इन करें",
+        "signInDescription": "plan1 एक व्यक्तिगत शेड्यूल उपकरण है जिसमें क्रॉस-डिवाइस सिंक है। शुरू करने के लिए Google के साथ साइन इन करें।",
         "signInRequired": "plan1 उपयोग करने के लिए साइन इन करें"
     },
     "calendar": {
-        "nextMonth": "अगला महीना",
+        "nextMonth": "अगले महीने",
         "prevMonth": "पिछला महीना"
     },
     "category": {
         "confirmRemoveLabel": "हटाने की पुष्टि करें ({count})",
-        "confirmRemoveText": "{count} शेड्यूल इसके साथ हटा दिए जाएंगे। पुष्टि के लिए फिर से क्लिक करें।",
+        "confirmRemoveText": "{count} शेड्यूल इसके साथ हटा दिए जाएंगे। पुष्टि करने के लिए फिर से क्लिक करें।",
         "defaultName": "डिफ़ॉल्ट",
-        "empty": "कोई श्रेणियां नहीं।",
+        "empty": "कोई श्रेणियाँ नहीं।",
         "fieldColor": "रंग",
         "fieldName": "नाम",
-        "header": "श्रेणियां",
-        "removeButton": "हटाएं",
+        "header": "श्रेणियाँ",
+        "removeButton": "हटा",
         "scheduleCountSuffix": "{count} शेड्यूल"
     },
     "common": {
@@ -60,7 +60,7 @@
         "confirmDelete": "हटाने की पुष्टि करें",
         "delete": "हटाएं",
         "dismiss": "खारिज करें",
-        "now": "अब",
+        "now": "अभी",
         "retry": "पुनः प्रयास करें",
         "save": "सहेजें"
     },
@@ -68,9 +68,9 @@
         "scheduleAdded": "शेड्यूल जोड़ा गया"
     },
     "error": {
-        "featureUnavailable": "यह सुविधा अभी उपलब्ध नहीं है ({feature})।",
+        "featureUnavailable": "यह सुविधा अभी तक उपलब्ध नहीं है ({feature})।",
         "loadFailedLabel": "लोड विफल:",
-        "mutationFailed": "{action} विफल: {error}",
+        "mutationFailed": "{action} विफल रहा: {error}",
         "unknown": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें।",
         "workingHoursInvalid": "अमान्य कार्य घंटे इनपुट ({reason})।"
     },
@@ -83,39 +83,39 @@
         "changeTimerType": "टाइमर प्रकार बदलें",
         "completeSchedule": "शेड्यूल पूर्ण करें",
         "convertTaskToSchedule": "कार्य को शेड्यूल में बदलें",
-        "createApiKey": "एपीआई कुंजी बनाएं",
+        "createApiKey": "api कुंजी बनाएं",
         "extendTimer": "टाइमर बढ़ाएं",
         "removeCategory": "श्रेणी हटाएं",
         "removeTask": "कार्य हटाएं",
-        "revokeApiKey": "एपीआई कुंजी निरस्त करें",
-        "rotateApiKey": "एपीआई कुंजी घुमाएं",
+        "revokeApiKey": "api कुंजी निरस्त करें",
+        "rotateApiKey": "api कुंजी रोटेट करें",
         "setFocus": "फोकस दृश्य सेट करें",
         "setTheme": "थीम सेट करें",
-        "startScheduleNow": "शेड्यूल अब शुरू करें",
-        "updateTask": "कार्य अपडेट किया जा रहा है"
+        "startScheduleNow": "शेड्यूल अभी शुरू करें",
+        "updateTask": "कार्य अपडेट हो रहा है"
     },
     "nav": {
-        "categories": "श्रेणियां",
+        "categories": "श्रेणियाँ",
         "focus10h": "10घं",
-        "focus12h": "12घंटे",
+        "focus12h": "12घं",
         "focus16h": "16घं",
         "focus20h": "20घं",
-        "focus24h": "24घंटे",
+        "focus24h": "24घं",
         "focus4h": "4घं",
-        "focus6h": "6घंटे",
+        "focus6h": "6घं",
         "focus8h": "8घं",
         "focusLabel": "फोकस",
         "newSchedule": "नया",
         "tabCalendar": "कैलेंडर",
         "tabClock": "घड़ी",
-        "themeDark": "गहरा",
-        "themeLight": "हल्का",
+        "themeDark": "डार्क",
+        "themeLight": "लाइट",
         "themeSystem": "स्वतः",
         "workingHours": "घंटे"
     },
     "onboarding": {
         "addFirst": "पहला शेड्यूल जोड़ें",
-        "firstSchedule": "साप्ताहिक ग्रिड, आज की समयरेखा और एनालॉग घड़ी पर देखने के लिए अपना पहला शेड्यूल जोड़ें।",
+        "firstSchedule": "अपना पहला शेड्यूल जोड़ें ताकि इसे साप्ताहिक ग्रिड, आज की समयरेखा और एनालॉग घड़ी पर देख सकें।",
         "welcome": "अभी तक कोई शेड्यूल नहीं"
     },
     "retrospect": {
@@ -145,26 +145,26 @@
         "hourTodaySuffix": "(आज)",
         "hourTomorrowSuffix": "(कल)",
         "minuteSuffix": "मि",
-        "prevChainLabel": "पिछला शेड्यूल जुड़ा हुआ",
+        "prevChainLabel": "पिछला शेड्यूल कनेक्ट किया गया",
         "titleDefault": "नया शेड्यूल",
-        "warningOverlapLimit": "एक ही समय में अधिकतम {limit} शेड्यूल ओवरलैप हो सकते हैं। प्रारंभ/अवधि समायोजित करें या मौजूदा को हटाएं।"
+        "warningOverlapLimit": "अधिकतम {limit} शेड्यूल एक ही समय में ओवरलैप हो सकते हैं। आरंभ/अवधि समायोजित करें या मौजूदा को हटाएं।"
     },
     "serverError": {
-        "apiKeyAlreadyRevoked": "एपीआई कुंजी पहले ही रद्द की जा चुकी है।",
-        "apiKeyCreateFailed": "एपीआई कुंजी निर्माण विफल।",
-        "apiKeyExpiresInvalid": "एपीआई कुंजी समाप्ति 1-3650 दिन या null होनी चाहिए।",
-        "apiKeyNameInvalid": "एपीआई कुंजी नाम आवश्यक है (अधिकतम 100 वर्ण)।",
-        "apiKeyNotFound": "एपीआई कुंजी नहीं मिली।",
+        "apiKeyAlreadyRevoked": "API कुंजी पहले ही निरस्त कर दी गई है।",
+        "apiKeyCreateFailed": "API कुंजी बनाना विफल रहा।",
+        "apiKeyExpiresInvalid": "API कुंजी की समाप्ति 1-3650 दिन या null होनी चाहिए।",
+        "apiKeyNameInvalid": "API कुंजी नाम आवश्यक है (अधिकतम 100 अक्षर)।",
+        "apiKeyNotFound": "API कुंजी नहीं मिली।",
         "categoryHasSchedules": "श्रेणी में {scheduleCount} शेड्यूल हैं। हटाने के लिए कैस्केड डिलीट की पुष्टि करें।",
-        "categoryNotFound": "श्रेणी नहीं मिली या स्वामित्व में नहीं।",
+        "categoryNotFound": "श्रेणी नहीं मिली या स्वामित्व में नहीं है।",
         "scheduleNotFound": "शेड्यूल नहीं मिला।",
         "taskBucketInvalid": "अमान्य बकेट मान।",
         "taskBucketLastProtected": "कम से कम एक श्रेणी बनी रहनी चाहिए",
-        "taskBucketNameEmpty": "श्रेणी नाम आवश्यक है",
+        "taskBucketNameEmpty": "श्रेणी का नाम आवश्यक है",
         "taskBucketNotFound": "कार्य श्रेणी नहीं मिली",
         "taskCountExhausted": "कोई शेष गिनती नहीं",
-        "taskCountNeedsCategory": "गिनती-आधारित कार्यों के लिए एक श्रेणी चाहिए",
-        "taskCountNeedsDuration": "गिनती-आधारित कार्यों के लिए एक अवधि चाहिए",
+        "taskCountNeedsCategory": "गिनती-आधारित कार्यों को श्रेणी की आवश्यकता है",
+        "taskCountNeedsDuration": "गिनती-आधारित कार्यों को अवधि की आवश्यकता है",
         "taskDurationInvalid": "कार्य अवधि 0 या अधिक होनी चाहिए।",
         "taskNoCategoryId": "कार्य में कोई श्रेणी नहीं है — सेट करने के लिए कार्य मोडल खोलें।",
         "taskNoDuration": "कार्य में कोई अवधि नहीं है — सेट करने के लिए कार्य मोडल खोलें।",
@@ -173,7 +173,7 @@
         "unauthorized": "साइन इन आवश्यक।"
     },
     "settings": {
-        "apiKeysSection": "एपीआई कुंजियां",
+        "apiKeysSection": "api कुंजियाँ",
         "heading": "सेटिंग्स"
     },
     "settingsLink": "सेटिंग्स",
@@ -190,7 +190,7 @@
         "bucketNow": "अभी",
         "convertAfterLast": "अंतिम+10",
         "convertCancel": "रद्द करें",
-        "convertNow": "अब",
+        "convertNow": "अभी",
         "convertToSchedule": "+ शेड्यूल",
         "countNeedsFields": "गिनती-आधारित कार्यों के लिए एक श्रेणी और एक अवधि चाहिए",
         "delete": "हटाएं",
@@ -210,7 +210,7 @@
     "taskBucket": {
         "addHeading": "श्रेणी जोड़ें",
         "confirmRemove": "हटाएं? ({count} कार्य)",
-        "countBased": "गिनती-घटाओ कार्य",
+        "countBased": "काउंट-डाउन कार्य",
         "fieldName": "नाम",
         "header": "कार्य श्रेणियां प्रबंधित करें",
         "remove": "हटाएं",
@@ -224,7 +224,7 @@
         "categoryFallback": "?",
         "idleEmpty": "निष्क्रिय · कोई सक्रिय शेड्यूल नहीं",
         "labelElapsed": "बीत गया",
-        "labelEndAt": "समाप्ति-पर",
+        "labelEndAt": "समाप्त-पर",
         "labelRemaining": "शेष",
         "labelTarget": "लक्ष्य",
         "labelUntilUpcoming": "आगामी तक",
@@ -234,12 +234,12 @@
         "tooltipClickToFocus": "फोकस पर स्विच करने के लिए क्लिक करें",
         "tooltipClickToIdle": "निष्क्रिय पर स्विच करने के लिए क्लिक करें",
         "typeCountdown": "उलटी गिनती",
-        "typeCountup": "गिनती बढ़ाएं",
+        "typeCountup": "काउंटअप",
         "typeTimer1": "टाइमर1"
     },
     "topbar": {
         "back": "पोर्टल पर वापस जाएं",
-        "creditsLabel": "क्रेडिट",
+        "creditsLabel": "क्रेडिट्स",
         "creditsPlaceholder": "—",
         "guest": "अतिथि",
         "languageLabel": "भाषा",
@@ -252,7 +252,7 @@
     },
     "wallTime": {
         "am": "पूर्वाह्न",
-        "pm": "pm"
+        "pm": "अपराह्न"
     },
     "weekdays": [
         "रवि",
@@ -266,17 +266,17 @@
     "workingHours": {
         "checkboxAlsoDefault": "डिफ़ॉल्ट के रूप में भी सहेजें",
         "checkboxWeekdaysOnly": "केवल सप्ताह के दिन (सोम–शुक्र)",
-        "errorEndAfterStart": "समाप्ति समय प्रारंभ समय के बाद होना चाहिए।",
-        "errorToAfterFrom": "समाप्ति तिथि प्रारंभ तिथि के बराबर या बाद में होनी चाहिए।",
+        "errorEndAfterStart": "समाप्ति समय आरंभ समय के बाद होना चाहिए।",
+        "errorToAfterFrom": "समाप्ति तिथि आरंभ तिथि के बराबर या उसके बाद होनी चाहिए।",
         "fieldDate": "तारीख",
         "fieldEndTime": "समाप्ति समय",
         "fieldFromDate": "से",
         "fieldStartTime": "प्रारंभ समय",
-        "fieldToDate": "तक",
+        "fieldToDate": "से",
         "header": "कार्य घंटे",
-        "tabRange": "सीमा",
+        "tabRange": "रेंज",
         "tabSingle": "एकल",
-        "warningNoDates": "सीमा में लागू करने के लिए कोई तारीखें नहीं। (शुरुआत > अंत या सप्ताह के दिन-केवल विरोध)",
-        "warningTruncated": "सीमा {max} दिनों से अधिक है, केवल आंशिक रूप से संसाधित। एक संकीर्ण सीमा आज़माएं।"
+        "warningNoDates": "रेंज में लागू करने के लिए कोई तारीखें नहीं। (आरंभ > समाप्त या केवल-सप्ताह के दिन विरोध)",
+        "warningTruncated": "रेंज {max} दिन से अधिक है, केवल आंशिक रूप से प्रोसेस किया गया। एक संकीर्ण रेंज आज़माएं।"
     }
 }
