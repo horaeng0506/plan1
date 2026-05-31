@@ -1,9 +1,10 @@
 import {randomUUID} from 'node:crypto';
 import {NextResponse} from 'next/server';
 import {z} from 'zod';
-import {desc, eq} from 'drizzle-orm';
+import {and, desc, eq} from 'drizzle-orm';
 import {db} from '@/lib/db';
 import {plan1Tasks, plan1Categories} from '@/lib/db/schema';
+import {ensureNowBucketId} from '@/lib/task-bucket-seed';
 import {authenticateApiKey, buildSuccessHeaders, buildOptionsResponse} from '@/lib/api-auth';
 
 const createTaskSchema = z.object({
@@ -96,12 +97,20 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
   }
   const id = `task-${randomUUID()}`;
+  // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 'now' default 버킷에 배치 + priority append (충돌 회피).
+  const bucketId = await ensureNowBucketId(auth.apiKey.userId);
+  const bucketRows = await db
+    .select({id: plan1Tasks.id})
+    .from(plan1Tasks)
+    .where(and(eq(plan1Tasks.userId, auth.apiKey.userId), eq(plan1Tasks.bucketId, bucketId)));
   await db.insert(plan1Tasks).values({
     id,
     userId: auth.apiKey.userId,
     title: input.title ?? null,
     durationMin: input.durationMin ?? null,
-    categoryId: input.categoryId ?? null
+    categoryId: input.categoryId ?? null,
+    bucketId,
+    priority: bucketRows.length + 1
   });
   const rows = await db
     .select()

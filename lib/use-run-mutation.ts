@@ -50,6 +50,10 @@ export type MutationContextKey =
   | 'updateTask'
   | 'removeTask'
   | 'convertTaskToSchedule'
+  // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — task bucket mutation 키.
+  | 'addTaskBucket'
+  | 'updateTaskBucket'
+  | 'removeTaskBucket'
   // PLAN1-TASKS-FEATURE-20260509 (S6) — API key 영역 mutation 키.
   | 'createApiKey'
   | 'revokeApiKey'

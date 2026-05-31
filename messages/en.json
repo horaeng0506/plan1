@@ -96,7 +96,7 @@
     "buttonPlusHour": "+1h",
     "chainedCheckbox": "chain to previous schedule",
     "warningOverlapLimit": "At most {limit} schedules can overlap at the same time. Adjust start/duration or remove an existing one.",
-    "buttonAfterLast": "next after last schedule",
+    "buttonAfterLast": "last+10",
     "afterLastNoneHint": "no upcoming schedule",
     "hourTodaySuffix": "(today)",
     "hourTomorrowSuffix": "(tomorrow)",
@@ -180,7 +180,14 @@
     "apiKeyCreateFailed": "API key creation failed.",
     "apiKeyNameInvalid": "API key name is required (max 100 chars).",
     "apiKeyExpiresInvalid": "API key expires must be 1-3650 days or null.",
-    "taskBucketInvalid": "Invalid bucket value."
+    "taskBucketInvalid": "Invalid bucket value.",
+    "taskBucketNotFound": "Task category not found",
+    "taskBucketNameEmpty": "Category name is required",
+    "taskBucketLastProtected": "At least one category must remain",
+    "taskCountNeedsCategory": "Count-based tasks need a category",
+    "taskCountNeedsDuration": "Count-based tasks need a duration",
+    "taskCountExhausted": "No remaining count",
+    "taskPriorityOutOfRange": "Priority is out of range"
   },
   "undo": {
     "actionLabel": "undo available",
@@ -206,14 +213,17 @@
     "actionCancel": "cancel",
     "convertToSchedule": "+ schedule",
     "convertNow": "now",
-    "convertAfterLast": "after last",
+    "convertAfterLast": "last+10",
     "convertCancel": "cancel",
     "delete": "delete",
     "fieldPriority": "priority",
     "actionSave": "save",
     "fieldBucket": "List",
     "bucketNow": "Now",
-    "bucketLater": "Later"
+    "bucketLater": "Later",
+    "manageBuckets": "manage",
+    "fieldCount": "count",
+    "countNeedsFields": "count-based tasks need a category and a duration"
   },
   "settings": {
     "heading": "settings",
@@ -249,5 +259,14 @@
     "statusExpired": "expired",
     "rotateGraceWarning": "Old key revoked in 24h. Update agents within grace period."
   },
-  "settingsLink": "settings"
+  "settingsLink": "settings",
+  "taskBucket": {
+    "header": "manage task categories",
+    "fieldName": "name",
+    "countBased": "count-down task",
+    "addHeading": "add category",
+    "remove": "remove",
+    "confirmRemove": "remove? ({count} tasks)",
+    "taskCountSuffix": "{count} tasks"
+  }
 }

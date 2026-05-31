@@ -20,16 +20,35 @@ export interface Schedule {
 // PLAN1-TASKS-FEATURE-20260509 — task domain type (client-side · createdAt: number ms).
 // schema.ts 의 plan1Tasks row type (Date) → store rowToDomain 변환 정합.
 export type TaskId = string;
+// 레거시 enum (bucketId 마이그레이션 동안 보존). 신규 단일 원천 = bucketId.
 export type TaskBucket = 'now' | 'later';
+export type TaskBucketId = string;
+export type TaskBucketKind = 'now' | 'later';
+
+// PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 사용자 정의 할일 카테고리(버킷) 도메인 타입.
+export interface TaskBucketInfo {
+  id: TaskBucketId;
+  name: string;
+  isCountBased: boolean;
+  sortOrder: number;
+  // 'now'|'later' = 시드된 기본 버킷 (편집 전 i18n 렌더). null = 사용자 생성 또는 이름 편집됨.
+  defaultKind: TaskBucketKind | null;
+  createdAt: number;
+}
+
 export interface Task {
   id: TaskId;
   title: string | null;
   durationMin: number | null;
   categoryId: CategoryId | null;
   // PLAN1-TASKS-PRIORITY-20260510 — 우선순위 (1 = 최우선 · 1~N).
-  // PLAN1-TASKS-BUCKET-20260511 — 두 bucket priority namespace 독립.
+  // PLAN1-TASKS-BUCKET-20260511 — bucket priority namespace 독립 (레거시 enum).
   priority: number;
   bucket: TaskBucket;
+  // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 사용자 정의 버킷 FK (신규 단일 원천 · lazy backfill 동안 null 가능).
+  bucketId: TaskBucketId | null;
+  // 횟수차감형 잔여 횟수. null = 일반 task. (버킷 isCountBased 와 동기)
+  count: number | null;
   createdAt: number;
 }
 

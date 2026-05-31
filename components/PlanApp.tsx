@@ -31,6 +31,10 @@ const TaskModal = dynamic(
   () => import('./TaskModal').then(m => m.TaskModal),
   {ssr: false, loading: ModalSkeleton}
 );
+const TaskBucketManager = dynamic(
+  () => import('./TaskBucketManager').then(m => m.TaskBucketManager),
+  {ssr: false, loading: ModalSkeleton}
+);
 
 // FullCalendar v6 는 SSR 시 document/window 직접 접근 위험 — env-critic Stage 3e 진입 게이트.
 // next/dynamic({ssr:false}) 으로 client 진입 후에만 로드.
@@ -70,6 +74,8 @@ export function PlanApp() {
   const [taskOpen, setTaskOpen] = useState(false);
   // PLAN1-TASKS-PRIORITY-20260510 (사양 4) — task 편집 modal.
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 할일 카테고리(버킷) 관리 modal.
+  const [bucketMgrOpen, setBucketMgrOpen] = useState(false);
 
   // Stage 3e env-critic Critical: store.init() 트리거. layout/page 단일 진입점에서 1회 호출.
   // Stage 3f Playwright 회귀 fix: error 발생 시에도 재진입 방지.
@@ -242,6 +248,7 @@ export function PlanApp() {
               <TaskList
                 onNewTask={() => setTaskOpen(true)}
                 onEditTask={task => setEditingTask(task)}
+                onManageBuckets={() => setBucketMgrOpen(true)}
               />
             </section>
             <section className="order-2 lg:order-2 rounded-none border border-line bg-panel p-4">
@@ -273,6 +280,7 @@ export function PlanApp() {
           onClose={() => setEditingTask(null)}
         />
       )}
+      {bucketMgrOpen && <TaskBucketManager onClose={() => setBucketMgrOpen(false)} />}
       <ToastContainer />
       <UndoBar />
       <ScheduleAddedModal />

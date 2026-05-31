@@ -96,7 +96,7 @@
     "buttonPlusHour": "+1시간",
     "chainedCheckbox": "이전 스케줄과 연결",
     "warningOverlapLimit": "같은 시각에는 최대 {limit}개 스케줄까지 가능. 시작/길이를 바꾸거나 기존 항목을 정리하세요.",
-    "buttonAfterLast": "마지막 스케줄 다음",
+    "buttonAfterLast": "마지막+10",
     "afterLastNoneHint": "다음 스케줄 없음",
     "hourTodaySuffix": "(오늘)",
     "hourTomorrowSuffix": "(내일)",
@@ -180,7 +180,14 @@
     "apiKeyCreateFailed": "API 키 발급 실패.",
     "apiKeyNameInvalid": "API 키 이름 필수 (최대 100자).",
     "apiKeyExpiresInvalid": "API 키 만료는 1-3650일 또는 영구.",
-    "taskBucketInvalid": "잘못된 분류 값입니다."
+    "taskBucketInvalid": "잘못된 분류 값입니다.",
+    "taskBucketNotFound": "할일 카테고리를 찾을 수 없어요",
+    "taskBucketNameEmpty": "카테고리 이름을 입력해주세요",
+    "taskBucketLastProtected": "카테고리는 최소 1개 유지해야 해요",
+    "taskCountNeedsCategory": "횟수차감형 할일은 카테고리가 필요해요",
+    "taskCountNeedsDuration": "횟수차감형 할일은 소요시간이 필요해요",
+    "taskCountExhausted": "남은 횟수가 없어요",
+    "taskPriorityOutOfRange": "우선순위 범위를 벗어났어요"
   },
   "undo": {
     "actionLabel": "실행 취소 가능",
@@ -206,14 +213,17 @@
     "actionCancel": "취소",
     "convertToSchedule": "+ 스케줄",
     "convertNow": "지금",
-    "convertAfterLast": "마지막 다음",
+    "convertAfterLast": "마지막+10",
     "convertCancel": "취소",
     "delete": "삭제",
     "fieldPriority": "우선순위",
     "actionSave": "저장",
     "fieldBucket": "분류",
     "bucketNow": "당장 할일",
-    "bucketLater": "나중 할일"
+    "bucketLater": "나중 할일",
+    "manageBuckets": "관리",
+    "fieldCount": "횟수",
+    "countNeedsFields": "횟수차감형은 카테고리와 소요시간이 필요해요"
   },
   "settings": {
     "heading": "설정",
@@ -249,5 +259,14 @@
     "statusExpired": "만료됨",
     "rotateGraceWarning": "옛 키는 24시간 후 폐기됩니다. 그 안에 외부 agent 갱신하세요."
   },
-  "settingsLink": "설정"
+  "settingsLink": "설정",
+  "taskBucket": {
+    "header": "할일 카테고리 관리",
+    "fieldName": "이름",
+    "countBased": "횟수 차감형 할일",
+    "addHeading": "카테고리 추가",
+    "remove": "삭제",
+    "confirmRemove": "삭제할까요? (할일 {count}개)",
+    "taskCountSuffix": "할일 {count}개"
+  }
 }

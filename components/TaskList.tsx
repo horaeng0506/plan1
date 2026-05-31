@@ -1,91 +1,96 @@
 'use client';
 
-import {useState, useSyncExternalStore} from 'react';
+import {useMemo, useRef, useState, useSyncExternalStore} from 'react';
 import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useRunMutation} from '@/lib/use-run-mutation';
 import {decideFlow} from '@/lib/decideFlow';
 import {nowMs} from '@/lib/now';
 import {formatDurationHm} from '@/lib/format-duration';
-import type {Task} from '@/lib/domain/types';
+import {afterLastPlus10} from '@/lib/after-last';
+import {useTaskBucketDisplay} from '@/lib/task-bucket-display';
+import type {Task, TaskBucketInfo} from '@/lib/domain/types';
 
 /**
- * PLAN1-TASKS-FEATURE-20260509 — sidebar 안 task list + 변형 chain.
- * PLAN1-TASKS-PRIORITY-20260510 — 변형 chain 위치 · + 정사각형 박스 · 편집 모달 진입 등.
- * PLAN1-TASKS-BUCKET-20260511 — 두 bucket 분할 ('당장 할일' / '나중 할일').
- *   - row priority 숫자 prefix ("1. 제목")
- *   - bucket 별 group 분리 (두 group 동일 모양)
- *   - 나중 할일 collapse 디폴트 = 접힘 (localStorage 저장)
- *   - 시간 표시 h:mm format (formatDurationHm util)
+ * PLAN1-TASKS-FEATURE-20260509 — sidebar 안 task list + 변환 chain.
+ * PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 사용자 정의 버킷 그룹.
+ *   - 버킷별 group (sortOrder 순). 이름 = useTaskBucketDisplay (default 는 i18n).
+ *   - 횟수차감형 task: priority 오른쪽·제목 왼쪽에 [count] 표시.
+ *   - '관리' 버튼('+' 왼쪽) → 버킷 관리 modal.
+ *   - default 'later' 버킷은 디폴트 접힘. 각 버킷 collapse 개별 저장(localStorage override map).
+ *   - 변환 in-flight 잠금 (logic-critic Critical — 횟수차감 double-click race 차단).
+ * PLAN1-LAST-PLUS-10-20260531 — "마지막+10" (마지막 종료 +10분).
  */
 
-const LATER_COLLAPSED_STORAGE_KEY = 'plan1.tasksLaterCollapsed';
+const COLLAPSE_STORAGE_KEY = 'plan1.taskBucketCollapse';
 
-// PLAN1-TASKS-BUCKET-20260511 — useSyncExternalStore 패턴 (eslint react-hooks/set-state-in-effect 정합).
-// SSR snapshot 디폴트 = true (접힘 · 사용자 첫 진입 시 일치 · flash 차단).
-function subscribeLaterCollapsed(callback: () => void): () => void {
+function subscribeCollapse(callback: () => void): () => void {
   if (typeof window === 'undefined') return () => {};
   window.addEventListener('storage', callback);
   return () => window.removeEventListener('storage', callback);
 }
 
-function getLaterCollapsedSnapshot(): boolean {
+function getCollapseRaw(): string {
   try {
-    return localStorage.getItem(LATER_COLLAPSED_STORAGE_KEY) !== 'false';
+    return localStorage.getItem(COLLAPSE_STORAGE_KEY) ?? '{}';
   } catch {
-    return true;
+    return '{}';
   }
 }
 
-function getLaterCollapsedServerSnapshot(): boolean {
-  return true;
+function getCollapseServerSnapshot(): string {
+  return '{}';
 }
 
 interface TaskListProps {
   onNewTask: () => void;
   onEditTask: (task: Task) => void;
+  onManageBuckets: () => void;
 }
 
-export function TaskList({onNewTask, onEditTask}: TaskListProps) {
+export function TaskList({onNewTask, onEditTask, onManageBuckets}: TaskListProps) {
   const t = useTranslations();
   const runMutation = useRunMutation();
   const tasks = useAppStore(s => s.tasks);
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
+  const taskBuckets = useAppStore(s => s.taskBuckets);
   const removeTask = useAppStore(s => s.removeTask);
   const convertTaskToSchedule = useAppStore(s => s.convertTaskToSchedule);
+  const bucketDisplay = useTaskBucketDisplay();
 
   const [armedTaskId, setArmedTaskId] = useState<string | null>(null);
-  const laterCollapsed = useSyncExternalStore(
-    subscribeLaterCollapsed,
-    getLaterCollapsedSnapshot,
-    getLaterCollapsedServerSnapshot
-  );
+  const convertInFlight = useRef(false);
 
-  const toggleLaterCollapsed = () => {
-    const next = !laterCollapsed;
+  const collapseRaw = useSyncExternalStore(
+    subscribeCollapse,
+    getCollapseRaw,
+    getCollapseServerSnapshot
+  );
+  // override map: {bucketId: true|false}. 부재 시 default = (defaultKind === 'later').
+  const collapseMap = useMemo<Record<string, boolean>>(() => {
     try {
-      localStorage.setItem(LATER_COLLAPSED_STORAGE_KEY, String(next));
-      // storage event 는 다른 탭만 trigger — 현 탭 동일 trigger 의무.
-      window.dispatchEvent(new StorageEvent('storage', {key: LATER_COLLAPSED_STORAGE_KEY}));
+      return JSON.parse(collapseRaw) as Record<string, boolean>;
+    } catch {
+      return {};
+    }
+  }, [collapseRaw]);
+
+  const isCollapsed = (b: TaskBucketInfo): boolean =>
+    b.id in collapseMap ? collapseMap[b.id] : b.defaultKind === 'later';
+
+  const toggleCollapsed = (b: TaskBucketInfo) => {
+    const next = {...collapseMap, [b.id]: !isCollapsed(b)};
+    try {
+      localStorage.setItem(COLLAPSE_STORAGE_KEY, JSON.stringify(next));
+      window.dispatchEvent(new StorageEvent('storage', {key: COLLAPSE_STORAGE_KEY}));
     } catch {
       // 무시
     }
   };
 
-  // 사양 2번 — 오늘 스케줄 0개 시 "마지막 다음" 박지 X.
-  const hasActiveSchedule = schedules.some(s => s.status !== 'done');
-
-  const findLastEndAt = (): number => {
-    const now = nowMs();
-    let maxEnd = now;
-    schedules.forEach(s => {
-      if (s.status === 'done') return;
-      const endAt = s.startAt + s.durationMin * 60_000;
-      if (endAt > now && endAt > maxEnd) maxEnd = endAt;
-    });
-    return maxEnd === now ? now : maxEnd + 1;
-  };
+  // 마지막+10 — 활성(지금 이후 종료) 스케줄 있을 때만.
+  const lastPlus10 = afterLastPlus10(schedules, nowMs());
 
   const handleConvertClick = (e: React.MouseEvent, task: Task) => {
     e.stopPropagation();
@@ -100,19 +105,27 @@ export function TaskList({onNewTask, onEditTask}: TaskListProps) {
     setArmedTaskId(task.id);
   };
 
-  const handleConvertNow = async (e: React.MouseEvent, task: Task) => {
-    e.stopPropagation();
+  const runConvert = async (task: Task, startAt: number) => {
+    // in-flight 잠금 — 횟수차감 double-click race + 일반 변환 중복 차단.
+    if (convertInFlight.current) return;
+    convertInFlight.current = true;
     setArmedTaskId(null);
-    await runMutation(convertTaskToSchedule(task.id, nowMs(), true), 'convertTaskToSchedule');
+    try {
+      await runMutation(convertTaskToSchedule(task.id, startAt, true), 'convertTaskToSchedule');
+    } finally {
+      convertInFlight.current = false;
+    }
   };
 
-  const handleConvertAfterLast = async (e: React.MouseEvent, task: Task) => {
+  const handleConvertNow = (e: React.MouseEvent, task: Task) => {
     e.stopPropagation();
-    setArmedTaskId(null);
-    await runMutation(
-      convertTaskToSchedule(task.id, findLastEndAt(), true),
-      'convertTaskToSchedule'
-    );
+    void runConvert(task, nowMs());
+  };
+
+  const handleConvertAfterLast = (e: React.MouseEvent, task: Task) => {
+    e.stopPropagation();
+    if (lastPlus10 === null) return;
+    void runConvert(task, lastPlus10);
   };
 
   const handleConvertCancel = (e: React.MouseEvent) => {
@@ -155,12 +168,14 @@ export function TaskList({onNewTask, onEditTask}: TaskListProps) {
       >
         <div className="flex items-center justify-between gap-2">
           <span className="truncate">
-            {/* PLAN1-TASKS-BUCKET-20260511 — priority 숫자 prefix (사양 1번). */}
             <span className="text-muted">{task.priority}.</span>{' '}
-            {task.title ?? <span className="text-muted">—</span>}
-            {durationStr !== '' && (
-              <span className="ml-2 text-muted">{durationStr}</span>
+            {/* 횟수차감형 → [count] (우선순위 오른쪽·제목 왼쪽). */}
+            {task.count !== null && (
+              <span className="text-success" data-testid={`task-count-${task.id}`}>[{task.count}]</span>
             )}
+            {task.count !== null && ' '}
+            {task.title ?? <span className="text-muted">—</span>}
+            {durationStr !== '' && <span className="ml-2 text-muted">{durationStr}</span>}
           </span>
           {!armed ? (
             <div className="flex gap-1">
@@ -183,27 +198,15 @@ export function TaskList({onNewTask, onEditTask}: TaskListProps) {
             </div>
           ) : (
             <div className="flex gap-1">
-              <button
-                type="button"
-                onClick={e => handleConvertNow(e, task)}
-                className={armedBtn}
-              >
+              <button type="button" onClick={e => handleConvertNow(e, task)} className={armedBtn}>
                 {t('task.convertNow')}
               </button>
-              {hasActiveSchedule && (
-                <button
-                  type="button"
-                  onClick={e => handleConvertAfterLast(e, task)}
-                  className={armedBtn}
-                >
+              {lastPlus10 !== null && (
+                <button type="button" onClick={e => handleConvertAfterLast(e, task)} className={armedBtn}>
                   {t('task.convertAfterLast')}
                 </button>
               )}
-              <button
-                type="button"
-                onClick={handleConvertCancel}
-                className={armedCancelBtn}
-              >
+              <button type="button" onClick={handleConvertCancel} className={armedCancelBtn}>
                 {t('task.convertCancel')}
               </button>
             </div>
@@ -213,55 +216,59 @@ export function TaskList({onNewTask, onEditTask}: TaskListProps) {
     );
   };
 
-  // PLAN1-TASKS-BUCKET-20260511 — bucket 별 client filter (env-critic M2 정합 · DB orderBy 제외).
-  const nowTasks = tasks.filter(task => task.bucket === 'now');
-  const laterTasks = tasks.filter(task => task.bucket === 'later');
+  // 버킷별 그룹 (sortOrder 순). bucketId 미매칭 task 는 첫 버킷에 표시 (backfill 전 안전망).
+  const orderedBuckets = useMemo(
+    () => [...taskBuckets].sort((a, b) => a.sortOrder - b.sortOrder || a.createdAt - b.createdAt),
+    [taskBuckets]
+  );
 
   return (
     <div className="font-mono" data-testid="task-list">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-xs text-muted">{t('task.heading')}</span>
-        <button
-          type="button"
-          onClick={onNewTask}
-          aria-label={t('task.newTask')}
-          data-testid="task-new-button"
-          className="flex h-7 w-7 items-center justify-center rounded-none border border-line bg-panel text-base text-txt hover:bg-bg"
-        >
-          +
-        </button>
-      </div>
-      {tasks.length === 0 && (
-        <p className="text-xs text-muted">{t('task.empty')}</p>
-      )}
-      {/* 당장 할일 group */}
-      {nowTasks.length > 0 && (
-        <div className="mb-3">
-          <div className="mb-1 text-[10px] text-muted">{t('task.bucketNow')}</div>
-          <ul className="flex flex-col gap-2">
-            {nowTasks.map(renderRow)}
-          </ul>
-        </div>
-      )}
-      {/* 나중 할일 group (collapsible · 디폴트 접힘) */}
-      {laterTasks.length > 0 && (
-        <div>
+        <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={toggleLaterCollapsed}
-            aria-expanded={!laterCollapsed}
-            className="mb-1 flex w-full items-center gap-1 text-[10px] text-muted hover:text-txt"
+            onClick={onManageBuckets}
+            aria-label={t('task.manageBuckets')}
+            data-testid="task-manage-button"
+            className="flex h-7 items-center justify-center rounded-none border border-line bg-panel px-2 text-xs text-txt hover:bg-bg"
           >
-            <span aria-hidden="true">{laterCollapsed ? '▶' : '▼'}</span>
-            <span>{t('task.bucketLater')} ({laterTasks.length})</span>
+            {t('task.manageBuckets')}
           </button>
-          {!laterCollapsed && (
-            <ul className="flex flex-col gap-2">
-              {laterTasks.map(renderRow)}
-            </ul>
-          )}
+          <button
+            type="button"
+            onClick={onNewTask}
+            aria-label={t('task.newTask')}
+            data-testid="task-new-button"
+            className="flex h-7 w-7 items-center justify-center rounded-none border border-line bg-panel text-base text-txt hover:bg-bg"
+          >
+            +
+          </button>
         </div>
-      )}
+      </div>
+      {tasks.length === 0 && <p className="text-xs text-muted">{t('task.empty')}</p>}
+      {orderedBuckets.map(bucket => {
+        const bucketTasks = tasks.filter(task => task.bucketId === bucket.id);
+        if (bucketTasks.length === 0) return null;
+        const collapsed = isCollapsed(bucket);
+        return (
+          <div key={bucket.id} className="mb-3" data-testid={`task-bucket-${bucket.id}`}>
+            <button
+              type="button"
+              onClick={() => toggleCollapsed(bucket)}
+              aria-expanded={!collapsed}
+              className="mb-1 flex w-full items-center gap-1 text-[10px] text-muted hover:text-txt"
+            >
+              <span aria-hidden="true">{collapsed ? '▶' : '▼'}</span>
+              <span>{bucketDisplay(bucket)} ({bucketTasks.length})</span>
+            </button>
+            {!collapsed && (
+              <ul className="flex flex-col gap-2">{bucketTasks.map(renderRow)}</ul>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

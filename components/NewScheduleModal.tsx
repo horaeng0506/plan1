@@ -12,6 +12,7 @@ import {logClientError} from '@/lib/log';
 import {findOverlapping, MAX_OVERLAP} from '@/lib/domain/overlap';
 import {buildHourOptions, floorToHourMs} from '@/lib/hour-options';
 import {focusBounds} from '@/lib/focus-bounds';
+import {AFTER_LAST_GAP_MS} from '@/lib/after-last';
 import type {Schedule} from '@/lib/domain/types';
 import {CategoryManager} from './CategoryManager';
 import {Spinner} from './Spinner';
@@ -169,11 +170,12 @@ export function NewScheduleModal({
   }, [schedules, isEdit, nowSnapshot]);
 
   function handleAfterLast() {
-    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #9·Q-NEW10 b: 0건 또는 24h 옵션 밖이면 Date.now() 박음.
+    // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #9·Q-NEW10 b: 0건 또는 24h 옵션 밖이면 Date.now() 사용.
+    // PLAN1-LAST-PLUS-10-20260531 — 마지막 종료 +10분 (TaskList 변환 버튼과 통일).
     const nowMs = Date.now();
     let targetMs: number;
     if (lastScheduleEndAt !== null && lastScheduleEndAt > nowMs && lastScheduleEndAt < nowMs + 24 * 3600_000) {
-      targetMs = lastScheduleEndAt;
+      targetMs = lastScheduleEndAt + AFTER_LAST_GAP_MS;
     } else {
       targetMs = nowMs;
     }
