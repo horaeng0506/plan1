@@ -4,7 +4,7 @@
         "actionClose": "fermer",
         "actionCreate": "créer",
         "actionRevoke": "révoquer",
-        "actionRotate": "pivoter",
+        "actionRotate": "rotation",
         "copiedConfirm": "J'ai sauvegardé cette clé",
         "copyButton": "copier",
         "create": "+ clé",
@@ -16,8 +16,8 @@
         "fieldExpires": "expire",
         "fieldName": "nom",
         "modalCreateHeading": "nouvelle clé api",
-        "modalRotateHeading": "faire pivoter la clé api",
-        "rotateGraceWarning": "Ancienne clé révoquée dans 24h. Mettre à jour les agents pendant la période de grâce.",
+        "modalRotateHeading": "faire pivoter la clé API",
+        "rotateGraceWarning": "Ancienne clé révoquée dans 24h. Mettez à jour les agents pendant la période de grâce.",
         "statusActive": "actif",
         "statusExpired": "expiré",
         "statusRevoked": "révoqué",
@@ -27,15 +27,15 @@
         "tableLastUsed": "dernière utilisation",
         "tableName": "nom",
         "tablePrefix": "préfixe",
-        "warningOneTime": "Cette clé affichée UNE SEULE FOIS. Sauvegardez-la maintenant de manière sécurisée."
+        "warningOneTime": "Cette clé est affichée UNE SEULE FOIS. Sauvegardez-la maintenant en toute sécurité."
     },
     "app": {
-        "tagline": "gestionnaire d'horaires",
+        "tagline": "gestionnaire d'horaire",
         "title": "plan1"
     },
     "auth": {
         "signIn": "Se connecter avec Google",
-        "signInDescription": "plan1 est un outil de planification personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
+        "signInDescription": "plan1 est un outil d'horaire personnel avec synchronisation multi-appareils. Connectez-vous avec Google pour commencer.",
         "signInRequired": "Connectez-vous pour utiliser plan1"
     },
     "calendar": {
@@ -44,13 +44,13 @@
     },
     "category": {
         "confirmRemoveLabel": "confirmer suppr ({count})",
-        "confirmRemoveText": "{count} horaire(s) seront supprimés avec ceci. Cliquez à nouveau pour confirmer.",
+        "confirmRemoveText": "{count} horaire(s) sera/seront supprimé(s) avec ceci. Cliquez à nouveau pour confirmer.",
         "defaultName": "par défaut",
         "empty": "Aucune catégorie.",
         "fieldColor": "couleur",
         "fieldName": "nom",
         "header": "catégories",
-        "removeButton": "rm",
+        "removeButton": "suppr",
         "scheduleCountSuffix": "{count} horaires"
     },
     "common": {
@@ -70,9 +70,9 @@
     "error": {
         "featureUnavailable": "Cette fonctionnalité n'est pas encore disponible ({feature}).",
         "loadFailedLabel": "échec du chargement :",
-        "mutationFailed": "Échec de {action} : {error}",
+        "mutationFailed": "Échec de {action}: {error}",
         "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-        "workingHoursInvalid": "Saisie des heures de travail invalide ({reason})."
+        "workingHoursInvalid": "Saisie d'heures de travail invalide ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fin"
@@ -82,16 +82,16 @@
         "addTask": "ajouter une tâche",
         "changeTimerType": "changer le type de minuteur",
         "completeSchedule": "terminer l'horaire",
-        "convertTaskToSchedule": "convertir la tâche en programme",
-        "createApiKey": "créer une clé api",
+        "convertTaskToSchedule": "convertir la tâche en horaire",
+        "createApiKey": "créer une clé API",
         "extendTimer": "prolonger le minuteur",
         "removeCategory": "supprimer la catégorie",
         "removeTask": "supprimer la tâche",
-        "revokeApiKey": "révoquer la clé api",
-        "rotateApiKey": "faire pivoter la clé api",
+        "revokeApiKey": "révoquer la clé API",
+        "rotateApiKey": "faire pivoter la clé API",
         "setFocus": "définir la vue focus",
         "setTheme": "définir le thème",
-        "startScheduleNow": "démarrer l'horaire maintenant",
+        "startScheduleNow": "commencer l'horaire maintenant",
         "updateTask": "mise à jour de la tâche"
     },
     "nav": {
@@ -120,10 +120,10 @@
     },
     "retrospect": {
         "empty": "aucun enregistrement pour ce jour",
-        "title": "rétrospective"
+        "title": "regarder en arrière"
     },
     "schedule": {
-        "afterLastNoneHint": "aucun programme à venir",
+        "afterLastNoneHint": "aucun horaire à venir",
         "buttonAfterLast": "dernier+10",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
@@ -152,11 +152,11 @@
     "serverError": {
         "apiKeyAlreadyRevoked": "Clé API déjà révoquée.",
         "apiKeyCreateFailed": "Échec de la création de la clé API.",
-        "apiKeyExpiresInvalid": "L'expiration de la clé API doit être de 1-3650 jours ou null.",
+        "apiKeyExpiresInvalid": "L'expiration de la clé API doit être de 1-3650 jours ou nulle.",
         "apiKeyNameInvalid": "Le nom de la clé API est requis (max 100 caractères).",
         "apiKeyNotFound": "Clé API introuvable.",
-        "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour supprimer.",
-        "categoryNotFound": "Catégorie introuvable ou non détenue.",
+        "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour retirer.",
+        "categoryNotFound": "Catégorie introuvable ou non possédée.",
         "scheduleNotFound": "Horaire introuvable.",
         "taskBucketInvalid": "Valeur de bucket invalide.",
         "taskBucketLastProtected": "Au moins une catégorie doit rester",
@@ -173,7 +173,7 @@
         "unauthorized": "Connexion requise."
     },
     "settings": {
-        "apiKeysSection": "clés api",
+        "apiKeysSection": "clés API",
         "heading": "paramètres"
     },
     "settingsLink": "paramètres",
@@ -192,12 +192,12 @@
         "convertCancel": "annuler",
         "convertNow": "maintenant",
         "convertToSchedule": "+ horaire",
-        "countNeedsFields": "les tâches basées sur le compte nécessitent une catégorie et une durée",
+        "countNeedsFields": "les tâches basées sur le nombre nécessitent une catégorie et une durée",
         "delete": "supprimer",
         "empty": "aucune tâche",
         "fieldBucket": "Liste",
         "fieldCategory": "catégorie",
-        "fieldCount": "nombre",
+        "fieldCount": "compte",
         "fieldDuration": "durée (min)",
         "fieldPriority": "priorité",
         "fieldTitle": "titre",
@@ -209,7 +209,7 @@
     },
     "taskBucket": {
         "addHeading": "ajouter une catégorie",
-        "confirmRemove": "supprimer ? ({count} tâches)",
+        "confirmRemove": "supprimer? ({count} tâches)",
         "countBased": "tâche à compte à rebours",
         "fieldName": "nom",
         "header": "gérer les catégories de tâches",
@@ -217,14 +217,14 @@
         "taskCountSuffix": "{count} tâches"
     },
     "timer": {
-        "buttonComplete": "terminer",
+        "buttonComplete": "terminé",
         "buttonFocus": "focus",
         "buttonIdle": "inactif",
         "buttonStartNow": "commencer maintenant",
         "categoryFallback": "?",
         "idleEmpty": "inactif · aucun horaire actif",
         "labelElapsed": "écoulé",
-        "labelEndAt": "fin-à",
+        "labelEndAt": "fin à",
         "labelRemaining": "restant",
         "labelTarget": "cible",
         "labelUntilUpcoming": "jusqu'au prochain",
@@ -234,8 +234,8 @@
         "tooltipClickToFocus": "cliquer pour passer en focus",
         "tooltipClickToIdle": "cliquer pour passer en inactif",
         "typeCountdown": "compte à rebours",
-        "typeCountup": "compteur",
-        "typeTimer1": "timer1"
+        "typeCountup": "compte croissant",
+        "typeTimer1": "minuteur1"
     },
     "topbar": {
         "back": "retour au portail",
@@ -264,9 +264,9 @@
         "sam"
     ],
     "workingHours": {
-        "checkboxAlsoDefault": "enregistrer aussi par défaut",
+        "checkboxAlsoDefault": "enregistrer également par défaut",
         "checkboxWeekdaysOnly": "jours de semaine uniquement (lun–ven)",
-        "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
+        "errorEndAfterStart": "L'heure de fin doit être postérieure à l'heure de début.",
         "errorToAfterFrom": "La date de fin doit être égale ou postérieure à la date de début.",
         "fieldDate": "date",
         "fieldEndTime": "heure de fin",

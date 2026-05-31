@@ -8,7 +8,7 @@
         "copiedConfirm": "Eu salvei esta chave",
         "copyButton": "copiar",
         "create": "+ chave",
-        "empty": "sem chaves",
+        "empty": "nenhuma chave",
         "expires30": "30 dias",
         "expires365": "1 ano",
         "expires90": "90 dias",
@@ -24,10 +24,10 @@
         "tableActions": "ações",
         "tableCreated": "criado",
         "tableExpires": "expira",
-        "tableLastUsed": "usado por último",
+        "tableLastUsed": "usado pela última vez",
         "tableName": "nome",
         "tablePrefix": "prefixo",
-        "warningOneTime": "Esta chave é mostrada APENAS UMA VEZ. Guarde com segurança agora."
+        "warningOneTime": "Esta chave é mostrada APENAS UMA VEZ. Salve com segurança agora."
     },
     "app": {
         "tagline": "gerenciador de agendamentos",
@@ -35,7 +35,7 @@
     },
     "auth": {
         "signIn": "Entrar com Google",
-        "signInDescription": "plan1 é uma ferramenta de agendamento pessoal com sincronização entre dispositivos. Entre com Google para começar.",
+        "signInDescription": "plan1 é uma ferramenta de agendamento pessoal com sincronização entre dispositivos. Faça login com o Google para começar.",
         "signInRequired": "Entre para usar plan1"
     },
     "calendar": {
@@ -44,7 +44,7 @@
     },
     "category": {
         "confirmRemoveLabel": "confirmar rm ({count})",
-        "confirmRemoveText": "{count} agendamento(s) será(ão) excluído(s) com isto. Clique novamente para confirmar.",
+        "confirmRemoveText": "{count} agendamento(s) serão excluídos com isso. Clique novamente para confirmar.",
         "defaultName": "padrão",
         "empty": "Nenhuma categoria.",
         "fieldColor": "cor",
@@ -72,7 +72,7 @@
         "loadFailedLabel": "falha ao carregar:",
         "mutationFailed": "Falha ao {action}: {error}",
         "unknown": "Ocorreu um erro inesperado. Por favor, tente novamente.",
-        "workingHoursInvalid": "Entrada de horário de trabalho inválida ({reason})."
+        "workingHoursInvalid": "Entrada de horas de trabalho inválida ({reason})."
     },
     "header": {
         "finalEndAtSuffix": "fim"
@@ -81,7 +81,7 @@
     "mutation": {
         "addTask": "adicionar tarefa",
         "changeTimerType": "alterar tipo de temporizador",
-        "completeSchedule": "completar agendamento",
+        "completeSchedule": "agendamento completo",
         "convertTaskToSchedule": "converter tarefa em agendamento",
         "createApiKey": "criar chave api",
         "extendTimer": "estender temporizador",
@@ -124,7 +124,7 @@
     },
     "schedule": {
         "afterLastNoneHint": "nenhum agendamento próximo",
-        "buttonAfterLast": "último+10",
+        "buttonAfterLast": "últimos+10",
         "buttonMinus10": "-10m",
         "buttonMinus30": "-30m",
         "buttonPlus10": "+10m",
@@ -132,13 +132,13 @@
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ adicionar categoria",
         "chainedCheckbox": "encadear ao agendamento anterior",
-        "endLabelV2": "horário de término",
+        "endLabelV2": "hora de término",
         "endPlaceholder": "selecionar duração",
         "fieldCategory": "categoria",
         "fieldDuration": "duração (min)",
         "fieldName": "nome",
-        "fieldStartHour": "hora de início",
-        "fieldStartMinute": "minuto de início",
+        "fieldStartHour": "hora inicial",
+        "fieldStartMinute": "minuto inicial",
         "headerEdit": "editar agendamento",
         "headerNew": "novo agendamento",
         "hourSuffix": "h",
@@ -161,16 +161,16 @@
         "taskBucketInvalid": "Valor de bucket inválido.",
         "taskBucketLastProtected": "Pelo menos uma categoria deve permanecer",
         "taskBucketNameEmpty": "Nome da categoria é obrigatório",
-        "taskBucketNotFound": "Categoria da tarefa não encontrada",
+        "taskBucketNotFound": "Categoria de tarefa não encontrada",
         "taskCountExhausted": "Nenhuma contagem restante",
         "taskCountNeedsCategory": "Tarefas baseadas em contagem precisam de uma categoria",
         "taskCountNeedsDuration": "Tarefas baseadas em contagem precisam de uma duração",
-        "taskDurationInvalid": "A duração da tarefa deve ser 0 ou maior.",
+        "taskDurationInvalid": "Duração da tarefa deve ser 0 ou maior.",
         "taskNoCategoryId": "Tarefa não tem categoria — abra o modal da tarefa para definir.",
         "taskNoDuration": "Tarefa não tem duração — abra o modal da tarefa para definir.",
         "taskNotFound": "Tarefa não encontrada.",
         "taskPriorityOutOfRange": "Prioridade está fora do intervalo",
-        "unauthorized": "Entrada necessária."
+        "unauthorized": "Login necessário."
     },
     "settings": {
         "apiKeysSection": "chaves api",
@@ -179,8 +179,8 @@
     "settingsLink": "configurações",
     "signIn": {
         "cta": "Entrar",
-        "description": "Entre na sua conta de cofundador para visualizar e gerenciar seus agendamentos.",
-        "title": "Entrada necessária"
+        "description": "Entre na sua conta cofounder para visualizar e gerenciar seus agendamentos.",
+        "title": "Login necessário"
     },
     "task": {
         "actionAdd": "adicionar",
@@ -188,7 +188,7 @@
         "actionSave": "salvar",
         "bucketLater": "Mais tarde",
         "bucketNow": "Agora",
-        "convertAfterLast": "último+10",
+        "convertAfterLast": "últimos+10",
         "convertCancel": "cancelar",
         "convertNow": "agora",
         "convertToSchedule": "+ agendamento",
@@ -212,7 +212,7 @@
         "confirmRemove": "remover? ({count} tarefas)",
         "countBased": "tarefa de contagem regressiva",
         "fieldName": "nome",
-        "header": "gerenciar categorias de tarefa",
+        "header": "gerenciar categorias de tarefas",
         "remove": "remover",
         "taskCountSuffix": "{count} tarefas"
     },
@@ -220,7 +220,7 @@
         "buttonComplete": "completo",
         "buttonFocus": "foco",
         "buttonIdle": "ocioso",
-        "buttonStartNow": "começar agora",
+        "buttonStartNow": "iniciar agora",
         "categoryFallback": "?",
         "idleEmpty": "ocioso · nenhum agendamento ativo",
         "labelElapsed": "decorrido",
@@ -234,8 +234,8 @@
         "tooltipClickToFocus": "clique para mudar para foco",
         "tooltipClickToIdle": "clique para mudar para ocioso",
         "typeCountdown": "contagem regressiva",
-        "typeCountup": "contagem progressiva",
-        "typeTimer1": "timer1"
+        "typeCountup": "contagem crescente",
+        "typeTimer1": "cronômetro1"
     },
     "topbar": {
         "back": "voltar ao portal",
@@ -265,18 +265,18 @@
     ],
     "workingHours": {
         "checkboxAlsoDefault": "salvar também como padrão",
-        "checkboxWeekdaysOnly": "dias úteis apenas (seg–sex)",
-        "errorEndAfterStart": "A hora final deve ser posterior à hora inicial.",
-        "errorToAfterFrom": "A data final deve ser igual ou posterior à data inicial.",
+        "checkboxWeekdaysOnly": "apenas dias úteis (seg–sex)",
+        "errorEndAfterStart": "Hora de término deve ser após hora de início.",
+        "errorToAfterFrom": "Data de término deve ser igual ou posterior à data de início.",
         "fieldDate": "data",
-        "fieldEndTime": "horário de término",
+        "fieldEndTime": "hora de término",
         "fieldFromDate": "de",
         "fieldStartTime": "hora de início",
-        "fieldToDate": "para",
+        "fieldToDate": "até",
         "header": "horário de trabalho",
         "tabRange": "intervalo",
         "tabSingle": "único",
-        "warningNoDates": "Nenhuma data para aplicar no intervalo. (início > fim ou conflito somente dias úteis)",
+        "warningNoDates": "Nenhuma data para aplicar no intervalo. (início > fim ou conflito de apenas dias úteis)",
         "warningTruncated": "Intervalo excede {max} dias, apenas parcialmente processado. Tente um intervalo menor."
     }
 }
