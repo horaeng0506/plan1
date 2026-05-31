@@ -36,7 +36,8 @@ jobs:
     name: Mutation E2E (PR · main)
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # 20분 (2026-05-31) — playwright browser install 의 CDN stall retry 여유 (기존 15 → 20).
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -51,10 +52,24 @@ jobs:
         run: npm ci
 
       - name: Install Playwright (chromium only)
-        # --with-deps 제거 (2026-05-31) — apt 단계가 22.04·24.04 양쪽에서 needrestart 로 hang
-        # → 15분 job timeout (3회 동일 재현). GitHub 러너 이미지는 Playwright 브라우저 OS deps
-        # 사전 설치 → --with-deps 불요. 누락 lib 발생 시 브라우저 launch 가 명시 에러로 fail-fast.
-        run: npx playwright install chromium
+        # 2026-05-31 — Playwright CDN stall 대응. browser zip 다운로드 100% 후 후속 아티팩트
+        # (headless-shell·ffmpeg) 연결이 멈춰 15분 job timeout (3회 재현 · --with-deps 무관 · OS 무관).
+        # 같은 1.59.1 버전이 2026-05-11 성공 → 코드 아닌 외부 CDN stall. timeout 으로 hung 시도를
+        # 끊고 fresh 연결로 재시도 (대개 다른 CDN edge 로 성공). 3회 실패 시 step fail (job hang X).
+        run: |
+          for i in 1 2 3; do
+            echo "::group::playwright install attempt $i"
+            if timeout 240 npx playwright install chromium; then
+              echo "::endgroup::"
+              echo "playwright install ok (attempt $i)"
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "attempt $i stalled/failed; retrying after 5s..."
+            sleep 5
+          done
+          echo "playwright install failed after 3 attempts" >&2
+          exit 1
 
       # ── PR: ephemeral Neon branch + Vercel preview deploy ────────────────
       - name: Neon — create ephemeral branch
