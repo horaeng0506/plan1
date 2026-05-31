@@ -69,21 +69,24 @@ export async function createTaskBucket(input: {
     const user = await requireUser();
     const name = input.name.trim();
     if (name === '') throw new ServerActionError('serverError.taskBucketNameEmpty');
-    // sortOrder = 현재 max + 1 (목록 끝에 추가).
-    const rows = await db
-      .select({sortOrder: plan1TaskBuckets.sortOrder})
-      .from(plan1TaskBuckets)
-      .where(eq(plan1TaskBuckets.userId, user.id));
-    const maxSort = rows.reduce((m, r) => Math.max(m, r.sortOrder), -1);
-    await db.insert(plan1TaskBuckets).values({
-      id: `bkt-${randomUUID()}`,
-      userId: user.id,
-      name,
-      isCountBased: input.isCountBased,
-      sortOrder: maxSort + 1,
-      defaultKind: null
-    });
-    return selectBuckets(user.id);
+    // ⚡ neon-http read-after-write race 가드 — INSERT 후 별도 SELECT 는 새 행 누락 가능.
+    // 기존 목록 SELECT + INSERT `.returning()` 으로 in-memory 합성 (race-free).
+    const existing = await selectBuckets(user.id);
+    const maxSort = existing.reduce((m, b) => Math.max(m, b.sortOrder), -1);
+    const [created] = await db
+      .insert(plan1TaskBuckets)
+      .values({
+        id: `bkt-${randomUUID()}`,
+        userId: user.id,
+        name,
+        isCountBased: input.isCountBased,
+        sortOrder: maxSort + 1,
+        defaultKind: null
+      })
+      .returning();
+    return [...existing, rowToDomain(created)].sort(
+      (a, b) => a.sortOrder - b.sortOrder || a.createdAt - b.createdAt
+    );
   });
 }
 
@@ -97,22 +100,23 @@ export async function updateTaskBucket(input: {
 }): Promise<ServerActionResult<TaskBucketInfo[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    const existingRows = await db
-      .select()
-      .from(plan1TaskBuckets)
-      .where(and(eq(plan1TaskBuckets.id, input.id), eq(plan1TaskBuckets.userId, user.id)))
-      .limit(1);
-    const existing = existingRows[0];
+    // 전체 목록 1회 SELECT (in-memory 합성용 · race-free).
+    const all = await selectBuckets(user.id);
+    const existing = all.find(b => b.id === input.id);
     if (!existing) throw new ServerActionError('serverError.taskBucketNotFound');
 
     const trimmed = input.name.trim();
     const patch: Partial<typeof plan1TaskBuckets.$inferInsert> = {
       isCountBased: input.isCountBased
     };
+    let nextName = existing.name;
+    let nextDefaultKind = existing.defaultKind;
     // 이름 입력(비어있지 않음) → DB name + defaultKind 해제. 빈 입력 → default 표식 유지 (i18n 렌더 보존).
     if (trimmed !== '') {
       patch.name = trimmed;
       patch.defaultKind = null;
+      nextName = trimmed;
+      nextDefaultKind = null;
     }
 
     await db
@@ -143,7 +147,12 @@ export async function updateTaskBucket(input: {
       }
     }
 
-    return selectBuckets(user.id);
+    // race-free in-memory 합성 (UPDATE 후 별도 SELECT 회피).
+    return all.map(b =>
+      b.id === input.id
+        ? {...b, name: nextName, isCountBased: input.isCountBased, defaultKind: nextDefaultKind}
+        : b
+    );
   });
 }
 
@@ -156,7 +165,11 @@ export async function deleteTaskBucket(input: {
 }): Promise<ServerActionResult<TaskBucketInfo[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    // 조건부 DELETE: 같은 사용자의 다른 버킷이 존재할 때만 삭제 (마지막 1개 보호 · race 안전).
+    // 전체 목록 1회 SELECT (in-memory 합성 + 존재 판정용).
+    const all = await selectBuckets(user.id);
+    const target = all.find(b => b.id === input.id);
+    if (!target) return all; // 이미 없음 — no-op
+    // 조건부 DELETE: 같은 사용자의 다른 버킷이 존재할 때만 (마지막 1개 보호 · race 안전).
     const deleted = await db
       .delete(plan1TaskBuckets)
       .where(
@@ -167,15 +180,11 @@ export async function deleteTaskBucket(input: {
         )
       )
       .returning({id: plan1TaskBuckets.id});
+    // 삭제 0건 + target 존재 = 마지막 버킷 (조건부 가드 차단).
     if (deleted.length === 0) {
-      // 삭제 0건 = 마지막 버킷이거나 이미 없음. 존재 여부로 분기.
-      const stillExists = await db
-        .select({id: plan1TaskBuckets.id})
-        .from(plan1TaskBuckets)
-        .where(and(eq(plan1TaskBuckets.id, input.id), eq(plan1TaskBuckets.userId, user.id)))
-        .limit(1);
-      if (stillExists[0]) throw new ServerActionError('serverError.taskBucketLastProtected');
+      throw new ServerActionError('serverError.taskBucketLastProtected');
     }
-    return selectBuckets(user.id);
+    // race-free in-memory 합성 (DELETE 후 별도 SELECT 회피).
+    return all.filter(b => b.id !== input.id);
   });
 }

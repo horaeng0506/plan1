@@ -162,14 +162,14 @@ export const useAppStore = create<AppState>((set, get) => ({
         const settings = unwrap(settingsR);
         const tasks = unwrap(tasksR);
         const taskBuckets = unwrap(bucketsR);
-        // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — listTaskBuckets 가 lazy backfill 수행 (bucketId 채움).
-        // tasks 는 backfill 전 snapshot 일 수 있어 backfill 후 1회 재조회로 bucketId 정합.
-        const tasksAfter = taskBuckets.length > 0 ? unwrap(await tasksApi.listTasks()) : tasks;
+        // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 매 init 마다 listTasks 재조회 폐기 (latency 회귀 fix).
+        // 첫 시드 시점 backfill 후 신규 task 는 항상 bucketId 보유. 마이그 직후 첫 로드의 옛 task 는
+        // 다음 mutation refresh 로 정합 (store mutation 들이 최신 tasks 반환).
         set({
           schedules,
           categories: categories.length > 0 ? categories : DEFAULT_CATEGORIES,
           settings,
-          tasks: tasksAfter,
+          tasks,
           taskBuckets,
           loaded: true,
           loading: false
