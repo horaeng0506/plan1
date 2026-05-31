@@ -48,7 +48,12 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
 
   useEscapeKey(onClose, !busy);
 
-  const selectedBucket = taskBuckets.find(b => b.id === bucketId);
+  // ⚡ cold-load race fix (PLAN1-TASKS-BUCKET-CUSTOM-20260531):
+  // 모달 mount 시점에 store.taskBuckets 가 아직 빈 순간이면 initialBucketId='' 로 캡처됨.
+  // effect+setState 대신 derived 값으로 보정 — bucketId state 가 '' 면 첫 버킷으로 fallback
+  // (dropdown 채워지면 자동 정합). 사용자가 dropdown 변경 시 setBucketId 로 state 가 우선.
+  const effectiveBucketId = bucketId !== '' ? bucketId : taskBuckets[0]?.id ?? '';
+  const selectedBucket = taskBuckets.find(b => b.id === effectiveBucketId);
   const isCountBased = selectedBucket?.isCountBased ?? false;
 
   // priorityMax 계산 (선택 버킷 기준 · 동적).
@@ -57,7 +62,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
     if (!isEdit) return c + 1;
     return bId === initialBucketId ? c : c + 1;
   };
-  const priorityMax = Math.max(1, computeMax(bucketId));
+  const priorityMax = Math.max(1, computeMax(effectiveBucketId));
   const initialPriority = isEdit ? task!.priority ?? 1 : 1;
   const [priority, setPriority] = useState<number>(initialPriority);
 
@@ -77,7 +82,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
     isCountBased && (categoryId === '' || durationMin <= 0);
 
   const handleSubmit = async () => {
-    if (busy || countNeedsMissing || bucketId === '') return;
+    if (busy || countNeedsMissing || effectiveBucketId === '') return;
     setBusy(true);
     const trimmedTitle = title.trim();
     const finalTitle = trimmedTitle === '' ? null : trimmedTitle;
@@ -93,7 +98,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             durationMin: finalDuration,
             categoryId: finalCategoryId,
             priority,
-            bucketId,
+            bucketId: effectiveBucketId,
             count: finalCount
           }),
           'updateTask'
@@ -105,7 +110,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             durationMin: finalDuration,
             categoryId: finalCategoryId,
             priority,
-            bucketId,
+            bucketId: effectiveBucketId,
             count: finalCount
           }),
           'addTask'
@@ -141,7 +146,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
           </label>
           <select
             id="task-bucket"
-            value={bucketId}
+            value={effectiveBucketId}
             onChange={handleBucketChange}
             disabled={busy}
             className={fieldCls}
@@ -263,7 +268,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={busy || countNeedsMissing || bucketId === ''}
+            disabled={busy || countNeedsMissing || effectiveBucketId === ''}
             className="rounded-none border border-ink bg-ink px-3 py-1 text-xs text-bg hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isEdit ? t('task.actionSave') : t('task.actionAdd')}

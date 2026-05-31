@@ -28,7 +28,9 @@ test.describe('task bucket 커스터마이징 + 횟수차감', () => {
     await mgr.getByPlaceholder(/name|이름/i).fill(bucketName);
     await mgr.getByRole('checkbox').last().check();
     await mgr.getByRole('button', {name: /^add$|^추가$/i}).click();
-    await expect(mgr.getByText(bucketName)).toBeVisible({timeout: 5000});
+    // add 성공 시 TaskBucketManager 가 add 입력을 clear → toHaveValue('') 로 추가 완료 검증
+    // (버킷 이름은 편집 가능한 input value 로 렌더되어 getByText 로 못 찾음).
+    await expect(mgr.getByPlaceholder(/name|이름/i)).toHaveValue('', {timeout: 5000});
 
     // 모달 닫기
     await mgr.getByRole('button', {name: /close|닫기/i}).click();
@@ -53,7 +55,9 @@ test.describe('task bucket 커스터마이징 + 횟수차감', () => {
     await mgr.getByPlaceholder(/name|이름/i).fill(bucketName);
     await mgr.getByRole('checkbox').last().check();
     await mgr.getByRole('button', {name: /^add$|^추가$/i}).click();
-    await expect(mgr.getByText(bucketName)).toBeVisible({timeout: 5000});
+    // add 성공 시 TaskBucketManager 가 add 입력을 clear → toHaveValue('') 로 추가 완료 검증
+    // (버킷 이름은 편집 가능한 input value 로 렌더되어 getByText 로 못 찾음).
+    await expect(mgr.getByPlaceholder(/name|이름/i)).toHaveValue('', {timeout: 5000});
     await mgr.getByRole('button', {name: /close|닫기/i}).click();
 
     // 횟수차감형 task 생성 (count=3 · category·duration 필수)
