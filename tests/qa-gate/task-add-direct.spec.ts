@@ -92,9 +92,9 @@ test.describe('task 직접 작성 chain', () => {
     // "스케줄로 추가" 클릭 → 변형 chain
     const taskItem = page.getByText('to-schedule spec').locator('..');
     await taskItem.getByRole('button', {name: /^\+ schedule$|^\+ 스케줄$/i}).click();
-    // 변형 chain — 지금 시작 / 마지막 직후 / 취소 3 버튼 박힘
+    // 변형 chain — 지금 시작 / 마지막+10 / 취소 (마지막+10 은 활성 스케줄 있을 때만).
+    // PLAN1-LAST-PLUS-10-20260531 — 라벨 "last+10" / "마지막+10".
     await expect(taskItem.getByRole('button', {name: /now|지금/i})).toBeVisible();
-    await expect(taskItem.getByRole('button', {name: /after last|마지막/i})).toBeVisible();
     await expect(taskItem.getByRole('button', {name: /cancel|취소/i})).toBeVisible();
   });
 });

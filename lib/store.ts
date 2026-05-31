@@ -21,13 +21,15 @@ import type {
   ScheduleId,
   ScheduleStatus,
   Task,
-  TaskBucket,
+  TaskBucketId,
+  TaskBucketInfo,
   TaskId
 } from './domain/types';
 import * as categoriesApi from '@/app/actions/categories';
 import * as schedulesApi from '@/app/actions/schedules';
 import * as settingsApi from '@/app/actions/settings';
 import * as tasksApi from '@/app/actions/tasks';
+import * as taskBucketsApi from '@/app/actions/task-buckets';
 import {unwrapServerActionResult as unwrap, ServerActionError} from './server-action';
 import {armUndo} from './undo-store';
 
@@ -59,6 +61,8 @@ interface AppState {
   settings: AppSettings;
   // PLAN1-TASKS-FEATURE-20260509 — task 영역 (할일 → 스케줄 변환 chain).
   tasks: Task[];
+  // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 사용자 정의 할일 카테고리(버킷).
+  taskBuckets: TaskBucketInfo[];
   loaded: boolean;
   loading: boolean;
   error: string | null;
@@ -74,13 +78,14 @@ interface AppState {
   clearLastAddedSchedule(): void;
 
   // PLAN1-TASKS-FEATURE-20260509 — task actions.
-  // PLAN1-TASKS-BUCKET-20260511 — bucket parameter 추가.
+  // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — bucketId + count parameter.
   addTask(input: {
     title: string | null;
     durationMin: number | null;
     categoryId: string | null;
     priority?: number;
-    bucket?: TaskBucket;
+    bucketId: TaskBucketId;
+    count?: number | null;
   }): Promise<void>;
   // PLAN1-TASKS-PRIORITY-20260510 — task 편집.
   updateTaskAction(input: {
@@ -89,10 +94,16 @@ interface AppState {
     durationMin: number | null;
     categoryId: string | null;
     priority: number;
-    bucket: TaskBucket;
+    bucketId: TaskBucketId;
+    count?: number | null;
   }): Promise<void>;
   removeTask(id: TaskId): Promise<void>;
   convertTaskToSchedule(taskId: TaskId, startAt: number, chainedToPrev?: boolean): Promise<string>;
+
+  // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — task bucket actions.
+  addTaskBucket(input: {name: string; isCountBased: boolean}): Promise<void>;
+  updateTaskBucketAction(input: {id: TaskBucketId; name: string; isCountBased: boolean}): Promise<void>;
+  removeTaskBucket(id: TaskBucketId): Promise<void>;
 
   addSchedule(input: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Promise<void>;
   updateSchedule(
@@ -122,6 +133,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   categories: DEFAULT_CATEGORIES,
   settings: DEFAULT_SETTINGS,
   tasks: [],
+  taskBuckets: [],
   loaded: false,
   loading: false,
   error: null,
@@ -138,21 +150,27 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({loading: true, error: null, errorKey: null});
     initInflight = (async () => {
       try {
-        const [schedulesR, categoriesR, settingsR, tasksR] = await Promise.all([
+        const [schedulesR, categoriesR, settingsR, tasksR, bucketsR] = await Promise.all([
           schedulesApi.listSchedules(),
           categoriesApi.listCategories(),
           settingsApi.getSettings(),
-          tasksApi.listTasks()
+          tasksApi.listTasks(),
+          taskBucketsApi.listTaskBuckets()
         ]);
         const schedules = unwrap(schedulesR);
         const categories = unwrap(categoriesR);
         const settings = unwrap(settingsR);
         const tasks = unwrap(tasksR);
+        const taskBuckets = unwrap(bucketsR);
+        // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 매 init 마다 listTasks 재조회 폐기 (latency 회귀 fix).
+        // 첫 시드 시점 backfill 후 신규 task 는 항상 bucketId 보유. 마이그 직후 첫 로드의 옛 task 는
+        // 다음 mutation refresh 로 정합 (store mutation 들이 최신 tasks 반환).
         set({
           schedules,
           categories: categories.length > 0 ? categories : DEFAULT_CATEGORIES,
           settings,
           tasks,
+          taskBuckets,
           loaded: true,
           loading: false
         });
@@ -275,9 +293,30 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   async convertTaskToSchedule(taskId, startAt, chainedToPrev) {
     const result = unwrap(await tasksApi.convertTaskToSchedule({taskId, startAt, chainedToPrev}));
-    // tasks 영영 server return · schedules 영영 별 영영 refreshSchedules 박음 (atomic chain 영영 schedule INSERT 영영 server side 박힘).
+    // tasks 는 server return · schedule INSERT 는 server-side atomic chain → refreshSchedules 로 반영.
     set({tasks: result.tasks});
     await get().refreshSchedules();
     return result.scheduleId;
+  },
+
+  // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — task bucket actions.
+  async addTaskBucket(input) {
+    const taskBuckets = unwrap(await taskBucketsApi.createTaskBucket(input));
+    set({taskBuckets});
+  },
+
+  async updateTaskBucketAction(input) {
+    const taskBuckets = unwrap(await taskBucketsApi.updateTaskBucket(input));
+    set({taskBuckets});
+    // isCountBased 토글이 소속 task.count 를 동기 → tasks 재조회.
+    const tasks = unwrap(await tasksApi.listTasks());
+    set({tasks});
+  },
+
+  async removeTaskBucket(id) {
+    const taskBuckets = unwrap(await taskBucketsApi.deleteTaskBucket({id}));
+    // 버킷 cascade 삭제로 소속 task 동반 삭제 → tasks 재조회.
+    const tasks = unwrap(await tasksApi.listTasks());
+    set({taskBuckets, tasks});
   }
 }));

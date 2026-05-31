@@ -251,6 +251,12 @@ export async function completeSchedule(input: {
 
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, cascaded);
+    // PLAN1-TASKS-BUCKET-CUSTOM-20260531 (N5) — 완료 시각 기록 (되돌아보기 모달 표시용).
+    // syncSchedules 가 도메인 기준 write(completedAt 미포함) 하므로 그 뒤 타겟 UPDATE 로 보강.
+    await db
+      .update(plan1Schedules)
+      .set({completedAt: new Date(input.completeAtMs)})
+      .where(and(eq(plan1Schedules.id, input.id), eq(plan1Schedules.userId, user.id)));
     return cascaded;
   });
 }

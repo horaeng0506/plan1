@@ -5,21 +5,15 @@ import {useTranslations} from 'next-intl';
 import {useAppStore} from '@/lib/store';
 import {useRunMutation} from '@/lib/use-run-mutation';
 import {useEscapeKey} from '@/lib/use-escape-key';
-import type {Task, TaskBucket} from '@/lib/domain/types';
+import {useTaskBucketDisplay} from '@/lib/task-bucket-display';
+import type {Task} from '@/lib/domain/types';
 
 /**
- * PLAN1-TASKS-FEATURE-20260509 (S3) — 새 task 박음 modal.
- * PLAN1-TASKS-PRIORITY-20260510 (사양 4·5·6번) — 편집 모드 + 우선순위 박스 버튼 + 소요시간 +/- 버튼.
- * PLAN1-TASKS-BUCKET-20260511 — bucket 드롭다운 (title 위 · default 'now') + priorityMax 동적 + clip.
- *
- * priorityMax 동적 (logic-critic M1 정합):
- *   - create: bucketTaskCount + 1
- *   - edit + same bucket: bucketTaskCount
- *   - edit + different bucket: bucketTaskCount + 1 (자기 신규 insert 와 동치)
- *
- * bucket 드롭다운 변경 시 priority clip (M1 race 차단):
- *   - 현재 priority 가 새 max 초과 시 자동 max 로 clip
- *   - setBucket + setPriority 같은 commit phase (React 18 batching)
+ * PLAN1-TASKS-FEATURE-20260509 (S3) — 새 task 박는 modal.
+ * PLAN1-TASKS-PRIORITY-20260510 — 편집 모드 + 우선순위 박스 + 소요시간 +/- 버튼.
+ * PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 고정 bucket 드롭다운 → 사용자 정의 버킷 드롭다운.
+ *   - 선택 버킷이 횟수차감형(isCountBased)이면 '횟수' 입력 노출 (min 1) + category·duration 필수.
+ *   - priorityMax 동적 (선택 버킷 기준).
  */
 
 interface TaskModalProps {
@@ -33,35 +27,49 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
   const runMutation = useRunMutation();
   const categories = useAppStore(s => s.categories);
   const tasks = useAppStore(s => s.tasks);
+  const taskBuckets = useAppStore(s => s.taskBuckets);
   const addTask = useAppStore(s => s.addTask);
   const updateTaskAction = useAppStore(s => s.updateTaskAction);
+  const bucketDisplay = useTaskBucketDisplay();
 
   const isEdit = mode === 'edit' && task !== undefined;
-  const initialBucket: TaskBucket = isEdit ? (task!.bucket ?? 'now') : 'now';
+  const initialBucketId = isEdit
+    ? task!.bucketId ?? taskBuckets[0]?.id ?? ''
+    : taskBuckets[0]?.id ?? '';
 
   const [title, setTitle] = useState(task?.title ?? '');
   const [durationMin, setDurationMin] = useState<number>(task?.durationMin ?? 0);
   const [categoryId, setCategoryId] = useState<string>(
     task?.categoryId ?? categories[0]?.id ?? ''
   );
-  const [bucket, setBucket] = useState<TaskBucket>(initialBucket);
-  // priorityMax 계산 (현재 bucket 기준 · 동적 재계산)
-  const computeMax = (b: TaskBucket): number => {
-    const count = tasks.filter(t => t.bucket === b).length;
-    if (!isEdit) return count + 1;
-    return b === initialBucket ? count : count + 1;
-  };
-  const priorityMax = computeMax(bucket);
-  const initialPriority = isEdit ? (task!.priority ?? 1) : 1;
-  const [priority, setPriority] = useState<number>(initialPriority);
+  const [bucketId, setBucketId] = useState<string>(initialBucketId);
+  const [count, setCount] = useState<number>(task?.count ?? 1);
   const [busy, setBusy] = useState(false);
 
   useEscapeKey(onClose, !busy);
 
+  // ⚡ cold-load race fix (PLAN1-TASKS-BUCKET-CUSTOM-20260531):
+  // 모달 mount 시점에 store.taskBuckets 가 아직 빈 순간이면 initialBucketId='' 로 캡처됨.
+  // effect+setState 대신 derived 값으로 보정 — bucketId state 가 '' 면 첫 버킷으로 fallback
+  // (dropdown 채워지면 자동 정합). 사용자가 dropdown 변경 시 setBucketId 로 state 가 우선.
+  const effectiveBucketId = bucketId !== '' ? bucketId : taskBuckets[0]?.id ?? '';
+  const selectedBucket = taskBuckets.find(b => b.id === effectiveBucketId);
+  const isCountBased = selectedBucket?.isCountBased ?? false;
+
+  // priorityMax 계산 (선택 버킷 기준 · 동적).
+  const computeMax = (bId: string): number => {
+    const c = tasks.filter(tk => tk.bucketId === bId).length;
+    if (!isEdit) return c + 1;
+    return bId === initialBucketId ? c : c + 1;
+  };
+  const priorityMax = Math.max(1, computeMax(effectiveBucketId));
+  const initialPriority = isEdit ? task!.priority ?? 1 : 1;
+  const [priority, setPriority] = useState<number>(initialPriority);
+
   const handleBucketChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newBucket = e.target.value as TaskBucket;
-    setBucket(newBucket);
-    const newMax = computeMax(newBucket);
+    const newBucketId = e.target.value;
+    setBucketId(newBucketId);
+    const newMax = Math.max(1, computeMax(newBucketId));
     if (priority > newMax) setPriority(newMax);
   };
 
@@ -69,13 +77,18 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
     setDurationMin(d => Math.max(0, d + delta));
   };
 
+  // 횟수차감형이면 category·duration 필수 (server 강제와 정합 · UI 가드).
+  const countNeedsMissing =
+    isCountBased && (categoryId === '' || durationMin <= 0);
+
   const handleSubmit = async () => {
-    if (busy) return;
+    if (busy || countNeedsMissing || effectiveBucketId === '') return;
     setBusy(true);
     const trimmedTitle = title.trim();
     const finalTitle = trimmedTitle === '' ? null : trimmedTitle;
     const finalDuration = durationMin <= 0 ? null : durationMin;
     const finalCategoryId = categoryId === '' ? null : categoryId;
+    const finalCount = isCountBased ? Math.max(1, Math.floor(count)) : null;
     try {
       if (isEdit) {
         await runMutation(
@@ -85,7 +98,8 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             durationMin: finalDuration,
             categoryId: finalCategoryId,
             priority,
-            bucket
+            bucketId: effectiveBucketId,
+            count: finalCount
           }),
           'updateTask'
         );
@@ -96,7 +110,8 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             durationMin: finalDuration,
             categoryId: finalCategoryId,
             priority,
-            bucket
+            bucketId: effectiveBucketId,
+            count: finalCount
           }),
           'addTask'
         );
@@ -120,24 +135,25 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-full max-w-sm rounded-none border border-line bg-panel p-6 font-mono">
+      <div className="w-full max-w-sm rounded-none border border-line bg-panel p-6 font-mono" data-testid="task-modal">
         <h2 className="mb-4 text-sm font-medium text-ink">
           {isEdit ? t('task.modalEditHeading') : t('task.modalHeading')}
         </h2>
-        {/* PLAN1-TASKS-BUCKET-20260511 — bucket 드롭다운 (title 위 · 1행). 사양 5번. */}
+        {/* PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 버킷 드롭다운 (사용자 정의 · title 위). */}
         <div className="mb-3">
           <label className="mb-1 block text-xs text-muted" htmlFor="task-bucket">
             {t('task.fieldBucket')}
           </label>
           <select
             id="task-bucket"
-            value={bucket}
+            value={effectiveBucketId}
             onChange={handleBucketChange}
             disabled={busy}
             className={fieldCls}
           >
-            <option value="now">{t('task.bucketNow')}</option>
-            <option value="later">{t('task.bucketLater')}</option>
+            {taskBuckets.map(b => (
+              <option key={b.id} value={b.id}>{bucketDisplay(b)}</option>
+            ))}
           </select>
         </div>
         <div className="mb-3">
@@ -153,6 +169,23 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             className={fieldCls}
           />
         </div>
+        {/* 횟수차감형 버킷 → 횟수 입력 (min 1). */}
+        {isCountBased && (
+          <div className="mb-3">
+            <label className="mb-1 block text-xs text-muted" htmlFor="task-count">
+              {t('task.fieldCount')}
+            </label>
+            <input
+              id="task-count"
+              type="number"
+              min={1}
+              value={count}
+              onChange={e => setCount(Math.max(1, Math.floor(Number(e.target.value) || 1)))}
+              disabled={busy}
+              className={fieldCls}
+            />
+          </div>
+        )}
         <div className="mb-3">
           <label className="mb-1 block text-xs text-muted" htmlFor="task-duration">
             {t('task.fieldDuration')}
@@ -167,28 +200,13 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             className={fieldCls}
           />
           <div className="mt-2 flex flex-wrap gap-1">
-            <button
-              type="button"
-              onClick={() => bumpDuration(10)}
-              disabled={busy}
-              className={adjustBtn}
-            >
+            <button type="button" onClick={() => bumpDuration(10)} disabled={busy} className={adjustBtn}>
               {t('schedule.buttonPlus10')}
             </button>
-            <button
-              type="button"
-              onClick={() => bumpDuration(30)}
-              disabled={busy}
-              className={adjustBtn}
-            >
+            <button type="button" onClick={() => bumpDuration(30)} disabled={busy} className={adjustBtn}>
               {t('schedule.buttonPlus30')}
             </button>
-            <button
-              type="button"
-              onClick={() => bumpDuration(60)}
-              disabled={busy}
-              className={adjustBtn}
-            >
+            <button type="button" onClick={() => bumpDuration(60)} disabled={busy} className={adjustBtn}>
               {t('schedule.buttonPlusHour')}
             </button>
           </div>
@@ -235,6 +253,9 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             })}
           </div>
         </div>
+        {countNeedsMissing && (
+          <p className="mb-3 text-xs text-danger">{t('task.countNeedsFields')}</p>
+        )}
         <div className="flex justify-end gap-2">
           <button
             type="button"
@@ -247,7 +268,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={busy}
+            disabled={busy || countNeedsMissing || effectiveBucketId === ''}
             className="rounded-none border border-ink bg-ink px-3 py-1 text-xs text-bg hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isEdit ? t('task.actionSave') : t('task.actionAdd')}
