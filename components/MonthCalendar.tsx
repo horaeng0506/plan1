@@ -93,7 +93,8 @@ export function MonthCalendar({onDateClick}: {onDateClick: (dateMs: number) => v
           mark ? 'font-semibold text-white' : ''
         }`}
       >
-        <span>{arg.dayNumberText}</span>
+        {/* locale("12일"·"12日") 제거 — 순수 날짜 숫자만 표시 (대장 요청). */}
+        <span>{arg.date.getDate()}</span>
         <span
           className={`mt-0.5 h-1 w-1 rounded-full ${has ? 'bg-success' : 'bg-transparent'}`}
           aria-hidden="true"
