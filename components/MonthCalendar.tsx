@@ -26,11 +26,12 @@ function fcLocale(locale: string): string {
   return locale === 'zh-CN' ? 'zh-cn' : locale;
 }
 
-// 미래 날짜 색 원 — 표준 tailwind 팔레트 (빨강/녹색/파랑).
-const COLOR_BG: Record<DateMarkColor, string> = {
-  red: 'bg-red-500',
-  green: 'bg-green-500',
-  blue: 'bg-blue-500'
+// 미래 날짜 셀 배경 — 칸 전체 색칠. FullCalendar td 배경에 적용하며
+// `!important` 로 FullCalendar 기본 셀 스타일을 override (빨강/녹색/파랑).
+const COLOR_CELL: Record<DateMarkColor, string> = {
+  red: '!bg-red-500',
+  green: '!bg-green-500',
+  blue: '!bg-blue-500'
 };
 
 export function MonthCalendar({onDateClick}: {onDateClick: (dateMs: number) => void}) {
@@ -83,25 +84,30 @@ export function MonthCalendar({onDateClick}: {onDateClick: (dateMs: number) => v
     const key = dateKey(arg.date);
     const isFuture = key > tKey;
     const has = daysWithSchedules.has(key);
-    // 미래 날짜에만 색 원 (오늘이 되면 isFuture false → 원 사라짐).
+    // 미래 날짜에만 색 마킹 (오늘이 되면 isFuture false → 색 사라짐).
+    // 셀 배경은 dayCellClassNames 가 칠함 — 여기선 색칠 셀 숫자 가독성(흰색)만.
     const mark = isFuture ? markMap.get(key) : undefined;
     return (
-      <div className={`flex flex-col items-center ${isFuture && !mark ? 'opacity-30' : ''}`}>
-        <span
-          className={
-            mark
-              ? `flex h-6 w-6 items-center justify-center rounded-full ${COLOR_BG[mark]} text-white`
-              : ''
-          }
-        >
-          {arg.dayNumberText}
-        </span>
+      <div
+        className={`flex flex-col items-center ${isFuture && !mark ? 'opacity-30' : ''} ${
+          mark ? 'font-semibold text-white' : ''
+        }`}
+      >
+        <span>{arg.dayNumberText}</span>
         <span
           className={`mt-0.5 h-1 w-1 rounded-full ${has ? 'bg-success' : 'bg-transparent'}`}
           aria-hidden="true"
         />
       </div>
     );
+  };
+
+  // 미래 날짜 셀(td) 전체를 마크 색으로 채움 (칸 가득). 과거·오늘·무색은 빈 배열.
+  const dayCellClassNames = (arg: DayCellContentArg) => {
+    const key = dateKey(arg.date);
+    if (key <= tKey) return [];
+    const mark = markMap.get(key);
+    return mark ? [COLOR_CELL[mark]] : [];
   };
 
   const navBtn =
@@ -128,6 +134,7 @@ export function MonthCalendar({onDateClick}: {onDateClick: (dateMs: number) => v
         fixedWeekCount={false}
         showNonCurrentDates={false}
         dayCellContent={renderDayCell}
+        dayCellClassNames={dayCellClassNames}
         datesSet={handleDatesSet}
         dateClick={arg => {
           const key = dateKey(arg.date);
