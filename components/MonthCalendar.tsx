@@ -92,7 +92,7 @@ export function MonthCalendar({onDateClick}: {onDateClick: (dateMs: number) => v
     return (
       <div className="relative flex h-full w-full items-center justify-center">
         <span
-          className={`text-4xl font-semibold leading-none ${mark ? 'text-white' : ''} ${
+          className={`text-4xl font-normal leading-none ${mark ? 'text-white' : ''} ${
             isFuture && !mark ? 'opacity-30' : ''
           }`}
         >
