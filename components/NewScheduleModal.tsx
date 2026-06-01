@@ -421,11 +421,12 @@ export function NewScheduleModal({
                     </option>
                   )}
                   {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 (Q-NEW12 b): disabled separator pattern (a11y 안전).
-                      day 그룹 분기: 첫 옵션 + tomorrow 첫 옵션 직전에 separator 박음 */}
+                      PLAN1-HOUR-SEP-20260601 (대장): 첫 옵션(시작일) leading separator 폐기 —
+                      실제 날짜 경계(tomorrow 전환) 직전에만 separator 박음 (— 6.2(화) — 유지). */}
                   {hourOptions.map((opt, idx) => {
                     const prev = idx > 0 ? hourOptions[idx - 1] : null;
                     const showSeparator =
-                      idx === 0 || (prev !== null && prev.isTomorrow !== opt.isTomorrow);
+                      prev !== null && prev.isTomorrow !== opt.isTomorrow;
                     const dayDate = new Date(opt.value);
                     const dayLabel = formatDateShort(dayDate, w => weekdayLabel(w));
                     return (
