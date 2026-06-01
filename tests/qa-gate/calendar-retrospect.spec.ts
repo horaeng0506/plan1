@@ -54,20 +54,18 @@ test.describe('달력보기 + 되돌아보기', () => {
     const futureDay = cal.locator('.fc-day-future').first();
     await expect(futureDay).toBeVisible({timeout: 5000});
 
-    // 색 원 = 날짜 숫자 감싸는 rounded-full bg-{color} span (dot 마커와 별개 class).
+    // 색은 셀(td) 배경 전체로 칠해짐 (!bg-{color}-500 important class).
     // 1클릭 → 빨강
     await futureDay.click();
-    await expect(futureDay.locator('span.bg-red-500')).toBeVisible({timeout: 5000});
+    await expect(futureDay).toHaveClass(/bg-red-500/, {timeout: 5000});
     // 2클릭 → 녹색
     await futureDay.click();
-    await expect(futureDay.locator('span.bg-green-500')).toBeVisible({timeout: 5000});
+    await expect(futureDay).toHaveClass(/bg-green-500/, {timeout: 5000});
     // 3클릭 → 파랑
     await futureDay.click();
-    await expect(futureDay.locator('span.bg-blue-500')).toBeVisible({timeout: 5000});
-    // 4클릭 → 무색 (색 원 사라짐 · DB 행 삭제)
+    await expect(futureDay).toHaveClass(/bg-blue-500/, {timeout: 5000});
+    // 4클릭 → 무색 (셀 배경 사라짐 · DB 행 삭제)
     await futureDay.click();
-    await expect(
-      futureDay.locator('span.bg-red-500, span.bg-green-500, span.bg-blue-500')
-    ).toHaveCount(0, {timeout: 5000});
+    await expect(futureDay).not.toHaveClass(/bg-(red|green|blue)-500/, {timeout: 5000});
   });
 });
