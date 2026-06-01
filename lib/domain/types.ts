@@ -52,6 +52,14 @@ export interface Task {
   createdAt: number;
 }
 
+// PLAN1-FUTURE-DATE-MARKS-20260601 — 달력 미래 날짜 색 마킹.
+// 무색은 별도 상태 X (마크 부재로 표현). 클릭 순환: 무색→red→green→blue→무색.
+export type DateMarkColor = 'red' | 'green' | 'blue';
+export interface DateMark {
+  dateKey: string; // 'YYYY-MM-DD' (클라이언트 로컬 날짜)
+  color: DateMarkColor;
+}
+
 export type Theme = 'light' | 'dark' | 'system';
 export interface AppSettings {
   theme: Theme;

@@ -241,6 +241,35 @@ export const plan1ApiKeys = plan1Schema.table(
   })
 );
 
+// PLAN1-FUTURE-DATE-MARKS-20260601 — 달력 미래 날짜 색 마킹.
+// 무색(행 없음) → red → green → blue → 무색(행 삭제) 순환. 클릭마다 다음 색.
+// dateKey = 'YYYY-MM-DD' (클라이언트 로컬 날짜). 미래 날짜만 표시 — 색칠한 날짜가
+// 오늘이 되면 클라이언트 렌더에서 자동 제외 (key > todayKey 조건). DB cleanup 불요.
+// 사양 단일 원천: cofounder-portal/lib/db/schema.ts plan1FutureDateMarks.
+export const plan1FutureDateMarks = plan1Schema.table(
+  'future_date_marks',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, {onDelete: 'cascade'}),
+    dateKey: text('date_key').notNull(),
+    color: text('color').$type<'red' | 'green' | 'blue'>().notNull(),
+    createdAt: timestamp('created_at', {withTimezone: true})
+      .$defaultFn(() => new Date())
+      .notNull(),
+    updatedAt: timestamp('updated_at', {withTimezone: true})
+      .$defaultFn(() => new Date())
+      .notNull()
+  },
+  table => ({
+    userDateUniqueIdx: uniqueIndex('plan1_future_date_marks_user_date_idx').on(
+      table.userId,
+      table.dateKey
+    )
+  })
+);
+
 // 편의 type export (server actions·components 에서 사용)
 export type Schedule = typeof plan1Schedules.$inferSelect;
 export type ScheduleInsert = typeof plan1Schedules.$inferInsert;
@@ -254,3 +283,5 @@ export type TaskBucketRow = typeof plan1TaskBuckets.$inferSelect;
 export type TaskBucketInsert = typeof plan1TaskBuckets.$inferInsert;
 export type ApiKey = typeof plan1ApiKeys.$inferSelect;
 export type ApiKeyInsert = typeof plan1ApiKeys.$inferInsert;
+export type FutureDateMarkRow = typeof plan1FutureDateMarks.$inferSelect;
+export type FutureDateMarkInsert = typeof plan1FutureDateMarks.$inferInsert;

@@ -17,6 +17,7 @@ import type {
   AppSettings,
   Category,
   CategoryId,
+  DateMark,
   Schedule,
   ScheduleId,
   ScheduleStatus,
@@ -30,6 +31,7 @@ import * as schedulesApi from '@/app/actions/schedules';
 import * as settingsApi from '@/app/actions/settings';
 import * as tasksApi from '@/app/actions/tasks';
 import * as taskBucketsApi from '@/app/actions/task-buckets';
+import * as dateMarksApi from '@/app/actions/date-marks';
 import {unwrapServerActionResult as unwrap, ServerActionError} from './server-action';
 import {armUndo} from './undo-store';
 
@@ -63,6 +65,8 @@ interface AppState {
   tasks: Task[];
   // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 사용자 정의 할일 카테고리(버킷).
   taskBuckets: TaskBucketInfo[];
+  // PLAN1-FUTURE-DATE-MARKS-20260601 — 달력 미래 날짜 색 마킹 (무색→red→green→blue 순환).
+  dateMarks: DateMark[];
   loaded: boolean;
   loading: boolean;
   error: string | null;
@@ -76,6 +80,9 @@ interface AppState {
   init(): Promise<void>;
   refreshSchedules(): Promise<void>;
   clearLastAddedSchedule(): void;
+
+  // PLAN1-FUTURE-DATE-MARKS-20260601 — 미래 날짜 클릭 → 다음 색으로 회전.
+  rotateDateMark(dateKey: string): Promise<void>;
 
   // PLAN1-TASKS-FEATURE-20260509 — task actions.
   // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — bucketId + count parameter.
@@ -134,6 +141,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   settings: DEFAULT_SETTINGS,
   tasks: [],
   taskBuckets: [],
+  dateMarks: [],
   loaded: false,
   loading: false,
   error: null,
@@ -144,24 +152,33 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({lastAddedSchedule: null});
   },
 
+  // PLAN1-FUTURE-DATE-MARKS-20260601 — 미래 날짜 클릭 → 다음 색 회전. server 가
+  // 전체 마크 목록 반환 (race-free) → state 교체.
+  async rotateDateMark(dateKey) {
+    const dateMarks = unwrap(await dateMarksApi.rotateDateMark({dateKey}));
+    set({dateMarks});
+  },
+
   async init() {
     if (get().loaded) return;
     if (initInflight) return initInflight;
     set({loading: true, error: null, errorKey: null});
     initInflight = (async () => {
       try {
-        const [schedulesR, categoriesR, settingsR, tasksR, bucketsR] = await Promise.all([
+        const [schedulesR, categoriesR, settingsR, tasksR, bucketsR, dateMarksR] = await Promise.all([
           schedulesApi.listSchedules(),
           categoriesApi.listCategories(),
           settingsApi.getSettings(),
           tasksApi.listTasks(),
-          taskBucketsApi.listTaskBuckets()
+          taskBucketsApi.listTaskBuckets(),
+          dateMarksApi.listDateMarks()
         ]);
         const schedules = unwrap(schedulesR);
         const categories = unwrap(categoriesR);
         const settings = unwrap(settingsR);
         const tasks = unwrap(tasksR);
         const taskBuckets = unwrap(bucketsR);
+        const dateMarks = unwrap(dateMarksR);
         // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 매 init 마다 listTasks 재조회 폐기 (latency 회귀 fix).
         // 첫 시드 시점 backfill 후 신규 task 는 항상 bucketId 보유. 마이그 직후 첫 로드의 옛 task 는
         // 다음 mutation refresh 로 정합 (store mutation 들이 최신 tasks 반환).
@@ -171,6 +188,7 @@ export const useAppStore = create<AppState>((set, get) => ({
           settings,
           tasks,
           taskBuckets,
+          dateMarks,
           loaded: true,
           loading: false
         });
