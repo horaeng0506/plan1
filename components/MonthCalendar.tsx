@@ -85,20 +85,25 @@ export function MonthCalendar({onDateClick}: {onDateClick: (dateMs: number) => v
     const isFuture = key > tKey;
     const has = daysWithSchedules.has(key);
     // 미래 날짜에만 색 마킹 (오늘이 되면 isFuture false → 색 사라짐).
-    // 셀 배경은 dayCellClassNames 가 칠함 — 여기선 색칠 셀 숫자 가독성(흰색)만.
+    // 셀 배경은 dayCellClassNames 가 칠함. 날짜 숫자는 칸 정중앙 + 큰 크기(약 3배).
+    // dot 마커(schedule 있는 날)는 우하단 작게 — 중앙 숫자와 겹치지 않게.
+    // locale("12일"·"12日") 제거 — 순수 날짜 숫자만 표시 (대장 요청).
     const mark = isFuture ? markMap.get(key) : undefined;
     return (
-      <div
-        className={`flex flex-col items-center ${isFuture && !mark ? 'opacity-30' : ''} ${
-          mark ? 'font-semibold text-white' : ''
-        }`}
-      >
-        {/* locale("12일"·"12日") 제거 — 순수 날짜 숫자만 표시 (대장 요청). */}
-        <span>{arg.date.getDate()}</span>
+      <div className="relative flex h-full w-full items-center justify-center">
         <span
-          className={`mt-0.5 h-1 w-1 rounded-full ${has ? 'bg-success' : 'bg-transparent'}`}
-          aria-hidden="true"
-        />
+          className={`text-4xl font-semibold leading-none ${mark ? 'text-white' : ''} ${
+            isFuture && !mark ? 'opacity-30' : ''
+          }`}
+        >
+          {arg.date.getDate()}
+        </span>
+        {has && (
+          <span
+            className="absolute bottom-1 right-1.5 h-1.5 w-1.5 rounded-full bg-success"
+            aria-hidden="true"
+          />
+        )}
       </div>
     );
   };
