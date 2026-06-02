@@ -20,20 +20,14 @@ import {db} from '@/lib/db';
 import {plan1FutureDateMarks} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
 import {runAction, type ServerActionResult} from '@/lib/server-action';
-import type {DateMark, DateMarkColor} from '@/lib/domain/types';
+import {NEXT_DATE_MARK_COLOR} from '@/lib/date-mark-rotation';
+import type {DateMark} from '@/lib/domain/types';
 
 type Row = typeof plan1FutureDateMarks.$inferSelect;
 
 function rowToDomain(row: Row): DateMark {
   return {dateKey: row.dateKey, color: row.color};
 }
-
-// 색 순환 다음 단계. blue → null = 무색(행 삭제).
-const NEXT_COLOR: Record<DateMarkColor, DateMarkColor | null> = {
-  red: 'green',
-  green: 'blue',
-  blue: null
-};
 
 export async function listDateMarks(): Promise<ServerActionResult<DateMark[]>> {
   return runAction(async () => {
@@ -79,7 +73,7 @@ export async function rotateDateMark(input: {
       return [...rows.map(rowToDomain), {dateKey, color: 'red'}];
     }
 
-    const next = NEXT_COLOR[existing.color];
+    const next = NEXT_DATE_MARK_COLOR[existing.color];
     if (next === null) {
       // blue → 무색 DELETE.
       await db

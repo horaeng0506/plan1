@@ -33,6 +33,7 @@ import * as tasksApi from '@/app/actions/tasks';
 import * as taskBucketsApi from '@/app/actions/task-buckets';
 import * as dateMarksApi from '@/app/actions/date-marks';
 import {initApp} from '@/app/actions/init';
+import {rotateDateMarkList} from './date-mark-rotation';
 import {unwrapServerActionResult as unwrap, ServerActionError} from './server-action';
 import {armUndo} from './undo-store';
 
@@ -57,6 +58,10 @@ export const DEFAULT_CATEGORIES: Category[] = [];
 
 // Strict Mode 이중 mount race 가드용 inflight promise 캐시 (init 만 사용).
 let initInflight: Promise<void> | null = null;
+
+// PLAN1-FUTURE-DATE-MARKS 낙관적 UI — 미래 날짜 색 회전의 서버 동기화 직렬 체인.
+// 연속 클릭 시 서버 호출 순서를 보장(무색→red→green→blue 순환 정확성) + UI 는 낙관적 즉시 반영.
+let dateMarkRotateChain: Promise<void> = Promise.resolve();
 
 interface AppState {
   schedules: Schedule[];
@@ -153,11 +158,22 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({lastAddedSchedule: null});
   },
 
-  // PLAN1-FUTURE-DATE-MARKS-20260601 — 미래 날짜 클릭 → 다음 색 회전. server 가
-  // 전체 마크 목록 반환 (race-free) → state 교체.
+  // PLAN1-FUTURE-DATE-MARKS-20260601 — 미래 날짜 클릭 → 다음 색 회전.
+  // PLAN1-PERF-20260602 낙관적 UI: 클릭 즉시 로컬 색 반영(0ms 체감) + 서버 저장은 백그라운드.
+  // 서버 RTT(209~688ms 변동)를 사용자에게 노출하지 않는다.
   async rotateDateMark(dateKey) {
-    const dateMarks = unwrap(await dateMarksApi.rotateDateMark({dateKey}));
-    set({dateMarks});
+    // 1) 낙관적 즉시 반영 — 클라/서버 공유 순환 로직(rotateDateMarkList).
+    set({dateMarks: rotateDateMarkList(get().dateMarks, dateKey)});
+    // 2) 서버 동기화 직렬 체인 — 연속 클릭 순서 보장. 성공 시 서버 결과가 낙관적과
+    //    동일(같은 순환 + 직렬 순서)이라 set 생략(깜빡임 0). 실패 시에만 서버 truth 재조회.
+    dateMarkRotateChain = dateMarkRotateChain.then(async () => {
+      const r = await dateMarksApi.rotateDateMark({dateKey});
+      if (!r.ok) {
+        const fresh = await dateMarksApi.listDateMarks();
+        if (fresh.ok) set({dateMarks: fresh.data});
+      }
+    });
+    return dateMarkRotateChain;
   },
 
   async init() {
