@@ -73,8 +73,12 @@ export async function Header() {
               </span>
               {/* PLAN1-TASKS-PRIORITY-20260510 (사양 8) — 사용자 이름 클릭 → settings 진입.
                   basePath `/project/plan1` 박힘 영역 next/link `/settings` 박음 (Next.js auto prefix). */}
+              {/* PLAN1-PERF-20260602 — prefetch 비활성. settings 는 가끔 진입하는 페이지라
+                  자동 RSC prefetch 이득이 없고, router 경유 시 ?_rsc 요청이 404 나 매 로드마다
+                  낭비(229·219ms)됐다. 클릭 시 full navigation 으로 진입(정상 동작 유지). */}
               <Link
                 href="/settings"
+                prefetch={false}
                 className="text-txt truncate max-w-[140px] hover:text-ink underline-offset-2 hover:underline"
                 title={t('settingsLink')}
                 aria-label={t('settingsLink')}
