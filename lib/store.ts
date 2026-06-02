@@ -32,6 +32,7 @@ import * as settingsApi from '@/app/actions/settings';
 import * as tasksApi from '@/app/actions/tasks';
 import * as taskBucketsApi from '@/app/actions/task-buckets';
 import * as dateMarksApi from '@/app/actions/date-marks';
+import {initApp} from '@/app/actions/init';
 import {unwrapServerActionResult as unwrap, ServerActionError} from './server-action';
 import {armUndo} from './undo-store';
 
@@ -165,20 +166,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({loading: true, error: null, errorKey: null});
     initInflight = (async () => {
       try {
-        const [schedulesR, categoriesR, settingsR, tasksR, bucketsR, dateMarksR] = await Promise.all([
-          schedulesApi.listSchedules(),
-          categoriesApi.listCategories(),
-          settingsApi.getSettings(),
-          tasksApi.listTasks(),
-          taskBucketsApi.listTaskBuckets(),
-          dateMarksApi.listDateMarks()
-        ]);
-        const schedules = unwrap(schedulesR);
-        const categories = unwrap(categoriesR);
-        const settings = unwrap(settingsR);
-        const tasks = unwrap(tasksR);
-        const taskBuckets = unwrap(bucketsR);
-        const dateMarks = unwrap(dateMarksR);
+        // PLAN1-INIT-CONSOLIDATE-20260602 — 6 server action(순차 POST) → 단일 initApp() 1요청.
+        const data = unwrap(await initApp());
+        const {schedules, categories, settings, tasks, taskBuckets, dateMarks} = data;
         // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 매 init 마다 listTasks 재조회 폐기 (latency 회귀 fix).
         // 첫 시드 시점 backfill 후 신규 task 는 항상 bucketId 보유. 마이그 직후 첫 로드의 옛 task 는
         // 다음 mutation refresh 로 정합 (store mutation 들이 최신 tasks 반환).
