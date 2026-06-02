@@ -60,6 +60,17 @@ export interface DateMark {
   color: DateMarkColor;
 }
 
+// PLAN1-INIT-CONSOLIDATE-20260602 — 앱 초기 로드 통합 페이로드.
+// 6개 개별 server action(Promise.all) → 단일 initApp() 1요청으로 통합 (클라↔서버 POST 6→1).
+export interface InitData {
+  schedules: Schedule[];
+  categories: Category[];
+  settings: AppSettings;
+  tasks: Task[];
+  taskBuckets: TaskBucketInfo[];
+  dateMarks: DateMark[];
+}
+
 export type Theme = 'light' | 'dark' | 'system';
 export interface AppSettings {
   theme: Theme;
