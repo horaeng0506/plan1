@@ -25,11 +25,17 @@ export type TaskBucket = 'now' | 'later';
 export type TaskBucketId = string;
 export type TaskBucketKind = 'now' | 'later';
 
+// PLAN1-TASKS-BUCKET-KIND-20260602 — 버킷 동작 타입.
+//   one-time(일회성): 변환 시 할일 삭제 / count(횟수차감): 변환 시 횟수 -1(0이면 삭제)
+//   / unlimited(무제한): 변환해도 할일 유지.
+export type TaskBucketKindType = 'one-time' | 'count' | 'unlimited';
+
 // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 사용자 정의 할일 카테고리(버킷) 도메인 타입.
 export interface TaskBucketInfo {
   id: TaskBucketId;
   name: string;
-  isCountBased: boolean;
+  // PLAN1-TASKS-BUCKET-KIND-20260602 — isCountBased(불린) 대체. count = 옛 횟수차감.
+  kind: TaskBucketKindType;
   sortOrder: number;
   // 'now'|'later' = 시드된 기본 버킷 (편집 전 i18n 렌더). null = 사용자 생성 또는 이름 편집됨.
   defaultKind: TaskBucketKind | null;

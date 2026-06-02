@@ -217,9 +217,12 @@
     "taskBucket": {
         "addHeading": "добавить категорию",
         "confirmRemove": "удалить? ({count} задач)",
-        "countBased": "задача с обратным отсчётом",
         "fieldName": "имя",
         "header": "управление категориями задач",
+        "kindCount": "задача со счётчиком",
+        "kindLabel": "тип задачи",
+        "kindOneTime": "разовая задача",
+        "kindUnlimited": "бессрочная задача",
         "remove": "удалить",
         "taskCountSuffix": "{count} задач"
     },

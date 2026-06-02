@@ -25,7 +25,8 @@ import {db} from '@/lib/db';
 import {plan1Tasks, plan1Schedules, plan1Categories, plan1TaskBuckets} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
 import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
-import type {Task} from '@/lib/domain/types';
+import type {Task, TaskBucketKindType} from '@/lib/domain/types';
+import {normalizeCount} from '@/lib/task-count';
 
 type TaskRow = typeof plan1Tasks.$inferSelect;
 
@@ -43,15 +44,15 @@ function rowToDomain(row: TaskRow): Task {
   };
 }
 
-// 버킷 소유 검증 + isCountBased/defaultKind 조회. 없으면 throw.
+// 버킷 소유 검증 + kind/defaultKind 조회. 없으면 throw.
 async function requireBucket(
   userId: string,
   bucketId: string
-): Promise<{id: string; isCountBased: boolean; defaultKind: 'now' | 'later' | null}> {
+): Promise<{id: string; kind: TaskBucketKindType; defaultKind: 'now' | 'later' | null}> {
   const rows = await db
     .select({
       id: plan1TaskBuckets.id,
-      isCountBased: plan1TaskBuckets.isCountBased,
+      kind: plan1TaskBuckets.kind,
       defaultKind: plan1TaskBuckets.defaultKind
     })
     .from(plan1TaskBuckets)
@@ -68,14 +69,6 @@ async function requireCategoryOwned(userId: string, categoryId: string): Promise
     .where(and(eq(plan1Categories.id, categoryId), eq(plan1Categories.userId, userId)))
     .limit(1);
   if (!ownerRows[0]) throw new ServerActionError('serverError.categoryNotFound');
-}
-
-// 횟수차감형 버킷의 count 정규화: isCountBased 면 ≥1 (default 1), 아니면 null.
-function normalizeCount(isCountBased: boolean, requested: number | null | undefined): number | null {
-  if (!isCountBased) return null;
-  const n = requested ?? 1;
-  if (!Number.isFinite(n) || n < 1) return 1;
-  return Math.floor(n);
 }
 
 // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — priority 정렬 read (bucketId namespace 는 client filter).
@@ -112,13 +105,14 @@ export async function createTask(input: {
       throw new ServerActionError('serverError.taskDurationInvalid');
     }
     // 횟수차감형은 category·duration 필수 (N3 — 변환 시 modal 회송 방지).
-    if (bucket.isCountBased) {
+    // 무제한·일회성은 강제 X (변환 시점에 convertTaskToSchedule 가 검증 · modal 회송).
+    if (bucket.kind === 'count') {
       if (input.categoryId === null) throw new ServerActionError('serverError.taskCountNeedsCategory');
       if (input.durationMin === null || input.durationMin <= 0) {
         throw new ServerActionError('serverError.taskCountNeedsDuration');
       }
     }
-    const count = normalizeCount(bucket.isCountBased, input.count);
+    const count = normalizeCount(bucket.kind, input.count);
 
     // 해당 bucketId 안 task 개수 → max priority = N+1.
     const existingRows = await db
@@ -183,14 +177,14 @@ export async function updateTask(input: {
     if (input.durationMin !== null && input.durationMin < 0) {
       throw new ServerActionError('serverError.taskDurationInvalid');
     }
-    if (bucket.isCountBased) {
+    if (bucket.kind === 'count') {
       if (input.categoryId === null) throw new ServerActionError('serverError.taskCountNeedsCategory');
       if (input.durationMin === null || input.durationMin <= 0) {
         throw new ServerActionError('serverError.taskCountNeedsDuration');
       }
     }
     // count: 횟수차감형이면 입력값(또는 기존값) 유지, 아니면 null.
-    const count = normalizeCount(bucket.isCountBased, input.count ?? existing.count);
+    const count = normalizeCount(bucket.kind, input.count ?? existing.count);
 
     const oldBucketId = existing.bucketId;
     const newBucketId = input.bucketId;
@@ -375,11 +369,23 @@ export async function convertTaskToSchedule(input: {
       updatedAt: now
     });
 
-    // 횟수차감형(count !== null) 분기 (PLAN1-TASKS-BUCKET-CUSTOM-20260531).
-    const isCountBased = task.count !== null;
+    // PLAN1-TASKS-BUCKET-KIND-20260602 — 버킷 kind 분기 (일회성/횟수차감/무제한).
+    // task.count 만으론 일회성과 무제한이 구분 안 됨(둘 다 null) → 버킷 kind 조회.
+    let bucketKind: TaskBucketKindType = 'one-time';
+    if (task.bucketId !== null) {
+      try {
+        bucketKind = (await requireBucket(user.id, task.bucketId)).kind;
+      } catch {
+        bucketKind = 'one-time'; // 버킷 없음(마이그 전 옛 task) → 일회성 fallback
+      }
+    }
+
     let queries: BatchItem<'pg'>[];
 
-    if (isCountBased) {
+    if (bucketKind === 'unlimited') {
+      // 무제한: schedule 만 추가, task 그대로 유지 (삭제·차감·priority shift X).
+      queries = [insertSchedule];
+    } else if (bucketKind === 'count') {
       if ((task.count ?? 0) <= 0) {
         throw new ServerActionError('serverError.taskCountExhausted');
       }
@@ -400,10 +406,11 @@ export async function convertTaskToSchedule(input: {
             )
         ];
       } else {
-        // 마지막 차감 (0 도달) → 일반 task 처럼 삭제 + priority shift.
+        // 마지막 차감 (0 도달) → 일회성처럼 삭제 + priority shift.
         queries = [insertSchedule, ...deleteWithShift(user.id, task)];
       }
     } else {
+      // 일회성: task 삭제 + priority shift.
       queries = [insertSchedule, ...deleteWithShift(user.id, task)];
     }
 

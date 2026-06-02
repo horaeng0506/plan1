@@ -217,9 +217,12 @@
     "taskBucket": {
         "addHeading": "إضافة فئة",
         "confirmRemove": "إزالة؟ ({count} مهام)",
-        "countBased": "مهمة العد التنازلي",
         "fieldName": "الاسم",
         "header": "إدارة فئات المهام",
+        "kindCount": "مهمة بالعدّ",
+        "kindLabel": "نوع المهمة",
+        "kindOneTime": "مهمة لمرة واحدة",
+        "kindUnlimited": "مهمة غير محدودة",
         "remove": "إزالة",
         "taskCountSuffix": "{count} مهام"
     },

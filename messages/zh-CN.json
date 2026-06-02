@@ -217,9 +217,12 @@
     "taskBucket": {
         "addHeading": "添加类别",
         "confirmRemove": "删除?({count}个任务)",
-        "countBased": "倒计时任务",
         "fieldName": "名称",
         "header": "管理任务分类",
+        "kindCount": "次数递减任务",
+        "kindLabel": "任务类型",
+        "kindOneTime": "一次性任务",
+        "kindUnlimited": "无限任务",
         "remove": "移除",
         "taskCountSuffix": "{count}个任务"
     },

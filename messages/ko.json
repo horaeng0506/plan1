@@ -272,7 +272,10 @@
   "taskBucket": {
     "header": "할일 카테고리 관리",
     "fieldName": "이름",
-    "countBased": "횟수 차감형 할일",
+    "kindLabel": "할일 타입",
+    "kindOneTime": "일회성 할일",
+    "kindCount": "횟수차감 할일",
+    "kindUnlimited": "무제한 할일",
     "addHeading": "카테고리 추가",
     "remove": "삭제",
     "confirmRemove": "삭제할까요? (할일 {count}개)",

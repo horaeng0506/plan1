@@ -141,6 +141,10 @@ export const plan1TaskBuckets = plan1Schema.table(
       .references(() => user.id, {onDelete: 'cascade'}),
     name: text('name').notNull().default(''),
     isCountBased: boolean('is_count_based').notNull().default(false),
+    // PLAN1-TASKS-BUCKET-KIND-20260602 — 동작 타입: one-time(일회성)/count(횟수차감)/unlimited(무제한).
+    // 무제한 = task→schedule 변환해도 task 유지. isCountBased 는 kind==='count' 동기 보존(drop 후속).
+    // 사양 단일 원천: cofounder-portal/lib/db/schema.ts plan1TaskBuckets.
+    kind: text('kind').$type<'one-time' | 'count' | 'unlimited'>().notNull().default('one-time'),
     sortOrder: integer('sort_order').notNull().default(0),
     defaultKind: text('default_kind').$type<'now' | 'later'>(),
     createdAt: timestamp('created_at', {withTimezone: true})
