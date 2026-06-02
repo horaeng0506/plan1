@@ -54,6 +54,16 @@ test.describe('달력보기 + 되돌아보기', () => {
     const futureDay = cal.locator('.fc-day-future').first();
     await expect(futureDay).toBeVisible({timeout: 5000});
 
+    // 격리: prod ephemeral 에 사용자가 색칠한 잔존 마크가 복사돼 있을 수 있음 → 무색까지 reset.
+    // (무색→red→green→blue→무색 4-state 라 최대 3클릭이면 무색 도달)
+    for (let i = 0; i < 4; i++) {
+      const cls = (await futureDay.getAttribute('class')) ?? '';
+      if (!/bg-(red|green|blue)-500/.test(cls)) break;
+      await futureDay.click();
+      await page.waitForTimeout(400);
+    }
+    await expect(futureDay).not.toHaveClass(/bg-(red|green|blue)-500/, {timeout: 5000});
+
     // 색은 셀(td) 배경 전체로 칠해짐 (!bg-{color}-500 important class).
     // 1클릭 → 빨강
     await futureDay.click();
