@@ -189,7 +189,14 @@
     "taskCountNeedsCategory": "횟수차감형 할일은 카테고리가 필요해요",
     "taskCountNeedsDuration": "횟수차감형 할일은 소요시간이 필요해요",
     "taskCountExhausted": "남은 횟수가 없어요",
-    "taskPriorityOutOfRange": "우선순위 범위를 벗어났어요"
+    "taskPriorityOutOfRange": "우선순위 범위를 벗어났어요",
+    "insertBetweenNoPrev": "앞에 일정이 없어 사이에 넣을 수 없어요.",
+    "insertBetweenStale": "일정이 변경되었어요 — 다시 시도해주세요."
+  },
+  "insert": {
+    "conflictPrompt": "이 시간에 이미 일정이 있어요. 어떻게 할까요?",
+    "sameTime": "같은 시간에 추가",
+    "between": "사이에 끼워넣기 (뒤 일정 밀기)"
   },
   "undo": {
     "actionLabel": "실행 취소 가능",

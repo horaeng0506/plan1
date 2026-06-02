@@ -77,6 +77,11 @@
     "header": {
         "finalEndAtSuffix": "结束"
     },
+    "insert": {
+        "between": "插入中间（顺延后面的日程）",
+        "conflictPrompt": "此时间已有日程。您想怎么做？",
+        "sameTime": "添加到同一时间"
+    },
     "loading": "加载中...",
     "mutation": {
         "addTask": "添加任务",
@@ -157,6 +162,8 @@
         "apiKeyNotFound": "API密钥未找到。",
         "categoryHasSchedules": "分类有{scheduleCount}个计划。确认级联删除以移除。",
         "categoryNotFound": "分类未找到或不属于您。",
+        "insertBetweenNoPrev": "无法插入 — 此时间之前没有日程。",
+        "insertBetweenStale": "日程已更改 — 请重试。",
         "scheduleNotFound": "未找到计划。",
         "taskBucketInvalid": "无效的bucket值。",
         "taskBucketLastProtected": "至少必须保留一个类别",

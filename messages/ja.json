@@ -77,6 +77,11 @@
     "header": {
         "finalEndAtSuffix": "終了"
     },
+    "insert": {
+        "between": "間に挿入（後ろの予定をずらす）",
+        "conflictPrompt": "この時間にはすでに予定があります。どうしますか？",
+        "sameTime": "同じ時間に追加"
+    },
     "loading": "読み込み中...",
     "mutation": {
         "addTask": "タスクを追加",
@@ -157,6 +162,8 @@
         "apiKeyNotFound": "APIキーが見つかりません。",
         "categoryHasSchedules": "カテゴリには{scheduleCount}件のスケジュールがあります。カスケード削除を確認して削除してください。",
         "categoryNotFound": "カテゴリが見つからないか、所有していません。",
+        "insertBetweenNoPrev": "挿入できません — この時間より前に予定がありません。",
+        "insertBetweenStale": "予定が変更されました — もう一度お試しください。",
         "scheduleNotFound": "スケジュールが見つかりません。",
         "taskBucketInvalid": "無効なバケット値です。",
         "taskBucketLastProtected": "少なくとも1つのカテゴリを残す必要があります",

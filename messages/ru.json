@@ -77,6 +77,11 @@
     "header": {
         "finalEndAtSuffix": "конец"
     },
+    "insert": {
+        "between": "Вставить между (сдвинуть последующие записи)",
+        "conflictPrompt": "На это время уже есть запись. Что вы хотите сделать?",
+        "sameTime": "Добавить на то же время"
+    },
     "loading": "загрузка...",
     "mutation": {
         "addTask": "добавить задачу",
@@ -157,6 +162,8 @@
         "apiKeyNotFound": "API ключ не найден.",
         "categoryHasSchedules": "Категория содержит {scheduleCount} расписаний. Подтвердите каскадное удаление.",
         "categoryNotFound": "Категория не найдена или не принадлежит вам.",
+        "insertBetweenNoPrev": "Невозможно вставить — нет записи перед этим временем.",
+        "insertBetweenStale": "Запись изменилась — попробуйте снова.",
         "scheduleNotFound": "Расписание не найдено.",
         "taskBucketInvalid": "Неверное значение bucket.",
         "taskBucketLastProtected": "Должна остаться хотя бы одна категория",

@@ -79,6 +79,8 @@ export function NewScheduleModal({
   const addSchedule = useAppStore(s => s.addSchedule);
   const updateSchedule = useAppStore(s => s.updateSchedule);
   const removeSchedule = useAppStore(s => s.removeSchedule);
+  // PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — A2 사이 삽입 (B 시작 시간 충돌 시 선택지).
+  const insertScheduleBetween = useAppStore(s => s.insertScheduleBetween);
   // PLAN1-CHAIN-FOCUS-GUARD-20260510 (C 옵션): focus view 안 prior schedule check 용.
   const focusViewMin = useAppStore(s => s.settings.focusViewMin);
 
@@ -149,6 +151,13 @@ export function NewScheduleModal({
   const [busy, setBusy] = useState(false);
   // Track 1 fix (2026-04-29): submit catch + 사용자 표시 (silent failure 차단).
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — startAt 정확 일치 충돌 시 선택지 패널 상태.
+  const [insertChoice, setInsertChoice] = useState<{
+    conflictId: string;
+    conflictStart: number;
+    canSameTime: boolean;
+    canInsertBetween: boolean;
+  } | null>(null);
 
   // Stage 4d-C a11y: Esc → close.
   useEscapeKey(onClose, !busy && !catOpen);
@@ -245,14 +254,38 @@ export function NewScheduleModal({
     !busy;
 
   // PLAN1-TIMER-DUP-20260504 #6.1: overlap 검사 (MAX_OVERLAP=2 한도). 3건+ 차단.
+  // durationMin=0 은 finalDuration 30 fallback 으로 등록되므로 overlap 도 같은 기준으로 계산.
+  // (logic-critic Major — durationMin=0 시 overlaps=[] 되어 MAX_OVERLAP 한도 우회 차단)
+  const effOverlapDuration = durationMin === 0 ? 30 : durationMin;
   const overlaps = useMemo(
-    () =>
-      durationMin > 0
-        ? findOverlapping(schedules, startAt, durationMin, editing?.id)
-        : [],
-    [schedules, startAt, durationMin, editing?.id]
+    () => findOverlapping(schedules, startAt, effOverlapDuration, editing?.id),
+    [schedules, startAt, effOverlapDuration, editing?.id]
   );
   const overlapBlocked = overlaps.length >= MAX_OVERLAP;
+
+  // PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — startAt 정확 일치 충돌(B 시작 시간에 넣기) 감지.
+  //   - conflictGroup: 새 추가 모드 + 같은 startAt active 그룹 (B, 겹친 X...).
+  //   - canSameTime: 추가 후 겹침 ≤ MAX_OVERLAP (P2: 이미 2개면 false → ① 불가).
+  //   - canInsertBetween: 직전 active 존재 (P1: B 첫 일정이면 false → ② 불가).
+  const conflictGroup = useMemo(
+    () =>
+      !isEdit && nowReady && durationMin >= 0
+        ? schedules.filter(s => s.status !== 'done' && s.startAt === startAt)
+        : [],
+    [schedules, startAt, isEdit, nowReady, durationMin]
+  );
+  const hasConflict = conflictGroup.length > 0;
+  // ① 같은 시간 가능 = 추가 후 전체 동시 점유(정확 일치 + 부분 겹침 모두) ≤ MAX_OVERLAP.
+  // conflictGroup(정확 일치)만 세면 부분 겹침 동시 존재 시 한도 우회 (logic-critic Major) → overlaps 기준.
+  const canSameTime = overlaps.length + 1 <= MAX_OVERLAP;
+  // ② 사이 삽입 가능 = 직전 active 존재 + gap ≥ 0 (gap<0 비정상 겹침이면 server 도 null → 사전 차단).
+  const canInsertBetween = useMemo(() => {
+    if (isEdit) return false;
+    const prev = schedules.filter(s => s.status !== 'done' && s.startAt < startAt);
+    if (prev.length === 0) return false;
+    const a = prev.reduce((m, s) => (s.startAt > m.startAt ? s : m));
+    return startAt - (a.startAt + a.durationMin * 60_000) >= 0;
+  }, [schedules, startAt, isEdit]);
 
   // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #5 (Q-NEW3 둘다): prev chain 시각화 — 새 schedule 의 직전 chain 보여줌.
   const prevChain = useMemo(
@@ -265,9 +298,19 @@ export function NewScheduleModal({
 
   // add 모드: nowReady 필수 (hydration 전 submit 차단). edit 모드: 미래 검증 면제.
   // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #12: isFuture 검증 폐기 (자동 갱신으로 startAt 항상 현재 시각).
+  // PLAN1-SCHEDULE-INSERT-BETWEEN-20260602: 정확 일치 충돌이면 overlapBlocked 우회 — 선택지(①/②)로 처리.
+  //   둘 중 하나라도 가능하면 submit 허용(선택지 열림). 둘 다 불가일 때만 차단.
+  //   정확 일치 아닌 부분 겹침 3개째는 기존 overlapBlocked 차단 유지.
+  const blockedForAdd = hasConflict ? !(canSameTime || canInsertBetween) : overlapBlocked;
   const canSubmit = isEdit
     ? baseOk && isDirty && !overlapBlocked
-    : baseOk && nowReady && !overlapBlocked;
+    : baseOk && nowReady && !blockedForAdd;
+
+  // PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — 선택 패널은 트리거 시점 conflictStart 와 현재
+  // startAt 이 일치할 때만 유효. 시·분 변경 시 파생값이 null 되어 자동 무효화 (stale conflictStart
+  // 로 ①/② 가 다른 시각에 작동하는 모순 차단 · useEffect+setState 회피 — logic-critic Major).
+  const insertChoiceActive =
+    insertChoice && insertChoice.conflictStart === startAt ? insertChoice : null;
 
   const handleCategoryChange = (v: string) => {
     if (v === '__NEW__') {
@@ -290,17 +333,14 @@ export function NewScheduleModal({
     logClientError(`[NewScheduleModal.${where}]`, err);
   };
 
-  const submit = async () => {
-    if (!canSubmit) return;
-    setBusy(true);
-    setSubmitError(null);
+  // PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — submit/선택 핸들러 공유 입력 빌더.
+  const buildScheduleInput = () => {
     // PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #11: durationMin 0 → 30 fallback.
     const finalDuration = durationMin === 0 ? 30 : durationMin;
     // #10: title 디폴트 "새 스케줄" 그대로 등록 가능.
     const finalTitle = title.trim() || titleDefault;
     // PLAN1-CHAIN-FOCUS-GUARD-20260510 (C 옵션): 새 schedule 등록 시점 focus view 안
-    // prior schedule 0개면 chainedToPrev 강제 false (사용자 check 박은 영역 silent 무시).
-    // 편집 모드는 영향 X (대장 명시 "새로운 스케줄 등록할 때" 만).
+    // prior schedule 0개면 chainedToPrev 강제 false. 편집 모드는 영향 X.
     let effectiveChainedToPrev = chainedToPrev;
     if (!isEdit && chainedToPrev) {
       const focus = focusBounds(focusViewMin, live);
@@ -311,28 +351,85 @@ export function NewScheduleModal({
         effectiveChainedToPrev = false;
       }
     }
+    return {
+      title: finalTitle,
+      categoryId,
+      startAt,
+      durationMin: finalDuration,
+      timerType: 'countup' as const,
+      chainedToPrev: effectiveChainedToPrev
+    };
+  };
+
+  const submit = async () => {
+    if (!canSubmit) return;
+    // 새 추가 + startAt 정확 일치 충돌 → 선택지 패널 (① 같은 시간 / ② 사이 삽입).
+    if (!isEdit && hasConflict) {
+      setSubmitError(null);
+      setInsertChoice({
+        conflictId: conflictGroup[0].id,
+        conflictStart: startAt,
+        canSameTime,
+        canInsertBetween
+      });
+      return;
+    }
+    setBusy(true);
+    setSubmitError(null);
+    const input = buildScheduleInput();
     try {
       if (isEdit && editing) {
         await updateSchedule(editing.id, {
-          title: finalTitle,
-          categoryId,
-          startAt,
-          durationMin: finalDuration,
-          chainedToPrev: effectiveChainedToPrev
+          title: input.title,
+          categoryId: input.categoryId,
+          startAt: input.startAt,
+          durationMin: input.durationMin,
+          chainedToPrev: input.chainedToPrev
         });
       } else {
-        await addSchedule({
-          title: finalTitle,
-          categoryId,
-          startAt,
-          durationMin: finalDuration,
-          timerType: 'countup',
-          chainedToPrev: effectiveChainedToPrev
-        });
+        await addSchedule(input);
       }
       onClose();
     } catch (err) {
       handleMutationError(err, 'submit');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  // ① 같은 시간에 추가 (겹침). 기존 addSchedule 경로.
+  const handleInsertSameTime = async () => {
+    if (busy) return;
+    setBusy(true);
+    setSubmitError(null);
+    try {
+      await addSchedule(buildScheduleInput());
+      onClose();
+    } catch (err) {
+      handleMutationError(err, 'insertSameTime');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  // ② 사이 삽입 (갭 보존 + 뒤 밀기). insertScheduleBetween 경로.
+  const handleInsertBetween = async () => {
+    if (busy || !insertChoiceActive) return;
+    setBusy(true);
+    setSubmitError(null);
+    const input = buildScheduleInput();
+    try {
+      await insertScheduleBetween({
+        title: input.title,
+        categoryId: input.categoryId,
+        durationMin: input.durationMin,
+        timerType: 'countup',
+        conflictId: insertChoiceActive.conflictId,
+        expectedConflictStart: insertChoiceActive.conflictStart
+      });
+      onClose();
+    } catch (err) {
+      handleMutationError(err, 'insertBetween');
     } finally {
       setBusy(false);
     }
@@ -475,7 +572,7 @@ export function NewScheduleModal({
               )}
             </div>
             {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #12: warningFutureRequired 영역 폐기 (자동 갱신). */}
-            {durationMin > 0 && overlapBlocked && (
+            {durationMin > 0 && overlapBlocked && !hasConflict && (
               <p
                 className="text-xs text-danger font-mono"
                 role="alert"
@@ -561,42 +658,82 @@ export function NewScheduleModal({
                 {submitError}
               </p>
             )}
-            {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #14: 삭제 + 취소 + 저장 같은 row · y 통일 */}
-            <div className="flex items-center justify-between gap-2">
-              {/* 좌측: 삭제 (편집 모드만 · 그 외 빈 영역) */}
-              {isEdit ? (
+            {insertChoiceActive ? (
+              /* PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — 시작 시간 충돌 선택 패널.
+                 P1(직전 없음): ②만 숨김 → ①. P2(이미 2개 겹침): ① 숨김 → ②. */
+              <div className="flex flex-col gap-2" data-testid="insert-choice">
+                <p className="text-sm text-txt font-mono">{t('insert.conflictPrompt')}</p>
+                {insertChoiceActive.canSameTime && (
+                  <button
+                    type="button"
+                    onClick={handleInsertSameTime}
+                    disabled={busy}
+                    data-testid="insert-same-time"
+                    className="inline-flex items-center gap-1.5 rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {busy && <Spinner size={12} />}
+                    {t('insert.sameTime')}
+                  </button>
+                )}
+                {insertChoiceActive.canInsertBetween && (
+                  <button
+                    type="button"
+                    onClick={handleInsertBetween}
+                    disabled={busy}
+                    data-testid="insert-between"
+                    className="inline-flex items-center gap-1.5 rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {busy && <Spinner size={12} />}
+                    {t('insert.between')}
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={handleDelete}
+                  onClick={() => setInsertChoice(null)}
                   disabled={busy}
-                  className="inline-flex items-center gap-1.5 rounded-none border border-danger bg-panel px-4 py-2 text-sm text-danger font-mono hover:bg-[rgba(224,108,117,0.1)] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {busy && <Spinner size={12} />}
-                  {t('common.delete')}
-                </button>
-              ) : (
-                <span />
-              )}
-              {/* 우측: 취소 + 저장 */}
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
+                  className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg disabled:opacity-50"
                 >
                   {t('common.cancel')}
                 </button>
-                <button
-                  type="button"
-                  onClick={submit}
-                  disabled={!canSubmit}
-                  className="inline-flex items-center gap-1.5 rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {busy && <Spinner size={12} />}
-                  {submitLabel}
-                </button>
               </div>
-            </div>
+            ) : (
+              /* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #14: 삭제 + 취소 + 저장 같은 row · y 통일 */
+              <div className="flex items-center justify-between gap-2">
+                {/* 좌측: 삭제 (편집 모드만 · 그 외 빈 영역) */}
+                {isEdit ? (
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={busy}
+                    className="inline-flex items-center gap-1.5 rounded-none border border-danger bg-panel px-4 py-2 text-sm text-danger font-mono hover:bg-[rgba(224,108,117,0.1)] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {busy && <Spinner size={12} />}
+                    {t('common.delete')}
+                  </button>
+                ) : (
+                  <span />
+                )}
+                {/* 우측: 취소 + 저장 */}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="rounded-none border border-line bg-panel px-4 py-2 text-sm text-txt font-mono hover:bg-bg"
+                  >
+                    {t('common.cancel')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={submit}
+                    disabled={!canSubmit}
+                    className="inline-flex items-center gap-1.5 rounded-none border border-ink bg-ink px-4 py-2 text-sm text-bg font-mono hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {busy && <Spinner size={12} />}
+                    {submitLabel}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

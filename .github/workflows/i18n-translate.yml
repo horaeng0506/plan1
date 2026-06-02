@@ -15,7 +15,13 @@ jobs:
     # security-auditor MEDIUM: fork PR 에서 lockfile 또는 i18n:translate:all script
     # tampering supply chain 차단. fork 는 ANTHROPIC_API_KEY_TRANSLATION secret 도
     # 받지 못하므로 어차피 무의미. 같은 repo 내 PR 만 실행.
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    #
+    # PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 skip 게이트 (env-critic 권고):
+    # i18n:translate:all 은 9개 언어를 전체 재번역(증분 아님)해 수동 검수본을 덮어쓴다.
+    # PR title 에 '[skip-i18n]' 포함 시 봇 미실행 → 수동 번역분 보존.
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !contains(github.event.pull_request.title, '[skip-i18n]')
     runs-on: ubuntu-latest
     permissions:
       contents: write

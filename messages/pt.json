@@ -77,6 +77,11 @@
     "header": {
         "finalEndAtSuffix": "fim"
     },
+    "insert": {
+        "between": "Inserir no meio (empurrar os agendamentos seguintes)",
+        "conflictPrompt": "Já existe um agendamento neste horário. O que deseja fazer?",
+        "sameTime": "Adicionar no mesmo horário"
+    },
     "loading": "carregando...",
     "mutation": {
         "addTask": "adicionar tarefa",
@@ -157,6 +162,8 @@
         "apiKeyNotFound": "Chave de API não encontrada.",
         "categoryHasSchedules": "Categoria tem {scheduleCount} agendamento(s). Confirme exclusão em cascata para remover.",
         "categoryNotFound": "Categoria não encontrada ou não pertence ao usuário.",
+        "insertBetweenNoPrev": "Não é possível inserir — não há agendamento antes deste horário.",
+        "insertBetweenStale": "O agendamento mudou — tente novamente.",
         "scheduleNotFound": "Agendamento não encontrado.",
         "taskBucketInvalid": "Valor de bucket inválido.",
         "taskBucketLastProtected": "Pelo menos uma categoria deve permanecer",

@@ -77,6 +77,11 @@
     "header": {
         "finalEndAtSuffix": "fin"
     },
+    "insert": {
+        "between": "Insertar en medio (desplazar las tareas posteriores)",
+        "conflictPrompt": "Ya hay una tarea programada a esta hora. ¿Qué deseas hacer?",
+        "sameTime": "Añadir a la misma hora"
+    },
     "loading": "cargando...",
     "mutation": {
         "addTask": "agregar tarea",
@@ -157,6 +162,8 @@
         "apiKeyNotFound": "Clave API no encontrada.",
         "categoryHasSchedules": "La categoría tiene {scheduleCount} horarios. Confirma eliminación en cascada para remover.",
         "categoryNotFound": "Categoría no encontrada o no es de tu propiedad.",
+        "insertBetweenNoPrev": "No se puede insertar — no hay ninguna tarea antes de esta hora.",
+        "insertBetweenStale": "El horario cambió — inténtalo de nuevo.",
         "scheduleNotFound": "Horario no encontrado.",
         "taskBucketInvalid": "Valor de bucket inválido.",
         "taskBucketLastProtected": "Debe permanecer al menos una categoría",
