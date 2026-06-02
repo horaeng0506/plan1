@@ -24,6 +24,7 @@ import type {
   Task,
   TaskBucketId,
   TaskBucketInfo,
+  TaskBucketKindType,
   TaskId
 } from './domain/types';
 import * as categoriesApi from '@/app/actions/categories';
@@ -114,8 +115,8 @@ interface AppState {
   convertTaskToSchedule(taskId: TaskId, startAt: number, chainedToPrev?: boolean): Promise<string>;
 
   // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — task bucket actions.
-  addTaskBucket(input: {name: string; isCountBased: boolean}): Promise<void>;
-  updateTaskBucketAction(input: {id: TaskBucketId; name: string; isCountBased: boolean}): Promise<void>;
+  addTaskBucket(input: {name: string; kind: TaskBucketKindType}): Promise<void>;
+  updateTaskBucketAction(input: {id: TaskBucketId; name: string; kind: TaskBucketKindType}): Promise<void>;
   removeTaskBucket(id: TaskBucketId): Promise<void>;
 
   addSchedule(input: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Promise<void>;

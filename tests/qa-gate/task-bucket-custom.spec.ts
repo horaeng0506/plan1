@@ -26,7 +26,7 @@ test.describe('task bucket 커스터마이징 + 횟수차감', () => {
 
     // 새 버킷 추가 (횟수차감형 체크)
     await mgr.getByPlaceholder(/name|이름/i).fill(bucketName);
-    await mgr.getByRole('checkbox').last().check();
+    await mgr.getByRole('combobox', {name: /task type|할일 타입/i}).last().selectOption('count');
     await mgr.getByRole('button', {name: /^add$|^추가$/i}).click();
     // add 성공 시 TaskBucketManager 가 add 입력을 clear → toHaveValue('') 로 추가 완료 검증
     // (버킷 이름은 편집 가능한 input value 로 렌더되어 getByText 로 못 찾음).
@@ -53,7 +53,7 @@ test.describe('task bucket 커스터마이징 + 횟수차감', () => {
     const mgr = page.getByTestId('task-bucket-manager');
     await expect(mgr).toBeVisible({timeout: 5000});
     await mgr.getByPlaceholder(/name|이름/i).fill(bucketName);
-    await mgr.getByRole('checkbox').last().check();
+    await mgr.getByRole('combobox', {name: /task type|할일 타입/i}).last().selectOption('count');
     await mgr.getByRole('button', {name: /^add$|^추가$/i}).click();
     // add 성공 시 TaskBucketManager 가 add 입력을 clear → toHaveValue('') 로 추가 완료 검증
     // (버킷 이름은 편집 가능한 input value 로 렌더되어 getByText 로 못 찾음).
@@ -84,5 +84,44 @@ test.describe('task bucket 커스터마이징 + 횟수차감', () => {
     await expect(row).toContainText('[2]', {timeout: 5000});
     const elapsedMs = Date.now() - startMs;
     expect(elapsedMs, `count-decrement SLA — got ${elapsedMs}ms`).toBeLessThan(3000);
+  });
+
+  // PLAN1-TASKS-BUCKET-KIND-20260602 — 무제한 변환 회귀 가드 (변환해도 task 유지 · 3-way 분기 catch).
+  test('무제한 버킷 → 변환 시 task 유지 (count 없음)', async ({page}) => {
+    const tag = Date.now();
+    const bucketName = `unl-bkt-${tag}`;
+    const taskTitle = `unl-task-${tag}`;
+    await page.goto('/project/plan1/');
+
+    // 무제한 버킷 추가 (kind 드롭다운 → unlimited)
+    await page.getByTestId('task-manage-button').click();
+    const mgr = page.getByTestId('task-bucket-manager');
+    await expect(mgr).toBeVisible({timeout: 5000});
+    await mgr.getByPlaceholder(/name|이름/i).fill(bucketName);
+    await mgr.getByRole('combobox', {name: /task type|할일 타입/i}).last().selectOption('unlimited');
+    await mgr.getByRole('button', {name: /^add$|^추가$/i}).click();
+    await expect(mgr.getByPlaceholder(/name|이름/i)).toHaveValue('', {timeout: 5000});
+    await mgr.getByRole('button', {name: /close|닫기/i}).click();
+
+    // 무제한 task 생성 (category·duration — 변환 위해 · count 필드 없음).
+    await page.getByTestId('task-new-button').click();
+    const modal = page.getByTestId('task-modal');
+    await modal.getByLabel(/list|분류/i).selectOption({label: bucketName});
+    await modal.getByLabel(/title|제목/i).fill(taskTitle);
+    await modal.getByLabel(/duration|소요/i).fill('30');
+    await modal.getByLabel(/category|카테고리/i).selectOption({index: 1});
+    await modal.getByRole('button', {name: /add|추가|submit/i}).click();
+
+    const row = page.locator('[data-testid^="task-item-"]', {hasText: taskTitle});
+    await expect(row).toBeVisible({timeout: 5000});
+    // 무제한은 count 뱃지 없음.
+    await expect(row).not.toContainText('[');
+
+    // 변환("지금 시작") → schedule 추가되지만 task 그대로 유지 (삭제·차감 X).
+    await row.getByRole('button', {name: /\+ schedule|\+ 스케줄|schedule/i}).first().click();
+    await row.getByRole('button', {name: /now|지금/i}).click();
+    // 무제한 핵심 catch: 변환 후에도 task 가 목록에 남아있음.
+    await expect(row).toBeVisible({timeout: 5000});
+    await expect(row).toContainText(taskTitle);
   });
 });

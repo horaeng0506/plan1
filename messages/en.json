@@ -272,7 +272,10 @@
   "taskBucket": {
     "header": "manage task categories",
     "fieldName": "name",
-    "countBased": "count-down task",
+    "kindLabel": "task type",
+    "kindOneTime": "one-time task",
+    "kindCount": "count-down task",
+    "kindUnlimited": "unlimited task",
     "addHeading": "add category",
     "remove": "remove",
     "confirmRemove": "remove? ({count} tasks)",

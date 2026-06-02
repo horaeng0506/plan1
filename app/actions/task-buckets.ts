@@ -22,7 +22,7 @@ import {plan1TaskBuckets, plan1Tasks} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
 import {ensureBuckets} from '@/lib/task-bucket-seed';
 import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
-import type {TaskBucketInfo} from '@/lib/domain/types';
+import type {TaskBucketInfo, TaskBucketKindType} from '@/lib/domain/types';
 
 type BucketRow = typeof plan1TaskBuckets.$inferSelect;
 
@@ -30,7 +30,8 @@ function rowToDomain(row: BucketRow): TaskBucketInfo {
   return {
     id: row.id,
     name: row.name,
-    isCountBased: row.isCountBased,
+    // PLAN1-TASKS-BUCKET-KIND-20260602 — kind 단일 기준 (isCountBased 보존하나 코드는 kind).
+    kind: row.kind,
     sortOrder: row.sortOrder,
     defaultKind: row.defaultKind,
     createdAt: row.createdAt.getTime()
@@ -63,7 +64,7 @@ export async function listTaskBuckets(): Promise<ServerActionResult<TaskBucketIn
 
 export async function createTaskBucket(input: {
   name: string;
-  isCountBased: boolean;
+  kind: TaskBucketKindType;
 }): Promise<ServerActionResult<TaskBucketInfo[]>> {
   return runAction(async () => {
     const user = await requireUser();
@@ -79,7 +80,8 @@ export async function createTaskBucket(input: {
         id: `bkt-${randomUUID()}`,
         userId: user.id,
         name,
-        isCountBased: input.isCountBased,
+        kind: input.kind,
+        isCountBased: input.kind === 'count', // 동기 보존 (kind 단일 기준)
         sortOrder: maxSort + 1,
         defaultKind: null
       })
@@ -96,7 +98,7 @@ export async function createTaskBucket(input: {
 export async function updateTaskBucket(input: {
   id: string;
   name: string;
-  isCountBased: boolean;
+  kind: TaskBucketKindType;
 }): Promise<ServerActionResult<TaskBucketInfo[]>> {
   return runAction(async () => {
     const user = await requireUser();
@@ -107,7 +109,8 @@ export async function updateTaskBucket(input: {
 
     const trimmed = input.name.trim();
     const patch: Partial<typeof plan1TaskBuckets.$inferInsert> = {
-      isCountBased: input.isCountBased
+      kind: input.kind,
+      isCountBased: input.kind === 'count' // 동기 보존 (kind 단일 기준)
     };
     let nextName = existing.name;
     let nextDefaultKind = existing.defaultKind;
@@ -124,33 +127,33 @@ export async function updateTaskBucket(input: {
       .set(patch)
       .where(and(eq(plan1TaskBuckets.id, input.id), eq(plan1TaskBuckets.userId, user.id)));
 
-    // isCountBased 토글 → 소속 task count 동기.
-    if (input.isCountBased !== existing.isCountBased) {
-      if (input.isCountBased) {
-        // off → on: count 없는 task 에 기본 1 부여.
-        await db
-          .update(plan1Tasks)
-          .set({count: 1})
-          .where(
-            and(
-              eq(plan1Tasks.userId, user.id),
-              eq(plan1Tasks.bucketId, input.id),
-              isNull(plan1Tasks.count)
-            )
-          );
-      } else {
-        // on → off: count 제거.
-        await db
-          .update(plan1Tasks)
-          .set({count: null})
-          .where(and(eq(plan1Tasks.userId, user.id), eq(plan1Tasks.bucketId, input.id)));
-      }
+    // kind 전환 → 소속 task count 동기 (횟수차감 진입/이탈).
+    const wasCount = existing.kind === 'count';
+    const isCount = input.kind === 'count';
+    if (isCount && !wasCount) {
+      // 다른 → 횟수차감: count 없는 task 에 기본 1 부여.
+      await db
+        .update(plan1Tasks)
+        .set({count: 1})
+        .where(
+          and(
+            eq(plan1Tasks.userId, user.id),
+            eq(plan1Tasks.bucketId, input.id),
+            isNull(plan1Tasks.count)
+          )
+        );
+    } else if (!isCount && wasCount) {
+      // 횟수차감 → 다른(일회성/무제한): count 제거.
+      await db
+        .update(plan1Tasks)
+        .set({count: null})
+        .where(and(eq(plan1Tasks.userId, user.id), eq(plan1Tasks.bucketId, input.id)));
     }
 
     // race-free in-memory 합성 (UPDATE 후 별도 SELECT 회피).
     return all.map(b =>
       b.id === input.id
-        ? {...b, name: nextName, isCountBased: input.isCountBased, defaultKind: nextDefaultKind}
+        ? {...b, name: nextName, kind: input.kind, defaultKind: nextDefaultKind}
         : b
     );
   });

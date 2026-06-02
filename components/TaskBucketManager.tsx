@@ -7,7 +7,7 @@ import {useAppStore} from '@/lib/store';
 import {useRunMutation} from '@/lib/use-run-mutation';
 import {useEscapeKey} from '@/lib/use-escape-key';
 import {useTaskBucketDisplay} from '@/lib/task-bucket-display';
-import type {TaskBucketInfo} from '@/lib/domain/types';
+import type {TaskBucketInfo, TaskBucketKindType} from '@/lib/domain/types';
 
 /**
  * PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 할일 카테고리(버킷) 관리 modal.
@@ -27,21 +27,22 @@ export function TaskBucketManager({onClose}: {onClose: () => void}) {
   const removeTaskBucket = useAppStore(s => s.removeTaskBucket);
 
   const [newName, setNewName] = useState('');
-  const [newCountBased, setNewCountBased] = useState(false);
+  // PLAN1-TASKS-BUCKET-KIND-20260602 — 체크박스 → kind 드롭다운 (일회성/횟수차감/무제한).
+  const [newKind, setNewKind] = useState<TaskBucketKindType>('one-time');
   const [busy, setBusy] = useState(false);
   const [confirmId, setConfirmId] = useState<string | null>(null);
   // 행별 편집 draft. 부재 시 버킷 값에서 파생.
-  const [drafts, setDrafts] = useState<Record<string, {name: string; isCountBased: boolean}>>({});
+  const [drafts, setDrafts] = useState<Record<string, {name: string; kind: TaskBucketKindType}>>({});
 
   useEscapeKey(onClose, !busy);
 
   const draftOf = (b: TaskBucketInfo) =>
     drafts[b.id] ?? {
       name: b.defaultKind !== null && b.name === '' ? '' : b.name,
-      isCountBased: b.isCountBased
+      kind: b.kind
     };
 
-  const setDraft = (id: string, patch: Partial<{name: string; isCountBased: boolean}>) => {
+  const setDraft = (id: string, patch: Partial<{name: string; kind: TaskBucketKindType}>) => {
     setDrafts(d => ({...d, [id]: {...draftOf(taskBuckets.find(b => b.id === id)!), ...d[id], ...patch}}));
   };
 
@@ -53,9 +54,9 @@ export function TaskBucketManager({onClose}: {onClose: () => void}) {
     if (!canAdd) return;
     setBusy(true);
     try {
-      await addTaskBucket({name: newName.trim(), isCountBased: newCountBased});
+      await addTaskBucket({name: newName.trim(), kind: newKind});
       setNewName('');
-      setNewCountBased(false);
+      setNewKind('one-time');
     } finally {
       setBusy(false);
     }
@@ -66,7 +67,7 @@ export function TaskBucketManager({onClose}: {onClose: () => void}) {
     const d = draftOf(b);
     setBusy(true);
     try {
-      await updateTaskBucketAction({id: b.id, name: d.name.trim(), isCountBased: d.isCountBased});
+      await updateTaskBucketAction({id: b.id, name: d.name.trim(), kind: d.kind});
       setDrafts(prev => {
         const next = {...prev};
         delete next[b.id];
@@ -139,14 +140,16 @@ export function TaskBucketManager({onClose}: {onClose: () => void}) {
                   aria-label={t('taskBucket.fieldName')}
                 />
                 <div className="flex items-center justify-between gap-2">
-                  <label className="flex items-center gap-1 text-xs text-txt font-mono">
-                    <input
-                      type="checkbox"
-                      checked={d.isCountBased}
-                      onChange={e => setDraft(b.id, {isCountBased: e.target.checked})}
-                    />
-                    {t('taskBucket.countBased')}
-                  </label>
+                  <select
+                    value={d.kind}
+                    onChange={e => setDraft(b.id, {kind: e.target.value as TaskBucketKindType})}
+                    className="rounded-none border border-line bg-bg px-1 py-0.5 text-xs text-ink font-mono"
+                    aria-label={t('taskBucket.kindLabel')}
+                  >
+                    <option value="one-time">{t('taskBucket.kindOneTime')}</option>
+                    <option value="count">{t('taskBucket.kindCount')}</option>
+                    <option value="unlimited">{t('taskBucket.kindUnlimited')}</option>
+                  </select>
                   <div className="flex gap-1">
                     <button type="button" onClick={() => handleSave(b)} disabled={busy} className={saveBtn}>
                       {t('common.save')}
@@ -180,14 +183,16 @@ export function TaskBucketManager({onClose}: {onClose: () => void}) {
             onChange={e => setNewName(e.target.value)}
             className={fieldCls}
           />
-          <label className="flex items-center gap-1 text-xs text-txt font-mono">
-            <input
-              type="checkbox"
-              checked={newCountBased}
-              onChange={e => setNewCountBased(e.target.checked)}
-            />
-            {t('taskBucket.countBased')}
-          </label>
+          <select
+            value={newKind}
+            onChange={e => setNewKind(e.target.value as TaskBucketKindType)}
+            className="w-full rounded-none border border-line bg-bg px-2 py-1 text-sm text-ink font-mono"
+            aria-label={t('taskBucket.kindLabel')}
+          >
+            <option value="one-time">{t('taskBucket.kindOneTime')}</option>
+            <option value="count">{t('taskBucket.kindCount')}</option>
+            <option value="unlimited">{t('taskBucket.kindUnlimited')}</option>
+          </select>
           <button
             type="button"
             onClick={handleAdd}

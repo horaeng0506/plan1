@@ -54,7 +54,8 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
   // (dropdown 채워지면 자동 정합). 사용자가 dropdown 변경 시 setBucketId 로 state 가 우선.
   const effectiveBucketId = bucketId !== '' ? bucketId : taskBuckets[0]?.id ?? '';
   const selectedBucket = taskBuckets.find(b => b.id === effectiveBucketId);
-  const isCountBased = selectedBucket?.isCountBased ?? false;
+  // PLAN1-TASKS-BUCKET-KIND-20260602 — kind==='count' 가 옛 isCountBased (count 필드 표시 조건).
+  const isCountBased = selectedBucket?.kind === 'count';
 
   // priorityMax 계산 (선택 버킷 기준 · 동적).
   const computeMax = (bId: string): number => {

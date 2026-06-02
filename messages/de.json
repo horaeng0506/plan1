@@ -217,9 +217,12 @@
     "taskBucket": {
         "addHeading": "Kategorie hinzufügen",
         "confirmRemove": "entfernen? ({count} Aufgaben)",
-        "countBased": "Countdown-Aufgabe",
         "fieldName": "Name",
         "header": "Aufgabenkategorien verwalten",
+        "kindCount": "Abzugsaufgabe",
+        "kindLabel": "Aufgabentyp",
+        "kindOneTime": "einmalige Aufgabe",
+        "kindUnlimited": "unbegrenzte Aufgabe",
         "remove": "entfernen",
         "taskCountSuffix": "{count} Aufgaben"
     },

@@ -217,9 +217,12 @@
     "taskBucket": {
         "addHeading": "agregar categoría",
         "confirmRemove": "¿eliminar? ({count} tareas)",
-        "countBased": "tarea de cuenta regresiva",
         "fieldName": "nombre",
         "header": "administrar categorías de tareas",
+        "kindCount": "tarea con descuento",
+        "kindLabel": "tipo de tarea",
+        "kindOneTime": "tarea única",
+        "kindUnlimited": "tarea ilimitada",
         "remove": "eliminar",
         "taskCountSuffix": "{count} tareas"
     },

@@ -217,9 +217,12 @@
     "taskBucket": {
         "addHeading": "カテゴリを追加",
         "confirmRemove": "削除しますか？（{count}件のタスク）",
-        "countBased": "カウントダウンタスク",
         "fieldName": "名前",
         "header": "タスクカテゴリを管理",
+        "kindCount": "回数消費タスク",
+        "kindLabel": "タスクの種類",
+        "kindOneTime": "単発タスク",
+        "kindUnlimited": "無制限タスク",
         "remove": "削除",
         "taskCountSuffix": "{count}件のタスク"
     },

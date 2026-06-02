@@ -40,8 +40,8 @@ export async function ensureBuckets(userId: string): Promise<BucketRow[]> {
   const inserted = await db
     .insert(plan1TaskBuckets)
     .values([
-      {id: `bkt-${randomUUID()}`, userId, name: '', isCountBased: false, sortOrder: 0, defaultKind: 'now'},
-      {id: `bkt-${randomUUID()}`, userId, name: '', isCountBased: false, sortOrder: 1, defaultKind: 'later'}
+      {id: `bkt-${randomUUID()}`, userId, name: '', kind: 'one-time', isCountBased: false, sortOrder: 0, defaultKind: 'now'},
+      {id: `bkt-${randomUUID()}`, userId, name: '', kind: 'one-time', isCountBased: false, sortOrder: 1, defaultKind: 'later'}
     ])
     .onConflictDoNothing()
     .returning();

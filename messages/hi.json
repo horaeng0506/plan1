@@ -217,9 +217,12 @@
     "taskBucket": {
         "addHeading": "श्रेणी जोड़ें",
         "confirmRemove": "हटाएं? ({count} कार्य)",
-        "countBased": "काउंट-डाउन कार्य",
         "fieldName": "नाम",
         "header": "कार्य श्रेणियां प्रबंधित करें",
+        "kindCount": "गिनती-घटाव कार्य",
+        "kindLabel": "कार्य प्रकार",
+        "kindOneTime": "एकल कार्य",
+        "kindUnlimited": "असीमित कार्य",
         "remove": "हटाएं",
         "taskCountSuffix": "{count} कार्य"
     },

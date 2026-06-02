@@ -3,8 +3,9 @@ import {NextResponse} from 'next/server';
 import {z} from 'zod';
 import {and, desc, eq} from 'drizzle-orm';
 import {db} from '@/lib/db';
-import {plan1Tasks, plan1Categories} from '@/lib/db/schema';
+import {plan1Tasks, plan1Categories, plan1TaskBuckets} from '@/lib/db/schema';
 import {ensureNowBucketId} from '@/lib/task-bucket-seed';
+import {normalizeCount} from '@/lib/task-count';
 import {authenticateApiKey, buildSuccessHeaders, buildOptionsResponse} from '@/lib/api-auth';
 
 const createTaskSchema = z.object({
@@ -99,6 +100,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   const id = `task-${randomUUID()}`;
   // PLAN1-TASKS-BUCKET-CUSTOM-20260531 — 'now' default 버킷에 배치 + priority append (충돌 회피).
   const bucketId = await ensureNowBucketId(auth.apiKey.userId);
+  // PLAN1-TASKS-BUCKET-KIND-20260602 — 'now' 버킷이 count 로 전환됐으면 count 정규화 (server action 정합).
+  // 누락 시 count=null 동기 깨짐 → convertTaskToSchedule 에서 taskCountExhausted 로 변환 차단 (logic-critic Major).
+  const kindRows = await db
+    .select({kind: plan1TaskBuckets.kind})
+    .from(plan1TaskBuckets)
+    .where(and(eq(plan1TaskBuckets.id, bucketId), eq(plan1TaskBuckets.userId, auth.apiKey.userId)))
+    .limit(1);
+  const count = normalizeCount(kindRows[0]?.kind ?? 'one-time', undefined);
   const bucketRows = await db
     .select({id: plan1Tasks.id})
     .from(plan1Tasks)
@@ -110,7 +119,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     durationMin: input.durationMin ?? null,
     categoryId: input.categoryId ?? null,
     bucketId,
-    priority: bucketRows.length + 1
+    priority: bucketRows.length + 1,
+    count
   });
   const rows = await db
     .select()
