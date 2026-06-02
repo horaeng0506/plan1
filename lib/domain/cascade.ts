@@ -1,4 +1,5 @@
 import type { Schedule, ScheduleId } from './types'
+import { compareScheduleByStart } from './sort-schedules'
 
 const NS = 60_000
 
@@ -29,7 +30,7 @@ export function cascade(
   if (delta === 0) return mutated
 
   const active = mutated.filter((s) => s.status !== 'done')
-  active.sort((a, b) => a.startAt - b.startAt)
+  active.sort(compareScheduleByStart)
 
   const editedIdx = active.findIndex((s) => s.id === editedId)
   if (editedIdx === -1) return mutated

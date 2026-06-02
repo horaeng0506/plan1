@@ -77,6 +77,11 @@
     "header": {
         "finalEndAtSuffix": "Ende"
     },
+    "insert": {
+        "between": "Dazwischen einfügen (spätere Termine verschieben)",
+        "conflictPrompt": "Zu dieser Zeit beginnt bereits ein Termin. Was möchten Sie tun?",
+        "sameTime": "Zur gleichen Zeit hinzufügen"
+    },
     "loading": "lädt...",
     "mutation": {
         "addTask": "Aufgabe hinzufügen",
@@ -157,6 +162,8 @@
         "apiKeyNotFound": "API-Schlüssel nicht gefunden.",
         "categoryHasSchedules": "Kategorie hat {scheduleCount} Termine. Bestätigen Sie die Kaskadenlöschung zum Entfernen.",
         "categoryNotFound": "Kategorie nicht gefunden oder nicht im Besitz.",
+        "insertBetweenNoPrev": "Einfügen nicht möglich — kein Termin vor dieser Zeit.",
+        "insertBetweenStale": "Termin geändert — bitte erneut versuchen.",
         "scheduleNotFound": "Termin nicht gefunden.",
         "taskBucketInvalid": "Ungültiger Bucket-Wert.",
         "taskBucketLastProtected": "Mindestens eine Kategorie muss verbleiben",

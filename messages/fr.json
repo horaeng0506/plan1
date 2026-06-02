@@ -77,6 +77,11 @@
     "header": {
         "finalEndAtSuffix": "fin"
     },
+    "insert": {
+        "between": "Insérer entre (décaler les créneaux suivants)",
+        "conflictPrompt": "Un créneau commence déjà à cette heure. Que voulez-vous faire ?",
+        "sameTime": "Ajouter à la même heure"
+    },
     "loading": "chargement...",
     "mutation": {
         "addTask": "ajouter une tâche",
@@ -157,6 +162,8 @@
         "apiKeyNotFound": "Clé API introuvable.",
         "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour retirer.",
         "categoryNotFound": "Catégorie introuvable ou non possédée.",
+        "insertBetweenNoPrev": "Insertion impossible — aucun créneau avant cette heure.",
+        "insertBetweenStale": "Le créneau a changé — veuillez réessayer.",
         "scheduleNotFound": "Horaire introuvable.",
         "taskBucketInvalid": "Valeur de bucket invalide.",
         "taskBucketLastProtected": "Au moins une catégorie doit rester",

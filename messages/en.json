@@ -189,7 +189,14 @@
     "taskCountNeedsCategory": "Count-based tasks need a category",
     "taskCountNeedsDuration": "Count-based tasks need a duration",
     "taskCountExhausted": "No remaining count",
-    "taskPriorityOutOfRange": "Priority is out of range"
+    "taskPriorityOutOfRange": "Priority is out of range",
+    "insertBetweenNoPrev": "Can't insert between — no schedule before this time.",
+    "insertBetweenStale": "Schedule changed — please try again."
+  },
+  "insert": {
+    "conflictPrompt": "A schedule already starts at this time. What would you like to do?",
+    "sameTime": "Add at the same time",
+    "between": "Insert between (push later schedules)"
   },
   "undo": {
     "actionLabel": "undo available",

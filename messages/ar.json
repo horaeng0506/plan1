@@ -77,6 +77,11 @@
     "header": {
         "finalEndAtSuffix": "نهاية"
     },
+    "insert": {
+        "between": "إدراج بينهما (دفع المواعيد اللاحقة)",
+        "conflictPrompt": "يوجد بالفعل موعد في هذا الوقت. ماذا تريد أن تفعل؟",
+        "sameTime": "إضافة في نفس الوقت"
+    },
     "loading": "جاري التحميل...",
     "mutation": {
         "addTask": "إضافة مهمة",
@@ -157,6 +162,8 @@
         "apiKeyNotFound": "مفتاح API غير موجود.",
         "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتسلسل للإزالة.",
         "categoryNotFound": "الفئة غير موجودة أو غير مملوكة.",
+        "insertBetweenNoPrev": "تعذّر الإدراج — لا يوجد موعد قبل هذا الوقت.",
+        "insertBetweenStale": "تغيّر الموعد — يرجى المحاولة مرة أخرى.",
         "scheduleNotFound": "الجدول غير موجود.",
         "taskBucketInvalid": "قيمة الحاوية غير صالحة.",
         "taskBucketLastProtected": "يجب أن تبقى فئة واحدة على الأقل",

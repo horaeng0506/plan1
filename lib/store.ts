@@ -119,6 +119,15 @@ interface AppState {
   removeTaskBucket(id: TaskBucketId): Promise<void>;
 
   addSchedule(input: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Promise<void>;
+  // PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — A2를 conflict 시작 위치에 사이 삽입 (갭 보존 + 뒤 밀기).
+  insertScheduleBetween(input: {
+    title: string;
+    categoryId: CategoryId;
+    durationMin: number;
+    timerType: Schedule['timerType'];
+    conflictId: ScheduleId;
+    expectedConflictStart: number;
+  }): Promise<void>;
   updateSchedule(
     id: ScheduleId,
     patch: {
@@ -236,6 +245,15 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (newSchedule) {
       armUndo({type: 'add', scheduleId: newSchedule.id, ts: Date.now()});
     }
+  },
+
+  // PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — A2를 conflict 시작 위치에 사이 삽입.
+  // server 가 삽입+밀림 적용된 전체 목록 반환. 여러 일정이 밀려 undo 미지원 (대장 합의 · armUndo 생략).
+  async insertScheduleBetween(input) {
+    const prevIds = new Set(get().schedules.map(s => s.id));
+    const next = unwrap(await schedulesApi.insertScheduleBetween(input));
+    const newSchedule = next.find(s => !prevIds.has(s.id));
+    set({schedules: next, lastAddedSchedule: newSchedule ?? null});
   },
 
   async updateSchedule(id, patch) {

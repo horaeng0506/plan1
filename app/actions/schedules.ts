@@ -19,6 +19,7 @@ import {plan1Categories, plan1Schedules} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
 import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
 import {cascade} from '@/lib/domain/cascade';
+import {insertBetweenList} from '@/lib/domain/insert-between';
 import type {Schedule} from '@/lib/domain/types';
 
 type ScheduleRow = typeof plan1Schedules.$inferSelect;
@@ -168,6 +169,51 @@ export async function createSchedule(input: {
       updatedAt: Date.now()
     };
     const next = [...state.schedules, newSchedule];
+    const existingIds = new Set(state.schedules.map(s => s.id));
+    await syncSchedules(user.id, existingIds, next);
+    return next;
+  });
+}
+
+// PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — 새 스케줄(A2)을 충돌 스케줄(B) 시작 위치에
+// "사이 삽입". A2가 B 자리로 들어가고 B 시작 시간의 겹친 그룹 + 이후 chained 연속을
+// (A2 길이 + 기존 A–B 갭)만큼 밀기. 갭 보존. 로직 단일 원천: lib/domain/insert-between.
+export async function insertScheduleBetween(input: {
+  title: string;
+  categoryId: string;
+  durationMin: number;
+  timerType: 'countup' | 'timer1' | 'countdown';
+  conflictId: string;
+  // 클라가 본 충돌 일정 시작시각 — server state 와 불일치 시 TOCTOU 거부 (logic-critic Major).
+  expectedConflictStart: number;
+}): Promise<ServerActionResult<Schedule[]>> {
+  return runAction(async () => {
+    const user = await requireUser();
+    const state = await loadUserState(user.id, input.categoryId);
+    // TOCTOU 가드: 클라 snapshot 이후 다른 탭/기기가 충돌 일정을 변경·삭제했으면 거부.
+    // 엉뚱한 위치 삽입 차단 — 사용자에게 "다시 시도" 안내.
+    const conflict = state.schedules.find(s => s.id === input.conflictId);
+    if (!conflict || conflict.startAt !== input.expectedConflictStart) {
+      throw new ServerActionError('serverError.insertBetweenStale');
+    }
+    const newSchedule: Schedule = {
+      id: `sch-${randomUUID()}`,
+      title: input.title,
+      categoryId: input.categoryId,
+      // startAt 은 insertBetweenList 가 conflict 직전 기준으로 재계산 (A.end + gap).
+      startAt: 0,
+      durationMin: input.durationMin,
+      timerType: input.timerType,
+      status: 'pending',
+      chainedToPrev: true,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    const next = insertBetweenList(state.schedules, newSchedule, input.conflictId);
+    // 직전 active 없음(P1) 또는 gap<0(비정상 겹침) → null. 모달이 사전 차단하지만 서버 가드.
+    if (!next) {
+      throw new ServerActionError('serverError.insertBetweenNoPrev');
+    }
     const existingIds = new Set(state.schedules.map(s => s.id));
     await syncSchedules(user.id, existingIds, next);
     return next;
