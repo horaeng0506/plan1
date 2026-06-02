@@ -114,8 +114,8 @@ test.describe('task bucket 커스터마이징 + 횟수차감', () => {
 
     const row = page.locator('[data-testid^="task-item-"]', {hasText: taskTitle});
     await expect(row).toBeVisible({timeout: 5000});
-    // 무제한은 count 뱃지 없음.
-    await expect(row).not.toContainText('[');
+    // 무제한은 [∞] 표시 (count 숫자 뱃지 X).
+    await expect(row).toContainText('[∞]');
 
     // 변환("지금 시작") → schedule 추가되지만 task 그대로 유지 (삭제·차감 X).
     await row.getByRole('button', {name: /\+ schedule|\+ 스케줄|schedule/i}).first().click();

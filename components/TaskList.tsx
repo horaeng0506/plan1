@@ -158,6 +158,8 @@ export function TaskList({onNewTask, onEditTask, onManageBuckets}: TaskListProps
   const renderRow = (task: Task) => {
     const armed = armedTaskId === task.id;
     const durationStr = task.durationMin !== null ? formatDurationHm(task.durationMin) : '';
+    // PLAN1-TASKS-BUCKET-KIND-20260602 — 무제한형 식별 (count null 이라 횟수차감과 별개 · 버킷 kind 기준).
+    const isUnlimited = taskBuckets.find(b => b.id === task.bucketId)?.kind === 'unlimited';
     return (
       <li
         key={task.id}
@@ -169,11 +171,14 @@ export function TaskList({onNewTask, onEditTask, onManageBuckets}: TaskListProps
         <div className="flex items-center justify-between gap-2">
           <span className="truncate">
             <span className="text-muted">{task.priority}.</span>{' '}
-            {/* 횟수차감형 → [count] (우선순위 오른쪽·제목 왼쪽). */}
+            {/* 횟수차감형 → [count] · 무제한형 → [∞] (우선순위 오른쪽·제목 왼쪽). */}
             {task.count !== null && (
               <span className="text-success" data-testid={`task-count-${task.id}`}>[{task.count}]</span>
             )}
-            {task.count !== null && ' '}
+            {isUnlimited && (
+              <span className="text-success" data-testid={`task-unlimited-${task.id}`}>[∞]</span>
+            )}
+            {(task.count !== null || isUnlimited) && ' '}
             {task.title ?? <span className="text-muted">—</span>}
             {durationStr !== '' && <span className="ml-2 text-muted">{durationStr}</span>}
           </span>
