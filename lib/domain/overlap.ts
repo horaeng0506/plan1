@@ -33,3 +33,35 @@ export function findOverlapping(
     startAt < s.startAt + s.durationMin * 60_000
   );
 }
+
+/**
+ * 주어진 스케줄 집합의 최대 동시 진행 수가 `max` 를 초과하는지 판정 (서버측 overlap 검증).
+ *
+ * plan1-mobile A1 (logic m4): MAX_OVERLAP 위반은 지금까지 클라이언트만 막았다 →
+ * REST API 우회 시 무방비. mutation 결과(next) 전체를 sweep-line 으로 검사해 위반을 거부한다.
+ *
+ * 의미: `max=2` 면 동시 2개까지 허용·3개+ 차단 (findOverlapping 정책과 정합).
+ * 규칙 (findOverlapping 과 동일):
+ *   - done 상태는 동시 점유 아님 (제외)
+ *   - back-to-back (a.endAt === b.startAt) 은 overlap 아님 → 같은 시각에 end(-1)를 start(+1)보다
+ *     먼저 처리해 이중 계수 방지
+ *   - durationMin ≤ 0 (점유 구간 없음) 은 무시
+ */
+export function exceedsMaxOverlap(schedules: Schedule[], max: number): boolean {
+  const events: Array<{t: number; delta: number}> = [];
+  for (const s of schedules) {
+    if (s.status === 'done') continue;
+    const end = s.startAt + s.durationMin * 60_000;
+    if (end <= s.startAt) continue;
+    events.push({t: s.startAt, delta: 1});
+    events.push({t: end, delta: -1});
+  }
+  // 같은 시각: end(-1) 를 start(+1) 보다 먼저 → back-to-back 미계수.
+  events.sort((a, b) => a.t - b.t || a.delta - b.delta);
+  let concurrent = 0;
+  for (const e of events) {
+    concurrent += e.delta;
+    if (concurrent > max) return true;
+  }
+  return false;
+}

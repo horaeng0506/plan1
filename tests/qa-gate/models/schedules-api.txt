@@ -1,0 +1,38 @@
+# plan1-mobile A1 — /api/v1/schedules mutation 도메인 PICT model (pairwise).
+# 근거: wiki/shared/test-case-design-principles.md § 3 (NIST PICT) + overview "A1 설계 노트" ⑤.
+# 출력: tests/qa-gate/cases/schedules-api.csv (pict schedules-api.txt > ...).
+#
+# 차원:
+#   Operation       — REST mutation 종류
+#   ChainPosition   — 편집 대상이 체인에서 차지하는 위치 (cascade 전파 범위 결정)
+#   ChainedToPrev   — 대상/후속의 chain 연결 (cascade break 지점)
+#   DeltaSign       — duration/startAt 변경의 부호 (뒤 체인 밀기 방향)
+#   OverlapResult   — 결과 집합의 최대 동시 진행 (MAX_OVERLAP=2 경계)
+#   Concurrency     — write 시점 스냅샷 신선도 (D1 낙관적 동시성)
+
+Operation:      create, update, complete, insertBetween, delete
+ChainPosition:  first, middle, last, standalone
+ChainedToPrev:  true, false
+DeltaSign:      positive, negative, zero
+OverlapResult:  none, twoConcurrent, threeConcurrentReject
+Concurrency:    fresh, staleConflict
+
+# ── 제약 (의미 없는 조합 제거) ──
+
+# delete/create 는 cascade delta 가 없다 (단일 추가/제거).
+IF [Operation] IN {"delete", "create"} THEN [DeltaSign] = "zero";
+
+# complete 의 delta 는 actual<planned(negative)·actual>planned(positive)·동일(zero) — first/middle/last 만.
+IF [Operation] = "complete" THEN [ChainPosition] <> "standalone";
+
+# insertBetween 은 항상 충돌 스케줄(B) 앞 active(A) 가 있어야 하므로 first/standalone 불가.
+IF [Operation] = "insertBetween" THEN [ChainPosition] IN {"middle", "last"};
+
+# standalone(체인 밖 단일) 은 cascade 전파 대상이 없어 후속 chain 의미 없음.
+IF [ChainPosition] = "standalone" THEN [ChainedToPrev] = "false";
+
+# threeConcurrentReject 는 422 로 거부되는 음성 케이스 — delete 와 무관.
+IF [Operation] = "delete" THEN [OverlapResult] = "none";
+
+# staleConflict(409) 는 write 진입 전 거부 — overlap 결과까지 가지 않음.
+IF [Concurrency] = "staleConflict" THEN [OverlapResult] <> "threeConcurrentReject";
