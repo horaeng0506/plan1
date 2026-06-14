@@ -77,6 +77,7 @@ export function UndoBar() {
       className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 rounded-none border border-line bg-panel px-4 py-2 shadow-lg"
       role="status"
       aria-live="polite"
+      data-testid="undo-bar"
     >
       <div className="flex items-center gap-3">
         <span className="text-xs font-mono text-txt">{t('undo.actionLabel')}</span>

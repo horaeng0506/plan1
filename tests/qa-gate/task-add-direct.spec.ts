@@ -67,7 +67,7 @@ test.describe('task 직접 작성 chain', () => {
     await modal.getByLabel(/title|제목/i).fill(title);
     await modal.getByLabel(/duration|소요/i).fill('30');
     // 카테고리 = 첫 옵션 (디폴트 categories[0])
-    await modal.getByLabel(/category|카테고리/i).selectOption({index: 0});
+    await modal.getByLabel(/category|카테고리/i).selectOption({index: 1});
     const submitBtn = modal.getByRole('button', {name: /^add$|^추가$/i});
     await expect(submitBtn).toBeEnabled({timeout: 10_000}); // lazy 모달 form hydration 대기
     await submitBtn.click();
@@ -107,7 +107,7 @@ test.describe('task 직접 작성 chain', () => {
     await expect(modal).toBeVisible({timeout: 10_000});
     await modal.getByLabel(/title|제목/i).fill(title);
     await modal.getByLabel(/duration|소요/i).fill('30');
-    await modal.getByLabel(/category|카테고리/i).selectOption({index: 0});
+    await modal.getByLabel(/category|카테고리/i).selectOption({index: 1});
     const submitBtn = modal.getByRole('button', {name: /^add$|^추가$/i});
     await expect(submitBtn).toBeEnabled({timeout: 10_000}); // lazy 모달 form hydration 대기
     await submitBtn.click();
