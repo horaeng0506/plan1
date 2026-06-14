@@ -7,7 +7,7 @@ import {NextResponse} from 'next/server';
 import {z} from 'zod';
 import {authenticateSession, buildSessionOptionsResponse} from '@/lib/api-session-auth';
 import {completeScheduleCore} from '@/lib/server/schedule-core';
-import {handleScheduleError, jsonError, jsonOk, parseJsonBody} from '@/lib/server/schedule-rest';
+import {handleApiError, jsonError, jsonOk, parseJsonBody} from '@/lib/server/schedule-rest';
 
 const completeSchema = z.object({
   completeAtMs: z.number().int()
@@ -44,7 +44,7 @@ export async function POST(
     });
     return jsonOk(schedules, 200);
   } catch (e) {
-    return handleScheduleError(e);
+    return handleApiError(e);
   }
 }
 

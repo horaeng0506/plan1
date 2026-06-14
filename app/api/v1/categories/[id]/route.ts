@@ -1,24 +1,19 @@
 /**
- * plan1-mobile A1 — /api/v1/schedules/{id} (PATCH update · DELETE).
- * 세션 JWT 인증. id 는 경로 파라미터, 변경 필드는 body. IDOR: 코어가 WHERE user_id 강제.
+ * plan1-mobile A1 — /api/v1/categories/{id} (PATCH update · DELETE).
+ * 세션 JWT 인증. IDOR: 코어가 WHERE user_id 강제.
+ * DELETE: 소속 스케줄 있으면 ?force=true 필요 (없으면 409 · cascade 사전 경고).
  */
 
 import {NextResponse} from 'next/server';
 import {z} from 'zod';
 import {authenticateSession, buildSessionOptionsResponse} from '@/lib/api-session-auth';
-import {deleteScheduleCore, updateScheduleCore} from '@/lib/server/schedule-core';
+import {deleteCategoryCore, updateCategoryCore} from '@/lib/server/category-core';
 import {handleApiError, jsonError, jsonOk, parseJsonBody} from '@/lib/server/schedule-rest';
 
-const timerType = z.enum(['countup', 'timer1', 'countdown']);
-
-const updateScheduleSchema = z
+const updateCategorySchema = z
   .object({
-    startAt: z.number().int().optional(),
-    durationMin: z.number().int().min(0).max(10080).optional(),
-    title: z.string().min(1).max(500).optional(),
-    categoryId: z.string().min(1).max(100).optional(),
-    timerType: timerType.optional(),
-    chainedToPrev: z.boolean().optional()
+    name: z.string().min(1).max(100).optional(),
+    color: z.string().min(1).max(32).optional()
   })
   .refine(v => Object.keys(v).length > 0, {message: 'at least one field required'});
 
@@ -37,7 +32,7 @@ export async function PATCH(
   const parsedBody = await parseJsonBody(request);
   if (!parsedBody.ok) return parsedBody.response;
 
-  const parsed = updateScheduleSchema.safeParse(parsedBody.body);
+  const parsed = updateCategorySchema.safeParse(parsedBody.body);
   if (!parsed.success) {
     return jsonError(
       'invalid_input',
@@ -47,8 +42,7 @@ export async function PATCH(
   }
 
   try {
-    const schedules = await updateScheduleCore(auth.user.id, {id, ...parsed.data});
-    return jsonOk(schedules, 200);
+    return jsonOk(await updateCategoryCore(auth.user.id, {id, ...parsed.data}), 200);
   } catch (e) {
     return handleApiError(e);
   }
@@ -66,8 +60,10 @@ export async function DELETE(
     return jsonError('invalid_id', 'Path parameter id required', 400);
   }
 
+  const force = new URL(request.url).searchParams.get('force') === 'true';
+
   try {
-    await deleteScheduleCore(auth.user.id, id);
+    await deleteCategoryCore(auth.user.id, {id, force});
     return jsonOk({id, deleted: true}, 200);
   } catch (e) {
     return handleApiError(e);

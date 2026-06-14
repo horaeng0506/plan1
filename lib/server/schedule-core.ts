@@ -22,6 +22,7 @@ import {cascade} from '@/lib/domain/cascade';
 import {insertBetweenList} from '@/lib/domain/insert-between';
 import {exceedsMaxOverlap, MAX_OVERLAP} from '@/lib/domain/overlap';
 import type {Schedule, TimerType} from '@/lib/domain/types';
+import {ApiError} from '@/lib/server/api-error';
 import {
   buildConcurrencyGuardSql,
   isConcurrencyConflict,
@@ -47,15 +48,11 @@ const ERROR_STATUS: Record<ScheduleErrorCode, number> = {
   concurrency_conflict: 409
 };
 
-/** 핸들러가 status code 로 매핑하는 도메인 에러. */
-export class ScheduleError extends Error {
-  readonly code: ScheduleErrorCode;
-  readonly status: number;
+/** 핸들러가 status code 로 매핑하는 스케줄 도메인 에러 (ApiError 의 typed 변형). */
+export class ScheduleError extends ApiError {
   constructor(code: ScheduleErrorCode) {
-    super(code);
+    super(code, ERROR_STATUS[code]);
     this.name = 'ScheduleError';
-    this.code = code;
-    this.status = ERROR_STATUS[code];
   }
 }
 

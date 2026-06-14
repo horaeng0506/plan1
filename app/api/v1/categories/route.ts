@@ -1,31 +1,24 @@
 /**
- * plan1-mobile A1 — /api/v1/schedules (GET list · POST create).
- * 세션 JWT 인증(cofounder_jwt). IDOR: 코어가 WHERE user_id 강제. CORS + zod.
+ * plan1-mobile A1 — /api/v1/categories (GET list · POST create).
+ * 세션 JWT 인증. IDOR: 코어가 WHERE user_id 강제. 이름 중복 → 409.
  */
 
 import {NextResponse} from 'next/server';
 import {z} from 'zod';
 import {authenticateSession, buildSessionOptionsResponse} from '@/lib/api-session-auth';
-import {createScheduleCore, listSchedulesCore} from '@/lib/server/schedule-core';
+import {createCategoryCore, listCategoriesCore} from '@/lib/server/category-core';
 import {handleApiError, jsonError, jsonOk, parseJsonBody} from '@/lib/server/schedule-rest';
 
-const timerType = z.enum(['countup', 'timer1', 'countdown']);
-
-const createScheduleSchema = z.object({
-  title: z.string().min(1).max(500),
-  categoryId: z.string().min(1).max(100),
-  startAt: z.number().int(),
-  durationMin: z.number().int().min(0).max(10080),
-  timerType,
-  chainedToPrev: z.boolean().optional()
+const createCategorySchema = z.object({
+  name: z.string().min(1).max(100),
+  color: z.string().min(1).max(32)
 });
 
 export async function GET(request: Request): Promise<NextResponse> {
   const auth = await authenticateSession(request);
   if (!auth.ok) return auth.response;
   try {
-    const schedules = await listSchedulesCore(auth.user.id);
-    return jsonOk(schedules, 200);
+    return jsonOk(await listCategoriesCore(auth.user.id), 200);
   } catch (e) {
     return handleApiError(e);
   }
@@ -38,7 +31,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   const parsedBody = await parseJsonBody(request);
   if (!parsedBody.ok) return parsedBody.response;
 
-  const parsed = createScheduleSchema.safeParse(parsedBody.body);
+  const parsed = createCategorySchema.safeParse(parsedBody.body);
   if (!parsed.success) {
     return jsonError(
       'invalid_input',
@@ -48,8 +41,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   try {
-    const schedules = await createScheduleCore(auth.user.id, parsed.data);
-    return jsonOk(schedules, 201);
+    return jsonOk(await createCategoryCore(auth.user.id, parsed.data), 201);
   } catch (e) {
     return handleApiError(e);
   }

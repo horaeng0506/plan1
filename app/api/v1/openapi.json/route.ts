@@ -145,6 +145,37 @@ const OPENAPI_SPEC = {
         description:
           '부분 갱신 (최소 1필드). startAt/durationMin 변경은 cascade 로 뒤 체인 전파. 결과가 MAX_OVERLAP(2) 위반이면 422.'
       },
+      // plan1-mobile A1 — 카테고리 / 설정 (세션 JWT 인증).
+      Category: {
+        type: 'object',
+        required: ['id', 'name', 'color', 'createdAt'],
+        properties: {
+          id: {type: 'string', example: 'cat-abc123'},
+          name: {type: 'string', maxLength: 100, description: '사용자 내 unique'},
+          color: {type: 'string', example: '#6b7280'},
+          createdAt: {type: 'integer', format: 'int64'}
+        }
+      },
+      CreateCategoryRequest: {
+        type: 'object',
+        required: ['name', 'color'],
+        properties: {
+          name: {type: 'string', minLength: 1, maxLength: 100},
+          color: {type: 'string', minLength: 1, maxLength: 32}
+        }
+      },
+      AppSettings: {
+        type: 'object',
+        required: ['theme', 'focusViewMin', 'zoomPxPerHour'],
+        properties: {
+          theme: {type: 'string', enum: ['light', 'dark', 'system']},
+          focusViewMin: {
+            type: 'integer',
+            description: '집중 보기 (분 · 옵션 240·360·480·600·720·960·1200·1440)'
+          },
+          zoomPxPerHour: {type: 'integer', description: '시간 간격 줌 (읽기 전용)'}
+        }
+      },
       SuccessResponse: {
         type: 'object',
         required: ['data', 'error'],
@@ -491,6 +522,138 @@ const OPENAPI_SPEC = {
           '422': {
             description: 'insert_between_no_prev (앞 active 없음) 또는 MAX_OVERLAP(2) 위반'
           }
+        }
+      },
+      options: {summary: 'CORS preflight', responses: {'204': {description: 'CORS headers'}}}
+    },
+    '/api/v1/categories': {
+      get: {
+        summary: 'list categories',
+        description: '세션 사용자 카테고리 목록 (없으면 default 시드).',
+        security: [{sessionAuth: []}],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: {
+                  allOf: [
+                    {$ref: '#/components/schemas/SuccessResponse'},
+                    {
+                      type: 'object',
+                      properties: {
+                        data: {type: 'array', items: {$ref: '#/components/schemas/Category'}}
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          '401': {description: 'Unauthorized'}
+        }
+      },
+      post: {
+        summary: 'create category',
+        security: [{sessionAuth: []}],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {schema: {$ref: '#/components/schemas/CreateCategoryRequest'}}
+          }
+        },
+        responses: {
+          '201': {description: 'Created'},
+          '400': {description: 'Invalid input'},
+          '401': {description: 'Unauthorized'},
+          '409': {description: 'category_name_exists — 이름 중복'}
+        }
+      },
+      options: {summary: 'CORS preflight', responses: {'204': {description: 'CORS headers'}}}
+    },
+    '/api/v1/categories/{id}': {
+      patch: {
+        summary: 'update category',
+        security: [{sessionAuth: []}],
+        parameters: [{name: 'id', in: 'path', required: true, schema: {type: 'string'}}],
+        responses: {
+          '200': {description: 'OK'},
+          '400': {description: 'Invalid input'},
+          '401': {description: 'Unauthorized'},
+          '404': {description: 'Not found 또는 IDOR 차단'},
+          '409': {description: 'category_name_exists'}
+        }
+      },
+      delete: {
+        summary: 'delete category',
+        description: '소속 스케줄 있으면 ?force=true 필요 (cascade 삭제 사전 경고).',
+        security: [{sessionAuth: []}],
+        parameters: [
+          {name: 'id', in: 'path', required: true, schema: {type: 'string'}},
+          {
+            name: 'force',
+            in: 'query',
+            required: false,
+            schema: {type: 'boolean'},
+            description: 'true 면 소속 스케줄 cascade 삭제'
+          }
+        ],
+        responses: {
+          '200': {description: 'Deleted'},
+          '401': {description: 'Unauthorized'},
+          '409': {description: 'category_has_schedules — force 없이 소속 스케줄 존재'}
+        }
+      },
+      options: {summary: 'CORS preflight', responses: {'204': {description: 'CORS headers'}}}
+    },
+    '/api/v1/settings': {
+      get: {
+        summary: 'get settings',
+        description: '세션 사용자 설정 (없으면 default 생성).',
+        security: [{sessionAuth: []}],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: {
+                  allOf: [
+                    {$ref: '#/components/schemas/SuccessResponse'},
+                    {
+                      type: 'object',
+                      properties: {data: {$ref: '#/components/schemas/AppSettings'}}
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          '401': {description: 'Unauthorized'}
+        }
+      },
+      patch: {
+        summary: 'update settings',
+        description: '부분 갱신 (theme · focusViewMin).',
+        security: [{sessionAuth: []}],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                minProperties: 1,
+                properties: {
+                  theme: {type: 'string', enum: ['light', 'dark', 'system']},
+                  focusViewMin: {type: 'integer', minimum: 60, maximum: 1440}
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          '200': {description: 'OK'},
+          '400': {description: 'Invalid input'},
+          '401': {description: 'Unauthorized'}
         }
       },
       options: {summary: 'CORS preflight', responses: {'204': {description: 'CORS headers'}}}
