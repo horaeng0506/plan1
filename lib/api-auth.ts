@@ -141,5 +141,6 @@ export function buildSuccessHeaders(remaining: number, resetUnix: number): Recor
 }
 
 export function buildOptionsResponse(): NextResponse {
-  return new NextResponse(null, {status: 200, headers: corsHeaders()});
+  // CORS preflight 표준 204 (openapi spec · session OPTIONS 와 일치 · QA-GATE-20260614).
+  return new NextResponse(null, {status: 204, headers: corsHeaders()});
 }

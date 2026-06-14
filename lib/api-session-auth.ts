@@ -6,9 +6,16 @@
  * 로 자기 데이터를 다루므로 별개 인증 경로가 필요하다.
  *
  * 흐름:
- *   1. Authorization: Bearer <cofounder_jwt> (모바일 네이티브) 또는 cofounder_jwt 쿠키(웹 동일 출처)
+ *   1. Authorization: Bearer <cofounder_jwt> (모바일 네이티브)
  *   2. lib/verify-session.ts 의 verifySessionJwt(JWKS 서명 검증 · aud=iss · stateless) 재사용
  *   3. {user} 반환 — 핸들러가 모든 query 에 WHERE user_id = user.id 강제 (IDOR 차단)
+ *
+ * ⚡ Bearer 헤더 전용 (쿠키 인증 의도적 미지원):
+ *   - state-changing REST 엔드포인트에 cofounder_jwt 쿠키 인증을 허용하면 CSRF 표면이 생긴다
+ *     (브라우저가 쿠키를 자동 첨부 → 타 사이트가 인증된 mutation 유발). Bearer 는 자동 첨부
+ *     안 되므로 CSRF-safe. 모바일 앱은 Bearer 사용 · 웹은 server action(getCurrentSessionUser
+ *     쪽 쿠키 경로)을 그대로 사용하므로 REST 는 Bearer-only 가 정공. (A4 에서 웹→REST 전환 시
+ *     쿠키 필요해지면 CSRF 토큰 동반해 별도 도입.)
  *
  * verify-session.ts 는 변경하지 않는다 (server action·route 공용 검증기 단일 원천).
  * Request 기반(api-auth.ts 와 동일 결)이라 CORS 헤더 붙은 401 envelope 를 돌려준다.
@@ -16,8 +23,6 @@
 
 import {NextResponse} from 'next/server';
 import {verifySessionJwt, type SessionUser} from '@/lib/verify-session';
-
-const COOKIE_NAME = 'cofounder_jwt';
 
 export interface SessionAuthSuccess {
   ok: true;
@@ -50,22 +55,11 @@ function getPortalIssuer(): string {
   return issuer;
 }
 
-/** Authorization Bearer 헤더 우선, 없으면 cofounder_jwt 쿠키에서 토큰 추출. */
+/** Authorization Bearer 헤더에서만 토큰 추출 (쿠키 미지원 · CSRF-safe · 위 § 참조). */
 function extractToken(request: Request): string | null {
   const authHeader = request.headers.get('authorization');
   if (authHeader?.startsWith('Bearer ')) {
     return authHeader.slice(7).trim();
-  }
-  const cookieHeader = request.headers.get('cookie');
-  if (cookieHeader) {
-    for (const part of cookieHeader.split(';')) {
-      const eq = part.indexOf('=');
-      if (eq === -1) continue;
-      const key = part.slice(0, eq).trim();
-      if (key === COOKIE_NAME) {
-        return decodeURIComponent(part.slice(eq + 1).trim());
-      }
-    }
   }
   return null;
 }
