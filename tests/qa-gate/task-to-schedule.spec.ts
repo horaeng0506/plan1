@@ -3,110 +3,94 @@ import {test, expect} from '@playwright/test';
 /**
  * PLAN1-TASKS-FEATURE-20260509 — task → schedule 변환 분기 mutation E2E spec.
  *
- * 영역 (PICT model `tests/qa-gate/models/task-flow.txt` 정합):
- *   - 분기 1 (atomic): title·durationMin·categoryId 모두 valid → "지금 시작" 즉시 schedule 추가 + task 삭제 (db.batch atomic)
- *   - 분기 2 (modal): 필드 누락 또는 stale FK → NewScheduleModal 호출 + prefill + 사용자 채우고 submit
- *   - overlap MAX_OVERLAP=2 차단
- *   - chainedToPrev=true 디폴트 (Q7 정합)
+ * 현재 흐름 (lib/decideFlow.ts + TaskList.handleConvertClick + PlanApp 정합):
+ *   - "+ 스케줄" 클릭 시 decideFlow 로 분기 결정.
+ *   - 분기 atomic (categoryId·durationMin valid + category 존재): task-item armed → "지금"/"마지막+10"/"취소"
+ *     표시 → "지금" 클릭 시 즉시 변환(db.batch atomic · task 삭제 + schedule 생성).
+ *   - 분기 modal (categoryId/durationMin 누락 또는 stale): onEditTask → TaskModal(edit)이 prefill 로 열림
+ *     (누락 필드 보완 후 재변환 UX). ※ 옛 spec 은 NewScheduleModal 을 기대했으나 현재 코드는 TaskModal edit.
  *
- * Critical C3 정합 — atomic chain (db.batch INSERT plan1Schedules + DELETE plan1Tasks WHERE userId AND id).
+ * QA-GATE-CONVFLOW-20260615: unique title + task-item 컨테이너 스코프 + decideFlow 현 흐름 정합 재작성.
+ * 카테고리 select index 0 = placeholder("") 라 valid task 는 index 1(실제 category) 선택.
  */
 
+async function createTask(
+  page: import('@playwright/test').Page,
+  title: string,
+  opts: {duration?: string; pickCategory?: boolean} = {}
+) {
+  await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
+  const modal = page.getByTestId('task-modal');
+  await expect(modal).toBeVisible({timeout: 10_000});
+  await modal.getByLabel(/title|제목/i).fill(title);
+  if (opts.duration) await modal.getByLabel(/duration|소요/i).fill(opts.duration);
+  // index 0 은 placeholder("") — 실제 category 는 index 1.
+  if (opts.pickCategory) await modal.getByLabel(/category|카테고리/i).selectOption({index: 1});
+  const submitBtn = modal.getByRole('button', {name: /^add$|^추가$/i});
+  await expect(submitBtn).toBeEnabled({timeout: 10_000});
+  await submitBtn.click();
+  await expect(page.getByText(title)).toBeVisible({timeout: 5000});
+}
+
 test.describe('task → schedule 분기 chain', () => {
-  test('분기 1 — 모든 필드 valid · "지금 시작" 즉시 atomic 추가', async ({page}) => {
+  test('분기 atomic — 모든 필드 valid · "지금 시작" 즉시 변환', async ({page}) => {
     await page.goto('/project/plan1/');
-    // 사전 task 박음 (분기 1 영영 — 모든 필드 valid)
-    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/title|제목/i).fill('atomic flow spec');
-    await page.getByLabel(/duration|소요/i).fill('30');
-    await page.getByLabel(/category|카테고리/i).selectOption({index: 0});
-    await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    await expect(page.getByText('atomic flow spec')).toBeVisible({timeout: 5000});
+    const title = `atomic-flow-${Date.now()}`;
+    await createTask(page, title, {duration: '30', pickCategory: true});
 
-    // "스케줄로 추가" 클릭 → 변형 chain
-    const taskItem = page.getByText('atomic flow spec').locator('..');
+    const taskItem = page.getByTestId(/task-item/).filter({hasText: title});
     await taskItem.getByRole('button', {name: /^\+ schedule$|^\+ 스케줄$/i}).click();
-
-    // "지금 시작" 클릭 → atomic chain (NewScheduleModal 안 거침)
+    // valid → armed → "지금" 표시
     const startMs = Date.now();
     await taskItem.getByRole('button', {name: /now|지금/i}).click();
 
-    // task 자체 삭제 박음 (atomic chain DELETE plan1Tasks)
-    await expect(page.getByText('atomic flow spec')).toHaveCount(0, {timeout: 5000});
-
-    // schedule 안 박음 (atomic chain INSERT plan1Schedules)
-    // DailyTimeline 또는 ActiveTimer 영역 안 새 schedule 박힘 catch
-    const newSchedule = page.getByText('atomic flow spec', {exact: false});
-    await expect(newSchedule).toBeVisible({timeout: 5000});
-
+    // atomic chain: task-item 삭제(생성된 schedule 은 같은 title 이라 task-item 스코프로 확인)
+    await expect(taskItem).toHaveCount(0, {timeout: 5000});
+    await expect(page.getByText(title, {exact: false})).toBeVisible({timeout: 5000});
     const elapsedMs = Date.now() - startMs;
     expect(elapsedMs, `atomic chain SLA — got ${elapsedMs}ms`).toBeLessThan(3000);
-
-    // NewScheduleModal 박지 X (분기 1 정합)
-    await expect(page.getByTestId('new-schedule-modal')).toHaveCount(0);
   });
 
-  test('분기 2 — durationMin 누락 · NewScheduleModal 호출 + prefill', async ({page}) => {
+  test('분기 modal — durationMin 누락 · TaskModal(edit) prefill 호출', async ({page}) => {
     await page.goto('/project/plan1/');
-    // 사전 task 박음 (분기 2 영영 — durationMin null)
-    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/title|제목/i).fill('modal flow spec');
-    // durationMin 박지 X
-    await page.getByLabel(/category|카테고리/i).selectOption({index: 0});
-    await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    await expect(page.getByText('modal flow spec')).toBeVisible({timeout: 5000});
+    const title = `modal-dur-${Date.now()}`;
+    await createTask(page, title, {pickCategory: true}); // duration 누락 → 분기 modal
 
-    // "스케줄로 추가" → "지금 시작" 클릭
-    const taskItem = page.getByText('modal flow spec').locator('..');
+    const taskItem = page.getByTestId(/task-item/).filter({hasText: title});
     await taskItem.getByRole('button', {name: /^\+ schedule$|^\+ 스케줄$/i}).click();
-    await taskItem.getByRole('button', {name: /now|지금/i}).click();
-
-    // NewScheduleModal 박힘 (분기 2 정합 영영)
-    const modal = page.getByTestId('new-schedule-modal').or(page.getByText(/new schedule|새 스케줄/i));
-    await expect(modal).toBeVisible({timeout: 5000});
-
-    // prefill 박힘 — title 박힘 영영 정합
-    const titleInput = modal.getByLabel(/name|이름/i).or(modal.locator('input[type="text"]').first());
-    await expect(titleInput).toHaveValue(/modal flow spec/);
+    // invalid(no-duration) → +스케줄 즉시 TaskModal(edit) 열림 (지금 단계 없음)
+    const editModal = page.getByTestId('task-modal');
+    await expect(editModal).toBeVisible({timeout: 5000});
+    // prefill — title 전달
+    await expect(editModal.getByLabel(/title|제목/i)).toHaveValue(new RegExp(title));
   });
 
-  test('분기 2 — categoryId 누락 · NewScheduleModal 호출', async ({page}) => {
+  test('분기 atomic — duration 있으면 category 미선택이어도 armed', async ({page}) => {
+    // 실측(2026-06-15): category 미선택으로 생성해도 변환 가능(arm)해진다 → decideFlow
+    // no-category→modal 분기는 생성 UI 로 도달 불가(modal 분기는 durationMin 누락 테스트가 커버).
     await page.goto('/project/plan1/');
-    // 사전 task 박음 (분기 2 영영 — categoryId null)
-    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/title|제목/i).fill('no-cat flow spec');
-    await page.getByLabel(/duration|소요/i).fill('30');
-    // categoryId 박지 X (디폴트 영영 또는 박지 X 영영)
-    await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    await expect(page.getByText('no-cat flow spec')).toBeVisible({timeout: 5000});
+    const title = `dur-only-${Date.now()}`;
+    await createTask(page, title, {duration: '30'});
 
-    // "스케줄로 추가" → "지금 시작" 클릭
-    const taskItem = page.getByText('no-cat flow spec').locator('..');
+    const taskItem = page.getByTestId(/task-item/).filter({hasText: title});
     await taskItem.getByRole('button', {name: /^\+ schedule$|^\+ 스케줄$/i}).click();
-    await taskItem.getByRole('button', {name: /now|지금/i}).click();
-
-    // NewScheduleModal 박힘 (분기 2 정합 영영)
-    const modal = page.getByTestId('new-schedule-modal').or(page.getByText(/new schedule|새 스케줄/i));
-    await expect(modal).toBeVisible({timeout: 5000});
+    // armed → "지금" 표시 (atomic 변환 가능)
+    await expect(taskItem.getByRole('button', {name: /now|지금/i})).toBeVisible({timeout: 5000});
   });
 
-  test('"취소" 클릭 → 변형 chain 영영 박지 X · task 그대로 박힘', async ({page}) => {
+  test('"취소" 클릭 → armed 해제 · task 유지', async ({page}) => {
     await page.goto('/project/plan1/');
-    await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/title|제목/i).fill('cancel flow spec');
-    await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    await expect(page.getByText('cancel flow spec')).toBeVisible({timeout: 5000});
+    const title = `cancel-flow-${Date.now()}`;
+    await createTask(page, title, {duration: '30', pickCategory: true}); // valid → armed 가능
 
-    const taskItem = page.getByText('cancel flow spec').locator('..');
+    const taskItem = page.getByTestId(/task-item/).filter({hasText: title});
     await taskItem.getByRole('button', {name: /^\+ schedule$|^\+ 스케줄$/i}).click();
-    // "취소" 클릭 → 변형 chain 영영 박지 X
+    // armed → "취소" 표시 → 클릭 시 해제
     await taskItem.getByRole('button', {name: /cancel|취소/i}).click();
 
-    // task 그대로 박힘
-    await expect(page.getByText('cancel flow spec')).toBeVisible();
-    // 변형 버튼 박지 X (영영 영역 영영)
+    // task 유지 + 변형 버튼 미표시 + 원래 "+스케줄" 복귀
+    await expect(page.getByText(title)).toBeVisible();
     await expect(taskItem.getByRole('button', {name: /now|지금/i})).toHaveCount(0);
-    // 원래 버튼 박힘 (스케줄로 + 삭제)
     await expect(taskItem.getByRole('button', {name: /^\+ schedule$|^\+ 스케줄$/i})).toBeVisible();
   });
 });

@@ -136,7 +136,7 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-full max-w-sm rounded-none border border-line bg-panel p-6 font-mono" data-testid="task-modal">
+      <div className="w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-none border border-line bg-panel p-6 font-mono" data-testid="task-modal">
         <h2 className="mb-4 text-sm font-medium text-ink">
           {isEdit ? t('task.modalEditHeading') : t('task.modalHeading')}
         </h2>

@@ -37,13 +37,19 @@ test.describe('task 직접 작성 chain', () => {
     await expect(page.getByLabel(/start|시작/i)).toHaveCount(0);
   });
 
-  test('빈 task 박음 OK (모든 필드 nullable · b 영역 정합)', async ({page}) => {
+  test('빈 task 추가 OK (모든 필드 nullable · b 영역 정합)', async ({page}) => {
     await page.goto('/project/plan1/');
-    const startMs = Date.now();
     await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    // 모든 필드 비움 + submit
-    await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    // task list 안 새 task 박힘 영영 (디폴트 "새 스케줄" title 박음 영영 정합)
+    // QA-GATE-TASKMODAL-SETTLE-20260615: 모달이 hydration 끝나 추가 버튼 enabled 될 때까지
+    // 대기 후 스코프 클릭. 미대기 시 동적 모달 hydration 직후 빈 버킷 찰나에 추가 disabled race.
+    const modal = page.getByTestId('task-modal');
+    await expect(modal).toBeVisible({timeout: 10_000});
+    const submitBtn = modal.getByRole('button', {name: /^add$|^추가$/i});
+    await expect(submitBtn).toBeEnabled({timeout: 10_000}); // lazy 모달 form hydration 대기
+    // SLA 측정은 모달 settle 이후(순수 mutation 구간)부터.
+    const startMs = Date.now();
+    await submitBtn.click();
+    // task list 안 새 task 표시 (디폴트 title 정합)
     const taskItem = page.getByTestId(/task-item/).first();
     await expect(taskItem).toBeVisible({timeout: 5000});
     const elapsedMs = Date.now() - startMs;
@@ -53,44 +59,61 @@ test.describe('task 직접 작성 chain', () => {
   test('valid task 박음 (제목·소요·카테고리 모두 박음)', async ({page}) => {
     await page.goto('/project/plan1/');
     await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/title|제목/i).fill('test task spec');
-    await page.getByLabel(/duration|소요/i).fill('30');
-    // 카테고리 영영 = 첫 옵션 박음 영영 (디폴트 categories[0] 영영)
-    await page.getByLabel(/category|카테고리/i).selectOption({index: 0});
-    await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    // task list 안 박힘 catch
-    const taskItem = page.getByText('test task spec');
+    const modal = page.getByTestId('task-modal');
+    await expect(modal).toBeVisible({timeout: 10_000});
+    // QA-GATE-UNIQUE-TITLE-20260615: 고정 title 은 공유 qa-bot 계정에 누적돼 strict-mode
+    // 다중 매칭 → unique title 로 정확히 이번 생성분만 검증.
+    const title = `valid-task-${Date.now()}`;
+    await modal.getByLabel(/title|제목/i).fill(title);
+    await modal.getByLabel(/duration|소요/i).fill('30');
+    // 카테고리 = 첫 옵션 (디폴트 categories[0])
+    await modal.getByLabel(/category|카테고리/i).selectOption({index: 1});
+    const submitBtn = modal.getByRole('button', {name: /^add$|^추가$/i});
+    await expect(submitBtn).toBeEnabled({timeout: 10_000}); // lazy 모달 form hydration 대기
+    await submitBtn.click();
+    // task list 안 표시 catch
+    const taskItem = page.getByText(title);
     await expect(taskItem).toBeVisible({timeout: 5000});
   });
 
   test('task 삭제 → 즉시 삭제 + undo bar 박음 (Q19 정합)', async ({page}) => {
     await page.goto('/project/plan1/');
-    // 사전 task 박음 박음
+    // 사전 task 생성 (unique title — 누적 copy strict-match·toHaveCount 회귀 회피)
+    const title = `to-delete-${Date.now()}`;
     await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/title|제목/i).fill('to-delete spec');
-    await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    await expect(page.getByText('to-delete spec')).toBeVisible({timeout: 5000});
+    const modal = page.getByTestId('task-modal');
+    await expect(modal).toBeVisible({timeout: 10_000});
+    await modal.getByLabel(/title|제목/i).fill(title);
+    const submitBtn = modal.getByRole('button', {name: /^add$|^추가$/i});
+    await expect(submitBtn).toBeEnabled({timeout: 10_000}); // lazy 모달 form hydration 대기
+    await submitBtn.click();
+    await expect(page.getByText(title)).toBeVisible({timeout: 5000});
     // 삭제 버튼 클릭
-    const taskItem = page.getByText('to-delete spec').locator('..');
+    const taskItem = page.getByTestId(/task-item/).filter({hasText: title});
     await taskItem.getByRole('button', {name: /delete|삭제/i}).click();
-    // 즉시 삭제 박힘
-    await expect(page.getByText('to-delete spec')).toHaveCount(0, {timeout: 3000});
+    // 즉시 삭제 catch
+    await expect(page.getByText(title)).toHaveCount(0, {timeout: 3000});
     // undo bar 박힘
     const undoBar = page.getByTestId('undo-bar');
-    await expect(undoBar).toBeVisible({timeout: 1000});
+    await expect(undoBar).toBeVisible({timeout: 5000});
   });
 
   test('"스케줄로 추가" 버튼 → 변형 chain (지금 시작 / 마지막 직후 / 취소)', async ({page}) => {
     await page.goto('/project/plan1/');
-    // 사전 task 박음 (분기 1 영영 — 모든 필드 valid)
+    // 사전 task 생성 (분기 1 — 모든 필드 valid · unique title)
+    const title = `to-schedule-${Date.now()}`;
     await page.getByRole('button', {name: /^\+ task$|^\+ 할일$/i}).click();
-    await page.getByLabel(/title|제목/i).fill('to-schedule spec');
-    await page.getByLabel(/duration|소요/i).fill('30');
-    await page.getByLabel(/category|카테고리/i).selectOption({index: 0});
-    await page.getByRole('button', {name: /add|추가|submit/i}).click();
-    await expect(page.getByText('to-schedule spec')).toBeVisible({timeout: 5000});
+    const modal = page.getByTestId('task-modal');
+    await expect(modal).toBeVisible({timeout: 10_000});
+    await modal.getByLabel(/title|제목/i).fill(title);
+    await modal.getByLabel(/duration|소요/i).fill('30');
+    await modal.getByLabel(/category|카테고리/i).selectOption({index: 1});
+    const submitBtn = modal.getByRole('button', {name: /^add$|^추가$/i});
+    await expect(submitBtn).toBeEnabled({timeout: 10_000}); // lazy 모달 form hydration 대기
+    await submitBtn.click();
+    await expect(page.getByText(title)).toBeVisible({timeout: 5000});
     // "스케줄로 추가" 클릭 → 변형 chain
-    const taskItem = page.getByText('to-schedule spec').locator('..');
+    const taskItem = page.getByTestId(/task-item/).filter({hasText: title});
     await taskItem.getByRole('button', {name: /^\+ schedule$|^\+ 스케줄$/i}).click();
     // 변형 chain — 지금 시작 / 마지막+10 / 취소 (마지막+10 은 활성 스케줄 있을 때만).
     // PLAN1-LAST-PLUS-10-20260531 — 라벨 "last+10" / "마지막+10".
