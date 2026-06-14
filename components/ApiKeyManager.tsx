@@ -47,11 +47,11 @@ export function ApiKeyManager() {
   }, []);
 
   const handleCreated = (created: ApiKeyCreated, updatedList: ApiKeyMeta[]) => {
+    // M3 정합: 발급 직후 modal 을 닫지 않는다 — plain key 1회 노출 + "I have saved"
+    // checkbox + 복사 단계를 거쳐 사용자가 close 버튼으로 직접 닫는다 (onClose 에서 정리).
+    // (이전 setCreateOpen(false) 가 modal 을 즉시 unmount 해 plain key 가 노출되지 않던 결함 수정)
     setRecentlyCreated(created);
     setKeys(updatedList);
-    setCreateOpen(false);
-    setRotateOldId(null);
-    setRotateOldName('');
   };
 
   const handleRevoke = async (id: string) => {

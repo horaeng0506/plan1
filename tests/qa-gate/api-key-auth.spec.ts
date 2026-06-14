@@ -37,23 +37,26 @@ test.describe('API key 발급 + bearer auth chain', () => {
     // 만료 옵션 (default 영구 · Q14 정합)
     await modal.getByRole('button', {name: /create|발급/i}).click();
 
-    // plain key 1회 노출 박힘 (M3 정합)
+    // plain key 1회 노출 확인 (M3 정합) — 발급 직후 modal 이 닫히지 않고 plain key 표시
     const plainKey = modal.getByText(/plan1_api_/);
     await expect(plainKey).toBeVisible({timeout: 5000});
+    const rawKey = ((await plainKey.textContent()) ?? '').trim();
+    expect(rawKey).toMatch(/^plan1_api_[A-Za-z0-9_-]+$/);
+    const last8 = rawKey.slice(-8);
 
-    // close 버튼 disabled 박힘 (checkbox 박음 영영 X 영영)
+    // close 버튼은 checkbox 확인 전 disabled
     const closeButton = modal.getByRole('button', {name: /close|닫기/i});
     await expect(closeButton).toBeDisabled();
 
-    // checkbox 박음
+    // "I have saved" checkbox 체크
     await modal.getByLabel(/saved|저장/i).check();
 
-    // close 버튼 enable 박힘
+    // close 버튼 enable → 클릭
     await expect(closeButton).toBeEnabled();
     await closeButton.click();
 
-    // list 안 prefix 박힘 (last 8 char · Q22 정합)
-    await expect(page.getByText(/plan1_api_[a-zA-Z0-9]{8}$/)).toBeVisible({timeout: 5000});
+    // list 에 새 key 의 prefix 표시 확인 (UI 는 마지막 8 char · Q22 정합 — `…<last8>`)
+    await expect(page.getByText(new RegExp(`${last8}$`))).toBeVisible({timeout: 5000});
   });
 
   test('bearer auth — invalid key 영영 401', async ({request}) => {

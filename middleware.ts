@@ -1,19 +1,21 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {ipAddress} from '@vercel/functions';
-import createIntlMiddleware from 'next-intl/middleware';
-import {routing} from './i18n/routing';
 
 // 병합 proxy (Stage 1 · 2026-04-27 / Stage 8.C 리네임 · 2026-04-28 / PLAN1-AUTH-FLAKE-EXEC · 2026-05-04):
 //   - /api/** 로 시작하는 POST: in-memory rate limit (LIMIT=20/min · plan1 은 schedule CRUD 위주라 copymaker1 의 LLM 호출보다 한도 ↑)
 //   - server action POST: rate limit 후 통과 (auth 는 requireUser 에서)
 //   - 그 외 GET 페이지: cofounder_jwt cookie 부재 시 portal refresh-jwt 로 self-heal redirect (race condition fix)
-//   - 그 후 next-intl locale detect (쿠키 NEXT_LOCALE 기반, portal 와 동일 origin 쿠키 공유)
 //
 // Next.js 16 file convention: middleware.ts (nodejs runtime 고정 · edge 미지원).
 // PLAN1-AUTH-FLAKE-VERIFY (2026-05-04): proxy.ts → middleware.ts 환원. proxy.ts file convention 의
 // preview build 작동성 의심 (cookie 부재 redirect 미발동) → middleware.ts 정공 사용.
-
-const intlProxy = createIntlMiddleware(routing);
+//
+// QA-GATE-SETTINGS-404 (2026-06-15): createIntlMiddleware 제거. 본 앱은 [locale] URL 라우팅 없이
+// 쿠키 기반 locale (i18n/request.ts getRequestConfig 가 NEXT_LOCALE 쿠키 read · LocaleSwitcher 가
+// document.cookie 로 set) 을 쓰는 "without i18n routing" 패턴 (next-intl 공식). createIntlMiddleware 는
+// app/[locale]/ 세그먼트용이라 본 flat 구조에서 /settings 같은 비-루트 경로를 _not-found 로 rewrite → 404.
+// home (/) 만 우연히 통과해 결함이 settings 신설 전까지 잠복. getRequestConfig 가 locale 반환하므로
+// "middleware didn't run" 에러 없음.
 
 const LIMIT = 20;
 const WINDOW_MS = 60_000;
@@ -118,10 +120,7 @@ function authRedirectIfMissingJwt(request: NextRequest): NextResponse | null {
 
 export function middleware(request: NextRequest) {
   const {pathname} = request.nextUrl;
-  // /api/** 경로: next-intl 우회 + POST 만 rate limit. GET 은 그대로 통과.
-  // Stage 8 follow-up (2026-04-28): GET /api/health 가 intlProxy 통과 시 _not-found
-  // 매칭 → 404. localePrefix:'never' 라도 next-intl middleware 가 GET 라우팅에 개입.
-  // /api/** 는 명시적으로 next-intl 우회.
+  // /api/** 경로: POST 만 rate limit. GET 은 그대로 통과 (auth redirect 대상 아님).
   if (pathname.startsWith('/api/')) {
     if (request.method === 'POST' && rateLimited(request)) {
       return new NextResponse('rate_limited', {status: 429});
@@ -145,7 +144,8 @@ export function middleware(request: NextRequest) {
   const authRedirect = authRedirectIfMissingJwt(request);
   if (authRedirect) return authRedirect;
 
-  return intlProxy(request);
+  // locale 은 i18n/request.ts (NEXT_LOCALE 쿠키 기반) 가 결정 — 미들웨어 rewrite 불요.
+  return NextResponse.next();
 }
 
 export const config = {
