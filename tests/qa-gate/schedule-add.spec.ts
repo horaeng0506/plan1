@@ -44,7 +44,14 @@ test.describe('plan1 mutation E2E — A3 schedule 추가', () => {
     const catName = `cat-${Date.now()}`;
 
     // 0. 진입 (basePath=/project, plan1 sub-route)
+    // QA-GATE-BASEPATH-CLOCK-20260614: schedule 생성 모달 추가 버튼은 useNow hydration(nowReady)
+    // 의존 — 고정 clock + fastForward 로 nowReady 안정화 (cascade-bump·instant-complete 통과 패턴).
+    // 미적용 시 preview 환경에서 추가 버튼 disabled 잔존 → click timeout.
+    const fixedTime = new Date();
+    fixedTime.setUTCHours(12, 0, 0, 0);
+    await page.clock.install({time: fixedTime});
     await page.goto('/project/plan1/');
+    await page.clock.fastForward(2000);
 
     // 1. 카테고리 자동 보장 — qa-bot prod DB 신규 가입 시 categories 비어있어 schedule add disabled.
     //    매 spec 실행마다 unique catName 1개 추가. cleanup 누적 영향 작음 (list 만 길어짐).

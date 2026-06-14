@@ -40,7 +40,13 @@ test.describe('plan1 mutation E2E — A4 스케줄 편집', () => {
     const catName = `cat-edit-${Date.now()}`;
 
     // 0. 진입
+    // QA-GATE-BASEPATH-CLOCK-20260614: schedule 생성 모달 추가 버튼은 useNow hydration(nowReady)
+    // 의존 — 고정 clock + fastForward 로 nowReady 안정화 (cascade-bump·instant-complete 통과 패턴).
+    const fixedTime = new Date();
+    fixedTime.setUTCHours(12, 0, 0, 0);
+    await page.clock.install({time: fixedTime});
     await page.goto('/project/plan1/');
+    await page.clock.fastForward(2000);
 
     // 1. 카테고리 보장
     await page.getByRole('button', {name: '카테고리'}).click();

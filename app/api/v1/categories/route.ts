@@ -1,0 +1,52 @@
+/**
+ * plan1-mobile A1 — /api/v1/categories (GET list · POST create).
+ * 세션 JWT 인증. IDOR: 코어가 WHERE user_id 강제. 이름 중복 → 409.
+ */
+
+import {NextResponse} from 'next/server';
+import {z} from 'zod';
+import {authenticateSession, buildSessionOptionsResponse} from '@/lib/api-session-auth';
+import {createCategoryCore, listCategoriesCore} from '@/lib/server/category-core';
+import {handleApiError, jsonError, jsonOk, parseJsonBody} from '@/lib/server/schedule-rest';
+
+const createCategorySchema = z.object({
+  name: z.string().min(1).max(100),
+  color: z.string().min(1).max(32)
+});
+
+export async function GET(request: Request): Promise<NextResponse> {
+  const auth = await authenticateSession(request);
+  if (!auth.ok) return auth.response;
+  try {
+    return jsonOk(await listCategoriesCore(auth.user.id), 200);
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+export async function POST(request: Request): Promise<NextResponse> {
+  const auth = await authenticateSession(request);
+  if (!auth.ok) return auth.response;
+
+  const parsedBody = await parseJsonBody(request);
+  if (!parsedBody.ok) return parsedBody.response;
+
+  const parsed = createCategorySchema.safeParse(parsedBody.body);
+  if (!parsed.success) {
+    return jsonError(
+      'invalid_input',
+      parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; '),
+      400
+    );
+  }
+
+  try {
+    return jsonOk(await createCategoryCore(auth.user.id, parsed.data), 201);
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+export async function OPTIONS(): Promise<NextResponse> {
+  return buildSessionOptionsResponse();
+}

@@ -55,6 +55,10 @@ export function TaskList({onNewTask, onEditTask, onManageBuckets}: TaskListProps
   const schedules = useAppStore(s => s.schedules);
   const categories = useAppStore(s => s.categories);
   const taskBuckets = useAppStore(s => s.taskBuckets);
+  // PLAN1-TASKS-NEWBTN-LOADED-GUARD-20260614 — schedule '+ 새 스케줄'(canOpenNew = loaded &&
+  // categories>0)과 동일하게, 버킷 로드 전 task 모달 진입 차단. 미가드 시 init() 완료 전 모달이
+  // 열려 effectiveBucketId='' → 추가 버튼 disabled race (cold load · qa-gate task spec 실패 원인).
+  const loaded = useAppStore(s => s.loaded);
   const removeTask = useAppStore(s => s.removeTask);
   const convertTaskToSchedule = useAppStore(s => s.convertTaskToSchedule);
   const bucketDisplay = useTaskBucketDisplay();
@@ -244,9 +248,10 @@ export function TaskList({onNewTask, onEditTask, onManageBuckets}: TaskListProps
           <button
             type="button"
             onClick={onNewTask}
+            disabled={!loaded || taskBuckets.length === 0}
             aria-label={t('task.newTask')}
             data-testid="task-new-button"
-            className="flex h-7 w-7 items-center justify-center rounded-none border border-line bg-panel text-base text-txt hover:bg-bg"
+            className="flex h-7 w-7 items-center justify-center rounded-none border border-line bg-panel text-base text-txt hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50"
           >
             +
           </button>
