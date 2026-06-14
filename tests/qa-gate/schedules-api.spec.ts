@@ -21,14 +21,14 @@ import {test, expect} from '@playwright/test';
 
 test.describe('schedules API — 세션 JWT 인증 chain', () => {
   test('GET — 세션 JWT 없으면 401', async ({request}) => {
-    const resp = await request.get('/api/v1/schedules');
+    const resp = await request.get('/project/plan1/api/v1/schedules');
     expect(resp.status()).toBe(401);
     const body = await resp.json();
     expect(body.error?.code).toBe('unauthorized');
   });
 
   test('GET — invalid Bearer 토큰이면 401', async ({request}) => {
-    const resp = await request.get('/api/v1/schedules', {
+    const resp = await request.get('/project/plan1/api/v1/schedules', {
       headers: {Authorization: 'Bearer not-a-real-jwt.payload.sig'}
     });
     expect(resp.status()).toBe(401);
@@ -37,14 +37,14 @@ test.describe('schedules API — 세션 JWT 인증 chain', () => {
   });
 
   test('POST — 세션 JWT 없으면 401 (body 파싱 전 인증 차단)', async ({request}) => {
-    const resp = await request.post('/api/v1/schedules', {
+    const resp = await request.post('/project/plan1/api/v1/schedules', {
       data: {title: 'x', categoryId: 'c', startAt: 0, durationMin: 30, timerType: 'countup'}
     });
     expect(resp.status()).toBe(401);
   });
 
   test('CORS preflight — OPTIONS → 204 + Allow-Origin/Methods/Headers', async ({request}) => {
-    const resp = await request.fetch('/api/v1/schedules', {
+    const resp = await request.fetch('/project/plan1/api/v1/schedules', {
       method: 'OPTIONS',
       headers: {
         Origin: 'https://example.com',
@@ -59,7 +59,7 @@ test.describe('schedules API — 세션 JWT 인증 chain', () => {
   });
 
   test('OpenAPI spec — schedules paths + sessionAuth scheme 노출', async ({request}) => {
-    const resp = await request.get('/api/v1/openapi.json');
+    const resp = await request.get('/project/plan1/api/v1/openapi.json');
     expect(resp.status()).toBe(200);
     const spec = await resp.json();
     expect(spec.paths?.['/api/v1/schedules']?.get).toBeDefined();

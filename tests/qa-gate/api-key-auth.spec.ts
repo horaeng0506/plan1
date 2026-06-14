@@ -57,7 +57,7 @@ test.describe('API key 발급 + bearer auth chain', () => {
   });
 
   test('bearer auth — invalid key 영영 401', async ({request}) => {
-    const resp = await request.get('/api/v1/tasks', {
+    const resp = await request.get('/project/plan1/api/v1/tasks', {
       headers: {Authorization: 'Bearer plan1_api_invalid000000000000000000000000000000000000'}
     });
     expect(resp.status()).toBe(401);
@@ -66,19 +66,19 @@ test.describe('API key 발급 + bearer auth chain', () => {
   });
 
   test('bearer auth — missing Authorization header 영영 401', async ({request}) => {
-    const resp = await request.get('/api/v1/tasks');
+    const resp = await request.get('/project/plan1/api/v1/tasks');
     expect(resp.status()).toBe(401);
   });
 
   test('bearer auth — 잘못된 prefix 영영 401', async ({request}) => {
-    const resp = await request.get('/api/v1/tasks', {
+    const resp = await request.get('/project/plan1/api/v1/tasks', {
       headers: {Authorization: 'Bearer wrong_prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
     });
     expect(resp.status()).toBe(401);
   });
 
   test('CORS preflight — OPTIONS 영영 204 + Allow-Origin/Methods/Headers', async ({request}) => {
-    const resp = await request.fetch('/api/v1/tasks', {
+    const resp = await request.fetch('/project/plan1/api/v1/tasks', {
       method: 'OPTIONS',
       headers: {
         Origin: 'https://example.com',
@@ -93,7 +93,7 @@ test.describe('API key 발급 + bearer auth chain', () => {
   });
 
   test('OpenAPI spec endpoint 박힘 + public (Bearer auth X)', async ({request}) => {
-    const resp = await request.get('/api/v1/openapi.json');
+    const resp = await request.get('/project/plan1/api/v1/openapi.json');
     expect(resp.status()).toBe(200);
     const spec = await resp.json();
     expect(spec.openapi).toMatch(/^3\.1/);
