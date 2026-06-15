@@ -9,7 +9,8 @@
     "creditsPlaceholder": "—",
     "guest": "게스트",
     "logout": "로그아웃",
-    "languageLabel": "언어"
+    "languageLabel": "언어",
+    "settingsLink": "설정"
   },
   "nav": {
     "newSchedule": "새 스케줄",

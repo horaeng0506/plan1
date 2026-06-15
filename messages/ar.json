@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "ضيف",
         "languageLabel": "اللغة",
-        "logout": "تسجيل الخروج"
+        "logout": "تسجيل الخروج",
+        "settingsLink": "الإعدادات"
     },
     "undo": {
         "actionLabel": "التراجع متاح",

@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "convidado",
         "languageLabel": "idioma",
-        "logout": "sair"
+        "logout": "sair",
+        "settingsLink": "configurações"
     },
     "undo": {
         "actionLabel": "desfazer disponível",

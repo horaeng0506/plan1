@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "ゲスト",
         "languageLabel": "言語",
-        "logout": "ログアウト"
+        "logout": "ログアウト",
+        "settingsLink": "設定"
     },
     "undo": {
         "actionLabel": "元に戻すが可能です",

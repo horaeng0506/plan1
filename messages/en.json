@@ -9,7 +9,8 @@
     "creditsPlaceholder": "—",
     "guest": "guest",
     "logout": "logout",
-    "languageLabel": "language"
+    "languageLabel": "language",
+    "settingsLink": "settings"
   },
   "nav": {
     "newSchedule": "new",

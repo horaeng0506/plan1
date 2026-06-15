@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "гость",
         "languageLabel": "язык",
-        "logout": "выйти"
+        "logout": "выйти",
+        "settingsLink": "настройки"
     },
     "undo": {
         "actionLabel": "отмена доступна",

@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "invitado",
         "languageLabel": "idioma",
-        "logout": "cerrar sesión"
+        "logout": "cerrar sesión",
+        "settingsLink": "configuración"
     },
     "undo": {
         "actionLabel": "deshacer disponible",
