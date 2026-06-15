@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "अतिथि",
         "languageLabel": "भाषा",
-        "logout": "लॉगआउट"
+        "logout": "लॉगआउट",
+        "settingsLink": "सेटिंग्स"
     },
     "undo": {
         "actionLabel": "पूर्ववत उपलब्ध",

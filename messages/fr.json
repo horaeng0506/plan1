@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "invité",
         "languageLabel": "langue",
-        "logout": "déconnexion"
+        "logout": "déconnexion",
+        "settingsLink": "paramètres"
     },
     "undo": {
         "actionLabel": "annulation disponible",

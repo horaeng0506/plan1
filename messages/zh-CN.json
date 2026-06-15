@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "访客",
         "languageLabel": "语言",
-        "logout": "登出"
+        "logout": "登出",
+        "settingsLink": "设置"
     },
     "undo": {
         "actionLabel": "可撤销",

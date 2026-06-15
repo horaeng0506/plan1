@@ -253,7 +253,8 @@
         "creditsPlaceholder": "—",
         "guest": "Gast",
         "languageLabel": "Sprache",
-        "logout": "Abmelden"
+        "logout": "Abmelden",
+        "settingsLink": "Einstellungen"
     },
     "undo": {
         "actionLabel": "Rückgängig verfügbar",
