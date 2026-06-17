@@ -105,7 +105,8 @@ export async function deleteCategoryCore(
       throw new ApiError(
         'category_has_schedules',
         409,
-        `Category has ${scheduleCount} schedule(s); pass force=true to cascade delete`
+        `Category has ${scheduleCount} schedule(s); pass force=true to cascade delete`,
+        {scheduleCount}
       );
     }
   }

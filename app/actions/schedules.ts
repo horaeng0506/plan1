@@ -1,146 +1,37 @@
 'use server';
 
 /**
- * 스케줄 CRUD + cascade(Stage 18) server actions.
+ * 스케줄 CRUD + cascade server actions.
  *
- * PLAN1-WH-FOCUS-20260504 — splitByWorkingHours 폐기 (working hours 기능 자체 제거).
- * PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q25) — splitFrom · cleanOrphans · is-split-cont 잔존 코드 일괄 폐기.
- * schema 의 splitFrom column 은 S12 portal repo 에서 drop 예정 — 그 전엔 INSERT/SELECT 코드 영역만 폐기.
+ * A4-1 (2026-06-17): 비즈니스 로직을 `lib/server/schedule-core` 단일 코어로 통합 (정공법).
+ *   - 이전: 자체 loadUserState·syncSchedules·rowToDomain·cascade 직접 호출 → 코어와 거의 복붙 중복.
+ *   - 지금: 코어 *Core 함수 호출 + `WEB_GUARDS`(overlap·concurrency guard off) → **기존 웹 동작 불변**.
+ *   - 코어의 `ApiError(code)` 는 `callCore` 어댑터가 `ServerActionError(i18n key)` 로 변환
+ *     (정상 에러가 runAction catch-all 에서 error.unknown 으로 뭉개지는 것 차단).
+ *   - guard 도입(동작 개선)은 A4-2 별도 사이클 (lock-out 사전 실측 + 클라 409 핸들링 + i18n).
  *
- * Stage 5.1 part 2: 사용자 facing error 는 ServerActionError throw → runAction 이
- * discriminated union return 으로 변환 (Next.js prod redact 회피).
+ * Stage 5.1 part 2: 사용자 facing error 는 ServerActionError 로 표면화 → runAction 이
+ *   discriminated union return 으로 변환 (Next.js prod redact 회피).
  */
 
-import {randomUUID} from 'node:crypto';
-import {and, eq} from 'drizzle-orm';
-import type {BatchItem} from 'drizzle-orm/batch';
-import {db} from '@/lib/db';
-import {plan1Categories, plan1Schedules} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
-import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
-import {cascade} from '@/lib/domain/cascade';
-import {insertBetweenList} from '@/lib/domain/insert-between';
+import {runAction, type ServerActionResult} from '@/lib/server-action';
+import {callCore} from '@/lib/server/action-error-adapter';
+import {
+  createScheduleCore,
+  updateScheduleCore,
+  deleteScheduleCore,
+  completeScheduleCore,
+  insertScheduleBetweenCore,
+  listSchedulesCore,
+  WEB_GUARDS
+} from '@/lib/server/schedule-core';
 import type {Schedule} from '@/lib/domain/types';
-
-type ScheduleRow = typeof plan1Schedules.$inferSelect;
-
-function rowToDomain(row: ScheduleRow): Schedule {
-  return {
-    id: row.id,
-    title: row.title,
-    categoryId: row.categoryId,
-    startAt: row.startAt.getTime(),
-    durationMin: row.durationMin,
-    actualDurationMin: row.actualDurationMin ?? undefined,
-    timerType: row.timerType,
-    status: row.status,
-    chainedToPrev: row.chainedToPrev,
-    createdAt: row.createdAt.getTime(),
-    updatedAt: row.updatedAt.getTime()
-  };
-}
-
-async function loadUserState(
-  userId: string,
-  ownerCategoryId?: string
-): Promise<{schedules: Schedule[]}> {
-  if (ownerCategoryId !== undefined) {
-    const [ownerRows, scheduleRows] = await db.batch([
-      db
-        .select({id: plan1Categories.id})
-        .from(plan1Categories)
-        .where(
-          and(eq(plan1Categories.id, ownerCategoryId), eq(plan1Categories.userId, userId))
-        )
-        .limit(1),
-      db.select().from(plan1Schedules).where(eq(plan1Schedules.userId, userId))
-    ]);
-    if (!ownerRows[0]) throw new ServerActionError('serverError.categoryNotFound');
-    return {schedules: scheduleRows.map(rowToDomain)};
-  }
-
-  const scheduleRows = await db
-    .select()
-    .from(plan1Schedules)
-    .where(eq(plan1Schedules.userId, userId));
-  return {schedules: scheduleRows.map(rowToDomain)};
-}
-
-/**
- * cascade 결과 schedule[] 을 DB 와 동기화.
- * 신규 = INSERT, 기존 = UPDATE → 통합 UPSERT. DB 에 있으나 결과에 없는 것 = DELETE.
- *
- * Track 1.5 fix (2026-04-29): db.transaction → db.batch (1 round-trip atomic · rollback 보장)
- *
- * logic-critic [높] race fix (2026-04-29): existingIds (loadUserState 시점 snapshot)
- * 에 의존하던 INSERT/UPDATE 분기를 `INSERT ... ON CONFLICT (id) DO UPDATE` 통합 UPSERT 로 변경.
- */
-async function syncSchedules(
-  userId: string,
-  dbExistingIds: Set<string>,
-  next: Schedule[]
-): Promise<void> {
-  const nextIds = new Set(next.map(s => s.id));
-  const queries: BatchItem<'pg'>[] = [];
-
-  for (const id of Array.from(dbExistingIds)) {
-    if (!nextIds.has(id)) {
-      queries.push(
-        db
-          .delete(plan1Schedules)
-          .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, userId)))
-      );
-    }
-  }
-
-  for (const s of next) {
-    const values = {
-      id: s.id,
-      userId,
-      title: s.title,
-      categoryId: s.categoryId,
-      startAt: new Date(s.startAt),
-      durationMin: s.durationMin,
-      actualDurationMin: s.actualDurationMin ?? null,
-      timerType: s.timerType,
-      status: s.status,
-      // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q6): chainedToPrev 디폴트 true
-      chainedToPrev: s.chainedToPrev ?? true,
-      updatedAt: new Date()
-    };
-    queries.push(
-      db
-        .insert(plan1Schedules)
-        .values(values)
-        .onConflictDoUpdate({
-          target: plan1Schedules.id,
-          set: {
-            title: values.title,
-            categoryId: values.categoryId,
-            startAt: values.startAt,
-            durationMin: values.durationMin,
-            actualDurationMin: values.actualDurationMin,
-            timerType: values.timerType,
-            status: values.status,
-            chainedToPrev: values.chainedToPrev,
-            updatedAt: values.updatedAt
-          }
-        })
-    );
-  }
-
-  if (queries.length === 0) return;
-  await db.batch(queries as [BatchItem<'pg'>, ...BatchItem<'pg'>[]]);
-}
 
 export async function listSchedules(): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    const rows = await db
-      .select()
-      .from(plan1Schedules)
-      .where(eq(plan1Schedules.userId, user.id));
-    return rows.map(rowToDomain);
+    return callCore(() => listSchedulesCore(user.id));
   });
 }
 
@@ -154,69 +45,24 @@ export async function createSchedule(input: {
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    const state = await loadUserState(user.id, input.categoryId);
-    const newSchedule: Schedule = {
-      id: `sch-${randomUUID()}`,
-      title: input.title,
-      categoryId: input.categoryId,
-      startAt: input.startAt,
-      durationMin: input.durationMin,
-      timerType: input.timerType,
-      status: 'pending',
-      // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q6): chainedToPrev 디폴트 true (모든 새 schedule chain).
-      chainedToPrev: input.chainedToPrev ?? true,
-      createdAt: Date.now(),
-      updatedAt: Date.now()
-    };
-    const next = [...state.schedules, newSchedule];
-    const existingIds = new Set(state.schedules.map(s => s.id));
-    await syncSchedules(user.id, existingIds, next);
-    return next;
+    return callCore(() => createScheduleCore(user.id, input, WEB_GUARDS));
   });
 }
 
-// PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — 새 스케줄(A2)을 충돌 스케줄(B) 시작 위치에
-// "사이 삽입". A2가 B 자리로 들어가고 B 시작 시간의 겹친 그룹 + 이후 chained 연속을
-// (A2 길이 + 기존 A–B 갭)만큼 밀기. 갭 보존. 로직 단일 원천: lib/domain/insert-between.
+// PLAN1-SCHEDULE-INSERT-BETWEEN-20260602 — 새 스케줄(A2)을 충돌 스케줄(B) 시작 위치에 "사이 삽입".
+// 로직 단일 원천: lib/domain/insert-between (코어 insertScheduleBetweenCore 경유).
 export async function insertScheduleBetween(input: {
   title: string;
   categoryId: string;
   durationMin: number;
   timerType: 'countup' | 'timer1' | 'countdown';
   conflictId: string;
-  // 클라가 본 충돌 일정 시작시각 — server state 와 불일치 시 TOCTOU 거부 (logic-critic Major).
+  // 클라가 본 충돌 일정 시작시각 — server state 와 불일치 시 TOCTOU 거부 (코어가 검증).
   expectedConflictStart: number;
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    const state = await loadUserState(user.id, input.categoryId);
-    // TOCTOU 가드: 클라 snapshot 이후 다른 탭/기기가 충돌 일정을 변경·삭제했으면 거부.
-    // 엉뚱한 위치 삽입 차단 — 사용자에게 "다시 시도" 안내.
-    const conflict = state.schedules.find(s => s.id === input.conflictId);
-    if (!conflict || conflict.startAt !== input.expectedConflictStart) {
-      throw new ServerActionError('serverError.insertBetweenStale');
-    }
-    const newSchedule: Schedule = {
-      id: `sch-${randomUUID()}`,
-      title: input.title,
-      categoryId: input.categoryId,
-      // startAt 은 insertBetweenList 가 conflict 직전 기준으로 재계산 (A.end + gap).
-      startAt: 0,
-      durationMin: input.durationMin,
-      timerType: input.timerType,
-      status: 'pending',
-      chainedToPrev: true,
-      createdAt: Date.now(),
-      updatedAt: Date.now()
-    };
-    const next = insertBetweenList(state.schedules, newSchedule, input.conflictId);
-    // 직전 active 없음(P1) 또는 gap<0(비정상 겹침) → null. 모달이 사전 차단하지만 서버 가드.
-    if (!next) {
-      throw new ServerActionError('serverError.insertBetweenNoPrev');
-    }
-    const existingIds = new Set(state.schedules.map(s => s.id));
-    await syncSchedules(user.id, existingIds, next);
-    return next;
+    return callCore(() => insertScheduleBetweenCore(user.id, input, WEB_GUARDS));
   });
 }
 
@@ -231,40 +77,14 @@ export async function updateSchedule(input: {
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    const state = await loadUserState(user.id, input.categoryId);
-    const target = state.schedules.find(s => s.id === input.id);
-    if (!target) throw new ServerActionError('serverError.scheduleNotFound');
-
-    // logic-critic Major: 메타 patch 를 cascade 전에 적용 (chainedToPrev 변경이 cascade 에 즉시 반영)
-    const metaPatched = state.schedules.map(s =>
-      s.id === input.id
-        ? {
-            ...s,
-            title: input.title ?? s.title,
-            categoryId: input.categoryId ?? s.categoryId,
-            timerType: input.timerType ?? s.timerType,
-            chainedToPrev: input.chainedToPrev ?? s.chainedToPrev
-          }
-        : s
-    );
-
-    // cascade 는 startAt/duration 변경 시만 의미. 기타 필드만 patch 인 경우 cascade 가 delta=0 이라 noop.
-    const newStartAt = input.startAt ?? target.startAt;
-    const newDuration = input.durationMin ?? target.durationMin;
-    const cascaded = cascade(metaPatched, input.id, newStartAt, newDuration);
-
-    const existingIds = new Set(state.schedules.map(s => s.id));
-    await syncSchedules(user.id, existingIds, cascaded);
-    return cascaded;
+    return callCore(() => updateScheduleCore(user.id, input, WEB_GUARDS));
   });
 }
 
 export async function deleteSchedule(id: string): Promise<ServerActionResult<void>> {
   return runAction(async () => {
     const user = await requireUser();
-    await db
-      .delete(plan1Schedules)
-      .where(and(eq(plan1Schedules.id, id), eq(plan1Schedules.userId, user.id)));
+    return callCore(() => deleteScheduleCore(user.id, id));
   });
 }
 
@@ -274,38 +94,6 @@ export async function completeSchedule(input: {
 }): Promise<ServerActionResult<Schedule[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    const state = await loadUserState(user.id);
-    const target = state.schedules.find(s => s.id === input.id);
-    if (!target) throw new ServerActionError('serverError.scheduleNotFound');
-
-    const originalDuration = target.durationMin;
-    const actualMin = Math.max(0, Math.round((input.completeAtMs - target.startAt) / 60_000));
-
-    // cascade 는 delta 계산 위해 actualMin 을 newDuration 으로 받음 (뒤 chain shift).
-    // 그러나 edited schedule 자체는 durationMin 원래 값 보존 + actualDurationMin 별도 patch
-    // (logic-critic Critical #3 — planned vs actual 비교 데이터 보존).
-    const cascaded = cascade(state.schedules, input.id, target.startAt, actualMin).map(s =>
-      s.id === input.id
-        ? {
-            ...s,
-            durationMin: originalDuration,
-            status: 'done' as const,
-            actualDurationMin: actualMin
-          }
-        : s
-    );
-
-    const existingIds = new Set(state.schedules.map(s => s.id));
-    await syncSchedules(user.id, existingIds, cascaded);
-    // PLAN1-TASKS-BUCKET-CUSTOM-20260531 (N5) — 완료 시각 기록 (되돌아보기 모달 표시용).
-    // syncSchedules 가 도메인 기준 write(completedAt 미포함) 하므로 그 뒤 타겟 UPDATE 로 보강.
-    await db
-      .update(plan1Schedules)
-      .set({completedAt: new Date(input.completeAtMs)})
-      .where(and(eq(plan1Schedules.id, input.id), eq(plan1Schedules.userId, user.id)));
-    return cascaded;
+    return callCore(() => completeScheduleCore(user.id, input, WEB_GUARDS));
   });
 }
-
-// PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q25): cleanOrphans 함수 폐기 (split 메커니즘 자체 폐기).
-// 옛 splitFrom row 는 S12 portal repo column drop 시 자연 삭제 (FK CASCADE).

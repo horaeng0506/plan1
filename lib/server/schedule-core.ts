@@ -28,6 +28,7 @@ import {
   isConcurrencyConflict,
   type SnapshotRow
 } from '@/lib/server/concurrency-guard';
+import {type WriteGuards, REST_GUARDS, WEB_GUARDS} from '@/lib/server/schedule-guards';
 
 type ScheduleRow = typeof plan1Schedules.$inferSelect;
 
@@ -55,6 +56,10 @@ export class ScheduleError extends ApiError {
     this.name = 'ScheduleError';
   }
 }
+
+// write guard 토글 (db 의존 없는 순수 상수 — schedule-guards 로 분리해 단위 test import 안전).
+// 웹 schedules.ts 등 기존 import 경로 보존 위해 re-export.
+export {type WriteGuards, REST_GUARDS, WEB_GUARDS};
 
 function rowToDomain(row: ScheduleRow): Schedule {
   return {
@@ -112,10 +117,12 @@ function snapshotRows(schedules: Schedule[]): SnapshotRow[] {
 async function writeSchedules(
   userId: string,
   snapshot: Schedule[],
-  next: Schedule[]
+  next: Schedule[],
+  guards: WriteGuards
 ): Promise<void> {
   // 서버측 overlap 검증 — MAX_OVERLAP 위반 결과는 거부 (API 우회 무방비 차단).
-  if (exceedsMaxOverlap(next, MAX_OVERLAP)) {
+  // A4-1 웹은 off (기존 동작 불변 · 클라 모달이 차단 · prod 기존 데이터 lock-out 회피).
+  if (guards.enforceOverlap && exceedsMaxOverlap(next, MAX_OVERLAP)) {
     throw new ScheduleError('overlap_exceeded');
   }
 
@@ -124,7 +131,10 @@ async function writeSchedules(
   const queries: BatchItem<'pg'>[] = [];
 
   // [0] 낙관적 동시성 guard — 스냅샷과 현재 DB 집합 불일치 시 batch 전체 롤백.
-  queries.push(db.execute(buildConcurrencyGuardSql(userId, snapshotRows(snapshot))));
+  // A4-1 웹은 off (기존 last-write-wins 동작 불변).
+  if (guards.enforceConcurrency) {
+    queries.push(db.execute(buildConcurrencyGuardSql(userId, snapshotRows(snapshot))));
+  }
 
   // DELETE: 스냅샷에 있었으나 결과에 없는 것.
   for (const id of snapshotIds) {
@@ -173,10 +183,13 @@ async function writeSchedules(
     );
   }
 
+  // guard off + DELETE/UPSERT 둘 다 없는 경우 (이론상 next 비고 snapshot 비면) no-op.
+  if (queries.length === 0) return;
+
   try {
     await db.batch(queries as [BatchItem<'pg'>, ...BatchItem<'pg'>[]]);
   } catch (e) {
-    if (isConcurrencyConflict(e)) {
+    if (guards.enforceConcurrency && isConcurrencyConflict(e)) {
       throw new ScheduleError('concurrency_conflict');
     }
     throw e;
@@ -206,7 +219,8 @@ export interface CreateScheduleInput {
 
 export async function createScheduleCore(
   userId: string,
-  input: CreateScheduleInput
+  input: CreateScheduleInput,
+  guards: WriteGuards = REST_GUARDS
 ): Promise<Schedule[]> {
   const state = await loadUserState(userId, input.categoryId);
   const now = Date.now();
@@ -223,7 +237,7 @@ export async function createScheduleCore(
     updatedAt: now
   };
   const next = [...state.schedules, newSchedule];
-  await writeSchedules(userId, state.schedules, next);
+  await writeSchedules(userId, state.schedules, next, guards);
   return next;
 }
 
@@ -239,7 +253,8 @@ export interface UpdateScheduleInput {
 
 export async function updateScheduleCore(
   userId: string,
-  input: UpdateScheduleInput
+  input: UpdateScheduleInput,
+  guards: WriteGuards = REST_GUARDS
 ): Promise<Schedule[]> {
   const state = await loadUserState(userId, input.categoryId);
   const target = state.schedules.find(s => s.id === input.id);
@@ -262,7 +277,7 @@ export async function updateScheduleCore(
   const newDuration = input.durationMin ?? target.durationMin;
   const cascaded = cascade(metaPatched, input.id, newStartAt, newDuration);
 
-  await writeSchedules(userId, state.schedules, cascaded);
+  await writeSchedules(userId, state.schedules, cascaded, guards);
   return cascaded;
 }
 
@@ -280,7 +295,8 @@ export interface CompleteScheduleInput {
 
 export async function completeScheduleCore(
   userId: string,
-  input: CompleteScheduleInput
+  input: CompleteScheduleInput,
+  guards: WriteGuards = REST_GUARDS
 ): Promise<Schedule[]> {
   const state = await loadUserState(userId);
   const target = state.schedules.find(s => s.id === input.id);
@@ -302,7 +318,7 @@ export async function completeScheduleCore(
       : s
   );
 
-  await writeSchedules(userId, state.schedules, cascaded);
+  await writeSchedules(userId, state.schedules, cascaded, guards);
   // completedAt 보강 (syncSchedules 는 도메인 기준 write 라 completedAt 미포함 · web 정합).
   await db
     .update(plan1Schedules)
@@ -323,7 +339,8 @@ export interface InsertBetweenInput {
 
 export async function insertScheduleBetweenCore(
   userId: string,
-  input: InsertBetweenInput
+  input: InsertBetweenInput,
+  guards: WriteGuards = REST_GUARDS
 ): Promise<Schedule[]> {
   const state = await loadUserState(userId, input.categoryId);
   const conflict = state.schedules.find(s => s.id === input.conflictId);
@@ -347,6 +364,6 @@ export async function insertScheduleBetweenCore(
   if (!next) {
     throw new ScheduleError('insert_between_no_prev');
   }
-  await writeSchedules(userId, state.schedules, next);
+  await writeSchedules(userId, state.schedules, next, guards);
   return next;
 }

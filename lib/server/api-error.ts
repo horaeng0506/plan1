@@ -5,11 +5,20 @@
 export class ApiError extends Error {
   readonly code: string;
   readonly status: number;
-  constructor(code: string, status: number, message?: string) {
+  /** 사용자 facing 메시지에 끼울 구조화 파라미터 (예: category_has_schedules 의 scheduleCount).
+   *  A4 웹 전환 시 ServerActionError 의 i18n params 로 보존된다. */
+  readonly params?: Record<string, string | number>;
+  constructor(
+    code: string,
+    status: number,
+    message?: string,
+    params?: Record<string, string | number>
+  ) {
     super(message ?? code);
     this.name = 'ApiError';
     this.code = code;
     this.status = status;
+    this.params = params;
   }
 }
 
