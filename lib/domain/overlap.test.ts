@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { findOverlapping, exceedsMaxOverlap, MAX_OVERLAP } from './overlap';
+import { findOverlapping, exceedsMaxOverlap, maxConcurrency, mutationExceedsOverlap, MAX_OVERLAP } from './overlap';
 import type { Schedule } from './types';
 
 function mk(
@@ -127,5 +127,56 @@ describe('exceedsMaxOverlap', () => {
   it('max=1 (single-lane) → 2 concurrent exceeds', () => {
     const list = [mk('a', t9am, 60), mk('b', t9am, 60)];
     expect(exceedsMaxOverlap(list, 1)).toBe(true);
+  });
+});
+
+// PLAN1-OVERLAP-FIX-20260619 — 최대 동시수 peak.
+describe('maxConcurrency', () => {
+  it('empty → 0', () => expect(maxConcurrency([])).toBe(0));
+  it('1 lane chain → 1', () => {
+    expect(maxConcurrency([mk('a', t9am, 60), mk('b', t10am, 60)])).toBe(1);
+  });
+  it('2 simultaneous → 2', () => {
+    expect(maxConcurrency([mk('a', t9am, 60), mk('b', t9am, 60)])).toBe(2);
+  });
+  it('3 simultaneous → 3', () => {
+    expect(maxConcurrency([mk('a', t9am, 60), mk('b', t9am, 60), mk('c', t9am, 60)])).toBe(3);
+  });
+  it('done excluded', () => {
+    expect(maxConcurrency([mk('a', t9am, 60), mk('b', t9am, 60, 'done')])).toBe(1);
+  });
+});
+
+// delta 스코프 — 이번 변경이 만든 신규 위반만 거부 (과거 누적 lock-out 해소).
+describe('mutationExceedsOverlap', () => {
+  it('clean prev + next adds 3rd at same time → true (신규 위반 거부)', () => {
+    const prev = [mk('a', t9am, 60), mk('b', t9am, 60)]; // 2
+    const next = [...prev, mk('c', t9am, 60)]; // 3
+    expect(mutationExceedsOverlap(prev, next, MAX_OVERLAP)).toBe(true);
+  });
+
+  it('clean prev + next adds non-overlapping → false', () => {
+    const prev = [mk('a', t9am, 60)];
+    const next = [...prev, mk('b', t11am, 60)];
+    expect(mutationExceedsOverlap(prev, next, MAX_OVERLAP)).toBe(false);
+  });
+
+  it('⚡ prev 가 이미 3중(과거 누적) + 무관한 곳에 2중 추가 → false (lock-out 해소)', () => {
+    // 과거 시각 t9am 에 이미 3중 누적(미완료). 오늘 무관한 t11am 에 일반 일정 추가.
+    const stale = [mk('s1', t9am, 60), mk('s2', t9am, 60), mk('s3', t9am, 60)]; // 3
+    const next = [...stale, mk('new', t11am, 60)]; // 여전히 peak 3 (t9am), 신규 위반 아님
+    expect(mutationExceedsOverlap(stale, next, MAX_OVERLAP)).toBe(false);
+  });
+
+  it('prev 가 이미 3중 + 그 시각을 4중으로 악화 → true', () => {
+    const stale = [mk('s1', t9am, 60), mk('s2', t9am, 60), mk('s3', t9am, 60)]; // 3
+    const next = [...stale, mk('s4', t9am, 60)]; // 4 (악화)
+    expect(mutationExceedsOverlap(stale, next, MAX_OVERLAP)).toBe(true);
+  });
+
+  it('prev 2 → next 2 (변동 없음) → false', () => {
+    const prev = [mk('a', t9am, 60), mk('b', t9am, 60)];
+    const next = [mk('a', t9am, 60), mk('b', t9am, 90)]; // 여전히 2
+    expect(mutationExceedsOverlap(prev, next, MAX_OVERLAP)).toBe(false);
   });
 });
