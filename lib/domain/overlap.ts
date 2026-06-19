@@ -48,6 +48,14 @@ export function findOverlapping(
  *   - durationMin ≤ 0 (점유 구간 없음) 은 무시
  */
 export function exceedsMaxOverlap(schedules: Schedule[], max: number): boolean {
+  return maxConcurrency(schedules) > max;
+}
+
+/**
+ * 주어진 스케줄 집합의 최대 동시 진행 수 (sweep-line). done·점유 0 구간 제외,
+ * back-to-back 미계수 (exceedsMaxOverlap 과 동일 규칙).
+ */
+export function maxConcurrency(schedules: Schedule[]): number {
   const events: Array<{t: number; delta: number}> = [];
   for (const s of schedules) {
     if (s.status === 'done') continue;
@@ -59,9 +67,24 @@ export function exceedsMaxOverlap(schedules: Schedule[], max: number): boolean {
   // 같은 시각: end(-1) 를 start(+1) 보다 먼저 → back-to-back 미계수.
   events.sort((a, b) => a.t - b.t || a.delta - b.delta);
   let concurrent = 0;
+  let peak = 0;
   for (const e of events) {
     concurrent += e.delta;
-    if (concurrent > max) return true;
+    if (concurrent > peak) peak = concurrent;
   }
-  return false;
+  return peak;
+}
+
+/**
+ * mutation(prev→next)이 overlap 한계를 **새로** 위반하는지 (delta 스코프 · PLAN1-OVERLAP-FIX-20260619).
+ *
+ * 정책: "이번 변경이 만든 신규 위반만 거부". 과거 누적(prev 가 이미 위반)으로 인한 무관한 거부 차단.
+ *   - next 의 최대 동시수가 `max` 와 prev 의 최대 동시수 중 큰 값을 초과할 때만 위반.
+ *   - 즉 깨끗한 상태(prev≤max)에서는 max 초과 차단, 이미 위반(prev>max) 상태에서는 "더 악화"만 차단.
+ *
+ * 근거: loadUserState 가 전 날짜 전체를 로드 → 과거 미완료 누적이 무관한 생성을 422 로 거부하던 버그.
+ */
+export function mutationExceedsOverlap(prev: Schedule[], next: Schedule[], max: number): boolean {
+  const limit = Math.max(max, maxConcurrency(prev));
+  return maxConcurrency(next) > limit;
 }

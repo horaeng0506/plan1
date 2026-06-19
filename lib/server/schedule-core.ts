@@ -20,7 +20,7 @@ import {db} from '@/lib/db';
 import {plan1Categories, plan1Schedules} from '@/lib/db/schema';
 import {cascade} from '@/lib/domain/cascade';
 import {insertBetweenList} from '@/lib/domain/insert-between';
-import {exceedsMaxOverlap, MAX_OVERLAP} from '@/lib/domain/overlap';
+import {mutationExceedsOverlap, MAX_OVERLAP} from '@/lib/domain/overlap';
 import type {Schedule, TimerType} from '@/lib/domain/types';
 import {ApiError} from '@/lib/server/api-error';
 import {
@@ -120,9 +120,12 @@ async function writeSchedules(
   next: Schedule[],
   guards: WriteGuards
 ): Promise<void> {
-  // 서버측 overlap 검증 — MAX_OVERLAP 위반 결과는 거부 (API 우회 무방비 차단).
-  // A4-1 웹은 off (기존 동작 불변 · 클라 모달이 차단 · prod 기존 데이터 lock-out 회피).
-  if (guards.enforceOverlap && exceedsMaxOverlap(next, MAX_OVERLAP)) {
+  // 서버측 overlap 검증 — 이번 mutation 이 **새로** 만든 위반만 거부 (delta 스코프).
+  // PLAN1-OVERLAP-FIX-20260619: 종전 exceedsMaxOverlap(next) 는 전 날짜 전체를 검사해
+  // 과거 미완료 누적(loadUserState 가 날짜 무관 전량 로드)으로 무관한 생성까지 422 거부했다.
+  // 이제 prev(snapshot) 대비 악화된 경우만 거부 → 누적 데이터로 인한 lock-out 해소.
+  // A4-1 웹은 off (기존 동작 불변 · 클라 모달이 차단).
+  if (guards.enforceOverlap && mutationExceedsOverlap(snapshot, next, MAX_OVERLAP)) {
     throw new ScheduleError('overlap_exceeded');
   }
 
@@ -303,7 +306,11 @@ export async function completeScheduleCore(
   if (!target) throw new ScheduleError('schedule_not_found');
 
   const originalDuration = target.durationMin;
-  const actualMin = Math.max(0, Math.round((input.completeAtMs - target.startAt) / 60_000));
+  // 과거(예: 수개월 전) 미완료를 뒤늦게 완료하면 completeAtMs−startAt 가 거대해져 cascade delta 를
+  // 오염(후속 chained 일정을 미래로 폭주 이동)시킨다. 일일 플래너 특성상 단일 일정 ≤ 24h 로 clamp.
+  // PLAN1-OVERLAP-FIX-20260619.
+  const MAX_ACTUAL_MIN = 1440;
+  const actualMin = Math.min(MAX_ACTUAL_MIN, Math.max(0, Math.round((input.completeAtMs - target.startAt) / 60_000)));
 
   // cascade 는 delta 전파에 actualMin 을 쓰되, edited schedule 자체는 durationMin 보존 +
   // actualDurationMin 별도 patch (planned vs actual 보존 · web 정합).
