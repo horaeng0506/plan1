@@ -267,6 +267,13 @@ export async function updateScheduleCore(
   // actualDurationMin 에 반영해야 편집이 화면에 보인다(durationMin=계획값은 회고 planned-vs-actual 보존).
   // done 은 cascade active 에서 제외되므로 뒤 일정 shift 없음(overlap/insert-between 정책과 일관).
   if (target.status === 'done') {
+    const nowMs = Date.now();
+    const newStartAt = input.startAt ?? target.startAt;
+    // 완료 일정은 표시가 actual 기준 — 입력 duration 을 effective duration 으로 사용.
+    const newDuration = input.durationMin ?? target.actualDurationMin ?? target.durationMin;
+    const newEnd = newStartAt + newDuration * 60_000;
+    // 새 시간대가 현재 이후까지 걸치면(=다시 진행/예정) 완료 해제 → 타이머에 다시 노출.
+    const reactivate = newEnd > nowMs;
     const patched = state.schedules.map(s =>
       s.id === input.id
         ? {
@@ -275,9 +282,19 @@ export async function updateScheduleCore(
             categoryId: input.categoryId ?? s.categoryId,
             timerType: input.timerType ?? s.timerType,
             chainedToPrev: input.chainedToPrev ?? s.chainedToPrev,
-            startAt: input.startAt ?? s.startAt,
-            actualDurationMin: input.durationMin ?? s.actualDurationMin ?? s.durationMin,
-            updatedAt: Date.now()
+            startAt: newStartAt,
+            ...(reactivate
+              ? {
+                  // 완료 해제 — durationMin 으로 복귀(actual 폐기), 현재 포함이면 active 아니면 pending
+                  status: newStartAt <= nowMs ? ('active' as const) : ('pending' as const),
+                  durationMin: newDuration,
+                  actualDurationMin: undefined
+                }
+              : {
+                  // 과거 완료 유지 — 표시(actual)에 duration 변경 반영(계획값 durationMin 보존)
+                  actualDurationMin: newDuration
+                }),
+            updatedAt: nowMs
           }
         : s
     );
