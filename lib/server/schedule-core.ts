@@ -263,6 +263,28 @@ export async function updateScheduleCore(
   const target = state.schedules.find(s => s.id === input.id);
   if (!target) throw new ScheduleError('schedule_not_found');
 
+  // 완료(done) 일정 편집 — 타임라인 표시는 actualDurationMin(실제 소요) 기준이라, duration 변경을
+  // actualDurationMin 에 반영해야 편집이 화면에 보인다(durationMin=계획값은 회고 planned-vs-actual 보존).
+  // done 은 cascade active 에서 제외되므로 뒤 일정 shift 없음(overlap/insert-between 정책과 일관).
+  if (target.status === 'done') {
+    const patched = state.schedules.map(s =>
+      s.id === input.id
+        ? {
+            ...s,
+            title: input.title ?? s.title,
+            categoryId: input.categoryId ?? s.categoryId,
+            timerType: input.timerType ?? s.timerType,
+            chainedToPrev: input.chainedToPrev ?? s.chainedToPrev,
+            startAt: input.startAt ?? s.startAt,
+            actualDurationMin: input.durationMin ?? s.actualDurationMin ?? s.durationMin,
+            updatedAt: Date.now()
+          }
+        : s
+    );
+    await writeSchedules(userId, state.schedules, patched, guards);
+    return patched;
+  }
+
   // 메타 patch 를 cascade 전에 적용 (chainedToPrev 변경이 cascade 에 즉시 반영 · web 정합).
   const metaPatched = state.schedules.map(s =>
     s.id === input.id

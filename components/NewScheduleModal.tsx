@@ -144,7 +144,10 @@ export function NewScheduleModal({
     if (title === titleDefault) setTitle('');
   };
   const [categoryId, setCategoryId] = useState(editing?.categoryId ?? (categories[0]?.id ?? ''));
-  const [durationMin, setDurationMin] = useState(editing?.durationMin ?? 0);
+  // 완료 일정은 타임라인이 actualDurationMin 으로 표시되므로 편집 시작값도 actual 기준
+  // (보이는 값과 일치 · 저장 시 actualDurationMin 으로 반영). 미완료는 actualDurationMin 이 없어 durationMin.
+  const editingDurationMin = editing ? (editing.actualDurationMin ?? editing.durationMin) : 0;
+  const [durationMin, setDurationMin] = useState(editingDurationMin);
   // PLAN1-FOCUS-VIEW-REDESIGN-20260506 (Q6·Q30): chainedToPrev 디폴트 true. checkbox 유지.
   const [chainedToPrev, setChainedToPrev] = useState(editing?.chainedToPrev ?? true);
   const [catOpen, setCatOpen] = useState(false);
@@ -241,7 +244,7 @@ export function NewScheduleModal({
     ? title.trim() !== editing.title ||
       categoryId !== editing.categoryId ||
       startAt !== editing.startAt ||
-      durationMin !== editing.durationMin ||
+      durationMin !== editingDurationMin ||
       chainedToPrev !== (editing.chainedToPrev ?? false)
     : false;
 
