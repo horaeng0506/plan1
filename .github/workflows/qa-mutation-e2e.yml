@@ -44,7 +44,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       # setup-node 폐기 (2026-05-31) — Playwright 컨테이너 node(22+) 사용. 컨테이너 안
       # setup-node tool-cache 마운트 이슈 회피. next build·vercel·playwright 모두 node 22 호환.
