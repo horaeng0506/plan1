@@ -165,6 +165,7 @@
         "insertBetweenNoPrev": "تعذّر الإدراج — لا يوجد موعد قبل هذا الوقت.",
         "insertBetweenStale": "تغيّر الموعد — يرجى المحاولة مرة أخرى.",
         "scheduleNotFound": "الجدول غير موجود.",
+        "sameTypeOverlap": "يوجد بالفعل جدول من نفس النوع في ذلك الوقت.",
         "taskBucketInvalid": "قيمة الحاوية غير صالحة.",
         "taskBucketLastProtected": "يجب أن تبقى فئة واحدة على الأقل",
         "taskBucketNameEmpty": "اسم الفئة مطلوب",

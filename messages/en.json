@@ -172,6 +172,7 @@
   "serverError": {
     "unauthorized": "Sign in required.",
     "scheduleNotFound": "Schedule not found.",
+    "sameTypeOverlap": "Another schedule of the same type already occupies that time.",
     "categoryNotFound": "Category not found or not owned.",
     "categoryHasSchedules": "Category has {scheduleCount} schedules. Confirm cascade delete to remove.",
     "taskNotFound": "Task not found.",

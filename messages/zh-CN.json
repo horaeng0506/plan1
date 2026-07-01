@@ -165,6 +165,7 @@
         "insertBetweenNoPrev": "无法插入 — 此时间之前没有日程。",
         "insertBetweenStale": "日程已更改 — 请重试。",
         "scheduleNotFound": "未找到计划。",
+        "sameTypeOverlap": "该时间段已有相同类型的日程。",
         "taskBucketInvalid": "无效的bucket值。",
         "taskBucketLastProtected": "至少必须保留一个类别",
         "taskBucketNameEmpty": "类别名称为必填项",

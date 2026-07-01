@@ -93,11 +93,19 @@ describe('callCore', () => {
 });
 
 describe('A4 write guards (동작 분기 고정)', () => {
-  it('WEB_GUARDS — overlap·concurrency 둘 다 off (웹 동작 불변)', () => {
-    expect(WEB_GUARDS).toEqual({enforceOverlap: false, enforceConcurrency: false});
+  it('WEB_GUARDS — overlap·concurrency off · same-type on (S5 규칙 다 동일)', () => {
+    expect(WEB_GUARDS).toEqual({
+      enforceOverlap: false,
+      enforceConcurrency: false,
+      enforceSameTypeOverlap: true
+    });
   });
 
-  it('REST_GUARDS — 둘 다 on (REST 기존 동작 보존)', () => {
-    expect(REST_GUARDS).toEqual({enforceOverlap: true, enforceConcurrency: true});
+  it('REST_GUARDS — 셋 다 on (REST 기존 동작 보존 + same-type)', () => {
+    expect(REST_GUARDS).toEqual({
+      enforceOverlap: true,
+      enforceConcurrency: true,
+      enforceSameTypeOverlap: true
+    });
   });
 });

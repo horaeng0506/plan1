@@ -165,6 +165,7 @@
         "insertBetweenNoPrev": "No se puede insertar — no hay ninguna tarea antes de esta hora.",
         "insertBetweenStale": "El horario cambió — inténtalo de nuevo.",
         "scheduleNotFound": "Horario no encontrado.",
+        "sameTypeOverlap": "Ya hay otra tarea del mismo tipo en ese horario.",
         "taskBucketInvalid": "Valor de bucket inválido.",
         "taskBucketLastProtected": "Debe permanecer al menos una categoría",
         "taskBucketNameEmpty": "El nombre de la categoría es requerido",

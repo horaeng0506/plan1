@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { findOverlapping, exceedsMaxOverlap, maxConcurrency, mutationExceedsOverlap, MAX_OVERLAP } from './overlap';
+import { findOverlapping, exceedsMaxOverlap, maxConcurrency, mutationExceedsOverlap, mutationCreatesSameTypeOverlap, findSameTypeOverlapping, MAX_OVERLAP } from './overlap';
 import type { Schedule } from './types';
 
 function mk(
@@ -19,6 +19,17 @@ function mk(
     createdAt: 0,
     updatedAt: 0,
   };
+}
+
+// chainedToPrev 지정 헬퍼 (S5 같은 종류 겹침 테스트용). true = 연결(1열) · false = 시작 시간 고정(2열).
+function mkc(
+  id: string,
+  startAt: number,
+  durationMin: number,
+  chainedToPrev: boolean,
+  status: Schedule['status'] = 'pending'
+): Schedule {
+  return { ...mk(id, startAt, durationMin, status), chainedToPrev };
 }
 
 const t9am = new Date(2026, 4, 5, 9, 0).getTime();
@@ -178,5 +189,60 @@ describe('mutationExceedsOverlap', () => {
     const prev = [mk('a', t9am, 60), mk('b', t9am, 60)];
     const next = [mk('a', t9am, 60), mk('b', t9am, 90)]; // 여전히 2
     expect(mutationExceedsOverlap(prev, next, MAX_OVERLAP)).toBe(false);
+  });
+});
+
+// S5 — 같은 종류(chainedToPrev) 겹침 불가. 열끼리(연결↔고정)는 겹침 허용.
+describe('mutationCreatesSameTypeOverlap', () => {
+  it('시작 시간 고정 둘이 새로 겹침 → true', () => {
+    const prev = [mkc('a', t9am, 60, false)];
+    const next = [...prev, mkc('b', t9am, 60, false)]; // 고정 2개 9-10 겹침
+    expect(mutationCreatesSameTypeOverlap(prev, next)).toBe(true);
+  });
+
+  it('연결 1 + 고정 1 겹침(다른 열) → false (허용)', () => {
+    const prev: Schedule[] = [];
+    const next = [mkc('a', t9am, 60, true), mkc('b', t9am, 60, false)]; // 연결1+고정1 = 동시2
+    expect(mutationCreatesSameTypeOverlap(prev, next)).toBe(false);
+  });
+
+  it('연결 둘이 새로 겹침 → true', () => {
+    const prev = [mkc('a', t9am, 60, true)];
+    const next = [...prev, mkc('b', t9am, 60, true)];
+    expect(mutationCreatesSameTypeOverlap(prev, next)).toBe(true);
+  });
+
+  it('같은 종류라도 시간 안 겹치면 → false', () => {
+    const prev = [mkc('a', t9am, 60, false)];
+    const next = [...prev, mkc('b', t11am, 60, false)]; // 9-10, 11-12
+    expect(mutationCreatesSameTypeOverlap(prev, next)).toBe(false);
+  });
+
+  it('⚡ prev 가 이미 고정 2중(과거 누적) + 무관한 곳에 고정 추가 → false (lock-out 해소)', () => {
+    const stale = [mkc('s1', t9am, 60, false), mkc('s2', t9am, 60, false)]; // 고정 2중
+    const next = [...stale, mkc('n', t11am, 60, false)]; // 여전히 peak 2, 신규 위반 아님
+    expect(mutationCreatesSameTypeOverlap(stale, next)).toBe(false);
+  });
+
+  it('undefined chainedToPrev 는 고정(false)으로 정규화 → 고정끼리 겹침 true', () => {
+    const prev = [mk('a', t9am, 60)]; // chainedToPrev undefined = 고정
+    const next = [...prev, mkc('b', t9am, 60, false)];
+    expect(mutationCreatesSameTypeOverlap(prev, next)).toBe(true);
+  });
+});
+
+describe('findSameTypeOverlapping', () => {
+  const list = [mkc('fix', t9am, 60, false), mkc('chain', t9am, 60, true)];
+  it('같은 종류(고정)만 반환 — 다른 열(연결) 제외', () => {
+    const r = findSameTypeOverlapping(list, t9am, 60, false);
+    expect(r.map(s => s.id)).toEqual(['fix']);
+  });
+  it('연결 조회 시 연결만 반환', () => {
+    const r = findSameTypeOverlapping(list, t9am, 60, true);
+    expect(r.map(s => s.id)).toEqual(['chain']);
+  });
+  it('excludeId 자기 자신 제외', () => {
+    const r = findSameTypeOverlapping(list, t9am, 60, false, 'fix');
+    expect(r).toEqual([]);
   });
 });
