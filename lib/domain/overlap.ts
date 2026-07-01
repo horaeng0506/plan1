@@ -95,26 +95,50 @@ export function mutationExceedsOverlap(prev: Schedule[], next: Schedule[], max: 
  * 정책 (대장 2026-07-01 결정 · 규칙 다 동일):
  *   - 타임라인 1열 = 연결(chainedToPrev=true) · 2열 = 시작 시간 고정(chainedToPrev=false)
  *   - **같은 열(종류) 안에서는 시간 겹침 금지**. 열끼리는 겹침 허용(연결 1 + 고정 1 = 동시 2, MAX_OVERLAP 정합)
- *   - 연결(1열)은 cascade 로 순차라 자연히 안 겹침 → 실제 트리거는 시작 시간 고정끼리
  *
- * chainedToPrev 는 optional → `!!` 로 정규화(undefined = false = 시작 시간 고정).
- * 한 종류 그룹의 maxConcurrency 가 1 을 넘으면 그 종류 둘이 겹친 것.
+ * 미완료 스케줄 집합에서 같은 종류로 시간이 겹치는 **모든 쌍**의 키 집합을 반환.
+ * 키 = 두 id 를 사전순 결합("idA|idB") — prev/next 간 쌍 동일성(grandfather) 비교용.
+ *
+ * 규칙 (findOverlapping·maxConcurrency 정합):
+ *   - done 상태 제외 · 점유 0 구간(durationMin ≤ 0) 제외
+ *   - back-to-back(a.endAt === b.startAt) 은 겹침 아님
+ *   - 다른 종류(연결↔고정)는 겹쳐도 허용 → 쌍에 넣지 않음
+ *   - chainedToPrev optional → `!!` 정규화(undefined = false = 시작 시간 고정)
  */
-function sameTypePeak(schedules: Schedule[], chained: boolean): number {
-  return maxConcurrency(schedules.filter(s => !!s.chainedToPrev === chained));
+function sameTypeOverlapPairs(schedules: Schedule[]): Set<string> {
+  const active = schedules.filter(s => s.status !== 'done' && s.durationMin > 0);
+  const pairs = new Set<string>();
+  for (let i = 0; i < active.length; i++) {
+    for (let j = i + 1; j < active.length; j++) {
+      const a = active[i];
+      const b = active[j];
+      if (!!a.chainedToPrev !== !!b.chainedToPrev) continue; // 다른 종류 → 허용
+      const aEnd = a.startAt + a.durationMin * 60_000;
+      const bEnd = b.startAt + b.durationMin * 60_000;
+      if (a.startAt < bEnd && b.startAt < aEnd) {
+        pairs.add(a.id < b.id ? `${a.id}|${b.id}` : `${b.id}|${a.id}`);
+      }
+    }
+  }
+  return pairs;
 }
 
 /**
- * mutation(prev→next)이 같은 종류 겹침을 **새로** 만드는지 (delta 스코프 · mutationExceedsOverlap 과 동일 철학).
+ * mutation(prev→next)이 같은 종류 겹침을 **새로** 만드는지 (delta 스코프 · 쌍 기반).
  *
- * 정책: "이번 변경이 만든 신규 위반만 거부". 과거 누적(prev 가 이미 같은 종류 겹침)으로 인한
- *   무관한 거부 차단 — loadUserState 가 전 날짜 전량 로드하므로 필수.
- *   - 각 종류(연결/고정)별로 next 그룹 peak 이 max(1, prev 그룹 peak) 을 초과하면 위반.
+ * 정책: "이번 변경이 만든 신규 위반만 거부". 과거 누적(prev 가 이미 같은 종류 겹침)은
+ *   grandfather — 그 **쌍** 은 다시 거부하지 않되, next 에만 있는 **새 겹침 쌍** 이 생기면 거부.
+ *   loadUserState 가 전 날짜 전량 로드하므로 무관한 과거 겹침으로 인한 lock-out 방지 필수.
+ *
+ * ⚡ 종전 global-peak(종류별 maxConcurrency 비교) 방식 버그 (PLAN1-SAME-TYPE-OVERLAP-FIX-20260701):
+ *   과거 겹침(peak 2)이 있으면 전혀 다른 시간대의 새 같은-종류 겹침(역시 peak 2)을
+ *   "peak 안 늘었다"며 통과시켰다 (대장 실기 catch: 기본 연결 2개가 겹쳐 저장됨).
+ *   쌍 기반은 각 겹침을 개별 식별 → 무관한 과거 겹침 grandfather + 신규 겹침 정확 거부.
  */
 export function mutationCreatesSameTypeOverlap(prev: Schedule[], next: Schedule[]): boolean {
-  for (const chained of [true, false]) {
-    const limit = Math.max(1, sameTypePeak(prev, chained));
-    if (sameTypePeak(next, chained) > limit) return true;
+  const prevPairs = sameTypeOverlapPairs(prev);
+  for (const key of sameTypeOverlapPairs(next)) {
+    if (!prevPairs.has(key)) return true;
   }
   return false;
 }

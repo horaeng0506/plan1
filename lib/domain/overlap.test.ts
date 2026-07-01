@@ -224,6 +224,20 @@ describe('mutationCreatesSameTypeOverlap', () => {
     expect(mutationCreatesSameTypeOverlap(stale, next)).toBe(false);
   });
 
+  it('⚡ prev 가 이미 겹침(과거 누적) + 다른 시간대에 새 같은 종류 겹침 → true (global-peak 버그 회귀)', () => {
+    // PLAN1-SAME-TYPE-OVERLAP-FIX-20260701 대장 실기 catch: 옛 규칙 겹침 쌍이 있으면
+    // 전 종전 global-peak 방식은 peak 이 안 늘어 새 겹침(z,w)을 통과시켰다.
+    const stale = [mkc('s1', t9am, 60, true), mkc('s2', t9am, 60, true)]; // 연결 2개 9-10 겹침(과거)
+    const next = [...stale, mkc('z', t11am, 60, true), mkc('w', t11am, 60, true)]; // 연결 2개 11-12 새 겹침
+    expect(mutationCreatesSameTypeOverlap(stale, next)).toBe(true);
+  });
+
+  it('⚡ prev 겹침 쌍이 next 에 그대로 유지(같은 id) → false (grandfather 재거부 안 함)', () => {
+    const stale = [mkc('s1', t9am, 60, true), mkc('s2', t9am, 60, true)]; // 연결 2개 겹침
+    const next = [mkc('s1', t9am, 60, true), mkc('s2', t9am, 60, true)]; // 동일 쌍 유지
+    expect(mutationCreatesSameTypeOverlap(stale, next)).toBe(false);
+  });
+
   it('undefined chainedToPrev 는 고정(false)으로 정규화 → 고정끼리 겹침 true', () => {
     const prev = [mk('a', t9am, 60)]; // chainedToPrev undefined = 고정
     const next = [...prev, mkc('b', t9am, 60, false)];
