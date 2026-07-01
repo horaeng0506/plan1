@@ -165,6 +165,7 @@
         "insertBetweenNoPrev": "Einfügen nicht möglich — kein Termin vor dieser Zeit.",
         "insertBetweenStale": "Termin geändert — bitte erneut versuchen.",
         "scheduleNotFound": "Termin nicht gefunden.",
+        "sameTypeOverlap": "Zu dieser Zeit gibt es bereits eine Aufgabe derselben Art.",
         "taskBucketInvalid": "Ungültiger Bucket-Wert.",
         "taskBucketLastProtected": "Mindestens eine Kategorie muss verbleiben",
         "taskBucketNameEmpty": "Kategoriename ist erforderlich",

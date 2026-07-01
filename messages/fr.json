@@ -165,6 +165,7 @@
         "insertBetweenNoPrev": "Insertion impossible — aucun créneau avant cette heure.",
         "insertBetweenStale": "Le créneau a changé — veuillez réessayer.",
         "scheduleNotFound": "Horaire introuvable.",
+        "sameTypeOverlap": "Une autre tâche du même type occupe déjà ce créneau.",
         "taskBucketInvalid": "Valeur de bucket invalide.",
         "taskBucketLastProtected": "Au moins une catégorie doit rester",
         "taskBucketNameEmpty": "Le nom de catégorie est requis",

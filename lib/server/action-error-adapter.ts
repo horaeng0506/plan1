@@ -22,6 +22,8 @@ const API_ERROR_KEY: Record<string, string> = {
   category_has_schedules: 'serverError.categoryHasSchedules',
   // A4-1 동작 불변 — 웹 경로 미발생(guard off) 또는 기존 generic 보존. A4-2 개선 예정.
   overlap_exceeded: 'error.unknown',
+  // S5 (PLAN1-SAME-TYPE-OVERLAP-20260701) — 웹도 same-type guard on → 전용 메시지로 안내.
+  same_type_overlap: 'serverError.sameTypeOverlap',
   concurrency_conflict: 'error.unknown',
   category_name_exists: 'error.unknown'
 };

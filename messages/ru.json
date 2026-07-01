@@ -165,6 +165,7 @@
         "insertBetweenNoPrev": "Невозможно вставить — нет записи перед этим временем.",
         "insertBetweenStale": "Запись изменилась — попробуйте снова.",
         "scheduleNotFound": "Расписание не найдено.",
+        "sameTypeOverlap": "В это время уже есть задача того же типа.",
         "taskBucketInvalid": "Неверное значение bucket.",
         "taskBucketLastProtected": "Должна остаться хотя бы одна категория",
         "taskBucketNameEmpty": "Требуется название категории",

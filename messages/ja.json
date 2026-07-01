@@ -165,6 +165,7 @@
         "insertBetweenNoPrev": "挿入できません — この時間より前に予定がありません。",
         "insertBetweenStale": "予定が変更されました — もう一度お試しください。",
         "scheduleNotFound": "スケジュールが見つかりません。",
+        "sameTypeOverlap": "その時間帯には同じ種類の予定がすでにあります。",
         "taskBucketInvalid": "無効なバケット値です。",
         "taskBucketLastProtected": "少なくとも1つのカテゴリを残す必要があります",
         "taskBucketNameEmpty": "カテゴリ名は必須です",

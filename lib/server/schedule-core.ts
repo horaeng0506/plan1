@@ -20,7 +20,7 @@ import {db} from '@/lib/db';
 import {plan1Categories, plan1Schedules} from '@/lib/db/schema';
 import {cascade} from '@/lib/domain/cascade';
 import {insertBetweenList} from '@/lib/domain/insert-between';
-import {mutationExceedsOverlap, MAX_OVERLAP} from '@/lib/domain/overlap';
+import {mutationExceedsOverlap, mutationCreatesSameTypeOverlap, MAX_OVERLAP} from '@/lib/domain/overlap';
 import type {Schedule, TimerType} from '@/lib/domain/types';
 import {ApiError} from '@/lib/server/api-error';
 import {
@@ -38,6 +38,7 @@ export type ScheduleErrorCode =
   | 'insert_between_stale'
   | 'insert_between_no_prev'
   | 'overlap_exceeded'
+  | 'same_type_overlap'
   | 'concurrency_conflict';
 
 const ERROR_STATUS: Record<ScheduleErrorCode, number> = {
@@ -46,6 +47,7 @@ const ERROR_STATUS: Record<ScheduleErrorCode, number> = {
   insert_between_stale: 409,
   insert_between_no_prev: 422,
   overlap_exceeded: 422,
+  same_type_overlap: 422,
   concurrency_conflict: 409
 };
 
@@ -127,6 +129,13 @@ async function writeSchedules(
   // A4-1 웹은 off (기존 동작 불변 · 클라 모달이 차단).
   if (guards.enforceOverlap && mutationExceedsOverlap(snapshot, next, MAX_OVERLAP)) {
     throw new ScheduleError('overlap_exceeded');
+  }
+
+  // 같은 종류(chainedToPrev) 겹침 검증 — S5 (PLAN1-SAME-TYPE-OVERLAP-20260701).
+  // 1열(연결)/2열(시작 시간 고정) 각 열 안 겹침 금지. delta 스코프(신규 위반만 거부).
+  // 대장 "규칙 다 동일" → 웹·REST 둘 다 on (enforceOverlap 과 독립 플래그).
+  if (guards.enforceSameTypeOverlap && mutationCreatesSameTypeOverlap(snapshot, next)) {
+    throw new ScheduleError('same_type_overlap');
   }
 
   const snapshotIds = new Set(snapshot.map(s => s.id));

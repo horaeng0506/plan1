@@ -165,6 +165,7 @@
         "insertBetweenNoPrev": "सम्मिलित नहीं कर सकते — इस समय से पहले कोई शेड्यूल नहीं है।",
         "insertBetweenStale": "शेड्यूल बदल गया — कृपया फिर से प्रयास करें।",
         "scheduleNotFound": "शेड्यूल नहीं मिला।",
+        "sameTypeOverlap": "उस समय पहले से ही उसी प्रकार का एक शेड्यूल मौजूद है।",
         "taskBucketInvalid": "अमान्य बकेट मान।",
         "taskBucketLastProtected": "कम से कम एक श्रेणी बनी रहनी चाहिए",
         "taskBucketNameEmpty": "श्रेणी का नाम आवश्यक है",
