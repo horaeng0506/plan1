@@ -18,7 +18,7 @@ const ApiKeyCreateModal = dynamic(
 
 /**
  * PLAN1-TASKS-FEATURE-20260509 (S6) — API key 관리 UI.
- * list + create modal + revoke + rotate (24h grace · CreateModal mode='rotate').
+ * list + create modal + revoke + rotate (새 키 발급 후 옛 키 즉시 폐기 · CreateModal mode='rotate').
  */
 
 export function ApiKeyManager() {
@@ -69,7 +69,7 @@ export function ApiKeyManager() {
   };
 
   const statusOf = (k: ApiKeyMeta): 'revoked' | 'expired' | 'active' => {
-    if (k.revokedAt !== null && k.revokedAt <= now) return 'revoked';
+    if (k.revokedAt !== null) return 'revoked';
     if (k.expiresAt !== null && k.expiresAt < now) return 'expired';
     return 'active';
   };

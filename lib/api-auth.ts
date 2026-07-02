@@ -92,6 +92,7 @@ export async function authenticateApiKey(request: Request): Promise<AuthResult> 
   if (incomingBuf.length !== storedBuf.length || !timingSafeEqual(incomingBuf, storedBuf)) {
     return {ok: false, response: unauthorized('Hash mismatch')};
   }
+  // 폐기 = 즉시 무효. rotate 도 옛 키를 즉시 폐기(grace 없음)라 non-null 이면 항상 거부.
   if (row.revokedAt !== null) {
     return {ok: false, response: unauthorized('Key revoked')};
   }
