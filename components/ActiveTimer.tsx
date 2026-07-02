@@ -305,14 +305,17 @@ function IdleCountdown({upcoming, now}: IdleCountdownProps) {
       <div className="mb-3 font-mono text-4xl font-medium tracking-tight text-muted">
         {formatHMS(remaining)}
       </div>
-      <button
-        type="button"
-        onClick={startNow}
-        data-testid="idle-start-now"
-        className="mb-2 w-full rounded-none border border-ink bg-ink px-3 py-2 text-sm font-mono text-bg hover:opacity-90"
-      >
-        {t('timer.buttonStartNow')}
-      </button>
+      {/* 시작 시간 고정(chainedToPrev=false) 일정은 지금 시작 불가 → 버튼 숨김. 연결 일정만 앞당겨 시작(앱 IdleCard 와 동일 · 대장 2026-07-02). undefined 는 서버 ?? true 시맨틱대로 연결로 취급해 표시. */}
+      {upcoming.chainedToPrev !== false && (
+        <button
+          type="button"
+          onClick={startNow}
+          data-testid="idle-start-now"
+          className="mb-2 w-full rounded-none border border-ink bg-ink px-3 py-2 text-sm font-mono text-bg hover:opacity-90"
+        >
+          {t('timer.buttonStartNow')}
+        </button>
+      )}
       <div className="text-[10px] font-mono text-muted opacity-80">
         cat={category ? categoryDisplay(category) : t('timer.categoryFallback')}
       </div>
