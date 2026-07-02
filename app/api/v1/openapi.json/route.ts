@@ -39,7 +39,7 @@ const OPENAPI_SPEC = {
         scheme: 'bearer',
         bearerFormat: 'cofounder_jwt (portal Better Auth JWT)',
         description:
-          'cofounder.co.kr 로그인 세션 JWT. Authorization: Bearer <cofounder_jwt> 또는 cofounder_jwt 쿠키. plan1-mobile 앱 전용.'
+          'cofounder.co.kr 로그인 세션 JWT. Authorization: Bearer <cofounder_jwt> (쿠키 미지원 · CSRF-safe). plan1-mobile 앱·웹 본인.'
       }
     },
     schemas: {
@@ -327,8 +327,8 @@ const OPENAPI_SPEC = {
     '/api/v1/schedules': {
       get: {
         summary: 'list schedules',
-        description: '세션 사용자의 스케줄 전체 목록.',
-        security: [{sessionAuth: []}],
+        description: '본인 스케줄 전체 목록. 세션 JWT(앱·웹) 또는 API 키(plan1_api_*) 인증.',
+        security: [{sessionAuth: []}, {bearerAuth: []}],
         responses: {
           '200': {
             description: 'OK',
@@ -353,8 +353,8 @@ const OPENAPI_SPEC = {
       },
       post: {
         summary: 'create schedule',
-        description: '신규 스케줄 생성. 결과 전체 스케줄 목록 반환.',
-        security: [{sessionAuth: []}],
+        description: '신규 스케줄 생성. 세션 JWT(앱·웹) 또는 API 키(plan1_api_*) 인증. 결과 전체 스케줄 목록 반환.',
+        security: [{sessionAuth: []}, {bearerAuth: []}],
         requestBody: {
           required: true,
           content: {
@@ -529,8 +529,9 @@ const OPENAPI_SPEC = {
     '/api/v1/categories': {
       get: {
         summary: 'list categories',
-        description: '세션 사용자 카테고리 목록 (없으면 default 시드).',
-        security: [{sessionAuth: []}],
+        description:
+          '본인 카테고리 목록 (없으면 default 시드). 세션 JWT(앱·웹) 또는 API 키(plan1_api_*) 인증 — 일정 생성 시 categoryId 조회용.',
+        security: [{sessionAuth: []}, {bearerAuth: []}],
         responses: {
           '200': {
             description: 'OK',
