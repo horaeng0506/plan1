@@ -136,7 +136,7 @@
         "buttonPlus30": "+30分",
         "buttonPlusHour": "+1時間",
         "categoryAddOption": "+ カテゴリを追加",
-        "chainedCheckbox": "前のスケジュールに連結",
+        "fixedStartCheckbox": "開始時刻を固定",
         "endLabelV2": "終了時刻",
         "endPlaceholder": "期間を選択",
         "fieldCategory": "カテゴリ",

@@ -136,7 +136,7 @@
         "buttonPlus30": "+30分钟",
         "buttonPlusHour": "+1小时",
         "categoryAddOption": "+ 添加类别",
-        "chainedCheckbox": "链接到上一个计划",
+        "fixedStartCheckbox": "固定开始时间",
         "endLabelV2": "结束时间",
         "endPlaceholder": "选择时长",
         "fieldCategory": "分类",

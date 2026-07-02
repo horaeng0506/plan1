@@ -97,7 +97,7 @@
     "buttonPlus10": "+10m",
     "buttonPlus30": "+30m",
     "buttonPlusHour": "+1h",
-    "chainedCheckbox": "chain to previous schedule",
+    "fixedStartCheckbox": "Fixed start time",
     "warningOverlapLimit": "At most {limit} schedules can overlap at the same time. Adjust start/duration or remove an existing one.",
     "buttonAfterLast": "last+10",
     "afterLastNoneHint": "no upcoming schedule",

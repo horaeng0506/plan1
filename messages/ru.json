@@ -136,7 +136,7 @@
         "buttonPlus30": "+30м",
         "buttonPlusHour": "+1ч",
         "categoryAddOption": "+ добавить категорию",
-        "chainedCheckbox": "связать с предыдущим расписанием",
+        "fixedStartCheckbox": "Фиксированное время начала",
         "endLabelV2": "время окончания",
         "endPlaceholder": "выбрать длительность",
         "fieldCategory": "категория",

@@ -622,15 +622,17 @@ export function NewScheduleModal({
                 <span className="text-muted opacity-60">{t('schedule.endPlaceholder')}</span>
               )}
             </div>
-            {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #8: chainedToPrev 라벨 단순화 (cascade 받음 폐기 — i18n key 갱신). */}
+            {/* 앱 plan1app 정합(대장 2026-07-02): '앞 일정과 연결' 체크박스 → '시작 시간 고정' 토글로 전환.
+                연결이 디폴트(chainedToPrev=true·체크 해제), 체크 시 연결 해제 = 고정 시작(chainedToPrev=false).
+                따라서 체크 상태 = !chainedToPrev, onChange 시 반전. */}
             <label className="flex items-start gap-2 text-sm text-txt font-mono">
               <input
                 type="checkbox"
-                checked={chainedToPrev}
-                onChange={e => setChainedToPrev(e.target.checked)}
+                checked={!chainedToPrev}
+                onChange={e => setChainedToPrev(!e.target.checked)}
                 className="mt-1"
               />
-              <span>{t('schedule.chainedCheckbox')}</span>
+              <span>{t('schedule.fixedStartCheckbox')}</span>
             </label>
             {/* PLAN1-FOCUS-VIEW-REDESIGN-V2-20260506 #5 (Q-NEW3 둘다): prev chain 시각 박스 (add 모드 + chained=true 시). */}
             {!isEdit && chainedToPrev && prevChain.length > 0 && (

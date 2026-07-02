@@ -136,7 +136,7 @@
         "buttonPlus30": "+30मि",
         "buttonPlusHour": "+1घं",
         "categoryAddOption": "+ श्रेणी जोड़ें",
-        "chainedCheckbox": "पिछले शेड्यूल से जोड़ें",
+        "fixedStartCheckbox": "आरंभ समय निश्चित",
         "endLabelV2": "समाप्ति समय",
         "endPlaceholder": "अवधि चुनें",
         "fieldCategory": "श्रेणी",
