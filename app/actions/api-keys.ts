@@ -1,71 +1,39 @@
 'use server';
 
-import {randomBytes, randomUUID} from 'node:crypto';
-import {and, desc, eq} from 'drizzle-orm';
+/**
+ * API 키 관리 server actions (웹 · 세션 쿠키).
+ *
+ * A4 패턴 (2026-07-02): 로직을 `lib/server/api-keys-core` 단일 코어로 통합.
+ *   - 모바일 REST(app/api/v1/api-keys · 세션 JWT)도 같은 코어 사용 — 키 생성 형식·해시 단일 원천.
+ *   - 코어 ApiError(snake_case code) → ServerActionError(i18n key) 변환은 callCore 어댑터.
+ *   - ⚡ 동작 불변: 기존 i18n 키(apiKeyNameInvalid·apiKeyExpiresInvalid·apiKeyNotFound 등) 그대로.
+ *
+ * rotate 는 웹 전용(모바일은 revoke+create 로 대체). 옛 key 24h grace revoke 후 새 key 발급.
+ */
+
+import {and, eq} from 'drizzle-orm';
 import {db} from '@/lib/db';
 import {plan1ApiKeys} from '@/lib/db/schema';
 import {requireUser} from '@/lib/auth-helpers';
-import {hashApiKey} from '@/lib/api-auth';
-import {ServerActionError, runAction, type ServerActionResult} from '@/lib/server-action';
+import {runAction, type ServerActionResult} from '@/lib/server-action';
+import {callCore} from '@/lib/server/action-error-adapter';
+import {ApiError} from '@/lib/server/api-error';
+import {
+  listApiKeysCore,
+  createApiKeyCore,
+  revokeApiKeyCore,
+  type ApiKeyMeta,
+  type ApiKeyCreated
+} from '@/lib/server/api-keys-core';
 
-/**
- * PLAN1-TASKS-FEATURE-20260509 — API key 발급 · list · revoke · rotate (Stage S6).
- *
- * 보안 정책:
- *   - plain key = 발급 시점 1회만 client 반환 (DB 영영 hash 만)
- *   - hash = SHA-256 (lib/api-auth hashApiKey 재활용)
- *   - prefix = 마지막 8 char (UI list 표시 영영 · Q22 정합)
- *   - rotate = 옛 key revokedAt = NOW() + 24h grace · 새 key 발급
- *   - revoke = 즉시 revokedAt = NOW()
- *   - IDOR 차단 = 모든 query WHERE eq(plan1ApiKeys.userId, user.id) 강제
- *
- * 형식: `plan1_api_<40-char-base62>` — randomBytes(30).toString('base64url').slice(0, 40)
- */
+export type {ApiKeyMeta, ApiKeyCreated} from '@/lib/server/api-keys-core';
 
-const KEY_PREFIX = 'plan1_api_';
 const ROTATE_GRACE_MS = 24 * 60 * 60 * 1000;
-
-export interface ApiKeyMeta {
-  id: string;
-  name: string;
-  keyPrefix: string;
-  createdAt: number;
-  expiresAt: number | null;
-  lastUsedAt: number | null;
-  revokedAt: number | null;
-}
-
-export interface ApiKeyCreated {
-  meta: ApiKeyMeta;
-  rawKey: string;
-}
-
-function rowToApiKeyMeta(row: typeof plan1ApiKeys.$inferSelect): ApiKeyMeta {
-  return {
-    id: row.id,
-    name: row.name,
-    keyPrefix: row.keyPrefix,
-    createdAt: row.createdAt.getTime(),
-    expiresAt: row.expiresAt ? row.expiresAt.getTime() : null,
-    lastUsedAt: row.lastUsedAt ? row.lastUsedAt.getTime() : null,
-    revokedAt: row.revokedAt ? row.revokedAt.getTime() : null
-  };
-}
-
-function generateRawKey(): string {
-  const random = randomBytes(30).toString('base64url').slice(0, 40);
-  return `${KEY_PREFIX}${random}`;
-}
 
 export async function listApiKeys(): Promise<ServerActionResult<ApiKeyMeta[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    const rows = await db
-      .select()
-      .from(plan1ApiKeys)
-      .where(eq(plan1ApiKeys.userId, user.id))
-      .orderBy(desc(plan1ApiKeys.createdAt));
-    return rows.map(rowToApiKeyMeta);
+    return callCore(() => listApiKeysCore(user.id));
   });
 }
 
@@ -75,53 +43,14 @@ export async function createApiKey(input: {
 }): Promise<ServerActionResult<ApiKeyCreated>> {
   return runAction(async () => {
     const user = await requireUser();
-    const trimmed = input.name.trim();
-    if (trimmed === '' || trimmed.length > 100) {
-      throw new ServerActionError('serverError.apiKeyNameInvalid');
-    }
-    if (input.expiresInDays !== null && (input.expiresInDays < 1 || input.expiresInDays > 3650)) {
-      throw new ServerActionError('serverError.apiKeyExpiresInvalid');
-    }
-    const rawKey = generateRawKey();
-    const keyHash = hashApiKey(rawKey);
-    const keyPrefix = rawKey.slice(-8);
-    const id = `apik-${randomUUID()}`;
-    const expiresAt =
-      input.expiresInDays === null
-        ? null
-        : new Date(Date.now() + input.expiresInDays * 24 * 60 * 60 * 1000);
-    await db.insert(plan1ApiKeys).values({
-      id,
-      userId: user.id,
-      name: trimmed,
-      keyHash,
-      keyPrefix,
-      expiresAt
-    });
-    const rows = await db
-      .select()
-      .from(plan1ApiKeys)
-      .where(eq(plan1ApiKeys.id, id))
-      .limit(1);
-    const created = rows[0];
-    if (!created) throw new ServerActionError('serverError.apiKeyCreateFailed');
-    return {meta: rowToApiKeyMeta(created), rawKey};
+    return callCore(() => createApiKeyCore(user.id, input));
   });
 }
 
 export async function revokeApiKey(id: string): Promise<ServerActionResult<ApiKeyMeta[]>> {
   return runAction(async () => {
     const user = await requireUser();
-    await db
-      .update(plan1ApiKeys)
-      .set({revokedAt: new Date()})
-      .where(and(eq(plan1ApiKeys.id, id), eq(plan1ApiKeys.userId, user.id)));
-    const rows = await db
-      .select()
-      .from(plan1ApiKeys)
-      .where(eq(plan1ApiKeys.userId, user.id))
-      .orderBy(desc(plan1ApiKeys.createdAt));
-    return rows.map(rowToApiKeyMeta);
+    return callCore(() => revokeApiKeyCore(user.id, id));
   });
 }
 
@@ -132,22 +61,28 @@ export async function rotateApiKey(input: {
 }): Promise<ServerActionResult<ApiKeyCreated>> {
   return runAction(async () => {
     const user = await requireUser();
-    const oldRows = await db
-      .select()
-      .from(plan1ApiKeys)
-      .where(and(eq(plan1ApiKeys.id, input.oldId), eq(plan1ApiKeys.userId, user.id)))
-      .limit(1);
-    const oldRow = oldRows[0];
-    if (!oldRow) throw new ServerActionError('serverError.apiKeyNotFound');
-    if (oldRow.revokedAt !== null && oldRow.revokedAt.getTime() <= Date.now()) {
-      throw new ServerActionError('serverError.apiKeyAlreadyRevoked');
-    }
-    await db
-      .update(plan1ApiKeys)
-      .set({revokedAt: new Date(Date.now() + ROTATE_GRACE_MS)})
-      .where(and(eq(plan1ApiKeys.id, input.oldId), eq(plan1ApiKeys.userId, user.id)));
-    const created = await createApiKey({name: input.name, expiresInDays: input.expiresInDays});
-    if (!created.ok) throw new ServerActionError(created.errorKey, created.params);
-    return created.data;
+    return callCore(async () => {
+      const oldRows = await db
+        .select()
+        .from(plan1ApiKeys)
+        .where(and(eq(plan1ApiKeys.id, input.oldId), eq(plan1ApiKeys.userId, user.id)))
+        .limit(1);
+      const oldRow = oldRows[0];
+      if (!oldRow) throw new ApiError('api_key_not_found', 404, 'API key not found');
+      if (oldRow.revokedAt !== null && oldRow.revokedAt.getTime() <= Date.now()) {
+        throw new ApiError('api_key_already_revoked', 409, 'API key already revoked');
+      }
+      // ⚡ 새 키 먼저 생성 → 성공 후 옛 키 grace-revoke. neon-http 는 트랜잭션이 없어
+      //   순서를 반전해야 생성 실패 시 옛 키가 살아있다("옛 키만 죽고 새 키 없음" 방지).
+      const created = await createApiKeyCore(user.id, {
+        name: input.name,
+        expiresInDays: input.expiresInDays
+      });
+      await db
+        .update(plan1ApiKeys)
+        .set({revokedAt: new Date(Date.now() + ROTATE_GRACE_MS)})
+        .where(and(eq(plan1ApiKeys.id, input.oldId), eq(plan1ApiKeys.userId, user.id)));
+      return created;
+    });
   });
 }

@@ -158,6 +158,7 @@
         "apiKeyAlreadyRevoked": "تم إلغاء مفتاح API بالفعل.",
         "apiKeyCreateFailed": "فشل إنشاء مفتاح API.",
         "apiKeyExpiresInvalid": "يجب أن تكون صلاحية مفتاح API من 1-3650 يوماً أو فارغة.",
+        "apiKeyLimitReached": "عدد كبير جدًا من مفاتيح API النشطة (بحد أقصى 50). ألغِ المفاتيح غير المستخدمة أولاً.",
         "apiKeyNameInvalid": "اسم مفتاح API مطلوب (100 حرف كحد أقصى).",
         "apiKeyNotFound": "مفتاح API غير موجود.",
         "categoryHasSchedules": "الفئة تحتوي على {scheduleCount} جداول. أكد الحذف المتسلسل للإزالة.",

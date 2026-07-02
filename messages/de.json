@@ -158,6 +158,7 @@
         "apiKeyAlreadyRevoked": "API-Schlüssel bereits widerrufen.",
         "apiKeyCreateFailed": "API-Schlüssel-Erstellung fehlgeschlagen.",
         "apiKeyExpiresInvalid": "API-Schlüssel-Ablauf muss 1-3650 Tage oder null sein.",
+        "apiKeyLimitReached": "Zu viele aktive API-Schlüssel (max. 50). Widerrufen Sie zuerst ungenutzte Schlüssel.",
         "apiKeyNameInvalid": "API-Schlüsselname ist erforderlich (max. 100 Zeichen).",
         "apiKeyNotFound": "API-Schlüssel nicht gefunden.",
         "categoryHasSchedules": "Kategorie hat {scheduleCount} Termine. Bestätigen Sie die Kaskadenlöschung zum Entfernen.",

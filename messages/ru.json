@@ -158,6 +158,7 @@
         "apiKeyAlreadyRevoked": "API ключ уже отозван.",
         "apiKeyCreateFailed": "Не удалось создать API ключ.",
         "apiKeyExpiresInvalid": "Срок действия API ключа должен быть 1-3650 дней или null.",
+        "apiKeyLimitReached": "Слишком много активных API-ключей (макс. 50). Сначала отзовите неиспользуемые ключи.",
         "apiKeyNameInvalid": "Требуется название API ключа (макс. 100 символов).",
         "apiKeyNotFound": "API ключ не найден.",
         "categoryHasSchedules": "Категория содержит {scheduleCount} расписаний. Подтвердите каскадное удаление.",

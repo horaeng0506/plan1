@@ -659,6 +659,57 @@ const OPENAPI_SPEC = {
       },
       options: {summary: 'CORS preflight', responses: {'204': {description: 'CORS headers'}}}
     },
+    '/api/v1/api-keys': {
+      get: {
+        summary: 'list API keys',
+        description: '본인 API 키 메타 목록(원문 키는 미포함). 세션 JWT 전용.',
+        security: [{sessionAuth: []}],
+        responses: {
+          '200': {description: 'OK'},
+          '401': {description: 'Unauthorized'}
+        }
+      },
+      post: {
+        summary: 'create API key',
+        description:
+          '새 API 키 발급. rawKey 는 응답에 1회만 노출(재조회 불가). 세션 JWT 전용 — api-key 로는 발급 불가(권한 상승 차단).',
+        security: [{sessionAuth: []}],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['name'],
+                properties: {
+                  name: {type: 'string', minLength: 1, maxLength: 100},
+                  expiresInDays: {type: 'integer', minimum: 1, maximum: 3650, nullable: true}
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          '201': {description: 'Created — {meta, rawKey}'},
+          '400': {description: 'Invalid input'},
+          '401': {description: 'Unauthorized'}
+        }
+      },
+      options: {summary: 'CORS preflight', responses: {'204': {description: 'CORS headers'}}}
+    },
+    '/api/v1/api-keys/{id}': {
+      delete: {
+        summary: 'revoke API key',
+        description: '본인 API 키 폐기(멱등). 세션 JWT 전용. 갱신된 목록 반환.',
+        security: [{sessionAuth: []}],
+        parameters: [{name: 'id', in: 'path', required: true, schema: {type: 'string'}}],
+        responses: {
+          '200': {description: 'OK — updated list'},
+          '401': {description: 'Unauthorized'}
+        }
+      },
+      options: {summary: 'CORS preflight', responses: {'204': {description: 'CORS headers'}}}
+    },
     '/api/v1/openapi.json': {
       get: {
         summary: 'OpenAPI 3.1 spec',
