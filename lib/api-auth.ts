@@ -1,5 +1,5 @@
 import {createHash, timingSafeEqual} from 'node:crypto';
-import {sql, eq, and} from 'drizzle-orm';
+import {sql, eq} from 'drizzle-orm';
 import {NextResponse} from 'next/server';
 import {db} from '@/lib/db';
 import {plan1ApiKeys} from '@/lib/db/schema';
@@ -21,7 +21,7 @@ import {plan1ApiKeys} from '@/lib/db/schema';
  */
 
 const KEY_PREFIX = 'plan1_api_';
-const RATE_LIMIT_CAP = 60;
+export const RATE_LIMIT_CAP = 60;
 const RATE_LIMIT_REFILL_PER_MIN = 60;
 
 export interface AuthSuccess {
