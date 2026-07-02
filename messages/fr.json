@@ -158,6 +158,7 @@
         "apiKeyAlreadyRevoked": "Clé API déjà révoquée.",
         "apiKeyCreateFailed": "Échec de la création de la clé API.",
         "apiKeyExpiresInvalid": "L'expiration de la clé API doit être de 1-3650 jours ou nulle.",
+        "apiKeyLimitReached": "Trop de clés API actives (max 50). Révoquez d'abord les clés inutilisées.",
         "apiKeyNameInvalid": "Le nom de la clé API est requis (max 100 caractères).",
         "apiKeyNotFound": "Clé API introuvable.",
         "categoryHasSchedules": "La catégorie a {scheduleCount} horaires. Confirmez la suppression en cascade pour retirer.",

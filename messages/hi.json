@@ -158,6 +158,7 @@
         "apiKeyAlreadyRevoked": "API कुंजी पहले से निरस्त की गई।",
         "apiKeyCreateFailed": "API कुंजी बनाना विफल रहा।",
         "apiKeyExpiresInvalid": "API कुंजी समाप्ति 1-3650 दिन या null होनी चाहिए।",
+        "apiKeyLimitReached": "बहुत सारी सक्रिय API कुंजियाँ (अधिकतम 50)। पहले अप्रयुक्त कुंजियाँ रद्द करें।",
         "apiKeyNameInvalid": "API कुंजी नाम आवश्यक है (अधिकतम 100 वर्ण)।",
         "apiKeyNotFound": "API कुंजी नहीं मिली।",
         "categoryHasSchedules": "श्रेणी में {scheduleCount} शेड्यूल हैं। हटाने के लिए कैस्केड डिलीट की पुष्टि करें।",

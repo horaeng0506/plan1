@@ -158,6 +158,7 @@
         "apiKeyAlreadyRevoked": "APIキーは既に取り消されています。",
         "apiKeyCreateFailed": "APIキーの作成に失敗しました。",
         "apiKeyExpiresInvalid": "APIキーの有効期限は1〜3650日またはnullである必要があります。",
+        "apiKeyLimitReached": "有効なAPIキーが多すぎます（最大50個）。未使用のキーを先に取り消してください。",
         "apiKeyNameInvalid": "APIキー名は必須です（最大100文字）。",
         "apiKeyNotFound": "APIキーが見つかりません。",
         "categoryHasSchedules": "カテゴリには{scheduleCount}件のスケジュールがあります。カスケード削除を確認して削除してください。",

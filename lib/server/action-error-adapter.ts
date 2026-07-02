@@ -25,7 +25,14 @@ const API_ERROR_KEY: Record<string, string> = {
   // S5 (PLAN1-SAME-TYPE-OVERLAP-20260701) — 웹도 same-type guard on → 전용 메시지로 안내.
   same_type_overlap: 'serverError.sameTypeOverlap',
   concurrency_conflict: 'error.unknown',
-  category_name_exists: 'error.unknown'
+  category_name_exists: 'error.unknown',
+  // API 키 관리 코어(api-keys-core) — 웹 기존 server action 의 i18n 키 그대로 보존.
+  api_key_name_invalid: 'serverError.apiKeyNameInvalid',
+  api_key_expires_invalid: 'serverError.apiKeyExpiresInvalid',
+  api_key_create_failed: 'serverError.apiKeyCreateFailed',
+  api_key_not_found: 'serverError.apiKeyNotFound',
+  api_key_already_revoked: 'serverError.apiKeyAlreadyRevoked',
+  api_key_limit_reached: 'serverError.apiKeyLimitReached'
 };
 
 /**

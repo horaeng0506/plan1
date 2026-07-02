@@ -158,6 +158,7 @@
         "apiKeyAlreadyRevoked": "Chave API já revogada.",
         "apiKeyCreateFailed": "Falha na criação da chave de API.",
         "apiKeyExpiresInvalid": "Expiração da chave de API deve ser 1-3650 dias ou nulo.",
+        "apiKeyLimitReached": "Muitas chaves de API ativas (máx. 50). Revogue as chaves não utilizadas primeiro.",
         "apiKeyNameInvalid": "Nome da chave de API é obrigatório (máx 100 caracteres).",
         "apiKeyNotFound": "Chave de API não encontrada.",
         "categoryHasSchedules": "Categoria tem {scheduleCount} agendamento(s). Confirme exclusão em cascata para remover.",
