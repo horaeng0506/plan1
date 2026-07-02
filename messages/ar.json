@@ -136,7 +136,7 @@
         "buttonPlus30": "30د+",
         "buttonPlusHour": "1 ساعة+",
         "categoryAddOption": "+ إضافة فئة",
-        "chainedCheckbox": "ربط بالجدول السابق",
+        "fixedStartCheckbox": "وقت بدء ثابت",
         "endLabelV2": "وقت النهاية",
         "endPlaceholder": "اختر المدة",
         "fieldCategory": "الفئة",

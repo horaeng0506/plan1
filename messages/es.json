@@ -136,7 +136,7 @@
         "buttonPlus30": "+30m",
         "buttonPlusHour": "+1h",
         "categoryAddOption": "+ agregar categoría",
-        "chainedCheckbox": "encadenar al horario anterior",
+        "fixedStartCheckbox": "Hora de inicio fija",
         "endLabelV2": "hora de fin",
         "endPlaceholder": "seleccionar duración",
         "fieldCategory": "categoría",
