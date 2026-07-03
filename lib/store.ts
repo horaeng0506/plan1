@@ -303,9 +303,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   async removeCategory(id, force) {
+    // 소프트 삭제(대장 2026-07-03): 목록에서 제거하지 않고 deletedAt 마킹만 —
+    // 삭제된 카테고리도 색 렌더용으로 클라 목록에 유지(스케줄이 계속 참조). 스케줄 보존이라 refresh 불필요.
     unwrap(await categoriesApi.deleteCategory({id, force}));
-    set({categories: get().categories.filter(c => c.id !== id)});
-    if (force) await get().refreshSchedules();
+    const now = Date.now();
+    set({categories: get().categories.map(c => (c.id === id ? {...c, deletedAt: now} : c))});
   },
 
   async updateSettings(patch) {

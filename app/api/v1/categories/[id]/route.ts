@@ -1,7 +1,8 @@
 /**
  * plan1-mobile A1 — /api/v1/categories/{id} (PATCH update · DELETE).
  * 세션 JWT 인증. IDOR: 코어가 WHERE user_id 강제.
- * DELETE: 소속 스케줄 있으면 ?force=true 필요 (없으면 409 · cascade 사전 경고).
+ * DELETE: 소프트 삭제(대장 2026-07-03) — deleted_at 마킹, 스케줄 보존. ?force 는 하위호환 무시.
+ *   마지막 활성 카테고리 삭제 시 409 category_last_active.
  */
 
 import {NextResponse} from 'next/server';

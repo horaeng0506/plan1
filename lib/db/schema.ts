@@ -23,6 +23,7 @@
  *   - 텍스트 컬럼은 사용자 입력 평문 — Drizzle 파라미터화로 SQL injection 차단
  */
 
+import {sql} from 'drizzle-orm';
 import {
   pgTable,
   pgSchema,
@@ -61,10 +62,16 @@ export const plan1Categories = plan1Schema.table(
     color: text('color').notNull(),
     createdAt: timestamp('created_at', {withTimezone: true})
       .$defaultFn(() => new Date())
-      .notNull()
+      .notNull(),
+    // plan1-mobile 카테고리 소프트 삭제(대장 2026-07-03): 삭제 시 목록/선택에서 숨기되
+    // 기존 스케줄은 이 카테고리 row 로 유지(색·이름 렌더). NULL=활성. (portal schema 미러)
+    deletedAt: timestamp('deleted_at', {withTimezone: true})
   },
   table => ({
-    userNameUniqueIdx: uniqueIndex('plan1_categories_user_name_idx').on(table.userId, table.name)
+    // 부분 unique: 활성(deleted_at IS NULL) 카테고리만 이름 유일. 소프트 삭제된 이름 재사용 가능.
+    userNameUniqueIdx: uniqueIndex('plan1_categories_user_name_idx')
+      .on(table.userId, table.name)
+      .where(sql`${table.deletedAt} IS NULL`)
   })
 );
 

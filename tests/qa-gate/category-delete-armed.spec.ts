@@ -1,30 +1,24 @@
 import {test, expect, Page} from '@playwright/test';
 
 /**
- * plan1 mutation E2E gate — A7 카테고리 삭제 armed case (one_schedule)
+ * plan1 mutation E2E gate — A7 카테고리 소프트 삭제 (사용 중 카테고리 · one_schedule)
  *
- * PICT model `category-delete.txt` 의 one_schedule case
- *   (no_schedule case 는 별도 spec `category-delete.spec.ts` 에 박힘 · 1차 즉시 삭제)
+ * 대장 2026-07-03 소프트 삭제 전환. 옛 armed(2단계 confirm)+cascade DELETE 폐기.
+ * 새 불변식: 사용 중 카테고리 삭제 = 목록에서만 사라지고 **소속 스케줄은 보존**(그 카테고리 색 유지).
  *
- * 흐름 (CategoryManager.handleRemove count > 0 분기 · 선코드 실측):
- *   - count > 0 첫 클릭 → setConfirmId(id) → 라벨 "confirm rm ({count})" 표시 (armed)
- *   - 같은 카테고리 다시 클릭 → removeCategory(id, force=true) 호출
- *   - server action: ON DELETE CASCADE 로 schedule 도 함께 삭제 (DB-level cascade · plan1_schedules.category_id → plan1_categories.id)
+ * 흐름 (CategoryManager.handleRemove · 선코드 실측):
+ *   - rm 버튼 1차 클릭 → removeCategory(id, false) → 소프트 삭제(deleted_at 마킹) → 목록에서 사라짐
+ *   - 스케줄은 그대로 유지 (하드삭제/cascade 없음)
  *
  * 시나리오:
  *   1. 카테고리 추가 (catName)
  *   2. schedule 1개 추가 (이 카테고리 사용)
- *   3. 카테고리 모달 열기 → catName 의 rm 버튼 1차 클릭 (armed · 라벨 변경)
- *   4. armed 라벨 "confirm rm (1)" visible 검증
- *   5. 측정: 같은 버튼 재클릭 → DB cascade 삭제 → 카테고리 list 에서 사라짐 (SLA warm < 3000ms)
- *   6. cleanup 불요 (schedule 도 cascade 로 함께 삭제됨 — 모달 닫기만)
- *
- * 4/29 catch 차이 (category-delete.spec.ts no_schedule 와):
- *   - no_schedule: deleteCategory(id, false) — schedule 0건 path
- *   - **one_schedule: deleteCategory(id, true) — DB cascade DELETE path** (다른 server action 분기)
+ *   3. 카테고리 모달 → catName rm 1차 클릭 → 목록에서 사라짐 (SLA warm < 3000ms)
+ *   4. 모달 닫고 스케줄이 **여전히 보임** 검증 (소프트 삭제 보존 불변식)
+ *   5. cleanup: 스케줄 카드 클릭 → 편집 모달 → 삭제
  *
  * SLA 측정 출력 형식:
- *   [qa-gate] category_delete_armed_ms=NNN cold=true|false
+ *   [qa-gate] category_soft_delete_ms=NNN cold=true|false
  */
 
 const SLA_WARM_MS = 3000;
@@ -36,10 +30,10 @@ function dialogOf(page: Page, headingName: string | RegExp) {
   return {heading, dialog};
 }
 
-test.describe('plan1 mutation E2E — A7 카테고리 삭제 armed case', () => {
-  test('카테고리 + schedule 1개 → armed 클릭 → confirm 클릭 → SLA + cascade', async ({page}) => {
-    const catName = `cat-armed-${Date.now()}`;
-    const schedTitle = `qa-armed-${Date.now()}`;
+test.describe('plan1 mutation E2E — A7 카테고리 소프트 삭제 (스케줄 보존)', () => {
+  test('카테고리 + schedule 1개 → 카테고리 삭제 → 스케줄 보존 + SLA', async ({page}) => {
+    const catName = `cat-soft-${Date.now()}`;
+    const schedTitle = `qa-soft-${Date.now()}`;
 
     // 0. 진입
     // QA-GATE-BASEPATH-CLOCK-20260614: schedule 생성 모달 추가 버튼은 useNow hydration(nowReady)
@@ -60,7 +54,7 @@ test.describe('plan1 mutation E2E — A7 카테고리 삭제 armed case', () => 
     await cat.dialog.getByRole('button', {name: '닫기', exact: true}).click();
     await expect(cat.dialog).toBeHidden({timeout: 3_000});
 
-    // 2. 새 schedule 1개 추가 (이 카테고리 사용 — count=1 만들기)
+    // 2. 새 schedule 1개 추가 (이 카테고리 사용)
     const newBtn = page.getByRole('button', {name: '+ 새 스케줄'});
     await expect(newBtn).toBeEnabled({timeout: 10_000});
     await newBtn.click();
@@ -68,34 +62,24 @@ test.describe('plan1 mutation E2E — A7 카테고리 삭제 armed case', () => 
     const sched = dialogOf(page, '새 스케줄');
     await expect(sched.heading).toBeVisible({timeout: 5_000});
     await sched.dialog.getByRole('textbox').first().fill(schedTitle);
-    // 카테고리 select 에서 catName 선택 — 직전에 추가한 카테고리는 select 의 마지막 option
-    //   schedule.fieldCategory select 의 last option 이 방금 추가 catName (또는 __NEW__).
-    //   안전: select 안에서 catName 으로 옵션 매칭
     const catSelect = sched.dialog.locator('select').first();
     await catSelect.selectOption({label: catName});
-    // PLAN1-FOCUS-VIEW-REDESIGN-20260506: date input 폐기 · 시작 시각 자동 (현재 hour boundary).
-    // WeeklyCalendar 폐기 → next-button 회피 영역도 사라짐.
     await sched.dialog.locator('input[type="number"]').fill('30');
     await sched.dialog.getByRole('button', {name: '추가', exact: true}).click();
     await expect(sched.heading).toBeHidden({timeout: SLA_COLD_MS + 2_000});
     await expect(page.getByText(schedTitle).first()).toBeVisible({timeout: 5_000});
 
-    // 3. 카테고리 모달 다시 열기
+    // 3. 카테고리 모달 다시 열기 → catName rm 1차 클릭 (소프트 삭제)
     await page.getByRole('button', {name: '카테고리'}).click();
     await expect(cat.dialog).toBeVisible({timeout: 5_000});
-
-    // 4. armed 1차 클릭 (count > 0 분기 · 라벨 "confirm rm (1)" 변경)
     const row = cat.dialog.locator('li').filter({hasText: catName});
     await expect(row).toBeVisible({timeout: 3_000});
-    await row.getByRole('button', {name: 'rm', exact: true}).click();
+    const rmBtn = row.getByRole('button', {name: 'rm', exact: true});
+    await expect(rmBtn).toBeVisible({timeout: 3_000});
 
-    // 5. armed 라벨 검증 — i18n category.confirmRemoveLabel = "confirm rm ({count})"
-    const confirmBtn = row.getByRole('button', {name: /^confirm rm/});
-    await expect(confirmBtn).toBeVisible({timeout: 3_000});
-
-    // 6. 측정: 재클릭 → cascade DB DELETE → 카테고리 list 에서 사라짐
+    // 4. 측정: 1차 click → 소프트 삭제 mutation → 목록에서 사라짐
     const startMs = Date.now();
-    await confirmBtn.click();
+    await rmBtn.click();
     await expect(cat.dialog.getByText(catName)).toHaveCount(0, {
       timeout: SLA_COLD_MS + 2_000,
     });
@@ -104,19 +88,28 @@ test.describe('plan1 mutation E2E — A7 카테고리 삭제 armed case', () => 
     const isCold = elapsedMs > SLA_WARM_MS;
     const threshold = isCold ? SLA_COLD_MS : SLA_WARM_MS;
     console.log(
-      `[qa-gate] category_delete_armed_ms=${elapsedMs} cold=${isCold} threshold=${threshold}`
+      `[qa-gate] category_soft_delete_ms=${elapsedMs} cold=${isCold} threshold=${threshold}`
     );
 
-    // 7. SLA 게이트 (4/29 사고 catch 한도 보존)
+    // 5. SLA 게이트 (4/29 사고 catch 한도 보존)
     expect(
       elapsedMs,
-      `deleteCategory(force=true) cascade DELETE 응답 ${elapsedMs}ms — ${
+      `removeCategory(soft) 응답 ${elapsedMs}ms — ${
         isCold ? 'cold' : 'warm'
-      } SLA ${threshold}ms 초과. cascade · cleanOrphans 영역 진단 필요.`
+      } SLA ${threshold}ms 초과.`
     ).toBeLessThan(threshold);
 
-    // 8. 모달 닫기 (cleanup 자체 — schedule 도 DB cascade 로 함께 삭제됨)
+    // 6. 모달 닫기 → 스케줄 보존 불변식: schedule 이 여전히 보임 (cascade 삭제 안 됨)
     await cat.dialog.getByRole('button', {name: '닫기', exact: true}).click();
     await expect(cat.dialog).toBeHidden({timeout: 3_000});
+    await expect(page.getByText(schedTitle).first()).toBeVisible({timeout: 5_000});
+
+    // 7. cleanup — 스케줄 삭제 (카테고리 삭제됐어도 편집 picker 는 현재 카테고리 노출)
+    await page.getByText(schedTitle).first().click();
+    const edit = dialogOf(page, '스케줄 편집');
+    await expect(edit.heading).toBeVisible({timeout: 5_000});
+    await edit.dialog.getByRole('button', {name: '삭제', exact: true}).click();
+    await expect(edit.heading).toBeHidden({timeout: SLA_COLD_MS});
+    await expect(page.getByText(schedTitle)).toHaveCount(0, {timeout: 3_000});
   });
 });

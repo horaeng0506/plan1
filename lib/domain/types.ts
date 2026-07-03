@@ -1,6 +1,8 @@
 export type CategoryId = string;
 export type ScheduleId = string;
-export interface Category { id: CategoryId; name: string; color: string; createdAt: number; }
+// deletedAt: 소프트 삭제(대장 2026-07-03). null/undefined=활성. 목록/선택엔 활성만 노출하되
+// 삭제된 카테고리도 색 렌더용으로 클라 목록에 유지(스케줄이 계속 참조).
+export interface Category { id: CategoryId; name: string; color: string; createdAt: number; deletedAt?: number | null; }
 export type TimerType = 'countup' | 'timer1' | 'countdown';
 export type ScheduleStatus = 'pending' | 'active' | 'done';
 export interface Schedule {

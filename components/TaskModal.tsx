@@ -40,7 +40,8 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
   const [title, setTitle] = useState(task?.title ?? '');
   const [durationMin, setDurationMin] = useState<number>(task?.durationMin ?? 0);
   const [categoryId, setCategoryId] = useState<string>(
-    task?.categoryId ?? categories[0]?.id ?? ''
+    // 신규 기본값은 활성 우선 (소프트 삭제분 배제 · 대장 2026-07-03).
+    task?.categoryId ?? categories.find(c => !c.deletedAt)?.id ?? ''
   );
   const [bucketId, setBucketId] = useState<string>(initialBucketId);
   const [count, setCount] = useState<number>(task?.count ?? 1);
@@ -224,9 +225,12 @@ export function TaskModal({mode, task, onClose}: TaskModalProps) {
             className={fieldCls}
           >
             <option value="">—</option>
-            {categories.map(c => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
+            {/* 소프트 삭제(대장 2026-07-03): 활성만. 편집 중 태스크가 삭제된 카테고리면 그것도 표시. */}
+            {categories
+              .filter(c => !c.deletedAt || c.id === categoryId)
+              .map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
           </select>
         </div>
         <div className="mb-4">
