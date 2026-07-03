@@ -1,24 +1,32 @@
 /**
  * plan1-mobile A1 — 카테고리 REST 코어 (세션 JWT · IDOR · 이름 unique).
- * web app/actions/categories.ts 와 동작 동일 (web 미변경 · REST 가 단독 사용 · A4 합류).
+ * web app/actions/categories.ts 와 동작 동일 (단일 코어 · REST + web 공용).
  *
- * 정책(web 정합):
- *   - 동일 사용자 이름 중복 금지 (DB unique index → 409 category_name_exists)
- *   - 삭제 시 소속 스케줄 있으면 force=true 명시 강제 (없으면 409 category_has_schedules)
- *   - 카테고리 삭제 = 소속 스케줄 cascade DELETE (DB onDelete cascade)
+ * 정책(대장 2026-07-03 소프트 삭제 전환):
+ *   - 활성(deleted_at IS NULL) 이름만 중복 금지 (DB 부분 unique index → 409 category_name_exists)
+ *   - 삭제 = 소프트 삭제(deleted_at 마킹). 소속 스케줄 보존(그 카테고리 색·이름 계속 렌더).
+ *   - 마지막 활성 카테고리는 삭제 불가 (선택 대상 최소 1개 유지 · 409 category_last_active).
+ *   - 삭제된 이름은 재사용 가능(같은 이름 재생성 = 새 id 별개).
+ *   - 목록은 삭제분 포함 반환(deletedAt 필드) → 클라가 색 렌더엔 쓰고 목록/선택엔 활성만 표시.
  */
 
 import {randomUUID} from 'node:crypto';
-import {and, count, eq} from 'drizzle-orm';
+import {and, eq, isNull, sql} from 'drizzle-orm';
 import {db} from '@/lib/db';
-import {plan1Categories, plan1Schedules} from '@/lib/db/schema';
+import {plan1Categories} from '@/lib/db/schema';
 import {ApiError, isUniqueViolation} from '@/lib/server/api-error';
 import type {Category} from '@/lib/domain/types';
 
 type CategoryRow = typeof plan1Categories.$inferSelect;
 
 function rowToDomain(row: CategoryRow): Category {
-  return {id: row.id, name: row.name, color: row.color, createdAt: row.createdAt.getTime()};
+  return {
+    id: row.id,
+    name: row.name,
+    color: row.color,
+    createdAt: row.createdAt.getTime(),
+    deletedAt: row.deletedAt ? row.deletedAt.getTime() : null
+  };
 }
 
 export async function listCategoriesCore(userId: string): Promise<Category[]> {
@@ -28,7 +36,11 @@ export async function listCategoriesCore(userId: string): Promise<Category[]> {
     await db
       .insert(plan1Categories)
       .values({id: `cat-${randomUUID()}`, userId, name: 'default', color: '#6b7280'})
-      .onConflictDoNothing({target: [plan1Categories.userId, plan1Categories.name]});
+      // 부분 unique index 정합: targetWhere 로 predicate 일치 (없으면 ON CONFLICT 매칭 실패).
+      .onConflictDoNothing({
+        target: [plan1Categories.userId, plan1Categories.name],
+        where: isNull(plan1Categories.deletedAt)
+      });
     rows = await db.select().from(plan1Categories).where(eq(plan1Categories.userId, userId));
   }
   return rows.map(rowToDomain);
@@ -88,6 +100,7 @@ export async function updateCategoryCore(
 
 export interface DeleteCategoryInput {
   id: string;
+  /** 소프트 삭제 전환(대장 2026-07-03) 이후 무시 — REST route 하위호환 위해 필드만 유지. */
   force?: boolean;
 }
 
@@ -95,22 +108,33 @@ export async function deleteCategoryCore(
   userId: string,
   input: DeleteCategoryInput
 ): Promise<void> {
-  // 소속 스케줄 1개 이상이면 force=true 명시 강제 (cascade 삭제 사전 경고 · web 정합).
-  if (!input.force) {
-    const [{value: scheduleCount}] = await db
-      .select({value: count()})
-      .from(plan1Schedules)
-      .where(and(eq(plan1Schedules.userId, userId), eq(plan1Schedules.categoryId, input.id)));
-    if (scheduleCount > 0) {
-      throw new ApiError(
-        'category_has_schedules',
-        409,
-        `Category has ${scheduleCount} schedule(s); pass force=true to cascade delete`,
-        {scheduleCount}
-      );
-    }
-  }
-  await db
-    .delete(plan1Categories)
+  // 소프트 삭제(대장 2026-07-03): 하드삭제/cascade 대신 deleted_at 마킹. 스케줄은 보존.
+  // 마지막 활성 가드를 단일 조건부 UPDATE 에 흡수 — 3 RTT → 1 RTT + race 창 축소.
+  // WHERE 안 상관 서브쿼리로 "활성 2개 이상일 때만" 삭제 (같은 statement snapshot 평가).
+  // 잔여 race: neon-http(비 interactive tx)에서 서로 다른 row 동시 삭제가 각자 count=2 스냅샷을
+  // 보면 둘 다 통과 가능(활성 0). 단일 클라 double-click 은 CategoryManager busy 락으로 봉쇄,
+  // 멀티 디바이스 동시 삭제는 극저확률 + 비파괴(카테고리 재추가로 복구) 라 수용. 활성 0 도달 시
+  // listCategoriesCore 재시드는 rows 전무일 때만이라 자동 복구 안 됨(사용자 추가로 복구).
+  const updated = await db
+    .update(plan1Categories)
+    .set({deletedAt: new Date()})
+    .where(
+      and(
+        eq(plan1Categories.id, input.id),
+        eq(plan1Categories.userId, userId),
+        isNull(plan1Categories.deletedAt),
+        sql`(SELECT count(*) FROM ${plan1Categories} WHERE ${plan1Categories.userId} = ${userId} AND ${plan1Categories.deletedAt} IS NULL) > 1`
+      )
+    )
+    .returning({id: plan1Categories.id});
+  if (updated.length > 0) return; // 삭제 성공
+
+  // 0행 → 원인 판별: 미존재/미소유 vs 이미 삭제(idempotent) vs 마지막 활성.
+  const [target] = await db
+    .select()
+    .from(plan1Categories)
     .where(and(eq(plan1Categories.id, input.id), eq(plan1Categories.userId, userId)));
+  if (!target) throw new ApiError('category_not_found', 404, 'Category not found or not owned');
+  if (target.deletedAt) return; // 이미 삭제 — idempotent
+  throw new ApiError('category_last_active', 409, 'Cannot delete the last active category');
 }

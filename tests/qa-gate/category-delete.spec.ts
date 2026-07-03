@@ -6,20 +6,18 @@ import {test, expect, Page} from '@playwright/test';
  * 시나리오 (PICT model `category-delete.txt` happy path · no_schedule case):
  *   - 카테고리 모달 진입
  *   - 카테고리 1개 추가
- *   - 같은 카테고리 삭제 버튼 1차 클릭 → **즉시 삭제 mutation** (CategoryManager.handleRemove
- *     의 count === 0 분기 = armed 단계 skip · 정공 동작) → SLA (warm < 3000ms)
- *   - 카테고리 list 에서 사라진 것 확인
+ *   - 같은 카테고리 삭제 버튼 1차 클릭 → **즉시 소프트 삭제 mutation** (대장 2026-07-03 전환 ·
+ *     CategoryManager.handleRemove = 1차 즉시 removeCategory(id,false)) → SLA (warm < 3000ms)
+ *   - 카테고리 list(활성) 에서 사라진 것 확인
  *
- * 첫 시도 정직성 (2026-05-02):
- *   - 1차 시도 가정 ("always armed → confirm 2차 클릭") = 환각.
- *     CategoryManager.handleRemove 실측: scheduleCountByCat===0 이면 1차 즉시 삭제,
- *     >0 이면 armed→confirm 2단계. PICT model no_schedule case 는 1차 즉시 삭제 정확.
- *   - armed 단계 검증은 별도 spec (one_schedule 또는 many_schedules_50 case · 후속 PR).
+ * 소프트 삭제 전환 (대장 2026-07-03):
+ *   - 옛 armed(2단계 confirm)+cascade DELETE 폐기. 삭제 = deleted_at 마킹(스케줄 보존).
+ *   - 사용 중 카테고리 보존 불변식은 별도 spec `category-delete-armed.spec.ts` (스케줄 보존 검증).
  *
  * 4/29 사고 catch 차이:
  *   - schedule-add: createSchedule mutation
  *   - schedule-edit: updateSchedule mutation
- *   - category-delete: deleteCategory mutation — 다른 server action 경로 (cascade · cleanOrphans 호출 가능)
+ *   - category-delete: 소프트 삭제 mutation — deleted_at UPDATE 경로 (cascade 없음)
  *
  * SLA:
  *   - warm  : < 3000ms

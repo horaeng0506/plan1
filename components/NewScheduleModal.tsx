@@ -143,7 +143,10 @@ export function NewScheduleModal({
   const handleTitleFocus = () => {
     if (title === titleDefault) setTitle('');
   };
-  const [categoryId, setCategoryId] = useState(editing?.categoryId ?? (categories[0]?.id ?? ''));
+  // 신규 기본값은 활성 카테고리 우선 (categories[0] 이 소프트 삭제분일 수 있어 배제 · 대장 2026-07-03).
+  const [categoryId, setCategoryId] = useState(
+    editing?.categoryId ?? (categories.find(c => !c.deletedAt)?.id ?? '')
+  );
   // 완료 일정은 타임라인이 actualDurationMin 으로 표시되므로 편집 시작값도 actual 기준
   // (보이는 값과 일치 · 저장 시 actualDurationMin 으로 반영). 미완료는 actualDurationMin 이 없어 durationMin.
   const editingDurationMin = editing ? (editing.actualDurationMin ?? editing.durationMin) : 0;
@@ -492,11 +495,14 @@ export function NewScheduleModal({
                 onChange={e => handleCategoryChange(e.target.value)}
                 className={fieldCls}
               >
-                {categories.map(c => (
-                  <option key={c.id} value={c.id}>
-                    {categoryDisplay(c)}
-                  </option>
-                ))}
+                {/* 소프트 삭제(대장 2026-07-03): 활성만 노출. 편집 중 스케줄이 삭제된 카테고리면 그것도 표시. */}
+                {categories
+                  .filter(c => !c.deletedAt || c.id === categoryId)
+                  .map(c => (
+                    <option key={c.id} value={c.id}>
+                      {categoryDisplay(c)}
+                    </option>
+                  ))}
                 <option value="__NEW__">{t('schedule.categoryAddOption')}</option>
               </select>
             </label>
